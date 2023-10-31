@@ -1,0 +1,49 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"                    
+                    xmlns:validation_rules="clr-namespace:ScriptHandler.ValidationRules">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/InfoLinkTemplate.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <DataTemplate x:Key="ParamValueWithInfoTemplate">
+
+        <Grid >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="20"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBox >
+
+                <TextBox.Resources>
+                    <validation_rules:BindingProxy x:Key="proxy" Data="{Binding}"/>
+                </TextBox.Resources>
+
+                <TextBox.Text>
+                    <Binding Path="Value" >
+                        <Binding.ValidationRules>
+                            <validation_rules:SetParamValidationRule >
+
+                                <validation_rules:SetParamValidationRule.SetParam>
+                                    <validation_rules:ParameterWrapper SetParamNode="{Binding Data.Parameter, Source={StaticResource proxy}}" />
+                                </validation_rules:SetParamValidationRule.SetParam>
+
+                            </validation_rules:SetParamValidationRule>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+
+            </TextBox>
+
+            
+
+            <ContentControl Grid.Column="2" Content="{Binding}" ContentTemplate="{StaticResource InfoLinkTemplate}"/>
+
+        </Grid>
+
+
+    </DataTemplate>
+
+</ResourceDictionary>

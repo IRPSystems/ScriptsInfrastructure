@@ -1,0 +1,241 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+                    xmlns:converter="clr-namespace:Converters;assembly=Converters">
+
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/EnumsDictionary.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+
+    <converter:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
+
+
+    <DataTemplate x:Key="Design_CompareRange_Between2Values_Template">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27"/>
+                <RowDefinition />
+                <RowDefinition Height="27"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="55" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="55" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Left value" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="2" Grid.Column="0" Text="{Binding ValueLeft}" 
+                     VerticalAlignment="Center"
+                     AllowDrop="True"
+                     Name="tbParamLeft">
+
+                <i:Interaction.Triggers>
+
+                    <i:EventTrigger EventName="PreviewDragOver">
+                        <i:InvokeCommandAction Command="{Binding Path=DataContext.TextBox_PreviewDragOverCommand, 
+                                                                 Mode=OneWay, 
+                                                                 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" 
+                                               PassEventArgsToCommand="True"/>
+                    </i:EventTrigger>
+
+                </i:Interaction.Triggers>
+
+            </TextBox>
+
+
+            <ComboBox Grid.Row="2" Grid.Column="2" 
+                      ItemsSource="{Binding Source={StaticResource comparationTypes}}"
+                      SelectedItem="{Binding Comparation1}">
+
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource EnumDescriptionConverter}}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <TextBlock Grid.Row="0" Grid.Column="4" Text="Parameter" VerticalAlignment="Center"/>
+            <Border Grid.Row="2" Grid.Column="4" 
+                    BorderBrush="{DynamicResource MahApps.Brushes.Gray6}" BorderThickness="1"
+                    AllowDrop="True">
+                <TextBlock Text="{Binding Value}" 
+                           VerticalAlignment="Center"
+                           Name="tbParam"/>
+            </Border>
+
+            <ComboBox Grid.Row="2" Grid.Column="6" 
+                      ItemsSource="{Binding Source={StaticResource comparationTypes}}"
+                      SelectedItem="{Binding Comparation2}">
+
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource EnumDescriptionConverter}}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+
+            <TextBlock Grid.Row="0" Grid.Column="8" Text="Right value" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="2" Grid.Column="8" Text="{Binding ValueRight}" 
+                     VerticalAlignment="Center"
+                     AllowDrop="True"
+                     Name="tbParamRight">
+
+                <i:Interaction.Triggers>
+
+                    <i:EventTrigger EventName="PreviewDragOver">
+                        <i:InvokeCommandAction Command="{Binding Path=DataContext.TextBox_PreviewDragOverCommand, 
+                                                                 Mode=OneWay, 
+                                                                 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" 
+                                               PassEventArgsToCommand="True"/>
+                    </i:EventTrigger>
+
+                </i:Interaction.Triggers>
+
+            </TextBox>
+
+        </Grid>
+
+
+
+    </DataTemplate>
+
+    <DataTemplate x:Key="Design_CompareRange_ValueWithTolerance_Template">
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox Grid.Column="0" Text="{Binding Value}" 
+                     VerticalAlignment="Center"
+                     AllowDrop="True"
+                     Name="tbParam">
+
+                <i:Interaction.Triggers>
+
+                    <i:EventTrigger EventName="PreviewDragOver">
+                        <i:InvokeCommandAction Command="{Binding Path=DataContext.TextBox_PreviewDragOverCommand, 
+                                                                 Mode=OneWay, 
+                                                                 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" 
+                                               PassEventArgsToCommand="True"/>
+                    </i:EventTrigger>
+
+                </i:Interaction.Triggers>
+
+            </TextBox>
+
+            <TextBlock Grid.Column="2" Text="=" VerticalAlignment="Center"/>
+
+            <TextBox Grid.Column="4" Text="{Binding ValueLeft}" 
+                     VerticalAlignment="Center"
+                     AllowDrop="True"
+                     Name="tbParamLeft">
+
+                <i:Interaction.Triggers>
+
+                    <i:EventTrigger EventName="PreviewDragOver">
+                        <i:InvokeCommandAction Command="{Binding Path=DataContext.TextBox_PreviewDragOverCommand, 
+                                                                 Mode=OneWay, 
+                                                                 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" 
+                                               PassEventArgsToCommand="True"/>
+                    </i:EventTrigger>
+
+                </i:Interaction.Triggers>
+
+            </TextBox>
+
+            <TextBlock Grid.Column="6" Text="±" VerticalAlignment="Center"/>
+
+            <TextBox Grid.Column="8" Text="{Binding ValueRight}" 
+                     VerticalAlignment="Center"
+                     Name="tbParamRight"/>
+            
+        </Grid>
+
+    </DataTemplate>
+
+
+    <DataTemplate x:Key="Design_CompareRangeTemplate">
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="500"/>
+            </Grid.ColumnDefinitions>
+            
+       
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <RadioButton Grid.Column="0" 
+                             Content="Between 2 Values" 
+                             IsChecked="{Binding IsBetween2Values}" 
+                             VerticalAlignment="Center"
+                             GroupName="{Binding CompareTypeGroupName}"/>
+
+                <RadioButton Grid.Column="2" 
+                             Content="Value With Tolerance" 
+                             IsChecked="{Binding IsValueWithTolerance}" 
+                             VerticalAlignment="Center"
+                             GroupName="{Binding CompareTypeGroupName}"/>
+
+            </Grid>
+
+            <ContentControl Grid.Row="2" Grid.Column="2" Name="cc" Content="{Binding}" />
+
+        </Grid>
+
+        <DataTemplate.Triggers>
+
+            <DataTrigger Binding="{Binding IsBetween2Values}" Value="True">
+
+                <Setter TargetName="cc" 
+                        Property="ContentTemplate" 
+                        Value="{StaticResource Design_CompareRange_Between2Values_Template}"/>
+
+            </DataTrigger>
+
+
+            <DataTrigger Binding="{Binding IsBetween2Values}" Value="False">
+
+                <Setter TargetName="cc" 
+                        Property="ContentTemplate" 
+                        Value="{StaticResource Design_CompareRange_ValueWithTolerance_Template}"/>
+
+            </DataTrigger>
+
+        </DataTemplate.Triggers>
+        
+    </DataTemplate>
+
+</ResourceDictionary>

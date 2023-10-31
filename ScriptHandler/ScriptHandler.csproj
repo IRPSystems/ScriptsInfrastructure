@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.9" />
+    <PackageReference Include="MahApps.Metro.IconPacks" Version="4.11.0" />
+    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="All" />
+    <PackageReference Include="Syncfusion.DocIO.Wpf" Version="20.3.0.61" />
+    <PackageReference Include="Syncfusion.SfDiagram.WPF" Version="20.3.0.61" />
+    <PackageReference Include="Syncfusion.Shared.WPF" Version="20.3.0.61" />
+    <PackageReference Include="Syncfusion.Tools.WPF" Version="20.3.0.61" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Controls\Controls.csproj" />
+    <ProjectReference Include="..\Converters\Converters.csproj" />
+    <ProjectReference Include="..\DBCFileParser\DBCFileParser.csproj" />
+    <ProjectReference Include="..\DeviceCommunicators\DeviceCommunicators.csproj" />
+    <ProjectReference Include="..\DeviceHandler\DeviceHandler.csproj" />
+    <ProjectReference Include="..\Entities\Entities.csproj" />
+    <ProjectReference Include="..\Services\Services.csproj" />
+  </ItemGroup>
+
+</Project>

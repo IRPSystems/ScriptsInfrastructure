@@ -1,0 +1,111 @@
+﻿using DeviceCommunicators.Enums;
+using DeviceCommunicators.General;
+using Entities.Models;
+using Newtonsoft.Json;
+using ScriptHandler.Interfaces;
+using Services.Services;
+using System.Reflection.Metadata;
+using System.Threading;
+using System.Windows;
+
+namespace ScriptHandler.Models
+{
+	public class ScriptStepGetParamValue : ScriptStepBase, IScriptStepWithCommunicator, IScriptStepWithParameter
+	{
+
+		public DeviceParameterData Parameter { get; set; }
+		[JsonIgnore]
+		public DeviceCommunicator Communicator { get; set; }
+
+		protected ManualResetEvent _waitForGet;
+		private bool _isReceived;
+
+		protected bool _isErrorOccured;
+
+		public ScriptStepGetParamValue()
+		{
+			try
+			{
+				Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
+				_waitForGet = new ManualResetEvent(false);
+				_isReceived = false;
+			}
+			catch { }
+        }
+
+		public bool SendAndReceive()
+		{
+			return SendAndReceive(Parameter);
+		}
+
+
+		public bool SendAndReceive(DeviceParameterData parameter)
+		{
+			if (parameter == null)
+				return false;
+
+			_waitForGet = new ManualResetEvent(false);
+
+			_isReceived = true;
+
+            ErrorMessage = "Failed to get the parameter value.\r\n" +
+				"\tParameter: " + parameter + "\r\n\r\n";
+			Communicator.GetParamValue(parameter, GetValueCallback);
+
+            bool isNotTimeout = _waitForGet.WaitOne(2000);
+			_waitForGet.Reset();
+
+			if (!isNotTimeout)
+			{
+				ErrorMessage += "Communication timeout.";
+				return false;
+			}
+
+            return _isReceived;
+        }
+
+		private void GetValueCallback(DeviceParameterData param, CommunicatorResultEnum result, string resultDescription)
+		{
+
+
+            _waitForGet.Set();
+
+			switch (result)
+			{
+				case CommunicatorResultEnum.NoResponse:
+					ErrorMessage +=
+						"No response was received from the device.";
+					break;
+
+				case CommunicatorResultEnum.ValueNotSet:
+					ErrorMessage +=
+						"Failed to set the value.";
+					break;
+
+				case CommunicatorResultEnum.Error:
+					ErrorMessage +=
+						"The device returned an error:\r\n" +
+						resultDescription;
+					break;
+
+				case CommunicatorResultEnum.InvalidUniqueId:
+					ErrorMessage +=
+						"Invalud Unique ID was received from the Dyno.";
+					break;
+			}
+
+			IsPass = _isReceived = (result == CommunicatorResultEnum.OK);
+			if (!IsPass)
+			{
+				LoggerService.Inforamtion(
+					this,
+					"Failed to get value of " + param.Name + " - " + result + " - " + resultDescription);
+			}
+		}
+
+		protected override void Stop()
+		{
+
+		}
+	}
+}

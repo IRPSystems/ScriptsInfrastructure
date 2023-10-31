@@ -1,0 +1,613 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local_converters="clr-namespace:ScriptHandler.Converter"
+                    xmlns:converters="clr-namespace:Converters;assembly=Converters"
+                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks" >
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/EnumsDictionary.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Controls;component/Resources/ButtonWithIcon.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Controls;component/Resources/BinaryValueTemplate.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/HexValueTemplate.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <local_converters:HexUintConverter x:Key="HexUintConverter"/>
+    <converters:TypeToNameConverter x:Key="TypeToNameConverter" />
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+
+
+    <DataTemplate x:Key="RepeateLengthTemplate">
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Name="tbTime" Grid.Row="0" Grid.Column="0" Text="Length time" VerticalAlignment="Center"/>
+            <Grid Name="grdTime" Grid.Row="0" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="70" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0" Text="{Binding RepeateLengthTime, UpdateSourceTrigger=PropertyChanged}"/>
+                <ComboBox Grid.Column="2" ItemsSource="{Binding Source={StaticResource timeUnits}}"
+                          SelectedItem="{Binding RepeateLengthTimeUnite}"/>
+
+            </Grid>
+
+            <TextBlock Name="tbIterations" Grid.Row="0" Grid.Column="0" Text="Iterations" VerticalAlignment="Center"/>
+            <TextBox Name="tbxIterations" Grid.Row="0" Grid.Column="2" Text="{Binding RepeateLengthIterations}"/>
+
+        </Grid>
+
+        <DataTemplate.Triggers>
+
+            <DataTrigger Binding="{Binding IsStopByTime}" Value="True">
+
+                <Setter TargetName="tbTime" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="grdTime" Property="Visibility" Value="Visible"/>
+
+                <Setter TargetName="tbIterations" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="tbxIterations" Property="Visibility" Value="Collapsed"/>
+
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding IsStopByInterations}" Value="True">
+
+                <Setter TargetName="tbTime" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="grdTime" Property="Visibility" Value="Collapsed"/>
+
+                <Setter TargetName="tbIterations" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="tbxIterations" Property="Visibility" Value="Visible"/>
+
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding IsStopNever}" Value="True">
+
+                <Setter TargetName="tbTime" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="grdTime" Property="Visibility" Value="Collapsed"/>
+
+                <Setter TargetName="tbIterations" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="tbxIterations" Property="Visibility" Value="Collapsed"/>
+
+            </DataTrigger>
+
+        </DataTemplate.Triggers>
+
+    </DataTemplate>
+
+    <DataTemplate x:Key="RepeateDataTemplate">
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="27" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Interval" VerticalAlignment="Center"/>
+            <Grid Grid.Row="0" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="70" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0" Text="{Binding Interval, UpdateSourceTrigger=PropertyChanged}"/>
+                <ComboBox Grid.Column="2" ItemsSource="{Binding Source={StaticResource timeUnits}}"
+                      SelectedItem="{Binding IntervalUnite}"/>
+
+            </Grid>
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Length type" VerticalAlignment="Center"/>
+            <Grid Grid.Row="2" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="15"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="15"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <RadioButton Content="Time" 
+                             Grid.Column="0"
+                             GroupName="{Binding RepeatLengthTypeGroupName}" 
+                             IsChecked="{Binding IsStopByTime}" 
+                             VerticalAlignment="Center"/>
+
+                <RadioButton Content="Iteration" 
+                             Grid.Column="2"
+                             GroupName="{Binding RepeatLengthTypeGroupName}" 
+                             IsChecked="{Binding IsStopByInterations}" 
+                             VerticalAlignment="Center"/>
+
+                <RadioButton Content="∞" 
+                             Grid.Column="4"
+                             FontSize="16"
+                             GroupName="{Binding RepeatLengthTypeGroupName}" 
+                             IsChecked="{Binding IsStopNever}" 
+                             VerticalAlignment="Center"/>
+
+            </Grid>
+
+            <ContentControl Name="ccRepeatData" Grid.Row="4" Grid.ColumnSpan="3" 
+                            Content="{Binding}" 
+                            ContentTemplate="{StaticResource RepeateLengthTemplate}" />
+
+        </Grid>
+
+    </DataTemplate>    
+
+    <DataTemplate x:Key="RepeatesSelectionTemplate">
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Repeate" VerticalAlignment="Center"/>
+            <Grid Grid.Row="0" Grid.Column="2" Name="grdRepeatSelection" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <RadioButton Content="One Time" 
+                             Grid.Column="0"
+                             GroupName="{Binding IsCyclicGroupName}" 
+                             IsChecked="{Binding IsOneTime}" 
+                             VerticalAlignment="Center"/>
+
+                <RadioButton Content="Cyclic" 
+                             Grid.Column="2"
+                             GroupName="{Binding IsCyclicGroupName}" 
+                             IsChecked="{Binding IsCyclic}" 
+                             VerticalAlignment="Center"/>
+
+            </Grid>
+
+            <ContentControl Name="ccRepeatData" Grid.Row="2" Grid.Column="2" 
+                            Content="{Binding}" 
+                            ContentTemplate="{StaticResource RepeateDataTemplate}" 
+                            Visibility="Collapsed"/>
+
+        </Grid>
+
+        <DataTemplate.Triggers>
+
+            <DataTrigger Binding="{Binding IsCyclic}" Value="True">
+
+                <Setter TargetName="ccRepeatData" Property="Visibility" Value="Visible"/>
+
+            </DataTrigger>            
+
+        </DataTemplate.Triggers>
+
+    </DataTemplate>
+
+    <DataTemplate x:Key="FreeStylePayloadTemplate">
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="500"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27" />
+                <RowDefinition Height="15" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+
+            <TextBlock Name="tbFreeStylePayloadSelection" Grid.Row="0" Grid.Column="0" Text="Free Style Payload" VerticalAlignment="Center"/>
+            <Grid Name="grdFreeStylePayloadSelection" Grid.Row="0" Grid.Column="2" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <RadioButton Content="Hex" 
+                                 Grid.Column="0"
+                                 GroupName="{Binding FreeStyleIntputGroupName}" 
+                                 IsChecked="{Binding IsHex}" 
+                                 VerticalAlignment="Center"/>
+
+                <RadioButton Content="Binary" 
+                                 Grid.Column="2"
+                                 GroupName="{Binding FreeStyleIntputGroupName}" 
+                                 IsChecked="{Binding IsBinary}" 
+                                 VerticalAlignment="Center"/>
+            </Grid>
+
+            <Grid Name="grdFreeStylePayload" Grid.Row="2" Grid.Column="2" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+
+
+
+                <!--<Grid Grid.Row="0" Name="grdPaload" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="2" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="0x" VerticalAlignment="Center" FontSize="14"/>
+                    <TextBox Grid.Column="2" Text="{Binding Payload.NumericValue, Converter={StaticResource HexUintConverter}}" />
+                </Grid>-->
+
+                <ContentControl Grid.Row="0" Name="spHex" 
+                                Content="{Binding Payload}" ContentTemplate="{StaticResource HexValueTemplate}"/>
+
+                <ContentControl Grid.Row="2" Name="spBinary" 
+                                Content="{Binding Payload}" ContentTemplate="{StaticResource BinaryTemplate}"/>
+
+            </Grid>
+
+        </Grid>
+
+        <DataTemplate.Triggers>
+
+            <DataTrigger Binding="{Binding IsBinary}" Value="True">
+
+                <Setter TargetName="spHex" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="spBinary" Property="Visibility" Value="Visible"/>
+
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding IsBinary}" Value="False">
+
+                <Setter TargetName="spHex" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="spBinary" Property="Visibility" Value="Collapsed"/>
+
+            </DataTrigger>
+
+        </DataTemplate.Triggers>
+
+    </DataTemplate>
+
+    <DataTemplate x:Key="PayloadTemplate">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="500"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="27" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Message" VerticalAlignment="Center"/>
+            <Grid Name="grdMessage" Grid.Row="0" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="65" />
+                    <ColumnDefinition Width="15" />
+                    <ColumnDefinition Width="*" />                    
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="0x" VerticalAlignment="Center" FontSize="14"/>
+                <TextBox Name="tbCANID" Grid.Column="2" Text="{Binding CANID, Converter={StaticResource HexUintConverter}}" />
+
+                <TextBlock Name="tbNumericValue" 
+                           Grid.Column="4" 
+                           Text="{Binding Payload.NumericValue, StringFormat={}0x {0:X}}" 
+                           VerticalAlignment="Center"
+                           FontSize="14"/>
+            </Grid>
+            
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Payload Source" VerticalAlignment="Center"/>
+            <Grid Grid.Row="2" Grid.Column="2" Name="grdPayloadSource" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <RadioButton Content="DBC file" 
+                             Grid.Column="0"
+                             GroupName="{Binding PayloadTypeGroupName}" 
+                             IsChecked="{Binding IsDBCFile}" 
+                             VerticalAlignment="Center"/>
+
+                <RadioButton Content="Free style" 
+                             Grid.Column="2"
+                             GroupName="{Binding PayloadTypeGroupName}" 
+                             IsChecked="{Binding IsFreeStyle}" 
+                             VerticalAlignment="Center"/>
+
+            </Grid>
+
+            <TextBlock Name="tbDBCFile" Grid.Row="4" Grid.Column="0" Text="DBC File" VerticalAlignment="Center"/>
+            <Grid Name="grdDBCFile" Grid.Row="4" Grid.Column="2" Height="27">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="40" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="40" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0" Text="{Binding DBCFilePath}" 
+                         ToolTip="{Binding CANID}"
+                         HorizontalAlignment="Stretch"
+                         VerticalContentAlignment="Center"
+                         Name="tbDBC"/>
+                <Button Grid.Column="2" 
+                        Content="..."
+                        Command="{Binding DataContext.DBCFilePathOpenCommand, ElementName=tbDBC}"/>
+
+                <Button Grid.Column="4" 
+                        Content="Load"
+                        Command="{Binding DBCFileLoadCommand}"/>
+            </Grid>            
+
+            
+            
+            <Line Grid.Row="5" Grid.ColumnSpan="4" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}"/>
+
+            <ContentControl Name="ccFreeStylePayload" Grid.Row="6" Grid.ColumnSpan="3" Content="{Binding}" ContentTemplate="{StaticResource FreeStylePayloadTemplate}" />
+            
+        </Grid>
+
+        <DataTemplate.Triggers>
+
+            <DataTrigger Binding="{Binding Converter={StaticResource TypeToNameConverter}}" Value="ScriptNodeCANMessageUpdate">
+
+                <Setter TargetName="tbCANID" Property="IsReadOnly" Value="True"/>
+                <Setter TargetName="tbCANID" Property="Background" Value="{DynamicResource MahApps.Brushes.Gray6}"/>
+
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding IsDBCFile}" Value="True">
+
+                <Setter TargetName="tbDBCFile" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="grdDBCFile" Property="Visibility" Value="Visible"/>
+
+                <!--<Setter TargetName="tbID" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="grdID" Property="Visibility" Value="Collapsed"/>-->
+
+                <Setter TargetName="ccFreeStylePayload" Property="Visibility" Value="Collapsed"/>
+
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding IsDBCFile}" Value="False">
+
+                <Setter TargetName="tbDBCFile" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="grdDBCFile" Property="Visibility" Value="Collapsed"/>
+
+                <!--<Setter TargetName="tbID" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="grdID" Property="Visibility" Value="Visible"/>-->
+
+                <Setter TargetName="ccFreeStylePayload" Property="Visibility" Value="Visible"/>
+
+            </DataTrigger>
+
+        </DataTemplate.Triggers>
+
+    </DataTemplate>
+    
+    
+    
+    
+
+    <DataTemplate x:Key="Design_CANMessageTemplate">
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="500"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+
+            
+
+
+            <ContentControl Name="ccRepeats" Grid.Row="0" Grid.ColumnSpan="3" Content="{Binding}" ContentTemplate="{StaticResource RepeatesSelectionTemplate}" />
+
+
+
+            <Line Grid.Row="1" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}"/>
+
+
+            <ContentControl Grid.Row="2" Grid.ColumnSpan="3" Content="{Binding Content, ElementName=ccRepeats}" ContentTemplate="{StaticResource PayloadTemplate}" />
+
+        </Grid>
+
+        
+
+    </DataTemplate>
+
+    <DataTemplate x:Key="Design_CANMessageUpdateTemplate_ChangeInterval">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="70" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox Grid.Column="0" Text="{Binding Interval, UpdateSourceTrigger=PropertyChanged}"/>
+            <ComboBox Grid.Column="2" ItemsSource="{Binding Source={StaticResource timeUnits}}"
+                      SelectedItem="{Binding IntervalUnite}"/>
+
+        </Grid>
+    </DataTemplate>
+
+
+    <DataTemplate x:Key="Design_CANMessageUpdateTemplate">
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="500"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27" />
+                <RowDefinition Height="15" />
+                <RowDefinition Height="27" />
+                <RowDefinition Height="15" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="15" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            
+
+            <TextBlock Grid.Column="0" Grid.Row="0" Text="Step to update" VerticalAlignment="Center"/>
+            <Grid Grid.Column="2" Grid.Row="0"  >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0"
+                        BorderBrush="{DynamicResource MahApps.Brushes.Gray6}" 
+                        BorderThickness="1"
+                        AllowDrop="True">
+                    <TextBlock Text="{Binding StepToUpdate.Description}" 
+                               VerticalAlignment="Center"
+                               Name="tbStepToUpdate"/>
+                </Border>
+
+                <ComboBox Grid.Column="2" 
+                          ItemsSource="{Binding ParentProject.CanMessagesList}"
+                          SelectedItem="{Binding StepToUpdate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Grid.Column="0" Text="{Binding Description}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+
+                </ComboBox>
+
+                <Button Grid.Column="4"
+                        Style="{StaticResource ButtonWithIconStyle}"
+                        Width="20"
+                        ToolTip="Delete step to update"
+                        Command="{Binding DataContext.DeleteStepToUpdateCommand, RelativeSource={RelativeSource Mode=Self}}">
+                    <iconPacks:PackIconMaterial Kind="TrashCan" Width="15" Height="15"/>
+                </Button>
+
+            </Grid>
+
+            <Line Grid.Row="1" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}"/>
+
+
+            <TextBlock Grid.Column="0" Grid.Row="2" Text="Requested change" VerticalAlignment="Center"/>
+            <Grid Grid.Column="2" Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <CheckBox Grid.Column="0" Content="Payload" IsChecked="{Binding IsChangePayload, Mode=TwoWay}" VerticalAlignment="Center"/>
+                <CheckBox Grid.Column="2" Content="Interval" IsChecked="{Binding IsChangeInterval, Mode=TwoWay}" VerticalAlignment="Center"/>
+
+            </Grid>
+
+            <Line Grid.Row="3" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}"/>
+
+
+
+            <Grid Grid.Row="4" Grid.ColumnSpan="3"
+                  Visibility="{Binding IsChangePayload, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="500"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="15" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Payload" VerticalAlignment="Center"/>
+                <ContentControl Grid.Row="0" Grid.Column="2"  
+                            Content="{Binding}" 
+                            ContentTemplate="{StaticResource PayloadTemplate}" />
+
+                <Line Grid.Row="1" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}"/>
+
+            </Grid>
+
+            <Grid Grid.Row="6" Grid.ColumnSpan="3"
+                  Visibility="{Binding IsChangeInterval, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="500"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="15" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Interval" VerticalAlignment="Center"/>
+                <ContentControl Grid.Row="0" Grid.Column="2"  
+                            Content="{Binding}" 
+                            ContentTemplate="{StaticResource Design_CANMessageUpdateTemplate_ChangeInterval}" />
+
+                <Line Grid.Row="1" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}"/>
+
+            </Grid>
+
+        </Grid>
+
+    </DataTemplate>
+
+</ResourceDictionary>
