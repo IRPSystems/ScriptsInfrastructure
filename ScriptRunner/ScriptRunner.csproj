@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Controls\Controls.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Converters\Converters.csproj" />
     <ProjectReference Include="..\ScriptHandler\ScriptHandler.csproj" />
   </ItemGroup>
 

@@ -20,13 +20,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Controls\Controls.csproj" />
-    <ProjectReference Include="..\Converters\Converters.csproj" />
-    <ProjectReference Include="..\DBCFileParser\DBCFileParser.csproj" />
-    <ProjectReference Include="..\DeviceCommunicators\DeviceCommunicators.csproj" />
-    <ProjectReference Include="..\DeviceHandler\DeviceHandler.csproj" />
-    <ProjectReference Include="..\Entities\Entities.csproj" />
-    <ProjectReference Include="..\Services\Services.csproj" />
+    <ProjectReference Include="..\..\DevicesInfrastructures\DeviceCommunicators\DeviceCommunicators.csproj" />
+    <ProjectReference Include="..\..\DevicesInfrastructures\DeviceHandler\DeviceHandler.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Controls\Controls.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Converters\Converters.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\DBCFileParser\DBCFileParser.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Entities\Entities.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Services\Services.csproj" />
   </ItemGroup>
 
 </Project>
