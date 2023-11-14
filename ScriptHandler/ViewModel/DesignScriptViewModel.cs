@@ -973,7 +973,8 @@ namespace ScriptHandler.ViewModels
 
 				ScriptNodeList[indexToInsertNode].PassNext = new_scriptNodeBase;
 
-				if((indexToInsertNode + 2) < (ScriptNodeList.Count - 1))
+				int index = ScriptNodeList.IndexOf(new_scriptNodeBase);
+				if (index < (ScriptNodeList.Count - 1))
 					new_scriptNodeBase.PassNext = ScriptNodeList[indexToInsertNode + 2];
 
 				ScriptDiagram.MoveNode(new_scriptNodeBase, replacedItem);
