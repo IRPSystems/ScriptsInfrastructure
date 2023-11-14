@@ -98,6 +98,8 @@ namespace ScriptRunner.Services
 
 						foreach (LogLineData line in _logLinesList)
 						{
+							if(line == null)
+								continue;
 							string time = line.Time.ToString(@"hh\:mm\:ss\.fffff");
 							csvWriter.WriteField(time);
 							csvWriter.WriteField(line.Data);
