@@ -30,10 +30,6 @@ namespace ScriptHandler.Models.ScriptSteps
 		public bool IsBetween2Values { get; set; }
 		public bool IsValueWithTolerance { get; set; }
 
-
-		[JsonIgnore]
-		public ObservableCollection<DeviceFullData> DevicesList { get; set; }
-
 		public ScriptStepCompareRange()
 		{
 			Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
