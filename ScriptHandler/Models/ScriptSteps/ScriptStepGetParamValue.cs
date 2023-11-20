@@ -1,5 +1,6 @@
 ﻿using DeviceCommunicators.Enums;
 using DeviceCommunicators.General;
+using DeviceHandler.Interfaces;
 using Entities.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
@@ -50,6 +51,25 @@ namespace ScriptHandler.Models
 
             ErrorMessage = "Failed to get the parameter value.\r\n" +
 				"\tParameter: " + parameter + "\r\n\r\n";
+
+			if(parameter is ICalculatedParamete calculated)
+			{
+				ErrorMessage = "Failed to get the calculated parameter value.\r\n" +
+					"\tParameter: " + parameter + "\r\n\r\n";
+
+				calculated.Calculate();
+				if(parameter.Value != null) 
+				{
+					IsPass = true;
+					return true;
+				}
+				else
+				{
+					IsPass = false;
+					return false;
+				}
+			}
+
 			Communicator.GetParamValue(parameter, GetValueCallback);
 
             bool isNotTimeout = _waitForGet.WaitOne(2000);
