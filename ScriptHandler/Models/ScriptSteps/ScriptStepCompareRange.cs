@@ -270,6 +270,9 @@ namespace ScriptHandler.Models.ScriptSteps
 				return 0;
 			}
 
+			if (Parameter == null)
+				return null;
+
 			return Parameter.Value;
 		}
 
