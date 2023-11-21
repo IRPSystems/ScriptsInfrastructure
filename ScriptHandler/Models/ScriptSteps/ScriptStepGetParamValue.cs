@@ -47,7 +47,7 @@ namespace ScriptHandler.Models
 
 		public bool SendAndReceive(DeviceParameterData parameter)
 		{
-			if (parameter == null)
+			if (parameter == null || Communicator == null)
 				return false;
 
 			_waitForGet = new ManualResetEvent(false);
