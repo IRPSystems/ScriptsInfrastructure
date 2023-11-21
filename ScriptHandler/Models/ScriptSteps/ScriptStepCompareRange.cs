@@ -17,6 +17,8 @@ namespace ScriptHandler.Models.ScriptSteps
 {
 	public class ScriptStepCompareRange : ScriptStepGetParamValue
 	{
+		#region Properties
+
 		public object Value { get; set; }
 
 		public object ValueLeft { get; set; }
@@ -30,17 +32,24 @@ namespace ScriptHandler.Models.ScriptSteps
 		public bool IsBetween2Values { get; set; }
 		public bool IsValueWithTolerance { get; set; }
 
+		#endregion Properties
+
+		#region Constructor
+
 		public ScriptStepCompareRange()
 		{
 			Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
 		}
 
+		#endregion Constructor
+
+		#region Methodes
 
 		public override void Execute()
 		{
 			IsPass = false;
 			string errorHeader = "Compare range:\r\n";
-			ErrorMessage = errorHeader + "Failed to get the compared parameter for compare range";
+			string errorMessage = errorHeader + "Failed to get the compared parameter for compare range\r\n\r\n";
 
 			double paramValue = 0;
 			string paramName = "";
@@ -49,7 +58,11 @@ namespace ScriptHandler.Models.ScriptSteps
 				out paramName,
 				Value);
 			if (!res)
+			{
+				ErrorMessage = errorMessage + ErrorMessage;
+				IsPass = false;
 				return;
+			}
 
 			ErrorMessage = errorHeader + "Failed to get the left value parameter for compare range";
 
@@ -60,7 +73,11 @@ namespace ScriptHandler.Models.ScriptSteps
 				out paramName_Left,
 				ValueLeft);
 			if (!res)
+			{
+				ErrorMessage = errorMessage + ErrorMessage;
+				IsPass = false;
 				return;
+			}
 
 			ErrorMessage = errorHeader + "Failed to get the right value parameter for compare range";
 
@@ -71,7 +88,11 @@ namespace ScriptHandler.Models.ScriptSteps
 				out paramName_Right,
 				ValueRight);
 			if (!res)
+			{
+				ErrorMessage = errorMessage + ErrorMessage;
+				IsPass = false;
 				return;
+			}
 
 			if (IsBetween2Values)
 			{
@@ -270,10 +291,10 @@ namespace ScriptHandler.Models.ScriptSteps
 				return 0;
 			}
 
-			if (Parameter == null)
+			if (parameter == null)
 				return null;
 
-			return Parameter.Value;
+			return parameter.Value;
 		}
 
 		public override bool IsNotSet(
@@ -301,5 +322,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			IsBetween2Values = (sourceNode as ScriptNodeCompareRange).IsBetween2Values;
 			IsValueWithTolerance = (sourceNode as ScriptNodeCompareRange).IsValueWithTolerance;
 		}
+
+		#endregion Methodes
 	}
 }
