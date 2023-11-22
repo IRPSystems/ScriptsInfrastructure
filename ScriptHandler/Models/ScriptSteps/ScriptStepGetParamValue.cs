@@ -1,9 +1,11 @@
 ﻿using DeviceCommunicators.Enums;
 using DeviceCommunicators.General;
+using DeviceHandler.Models;
 using Entities.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
 using Services.Services;
+using System.Collections.ObjectModel;
 using System.Reflection.Metadata;
 using System.Threading;
 using System.Windows;
@@ -16,6 +18,9 @@ namespace ScriptHandler.Models
 		public DeviceParameterData Parameter { get; set; }
 		[JsonIgnore]
 		public DeviceCommunicator Communicator { get; set; }
+
+		[JsonIgnore]
+		public ObservableCollection<DeviceFullData> DevicesList { get; set; }
 
 		protected ManualResetEvent _waitForGet;
 		private bool _isReceived;
