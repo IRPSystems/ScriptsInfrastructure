@@ -21,9 +21,6 @@ namespace ScriptHandler.Models
 
 		public ComparationTypesEnum Comparation { get; set; }
 
-		[JsonIgnore]
-		public ObservableCollection<DeviceFullData> DevicesList { get; set; }
-
 		public ScriptStepCompare()
 		{
 			Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;

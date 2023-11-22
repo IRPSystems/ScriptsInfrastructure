@@ -1,5 +1,6 @@
 ﻿using DeviceCommunicators.Enums;
 using DeviceCommunicators.General;
+using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using Entities.Models;
 using Newtonsoft.Json;
@@ -46,7 +47,7 @@ namespace ScriptHandler.Models
 
 		public bool SendAndReceive(DeviceParameterData parameter)
 		{
-			if (parameter == null)
+			if (parameter == null || Communicator == null)
 				return false;
 
 			_waitForGet = new ManualResetEvent(false);
@@ -55,6 +56,27 @@ namespace ScriptHandler.Models
 
             ErrorMessage = "Failed to get the parameter value.\r\n" +
 				"\tParameter: " + parameter + "\r\n\r\n";
+
+			if(parameter is ICalculatedParamete calculated)
+			{
+				calculated.DevicesList = DevicesList;
+
+				ErrorMessage = "Failed to get the calculated parameter value.\r\n" +
+					"\tParameter: " + parameter + "\r\n\r\n";
+
+				calculated.Calculate();
+				if(parameter.Value != null) 
+				{
+					IsPass = true;
+					return true;
+				}
+				else
+				{
+					IsPass = false;
+					return false;
+				}
+			}
+
 			Communicator.GetParamValue(parameter, GetValueCallback);
 
             bool isNotTimeout = _waitForGet.WaitOne(2000);
