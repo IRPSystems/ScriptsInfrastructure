@@ -287,7 +287,9 @@ namespace ScriptHandler.Models.ScriptSteps
 				return;
 			}
 
-			if(Parameter.Value == null) 
+			ErrorMessage = "";
+
+			if (Parameter.Value == null) 
 			{
 				return;
 			}

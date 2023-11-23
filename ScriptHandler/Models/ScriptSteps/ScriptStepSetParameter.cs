@@ -123,7 +123,8 @@ namespace ScriptHandler.Models
 					break;
 			}
 
-			IsPass = result == CommunicatorResultEnum.OK;		
+			IsPass = result == CommunicatorResultEnum.OK;
+			if (!IsPass) { }
 
 			_waitGetCallback.Set();
 		}
