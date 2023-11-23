@@ -490,7 +490,7 @@
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="27" />
+                <RowDefinition Height="59" />
                 <RowDefinition Height="15" />
                 <RowDefinition Height="27" />
                 <RowDefinition Height="15" />
@@ -499,46 +499,69 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            
 
-            <TextBlock Grid.Column="0" Grid.Row="0" Text="Step to update" VerticalAlignment="Center"/>
-            <Grid Grid.Column="2" Grid.Row="0"  >
+            <Grid Grid.Row="0" Grid.ColumnSpan="3">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="500"/>
                 </Grid.ColumnDefinitions>
 
-                <Border Grid.Column="0"
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="27"/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="27"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="Step to update" VerticalAlignment="Center"/>
+                <Grid Grid.Column="2" Grid.Row="0"  >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Row="0" Grid.Column="0" 
                         BorderBrush="{DynamicResource MahApps.Brushes.Gray6}" 
                         BorderThickness="1"
                         AllowDrop="True">
-                    <TextBlock Text="{Binding StepToUpdate.Description}" 
+                        <TextBlock Text="{Binding StepToUpdate.Description}" 
                                VerticalAlignment="Center"
                                Name="tbStepToUpdate"/>
-                </Border>
+                    </Border>
 
-                <ComboBox Grid.Column="2" 
+                    <ComboBox Grid.Row="0" Grid.Column="2" 
                           ItemsSource="{Binding ParentProject.CanMessagesList}"
                           SelectedItem="{Binding StepToUpdate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Grid.Column="0" Text="{Binding Description}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Grid.Column="0" Text="{Binding Description}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
 
-                </ComboBox>
+                    </ComboBox>
 
-                <Button Grid.Column="4"
+                    <Button Grid.Row="0" Grid.Column="4"
                         Style="{StaticResource ButtonWithIconStyle}"
                         Width="20"
                         ToolTip="Delete step to update"
                         Command="{Binding DataContext.DeleteStepToUpdateCommand, RelativeSource={RelativeSource Mode=Self}}">
-                    <iconPacks:PackIconMaterial Kind="TrashCan" Width="15" Height="15"/>
-                </Button>
+                        <iconPacks:PackIconMaterial Kind="TrashCan" Width="15" Height="15"/>
+                    </Button>
+                </Grid>
+
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="Message ID" VerticalAlignment="Center"/>
+                <StackPanel Grid.Row="2" Grid.Column="2"  
+                            Orientation="Horizontal">
+                    <TextBlock Text="0x" VerticalAlignment="Center" />
+
+                    <TextBox Grid.Row="2" Grid.Column="2" 
+                             Text="{Binding CANID, Converter={StaticResource HexUintConverter}}" 
+                             Width="75"/>
+                </StackPanel>
 
             </Grid>
 

@@ -1,12 +1,8 @@
 ﻿
 using CommunityToolkit.Mvvm.Input;
-using DeviceHandler.Models;
 using Entities.Models;
 using Newtonsoft.Json;
-using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 
 namespace ScriptHandler.Models.ScriptNodes
 {
@@ -79,10 +75,7 @@ namespace ScriptHandler.Models.ScriptNodes
 		{
 			get
 			{
-				if (StepToUpdate != null)
-					return "Update message 0x" + CANID.ToString("X") + "-0x" + Payload.NumericValue.ToString("X") + " - ID:" + ID;
-				else
-					return "Update \"\" - ID:" + ID;
+				return "Update message 0x" + CANID.ToString("X") + "-0x" + Payload.NumericValue.ToString("X") + " - ID:" + ID;
 			}
 		}
 
@@ -114,20 +107,10 @@ namespace ScriptHandler.Models.ScriptNodes
 		private void DeleteStepToUpdate()
 		{
 			StepToUpdate = null;
-
-			CANID = 0;
-			IsDBCFile = false;
-			IsFreeStyle = false;
-			DBCFilePath = null;
-			Payload = null;
+			StepToUpdateID = -1;
 		}
 
-		//protected override void Payload_PropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
-		//{
-		//	base.Payload_PropertyChangedEventHandler(sender, e);
-		//}
-
-
+		
 		public void SetCanMessage(ScriptNodeCANMessage canMessage)
 		{
 			if (canMessage == null) 
@@ -157,35 +140,6 @@ namespace ScriptHandler.Models.ScriptNodes
 		private void SetCommands()
 		{
 			DeleteStepToUpdateCommand = new RelayCommand(DeleteStepToUpdate);
-		}
-
-
-
-		//public override void PostLoad(
-		//	DevicesContainer devicesContainer,
-		//	IScript currentScript)
-		//{
-		//	if (StepToUpdateID >= 0)
-		//	{
-		//		foreach (ScriptNodeBase node in currentScript.ScriptItemsList)
-		//		{
-		//			if (node.ID == StepToUpdateID)
-		//			{
-		//				StepToUpdate = node;
-		//				break;
-		//			}
-		//		}
-		//	}
-		//}
-
-		public override bool IsNotSet(
-			DevicesContainer devicesContainer,
-			ObservableCollection<InvalidScriptItemData> errorsList)
-		{
-			if(StepToUpdate == null)
-				return true;
-
-			return false;
 		}
 
 		#endregion Methods
