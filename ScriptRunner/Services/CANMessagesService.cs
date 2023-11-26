@@ -9,6 +9,7 @@ using Services.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -16,6 +17,9 @@ namespace ScriptRunner.Services
 {
 	public class CANMessagesService
 	{
+		[DllImport("user32.dll")]
+		public static extern bool SetForegroundWindow(IntPtr hWnd);
+
 		#region Fiedls
 
 		private Process _EvvaCANMessageSender;
@@ -43,7 +47,20 @@ namespace ScriptRunner.Services
 		public void OpenCANMessageSender()
 		{
 			Mouse.OverrideCursor = Cursors.Wait;
-			
+
+			Process[] processList = Process.GetProcessesByName("EvvaCANMessageSender");
+			if(processList != null && processList.Length > 0) 
+			{
+				Process process = processList[0];
+
+				IntPtr s = process.MainWindowHandle;
+				SetForegroundWindow(s);
+
+				Mouse.OverrideCursor = null;
+				return;
+			}
+
+
 			var processesList = Process.GetProcessesByName("EvvaCANMessageSender");
 			if (processesList.Length > 0)
 				_EvvaCANMessageSender = processesList[0];
