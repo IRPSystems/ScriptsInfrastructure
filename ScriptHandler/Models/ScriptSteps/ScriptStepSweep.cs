@@ -138,8 +138,7 @@ namespace ScriptHandler.Models
 						ErrorMessage = "Sub script failed.";
 						IsPass = false;
 						CurrentScript = null;
-						i -= 2; // we need to go to the previous level
-						continue;
+						return;
 					}
 
 					CurrentScript = null;
@@ -161,7 +160,7 @@ namespace ScriptHandler.Models
 				}
 
 
-				if (IsPass == false)
+				if (IsPass == false && ErrorMessage != "Sub script failed.")
 					return;
 				
 			}
