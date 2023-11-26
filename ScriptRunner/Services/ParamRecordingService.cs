@@ -185,13 +185,7 @@ namespace ScriptRunner.Services
 
 
 
-				_csvWriter.WriteField("Serial number");
-				_csvWriter.WriteField("FW Version");
-				_csvWriter.WriteField("Core Version");
-
-				_csvWriter.WriteField("Test Name");
-				_csvWriter.WriteField("Date");
-				_csvWriter.WriteField("EVVA Version");
+				
 
 
 				_csvWriter.WriteField("Time");
@@ -199,6 +193,14 @@ namespace ScriptRunner.Services
 				{
 					_csvWriter.WriteField(data.Name + " [" + data.Units + "]");
 				}
+
+				_csvWriter.WriteField("Serial number");
+				_csvWriter.WriteField("FW Version");
+				_csvWriter.WriteField("Core Version");
+
+				_csvWriter.WriteField("Test Name");
+				_csvWriter.WriteField("Date");
+				_csvWriter.WriteField("EVVA Version");
 
 				_csvWriter.NextRecord();
 
@@ -308,26 +310,9 @@ namespace ScriptRunner.Services
 							if (_csvWriter == null)
 								break;
 
-							if (_isFirstLineInFile)
-							{
-								_csvWriter.WriteField(_getUUTData.FirmwareVersion);
-								_csvWriter.WriteField(_getUUTData.SerialNumber);
-								_csvWriter.WriteField(_getUUTData.CoreVersion);
-								_csvWriter.WriteField(_scriptName);
-								_csvWriter.WriteField(_date);
-								_csvWriter.WriteField(_version);
-							}
-							else
-							{
-								_csvWriter.WriteField("");
-								_csvWriter.WriteField("");
-								_csvWriter.WriteField("");
-								_csvWriter.WriteField("");
-								_csvWriter.WriteField("");
-								_csvWriter.WriteField("");
-							}
+							
 
-							_isFirstLineInFile = false;
+							
 
 							if (_currentLogListIndex >= _logListDataPool.Count)
 								_currentLogListIndex = 0;
@@ -369,6 +354,27 @@ namespace ScriptRunner.Services
 									LoggerService.Error(this, "Failed to write record field", ex);
 								}
 							}
+
+							if (_isFirstLineInFile)
+							{
+								_csvWriter.WriteField(_getUUTData.FirmwareVersion);
+								_csvWriter.WriteField(_getUUTData.SerialNumber);
+								_csvWriter.WriteField(_getUUTData.CoreVersion);
+								_csvWriter.WriteField(_scriptName);
+								_csvWriter.WriteField(_date);
+								_csvWriter.WriteField(_version);
+
+								_isFirstLineInFile = false;
+							}
+							//else
+							//{
+							//	_csvWriter.WriteField("");
+							//	_csvWriter.WriteField("");
+							//	_csvWriter.WriteField("");
+							//	_csvWriter.WriteField("");
+							//	_csvWriter.WriteField("");
+							//	_csvWriter.WriteField("");
+							//}
 
 							_csvWriter.NextRecord();
 							System.Threading.Thread.Sleep(1000 / RecordingRate);
