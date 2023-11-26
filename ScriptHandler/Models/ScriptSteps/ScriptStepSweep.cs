@@ -138,7 +138,7 @@ namespace ScriptHandler.Models
 						ErrorMessage = "Sub script failed.";
 						IsPass = false;
 						CurrentScript = null;
-						return;
+						continue;
 					}
 
 					CurrentScript = null;
