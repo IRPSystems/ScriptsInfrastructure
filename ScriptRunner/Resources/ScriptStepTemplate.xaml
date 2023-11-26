@@ -224,7 +224,9 @@
                       MaxHeight="100"
                       FontSize="14"
                       FontWeight="Normal"
-                      VerticalAlignment="Top">
+                      VerticalAlignment="Top"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False">
 
                 <DataGrid.Columns>
 
@@ -269,8 +271,34 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-
                     <DataGridTextColumn Header="Currenct Value" Binding="{Binding CurrentValue}" />
+
+                    <DataGridTemplateColumn Header="Sub-Script" Width="180" >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+
+                                <Ellipse Name="elps" Width="20" Height="20" 
+                                         Stroke="{DynamicResource MahApps.Brushes.Gray1}"/>
+
+                                <DataTemplate.Triggers>
+
+                                    <DataTrigger Binding="{Binding IsSubScriptPass}" Value="Success">
+                                        <Setter TargetName="elps" Property="Fill" Value="Green" />
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding IsSubScriptPass}" Value="Failure">
+                                        <Setter TargetName="elps" Property="Fill" Value="Red" />
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding IsSubScriptPass}" Value="None">
+                                        <Setter TargetName="elps" Property="Fill" Value="Gray" />
+                                    </DataTrigger>
+                                    
+                                </DataTemplate.Triggers>
+
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
 
                 </DataGrid.Columns>
 

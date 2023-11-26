@@ -10,6 +10,8 @@ namespace ScriptHandler.Models
 {
 	public class SweepItemForRunData : ObservableObject
 	{
+		public enum SubScriptStateEnum { Success, Failure, None }
+
 		public DeviceParameterData Parameter { get; set; }
 
 		public double StartValue { get; set; }
@@ -27,6 +29,8 @@ namespace ScriptHandler.Models
 		public ScriptStepDelay Delay { get; set; }
 
 		public IScriptRunner SubScriptRunner { get; set; }
+
+		public SubScriptStateEnum IsSubScriptPass { get; set; }
 
 		//public ManualResetEvent ScriptEndedEventHandler { get; set; }
 

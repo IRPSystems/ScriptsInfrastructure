@@ -6,6 +6,7 @@ using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
+using Services.Services;
 using Syncfusion.Windows.Tools;
 using System;
 using System.Collections.Generic;
@@ -82,13 +83,19 @@ namespace ScriptHandler.Models
 			_cancellationTokenSource = new CancellationTokenSource();
 			_cancellationToken = _cancellationTokenSource.Token;
 
+			System.Threading.Thread.Sleep(1000);
+
+			LoggerService.Inforamtion(this, "Start Execute");
+
 			ExecuteItem(SweepItemsList[0]);
+
+			LoggerService.Inforamtion(this, "End Execute");
 		}
 
 		
 		private void ExecuteItem(SweepItemData item)
 		{
-			
+			LoggerService.Inforamtion(this, "Start item: " + item.Parameter.Name);
 
 			for (double i = item.StartValue; IsContinueLoop(item.EndValue, item.StepValue, i) && !_cancellationToken.IsCancellationRequested; i += item.StepValue)
 			{
@@ -111,6 +118,7 @@ namespace ScriptHandler.Models
 				ErrorMessage = "Failed to set the parameter \"" + item.Parameter.Name +
 					"\" to the value " + i + "\r\n\r\n";
 
+				LoggerService.Inforamtion(this, "Set value item: " + item.Parameter.Name + "; value: " + i);
 				bool isContinue = SetValue(
 					i,
 					_itemForRun);
@@ -123,6 +131,8 @@ namespace ScriptHandler.Models
 
 				if (_itemForRun.SubScriptRunner != null)
 				{
+					LoggerService.Inforamtion(this, "Start sub-script for item: " + item.Parameter.Name);
+
 					CurrentScript = _itemForRun.SubScriptRunner;
 					CurrentScript.ScriptEndedEvent += SubScriptEndedEventHandler;
 					CurrentScript.Start();
@@ -135,13 +145,17 @@ namespace ScriptHandler.Models
 					CurrentScript.ScriptEndedEvent -= SubScriptEndedEventHandler;
 					if (CurrentScript.CurrentScript.IsPass == false)
 					{
+						LoggerService.Inforamtion(this, "Faild sub-script for item: " + item.Parameter.Name);
 						ErrorMessage = "Sub script failed.";
 						IsPass = false;
 						CurrentScript = null;
+						_itemForRun.IsSubScriptPass = SweepItemForRunData.SubScriptStateEnum.Failure;
 						return;
 					}
 
+					LoggerService.Inforamtion(this, "Pass sub-script for item: " + item.Parameter.Name);
 					CurrentScript = null;
+					_itemForRun.IsSubScriptPass = SweepItemForRunData.SubScriptStateEnum.Success;
 				}
 
 				
@@ -242,13 +256,14 @@ namespace ScriptHandler.Models
 					StepIntervalTimeUnite = SweepItemsList[i].StepIntervalTimeUnite,
 					CurrentValue = 0,
 					ActualInterval = new TimeSpan(),
-					SetParameter = new ScriptStepSetParameter() { Parameter = SweepItemsList[i].Parameter,  },
-					Delay = new ScriptStepDelay() 
-					{ 
-						Interval = SweepItemsList[i].StepInterval, 
+					SetParameter = new ScriptStepSetParameter() { Parameter = SweepItemsList[i].Parameter, },
+					Delay = new ScriptStepDelay()
+					{
+						Interval = SweepItemsList[i].StepInterval,
 						IntervalUnite = SweepItemsList[i].StepIntervalTimeUnite,
 						StopScriptStep = this.StopScriptStep,
-					}
+					},
+					IsSubScriptPass = SweepItemForRunData.SubScriptStateEnum.None,				
 				
 				};
 				

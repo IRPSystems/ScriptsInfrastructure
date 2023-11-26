@@ -22,8 +22,7 @@ namespace ScriptRunner.Services
 
 		#region Fiedls
 
-		private Process _EvvaCANMessageSender;
-
+		
 		private NamedPipeSenderSevice _pipeSender;
 
 		#endregion Fiedls
@@ -32,17 +31,22 @@ namespace ScriptRunner.Services
 
 		public CANMessagesService()
 		{
-			Task.Run(() =>
-			{
-				_pipeSender = new NamedPipeSenderSevice();
-				_pipeSender.Init("CANMessage");
-			});
+			WaitForConnection();
 		}
 
 		#endregion Constructor
 
 
 		#region Methods
+
+		private void WaitForConnection()
+		{
+			Task.Run(() =>
+			{
+				_pipeSender = new NamedPipeSenderSevice();
+				_pipeSender.Init("CANMessage");
+			});
+		}
 
 		public void OpenCANMessageSender()
 		{
@@ -61,16 +65,11 @@ namespace ScriptRunner.Services
 			}
 
 
-			var processesList = Process.GetProcessesByName("EvvaCANMessageSender");
-			if (processesList.Length > 0)
-				_EvvaCANMessageSender = processesList[0];
-
-			if (_EvvaCANMessageSender == null)
-			{
-				ProcessStartInfo start = new ProcessStartInfo();
-				start.FileName = "EvvaCANMessageSender\\EvvaCANMessageSender.exe";
-				_EvvaCANMessageSender = Process.Start(start);
-			}
+			ProcessStartInfo start = new ProcessStartInfo();
+			start.FileName = "EvvaCANMessageSender\\EvvaCANMessageSender.exe";
+			Process evvaCANMessageSender = Process.Start(start);
+			evvaCANMessageSender.WaitForExit();
+			WaitForConnection();
 
 			Mouse.OverrideCursor = null;
 		}
