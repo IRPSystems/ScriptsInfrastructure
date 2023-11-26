@@ -68,10 +68,13 @@ namespace ScriptRunner.Services
 			ProcessStartInfo start = new ProcessStartInfo();
 			start.FileName = "EvvaCANMessageSender\\EvvaCANMessageSender.exe";
 			Process evvaCANMessageSender = Process.Start(start);
-			evvaCANMessageSender.WaitForExit();
-			WaitForConnection();
-
 			Mouse.OverrideCursor = null;
+
+			Task.Run(() =>
+			{
+				evvaCANMessageSender.WaitForExit();
+				WaitForConnection();
+			});
 		}
 
 		public void CloseCANMessageSender()
