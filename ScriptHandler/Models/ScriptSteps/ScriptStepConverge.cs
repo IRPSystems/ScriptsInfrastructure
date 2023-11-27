@@ -155,7 +155,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			_maxVal = targetValue + Tolerance;
 			_minVal = targetValue - Tolerance;
 
-			LoggerService.Inforamtion(this, "Target: Value=" + targetValue + "; Max=" + _maxVal + "; Min=" + _minVal);
+			LoggerService.Debug(this, "Target: Value=" + targetValue + "; Max=" + _maxVal + "; Min=" + _minVal);
 		}
 
 		private double GetTargetValue()
@@ -309,7 +309,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			SetMinMaxTarget();
 
 			double dVal = (double)Parameter.Value;
-			LoggerService.Inforamtion(this, "Parm Value=" + dVal);
+			LoggerService.Debug(this, "Parm Value=" + dVal);
 
 			if (dVal <= _maxVal && dVal >= _minVal)
 			{
