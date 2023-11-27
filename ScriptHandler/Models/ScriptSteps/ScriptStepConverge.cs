@@ -125,6 +125,24 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			IsPass = true;
 
+
+			SetMinMaxTarget();
+
+
+
+			_pauseTime = new TimeSpan();
+
+			var myTask = Task.Factory
+					.StartNew(() => Execute_Do(), _cancellationTokenSource.Token);
+
+
+			myTask.Wait();
+
+			//IsPass = true;
+		}
+
+		private void SetMinMaxTarget()
+		{
 			double targetValue = GetTargetValue();
 			if (!IsPass)
 			{
@@ -137,16 +155,6 @@ namespace ScriptHandler.Models.ScriptSteps
 			_minVal = targetValue - Tolerance;
 
 			LoggerService.Inforamtion(this, "Target: Value=" + targetValue + "; Max=" + _maxVal + "; Min=" + _minVal);
-
-			_pauseTime = new TimeSpan();
-
-			var myTask = Task.Factory
-					.StartNew(() => Execute_Do(), _cancellationTokenSource.Token);
-
-
-			myTask.Wait();
-
-			//IsPass = true;
 		}
 
 		private double GetTargetValue()
@@ -297,8 +305,10 @@ namespace ScriptHandler.Models.ScriptSteps
 				return;
 			}
 
+			SetMinMaxTarget();
+
 			double dVal = (double)Parameter.Value;
-			LoggerService.Inforamtion(this, "Parm Value=" + dVal + "; Max=" + _maxVal + "; Min=" + _minVal);
+			LoggerService.Inforamtion(this, "Parm Value=" + dVal);
 
 			if (dVal <= _maxVal && dVal >= _minVal)
 			{
