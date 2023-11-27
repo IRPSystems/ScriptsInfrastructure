@@ -171,9 +171,11 @@ namespace ScriptHandler.Models.ScriptSteps
 
 					string tempErrMessage = _errorMessageHeader + "\"" + param + "\"\r\n\r\n";
 					bool isOK = _targetValueGetter.SendAndReceive(param);					
+					LoggerService.Inforamtion(this, "Ended SendAndReceive");
 					if (!isOK)
 					{
 						ErrorMessage = tempErrMessage + ErrorMessage;
+						LoggerService.Inforamtion(this, ErrorMessage);
 						IsPass = false;
 						return 0;
 					}
@@ -181,12 +183,14 @@ namespace ScriptHandler.Models.ScriptSteps
 					if (param.Value == null)
 					{
 						ErrorMessage = tempErrMessage + ErrorMessage;
+						LoggerService.Inforamtion(this, ErrorMessage);
 						IsPass = false;
 						return 0;
 					}
 
 					double dVal = Convert.ToDouble(param.Value);
 					_errorMessageHeader += "(\"" + param + "\" = " + dVal + ")\r\n\r\n";
+					LoggerService.Inforamtion(this, "dVal=" + dVal);
 					return dVal;
 				}
 				else if (TargetValue is string str)
