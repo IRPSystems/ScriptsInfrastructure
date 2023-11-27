@@ -132,8 +132,11 @@ namespace ScriptHandler.Models.ScriptSteps
 				IsPass = false;
 				return;
 			}
+
 			_maxVal = targetValue + Tolerance;
 			_minVal = targetValue - Tolerance;
+
+			LoggerService.Inforamtion(this, "Target: Value=" + targetValue + "; Max=" + _maxVal + "; Min=" + _minVal);
 
 			_pauseTime = new TimeSpan();
 
@@ -295,6 +298,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			}
 
 			double dVal = (double)Parameter.Value;
+			LoggerService.Inforamtion(this, "Parm Value=" + dVal + "; Max=" + _maxVal + "; Min=" + _minVal);
 
 			if (dVal <= _maxVal && dVal >= _minVal)
 			{
