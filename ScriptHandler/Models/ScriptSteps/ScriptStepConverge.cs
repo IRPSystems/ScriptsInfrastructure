@@ -147,6 +147,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			if (!IsPass)
 			{
 				ErrorMessage += "Failed to get the target value";
+				LoggerService.Error(this, ErrorMessage);
 				IsPass = false;
 				return;
 			}
