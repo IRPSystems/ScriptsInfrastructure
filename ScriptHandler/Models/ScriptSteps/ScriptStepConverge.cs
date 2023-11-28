@@ -183,7 +183,7 @@ namespace ScriptHandler.Models.ScriptSteps
 					if (param.Value == null)
 					{
 						ErrorMessage = tempErrMessage + ErrorMessage;
-						LoggerService.Inforamtion(this, ErrorMessage);
+						LoggerService.Inforamtion(this, "Param value is null: " + ErrorMessage);
 						IsPass = false;
 						return 0;
 					}
