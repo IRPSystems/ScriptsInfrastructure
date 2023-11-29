@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviceCommunicators", "..\D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviceHandler", "..\DevicesInfrastructures\DeviceHandler\DeviceHandler.csproj", "{D2FDE326-6419-451C-8B94-A4F9EC00D9D7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Communication", "..\Infrastructure\Communication\Communication.csproj", "{26ABCFC7-5E38-4A21-9968-7DE496087095}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{D2FDE326-6419-451C-8B94-A4F9EC00D9D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2FDE326-6419-451C-8B94-A4F9EC00D9D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2FDE326-6419-451C-8B94-A4F9EC00D9D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26ABCFC7-5E38-4A21-9968-7DE496087095}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26ABCFC7-5E38-4A21-9968-7DE496087095}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26ABCFC7-5E38-4A21-9968-7DE496087095}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26ABCFC7-5E38-4A21-9968-7DE496087095}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

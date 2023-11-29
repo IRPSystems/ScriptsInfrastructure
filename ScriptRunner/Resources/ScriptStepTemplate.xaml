@@ -339,18 +339,26 @@
                            HorizontalAlignment="Left" VerticalAlignment="Center" 
                            FontSize="15"/>
 
-                <ContentControl Grid.Row="4" Grid.ColumnSpan="3"
-                                ContentTemplate="{Binding CurrentScript.CurrentStep.Template}">
+                <Grid Grid.Row="4" Grid.ColumnSpan="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    
 
-                    <ContentControl.Content>
-                        <MultiBinding Converter="{StaticResource ContentConverter}">
-                            <Binding Path="CurrentScript.CurrentStep.Description" />
-                            <Binding Path="CurrentScript.CurrentStep"/>
-                        </MultiBinding>
-                    </ContentControl.Content>
+                    <ContentControl ContentTemplate="{Binding CurrentScript.CurrentStep.Template}">
 
-                </ContentControl>
-                
+                        <ContentControl.Content>
+                            <MultiBinding Converter="{StaticResource ContentConverter}">
+                                <Binding Path="CurrentScript.CurrentStep.Description" />
+                                <Binding Path="CurrentScript.CurrentStep"/>
+                            </MultiBinding>
+                        </ContentControl.Content>
+
+                    </ContentControl>
+                </Grid>
+
             </Grid>
 
         </Grid>
