@@ -174,7 +174,7 @@ namespace ScriptHandler.Models.ScriptSteps
 					LoggerService.Inforamtion(this, "Ended SendAndReceive");
 					if (!isOK)
 					{
-						ErrorMessage = tempErrMessage + ErrorMessage;
+						ErrorMessage = tempErrMessage + _targetValueGetter.ErrorMessage + "\r\n";
 						LoggerService.Inforamtion(this, ErrorMessage);
 						IsPass = false;
 						return 0;
@@ -182,7 +182,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
 					if (param.Value == null)
 					{
-						ErrorMessage = tempErrMessage + ErrorMessage;
+						ErrorMessage = tempErrMessage + _targetValueGetter.ErrorMessage + "\r\n";
 						LoggerService.Inforamtion(this, "Param value is null: " + ErrorMessage);
 						IsPass = false;
 						return 0;
