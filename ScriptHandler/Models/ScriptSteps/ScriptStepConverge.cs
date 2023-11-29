@@ -295,6 +295,8 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		private void checkValueTimer_ElapsedEventHandler(object sender, ElapsedEventArgs e)
 		{
+			_checkValueTimer.Stop();
+
 			bool isOK = SendAndReceive();
 			if (!isOK)
 			{
@@ -331,6 +333,8 @@ namespace ScriptHandler.Models.ScriptSteps
 					End(false);
 				}
 			}
+
+			_checkValueTimer.Start();
 		}
 
 		protected override void Stop()
