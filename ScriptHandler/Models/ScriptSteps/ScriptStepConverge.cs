@@ -57,11 +57,11 @@ namespace ScriptHandler.Models.ScriptSteps
 		private DateTime _startWaitToEnter;
 		private System.Timers.Timer _checkValueTimer;
 
-		
+
 		private double _maxVal;
 		private double _minVal;
 
-		private bool _isStartingState;		
+		private bool _isStartingState;
 		private DateTime _startConvergeTime;
 
 		private TimeSpan _pauseTime;
@@ -160,7 +160,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		private double GetTargetValue()
 		{
-			
+
 			try
 			{
 				if (TargetValue is DeviceParameterData param)
@@ -170,7 +170,7 @@ namespace ScriptHandler.Models.ScriptSteps
 					_targetValueGetter.Parameter = param;
 
 					string tempErrMessage = _errorMessageHeader + "\"" + param + "\"\r\n\r\n";
-					bool isOK = _targetValueGetter.SendAndReceive(param);					
+					bool isOK = _targetValueGetter.SendAndReceive(param);
 					LoggerService.Inforamtion(this, "Ended SendAndReceive");
 					if (!isOK)
 					{
@@ -214,7 +214,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
 
 			}
-			catch (Exception ex) 
+			catch (Exception ex)
 			{
 				LoggerService.Error(this, "Failed to get the target value", ex);
 				ErrorMessage += _errorMessageHeader + "\r\nFailed to get the target value";
@@ -222,12 +222,12 @@ namespace ScriptHandler.Models.ScriptSteps
 				return 0;
 			}
 
-			
+
 		}
 
 		private void Execute_Do()
 		{
-			if(Parameter == null)
+			if (Parameter == null)
 			{
 				ErrorMessage = "Converge: No parameter defined";
 				IsPass = false;
@@ -238,7 +238,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			ErrorMessage = "\"" + Parameter.Name + "\" = " + TargetValue + " ± " + Tolerance;
 			while (!_cancellationToken.IsCancellationRequested)
 			{
-				switch(_executeState)
+				switch (_executeState)
 				{
 					case ExecuteStateEnum.Start:
 						_startWaitToEnter = DateTime.Now;
@@ -260,7 +260,7 @@ namespace ScriptHandler.Models.ScriptSteps
 						break;
 
 					case ExecuteStateEnum.WaitForConvergeTime:
-						if(_isStartingState)
+						if (_isStartingState)
 						{
 							_isStartingState = false;
 							_startConvergeTime = DateTime.Now;
@@ -278,12 +278,12 @@ namespace ScriptHandler.Models.ScriptSteps
 				}
 
 				System.Threading.Thread.Sleep(1);
-			}			
+			}
 		}
 
 		private void End(bool isPass)
 		{
-			if(IsPass) 
+			if (IsPass)
 				LoggerService.Inforamtion(this, "End " + IsPass);
 			else
 				LoggerService.Inforamtion(this, "End " + IsPass + " " + ErrorMessage);
@@ -300,14 +300,14 @@ namespace ScriptHandler.Models.ScriptSteps
 			bool isOK = SendAndReceive();
 			if (!isOK)
 			{
-				ErrorMessage = _errorMessageHeader + ErrorMessage +  "\r\nCommunication error";
+				ErrorMessage = _errorMessageHeader + ErrorMessage + "\r\nCommunication error";
 				End(false);
 				return;
 			}
 
 			ErrorMessage = "";
 
-			if (Parameter.Value == null) 
+			if (Parameter.Value == null)
 			{
 				return;
 			}
@@ -319,7 +319,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			if (dVal <= _maxVal && dVal >= _minVal)
 			{
-				if(_executeState == ExecuteStateEnum.WaitToEnterValue)
+				if (_executeState == ExecuteStateEnum.WaitToEnterValue)
 				{
 					_isStartingState = true;
 					_executeState = ExecuteStateEnum.WaitForConvergeTime;
@@ -327,7 +327,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			}
 			else
 			{
-				if(_executeState == ExecuteStateEnum.WaitForConvergeTime)
+				if (_executeState == ExecuteStateEnum.WaitForConvergeTime)
 				{
 					ErrorMessage = _errorMessageHeader + ErrorMessage + "\r\nValue is out of range during the converge time";
 					End(false);
@@ -347,7 +347,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			_cancellationTokenSource = new CancellationTokenSource();
 			_cancellationToken = _cancellationTokenSource.Token;
 
-			if(_executeState == ExecuteStateEnum.WaitToEnterValue)
+			if (_executeState == ExecuteStateEnum.WaitToEnterValue)
 				_pauseTime = DateTime.Now - _waitToEnterValueTime;
 			else if (_executeState == ExecuteStateEnum.WaitForConvergeTime)
 				_pauseTime = DateTime.Now - _waitForConvergeTime;
