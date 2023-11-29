@@ -223,11 +223,13 @@ namespace ScriptRunner.Services
 								GeneratedScriptData testData =
 									projectsList[_projectIndex].TestsList[_testIndex];
 								testData.State = SciptStateEnum.Running;
-								_runScript.Run(
-									testData,
-									projectsList[_projectIndex].RecordingPath, 
-									isRecord);
-
+								Application.Current.Dispatcher.Invoke(() =>
+								{
+									_runScript.Run(
+										testData,
+										projectsList[_projectIndex].RecordingPath,
+										isRecord);
+								});
 								_state = RunProjectsState.WaitForTest;
 
 								break;

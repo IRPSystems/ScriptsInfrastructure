@@ -3,6 +3,7 @@ using DeviceCommunicators.General;
 using Entities.Models;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
+using ScriptHandler.ViewModels;
 using System;
 using System.Threading;
 
@@ -29,6 +30,7 @@ namespace ScriptHandler.Models
 		public ScriptStepDelay Delay { get; set; }
 
 		public IScriptRunner SubScriptRunner { get; set; }
+		public ScriptDiagramViewModel CurrentScriptDiagram { get; set; }
 
 		public SubScriptStateEnum IsSubScriptPass { get; set; }
 

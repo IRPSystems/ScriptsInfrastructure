@@ -6,6 +6,7 @@ using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
+using ScriptHandler.ViewModels;
 using Services.Services;
 using Syncfusion.Windows.Tools;
 using System;
@@ -40,7 +41,9 @@ namespace ScriptHandler.Models
 
 		[JsonIgnore]
 		public IScriptRunner CurrentScript { get; set; }
-		
+		[JsonIgnore]
+		public ScriptDiagramViewModel CurrentScriptDiagram { get; set; }
+
 
 		#endregion Properties
 
@@ -132,6 +135,9 @@ namespace ScriptHandler.Models
 				if (_itemForRun.SubScriptRunner != null)
 				{
 					LoggerService.Inforamtion(this, "Start sub-script for item: " + item.Parameter.Name);
+
+					CurrentScriptDiagram = _itemForRun.CurrentScriptDiagram;
+					
 
 					CurrentScript = _itemForRun.SubScriptRunner;
 					CurrentScript.ScriptEndedEvent += SubScriptEndedEventHandler;

@@ -518,6 +518,9 @@ namespace ScriptRunner.Services
 					SaftyOfficer,
 					_devicesContainer,
 					_canMessagesService);
+
+				sweepItemForRun.CurrentScriptDiagram = new ScriptHandler.ViewModels.ScriptDiagramViewModel();
+				sweepItemForRun.CurrentScriptDiagram.DrawScript(sweepItem.SubScript);
 			}
 		}
 
