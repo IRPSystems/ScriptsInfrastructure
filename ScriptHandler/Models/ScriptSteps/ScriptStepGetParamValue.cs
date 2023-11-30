@@ -47,8 +47,17 @@ namespace ScriptHandler.Models
 
 		public bool SendAndReceive(DeviceParameterData parameter)
 		{
-			if (parameter == null || Communicator == null)
+			if (parameter == null)
+			{
+				LoggerService.Error(this, "The parameter is not set");
 				return false;
+			}
+
+			if (Communicator == null)
+			{
+				LoggerService.Error(this, "The communicator is not set");
+				return false;
+			}
 
 			_waitForGet = new ManualResetEvent(false);
 
