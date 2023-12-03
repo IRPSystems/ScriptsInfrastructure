@@ -176,12 +176,14 @@ namespace ScriptHandler.ViewModels
 			Project = JsonConvert.DeserializeObject(jsonString, settings) as ProjectData;
 
 			FixOldScriptsAndProjectsService fixer = new FixOldScriptsAndProjectsService();
-			fixer.FixProject(Project, _scriptUserData);
+			
 
 
 			foreach (string path in Project.ScriptsPathsList)
 			{
 				string absPath = GetAbsPath(path);
+
+				fixer.Fix(absPath);
 
 				DesignScriptViewModel vm = new DesignScriptViewModel(_scriptUserData, _devicesContainer, true);
 				
