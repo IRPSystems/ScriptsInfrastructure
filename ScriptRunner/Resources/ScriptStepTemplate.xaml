@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:fa="http://schemas.fontawesome.com/icons/svg"
+                    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                     xmlns:converters="clr-namespace:ScriptHandler.Converter;assembly=ScriptHandler">
 
 
@@ -264,7 +265,19 @@
                       HeadersVisibility="None"
                       GridLinesVisibility="Horizontal"
                       BorderThickness="0"
-                      HorizontalGridLinesBrush="{DynamicResource MahApps.Brushes.Accent2}">
+                      HorizontalGridLinesBrush="{DynamicResource MahApps.Brushes.Accent2}"
+                      SelectedItem="{Binding CurrentLine}">
+
+                <i:Interaction.Triggers>
+
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding Path=DataContext.DynamicControlDataGrid_SelectionChangedCommand, 
+                                                                 Mode=OneWay, 
+                                                                 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" 
+                                               PassEventArgsToCommand="True"/>
+                    </i:EventTrigger>
+
+                </i:Interaction.Triggers>
 
                 <DataGrid.Resources>
 

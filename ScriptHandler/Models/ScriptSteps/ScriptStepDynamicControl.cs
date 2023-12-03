@@ -1,4 +1,5 @@
 ﻿
+using CommunityToolkit.Mvvm.Input;
 using DeviceCommunicators.General;
 using DeviceHandler.Models;
 using Newtonsoft.Json;
@@ -13,6 +14,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace ScriptHandler.Models
 {
@@ -25,6 +27,8 @@ namespace ScriptHandler.Models
 
 
 		public int PercentageOfLines { get; set; }
+
+		public DynamicControlFileLine CurrentLine { get; set; }
 
 		#endregion Properties
 
@@ -87,6 +91,8 @@ namespace ScriptHandler.Models
 					if (_linesCounter < ExecuteLinesList.Count)
 						lineNext = ExecuteLinesList[_linesCounter];
 					_linesCounter++;
+
+					CurrentLine = line;
 
 					for (int i = 0; i < line.ValuesList.Count && i < ColumnDatasList.Count; i++)
 					{
@@ -188,7 +194,30 @@ namespace ScriptHandler.Models
 			return false;
 		}
 
+		private void DynamicControlDataGrid_SelectionChanged(SelectionChangedEventArgs e)
+		{
+			if (!(e.Source is DataGrid dataGrid))
+				return;
+
+			dataGrid.ScrollIntoView(CurrentLine);
+		}
+
 		#endregion Methods
+
+
+		#region Commands
+
+		private RelayCommand<SelectionChangedEventArgs> _DynamicControlDataGrid_SelectionChangedCommand;
+		public RelayCommand<SelectionChangedEventArgs> DynamicControlDataGrid_SelectionChangedCommand
+		{
+			get
+			{
+				return _DynamicControlDataGrid_SelectionChangedCommand ?? (_DynamicControlDataGrid_SelectionChangedCommand =
+					new RelayCommand<SelectionChangedEventArgs>(DynamicControlDataGrid_SelectionChanged));
+			}
+		}
+
+		#endregion Commands
 
 	}
 }
