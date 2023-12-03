@@ -211,17 +211,7 @@
     </DataTemplate>
 
 
-    <DataTemplate x:Key="DynamicControlListItemStyle" >
-                    
-        <Grid>
-            <TextBlock Text="{Binding}" Width="150"
-                       VerticalAlignment="Center" Margin="5,0,0,0"/>
-
-            <Line Y1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" 
-                  HorizontalAlignment="Right"/>
-        </Grid>
-
-    </DataTemplate>
+    
 
     <DataTemplate x:Key="DynamicControlTemplate">
 
@@ -247,8 +237,13 @@
                             <Setter.Value>
                                 <ControlTemplate TargetType="ListViewItem">
 
-                                    <ContentControl Content="{Binding Parameter.Name}" 
-                                                    ContentTemplate="{StaticResource DynamicControlListItemStyle}"/>
+                                    <Grid>
+                                        <TextBlock Text="{Binding Parameter.Name}" Width="150"
+                                                   VerticalAlignment="Center" Margin="5,0,0,0"/>
+
+                                        <Line Y1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" 
+                                              HorizontalAlignment="Right"/>
+                                    </Grid>
 
                                 </ControlTemplate>
                             </Setter.Value>
@@ -302,8 +297,33 @@
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="ListViewItem">
 
-                                                        <ContentControl Content="{Binding}" 
-                                                                        ContentTemplate="{StaticResource DynamicControlListItemStyle}"/>
+                                                        <Grid Width="150">
+                                                            <Border Name="brdr" Margin="0,0,2,0">
+                                                                <TextBlock Text="{Binding Value}" 
+                                                                        VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                                            </Border>
+
+                                                            <Line Y1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" 
+                                                                  HorizontalAlignment="Right"/>
+                                                        </Grid>
+
+                                                        <ControlTemplate.Triggers>
+
+                                                            <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+
+                                                                <Setter TargetName="brdr" Property="BorderBrush" Value="Magenta" />
+                                                                <Setter TargetName="brdr" Property="BorderThickness" Value="2" />
+
+                                                            </DataTrigger>
+
+                                                            <DataTrigger Binding="{Binding IsCurrent}" Value="False">
+
+                                                                <Setter TargetName="brdr" Property="BorderBrush" Value="Transparent" />
+                                                                <Setter TargetName="brdr" Property="BorderThickness" Value="0" />
+
+                                                            </DataTrigger>
+
+                                                        </ControlTemplate.Triggers>
 
                                                     </ControlTemplate>
                                                 </Setter.Value>

@@ -100,11 +100,11 @@ namespace ScriptHandler.Models
 							break;
 					}
 
-					//if(_setParam.IsPass == false)
-					//{
-					//	ErrorMessage += _setParam.ErrorMessage;
-					//	break;
-					//}
+					if (_setParam.IsPass == false)
+					{
+						ErrorMessage += _setParam.ErrorMessage;
+						break;
+					}
 
 					if (lineNext != null)
 					{

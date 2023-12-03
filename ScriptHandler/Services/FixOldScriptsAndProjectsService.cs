@@ -98,7 +98,7 @@ namespace ScriptHandler.Services
 				index = indexStart + valuesStartStr.Length + newString.Length;
 
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 				index = -1;
 			}
