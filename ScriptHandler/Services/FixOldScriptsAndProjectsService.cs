@@ -15,8 +15,7 @@ namespace ScriptHandler.Services
 				fileData = stream.ReadToEnd();
 			}
 
-			FixOldScriptsAndProjectsService fixOldScriptsAndProjectsService = new FixOldScriptsAndProjectsService();
-			fixOldScriptsAndProjectsService.FixDynamicControl(ref fileData);
+			FixDynamicControl(ref fileData);
 
 			using (StreamWriter sw = new StreamWriter(path))
 			{
@@ -26,6 +25,11 @@ namespace ScriptHandler.Services
 
 		public void FixDynamicControl(ref string fileData)
 		{
+			fileData = fileData.Replace(
+				"ScriptHandler.Models.DynamicControlFileLine+DynamicControlData, ScriptHandler",
+				"ScriptHandler.Models.DynamicControlData, ScriptHandler");
+
+
 
 			int index = fileData.IndexOf("DynamicControlData");
 			if (index >= 0)
@@ -40,11 +44,11 @@ namespace ScriptHandler.Services
 
 			fileData = fileData.Replace(
 				"\"$type\": \"System.Collections.Generic.List`1[[System.Double, System.Private.CoreLib]], System.Private.CoreLib\",",
-				"\"$type\": \"System.Collections.ObjectModel.ObservableCollection`1[[ScriptHandler.Models.DynamicControlFileLine+DynamicControlData, ScriptHandler]], System.ObjectModel\",");
+				"\"$type\": \"System.Collections.ObjectModel.ObservableCollection`1[[ScriptHandler.Models.DynamicControlData, ScriptHandler]], System.ObjectModel\",");
 
-			fileData = fileData.Replace(
-				"\"$type\": \"System.Collections.Generic.List`1[[System.Double, System.Private.CoreLib]], System.Private.CoreLib\",",
-				"\"$type\": \"System.Collections.ObjectModel.ObservableCollection`1[[ScriptHandler.Models.DynamicControlFileLine+DynamicControlData, ScriptHandler]], System.ObjectModel\",");
+			//fileData = fileData.Replace(
+			//	"\"$type\": \"System.Collections.Generic.List`1[[System.Double, System.Private.CoreLib]], System.Private.CoreLib\",",
+			//	"\"$type\": \"System.Collections.ObjectModel.ObservableCollection`1[[ScriptHandler.Models.DynamicControlData, ScriptHandler]], System.ObjectModel\",");
 		}
 
 		private void FixSingleDynamicControl(
@@ -83,7 +87,7 @@ namespace ScriptHandler.Services
 
 
 					newString += "\t\t\t\t\t\t\t\t\t\t\t\t{\r\n";
-					newString += "\t\t\t\t\t\t\t\t\t\t\t\t\t\"$type\": \"ScriptHandler.Models.DynamicControlFileLine+DynamicControlData, ScriptHandler\",\r\n";
+					newString += "\t\t\t\t\t\t\t\t\t\t\t\t\t\"$type\": \"ScriptHandler.Models.DynamicControlData, ScriptHandler\",\r\n";
 					newString += "\t\t\t\t\t\t\t\t\t\t\t\t\t\"Value\": " + value + "\r\n";
 					newString += "\t\t\t\t\t\t\t\t\t\t\t\t\t\"IsCurrent\": false\r\n";
 					newString += "\t\t\t\t\t\t\t\t\t\t\t\t},\r\n";
