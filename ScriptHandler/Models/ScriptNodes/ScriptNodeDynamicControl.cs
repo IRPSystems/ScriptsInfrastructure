@@ -147,7 +147,7 @@ namespace ScriptHandler.Models.ScriptNodes
 
 					lineData.Time = TimeSpan.FromSeconds(numberOfSecs);
 
-					lineData.ValuesList = new List<double>();
+					lineData.ValuesList = new ObservableCollection<DynamicControlFileLine.DynamicControlData>();
 					for (int i = 1; i < lineCols.Length; i++)
 					{
 						double vald;
@@ -158,7 +158,8 @@ namespace ScriptHandler.Models.ScriptNodes
 							continue;
 						}
 
-						lineData.ValuesList.Add(vald);
+						lineData.ValuesList.Add(
+							new DynamicControlFileLine.DynamicControlData() { Value = vald, IsCurrent = false });
 					}
 
 					FileLinesList.Add(lineData);
@@ -230,7 +231,7 @@ namespace ScriptHandler.Models.ScriptNodes
 
 					lineData.Time = TimeSpan.FromSeconds(numberOfSecs);
 
-					lineData.ValuesList = new List<double>();
+					lineData.ValuesList = new ObservableCollection<DynamicControlFileLine.DynamicControlData>();
 					for (int col = 1; col < dataTable.Columns.Count; col++)
 					{
 						v = dataTable.Rows[row][col];
@@ -247,7 +248,7 @@ namespace ScriptHandler.Models.ScriptNodes
 							continue;
 						}
 
-						lineData.ValuesList.Add(vald);
+						lineData.ValuesList.Add(new DynamicControlFileLine.DynamicControlData() { Value = vald, IsCurrent = false });
 					}
 
 					FileLinesList.Add(lineData);

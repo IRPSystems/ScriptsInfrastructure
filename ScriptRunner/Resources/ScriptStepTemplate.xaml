@@ -210,54 +210,131 @@
 
     </DataTemplate>
 
+
+    <DataTemplate x:Key="DynamicControlListItemStyle" >
+                    
+        <Grid>
+            <TextBlock Text="{Binding}" Width="150"
+                       VerticalAlignment="Center" Margin="5,0,0,0"/>
+
+            <Line Y1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" 
+                  HorizontalAlignment="Right"/>
+        </Grid>
+
+    </DataTemplate>
+
     <DataTemplate x:Key="DynamicControlTemplate">
 
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="27"/>
                 <RowDefinition Height="5"/>
                 <RowDefinition />
             </Grid.RowDefinitions>
+            
+            <ListView ItemsSource="{Binding ColumnDatasList}"
+                      FontSize="14"
+                      FontWeight="DemiBold">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Template" >
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListViewItem">
+
+                                    <ContentControl Content="{Binding Parameter.Name}" 
+                                                    ContentTemplate="{StaticResource DynamicControlListItemStyle}"/>
+
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+            </ListView>
+
+            <Line Grid.Row="1" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" />
+
+            <DataGrid Grid.Row="2"
+                      ItemsSource="{Binding ExecuteLinesList}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      CanUserReorderColumns="False"
+                      HeadersVisibility="None"
+                      GridLinesVisibility="Horizontal"
+                      BorderThickness="0"
+                      HorizontalGridLinesBrush="{DynamicResource MahApps.Brushes.Accent2}">
+
+                <DataGrid.Resources>
+
+                    <Style TargetType="DataGrid" >
+                        <Style.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+                        </Style.Resources>
+                    </Style>
+                    
+                </DataGrid.Resources>
+
+                <DataGrid.Columns>
+
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
 
 
-            <Grid Grid.Row="0" Margin="0,20,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition Width="300" />
-                </Grid.ColumnDefinitions>
+                                <ListView ItemsSource="{Binding ValuesList}">
+                                    <ListView.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ListView.ItemsPanel>
 
-                <Grid Grid.Column="2" >
-                    <ProgressBar Value="{Binding PercentageOfLines}"
-                                 Minimum="0"
-                                 Maximum="100" />
-                    <TextBlock Text="{Binding PercentageOfLines, StringFormat={}{0}%}" 
-                               VerticalAlignment="Center" 
-                               HorizontalAlignment="Center"
-                               Foreground="White"/>
-                </Grid>
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="Template" >
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="ListViewItem">
+
+                                                        <ContentControl Content="{Binding}" 
+                                                                        ContentTemplate="{StaticResource DynamicControlListItemStyle}"/>
+
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+
+                                            <Style.Resources>
+                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black"/>
+                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+                                            </Style.Resources>
+                                            
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+
+                                </ListView>
 
 
 
-            </Grid>
 
-            <Grid Grid.Row="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0"
-                           Text="The script is running, please wait..."
-                           FontSize="60"
-                           TextWrapping="Wrap"/>
-                <fa:ImageAwesome Grid.Row="2" Icon="Solid_Spinner" Spin="True" SpinDuration="4" Height="100" Width="100"
-                             PrimaryColor="{DynamicResource MahApps.Brushes.Gray1}"/>
-            </Grid>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        
+                    </DataGridTemplateColumn>
+                    
+                </DataGrid.Columns>
+                
+            </DataGrid>
 
         </Grid>
 
     </DataTemplate>
+    
+    
 
 </ResourceDictionary>

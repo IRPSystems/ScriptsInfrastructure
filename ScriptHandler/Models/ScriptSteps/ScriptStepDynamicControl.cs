@@ -92,18 +92,19 @@ namespace ScriptHandler.Models
 					{
 						_setParam.Parameter = ColumnDatasList[i].Parameter;
 						_setParam.Communicator = ColumnDatasList[i].Communicator;
-						_setParam.Value = line.ValuesList[i];
+						_setParam.Value = line.ValuesList[i].Value;
+						line.ValuesList[i].IsCurrent = true;
 						_setParam.Execute();
-
+						line.ValuesList[i].IsCurrent = false;
 						if (_setParam.IsPass == false)
 							break;
 					}
 
-					if(_setParam.IsPass == false)
-					{
-						ErrorMessage += _setParam.ErrorMessage;
-						break;
-					}
+					//if(_setParam.IsPass == false)
+					//{
+					//	ErrorMessage += _setParam.ErrorMessage;
+					//	break;
+					//}
 
 					if (lineNext != null)
 					{
