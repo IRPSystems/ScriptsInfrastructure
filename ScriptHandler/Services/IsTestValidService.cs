@@ -18,6 +18,9 @@ namespace ScriptHandler.Services
 			InvalidScriptData invalidScriptData,
 			DevicesContainer devicesContainer) 
 		{
+			if (script == null)
+				return false;
+
 			foreach (IScriptItem item in script.ScriptItemsList)
 			{
 				bool isNodeSet = item.IsNotSet(

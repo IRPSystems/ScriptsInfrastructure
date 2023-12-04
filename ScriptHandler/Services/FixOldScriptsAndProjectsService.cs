@@ -42,10 +42,7 @@ namespace ScriptHandler.Services
 				FixSingleDynamicControl(ref fileData, ref index);
 			}
 
-			fileData = fileData.Replace(
-				"\"$type\": \"System.Collections.Generic.List`1[[System.Double, System.Private.CoreLib]], System.Private.CoreLib\",",
-				"\"$type\": \"System.Collections.ObjectModel.ObservableCollection`1[[ScriptHandler.Models.DynamicControlData, ScriptHandler]], System.ObjectModel\",");
-
+			
 			//fileData = fileData.Replace(
 			//	"\"$type\": \"System.Collections.Generic.List`1[[System.Double, System.Private.CoreLib]], System.Private.CoreLib\",",
 			//	"\"$type\": \"System.Collections.ObjectModel.ObservableCollection`1[[ScriptHandler.Models.DynamicControlData, ScriptHandler]], System.ObjectModel\",");
@@ -65,6 +62,14 @@ namespace ScriptHandler.Services
 				index = fileData.IndexOf("ValuesList", index);
 				if (index < 0)
 					return;
+
+				index = fileData.IndexOf("\"$type\": \"System.Collections.Generic.List`1[[System.Double, System.Private.CoreLib]], System.Private.CoreLib\",", index);
+				fileData = fileData.Remove(
+					index,
+					"\"$type\": \"System.Collections.Generic.List`1[[System.Double, System.Private.CoreLib]], System.Private.CoreLib\",".Length);
+				fileData = fileData.Insert(
+					index,
+					"\"$type\": \"System.Collections.ObjectModel.ObservableCollection`1[[ScriptHandler.Models.DynamicControlData, ScriptHandler]], System.ObjectModel\",");
 
 				string valuesStartStr = "\"$values\": [\r\n";
 				int indexStart = fileData.IndexOf(valuesStartStr, index);

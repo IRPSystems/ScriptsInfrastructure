@@ -68,6 +68,8 @@ namespace ScriptHandler.Services
             DevicesContainer devicesContainer,
 			ref List<DeviceCommunicator> usedCommunicatorsList)
         {
+            if (scriptData == null)
+                return null;
 
 			GeneratedTestData runnerScript = new GeneratedTestData()
             {
@@ -181,7 +183,53 @@ namespace ScriptHandler.Services
 
 		}
 
+        private bool IsValidJson(
+            ScriptNodeBase scriptNode,
+            DevicesContainer devicesContainer,
+            ref string errorString)
+        {
 
+            if (!(scriptNode is IScriptNodeWithParam withParam))
+                return true;
+
+            if (withParam.Parameter == null)
+                return true;
+
+            if (withParam.Parameter.DeviceType == DeviceTypesEnum.EVVA)
+            {
+                if (errorString == string.Empty)
+                    errorString = null;
+                return true;
+            }
+
+            if (devicesContainer.TypeToDevicesFullData.ContainsKey(withParam.Parameter.DeviceType) == false)
+			{
+				string err = "The device " + withParam.Parameter.DeviceType +
+                    " of the parameter \"" + withParam.Parameter.Name + "\" doesn't exist in the setup";
+				LoggerService.Error(this, err);
+				errorString += err + "\r\n";
+				return false;
+			}
+
+			DeviceData device = devicesContainer.TypeToDevicesFullData[withParam.Parameter.DeviceType].Device;
+
+            DeviceParameterData deviceParam = null;
+            if (withParam.Parameter.Device.DeviceType == DeviceTypesEnum.MCU)
+                deviceParam = (device as MCU_DeviceData).MCU_FullList.ToList().Find((p) => p.Name == withParam.Parameter.Name);
+            else
+                deviceParam = device.ParemetersList.ToList().Find((p) => p.Name == withParam.Parameter.Name);
+
+            if (deviceParam == null)
+            {
+                string err = "The parameter \"" + withParam.Parameter.Name + "\" dosn't exist in the current " + device.Name + " parameter file";
+                LoggerService.Error(this, err);
+                errorString += err + "\r\n";
+                return false;
+            }
+
+
+            return true;
+        }
 
         private void SetCommunicator(
             ScriptStepBase scriptStep,
