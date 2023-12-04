@@ -305,6 +305,7 @@ namespace ScriptRunner.Services
 
 			if (_isAborted)
 			{
+				LoggerService.Inforamtion(this, "Exist Run do to IsAborted = true");
 				ScriptEndedEvent?.Invoke(ScriptStopModeEnum.Aborted);
 				return;
 			}
