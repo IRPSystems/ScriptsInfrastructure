@@ -182,8 +182,7 @@ namespace ScriptHandler.Models
 		public override bool IsNotSet(
 			DevicesContainer devicesContainer,
 			ObservableCollection<InvalidScriptItemData> errorsList)
-		{
-			
+		{		
 
 			if (ColumnDatasList == null || ColumnDatasList.Count == 0 ||
 				ExecuteLinesList == null || ExecuteLinesList.Count == 0)

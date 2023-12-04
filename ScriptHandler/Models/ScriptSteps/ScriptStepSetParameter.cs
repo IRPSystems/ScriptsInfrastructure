@@ -48,7 +48,10 @@ namespace ScriptHandler.Models
 		public override void Execute()
 		{
 			if (Parameter == null)
+			{
+				ErrorMessage = "The parameter is unknown";
 				return;
+			}
 			
 			IsPass = true;
 			_isStopped = false;

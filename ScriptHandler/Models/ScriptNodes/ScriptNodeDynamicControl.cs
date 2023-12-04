@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace ScriptHandler.Models.ScriptNodes
 {
@@ -72,14 +73,11 @@ namespace ScriptHandler.Models.ScriptNodes
 
 			FilePath = openFileDialog.FileName;
 			OnPropertyChanged(nameof(FilePath));
+			ReadFile();
 
-			string extension = Path.GetExtension(FilePath);
-			if (extension.ToLower().Contains("csv"))
-				ReadFile_CSV();
-			else
-				ReadFile_Excel();
 
-			if(FileLinesList == null || FileLinesList.Count == 0)
+
+			if (FileLinesList == null || FileLinesList.Count == 0)
 			{
 				//LoggerService.Error(this, "Failed to read the file \"" + FilePath + "\"", "Read File Error");
 				return;
@@ -87,6 +85,18 @@ namespace ScriptHandler.Models.ScriptNodes
 
 			OnPropertyChanged(nameof(FilePath));
 			OnPropertyChanged(nameof(ColumnDatasList));
+		}
+
+		public void ReadFile()
+		{
+			if (string.IsNullOrEmpty(FilePath))
+				return;
+
+			string extension = Path.GetExtension(FilePath);
+			if (extension.ToLower().Contains("csv"))
+				ReadFile_CSV();
+			else
+				ReadFile_Excel();
 		}
 
 		private void ReadFile_CSV() 
@@ -286,6 +296,38 @@ namespace ScriptHandler.Models.ScriptNodes
 				FileLinesList.Count == 0)
 			{
 				return true;
+			}
+
+			InvalidScriptItemData invalidScriptItemData = new InvalidScriptItemData()
+			{
+				Name = Description
+			};
+
+			if (ColumnDatasList.Count > 0) 
+			{ 
+				foreach (DynamicControlColumnData item in ColumnDatasList) 
+				{
+					if(item.Parameter == null)
+					{
+						invalidScriptItemData.ErrorString = "No parameter set for \"" + item.ColHeader + "\"";
+						errorsList.Add(invalidScriptItemData);
+						continue;
+					}
+
+					DeviceData deviceData =
+					   devicesContainer.TypeToDevicesFullData[item.Parameter.DeviceType].Device;
+
+					DeviceParameterData data = deviceData.ParemetersList.ToList().Find((p) => p.Name == item.Parameter.Name);
+					if (data == null)
+					{
+						if (item.Parameter == null)
+						{
+							string err = "The parameter \"" + item.Parameter.Name + "\" dosn't exist in the current " + deviceData.Name + " parameter file";
+							errorsList.Add(invalidScriptItemData);
+							continue;
+						}
+					}
+				}
 			}
 
 			return false;

@@ -674,6 +674,19 @@ namespace ScriptHandler.ViewModels
 
 		#endregion Script path
 
+		private void GetProjectDynamicControl(
+			ScriptData scriptData)
+		{
+			foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
+			{
+				if (node is ScriptNodeDynamicControl dynamicControl)
+				{
+					dynamicControl.ReadFile();
+				}
+			}
+
+		}
+
 		private void GetProjectCanMessages(
 			ScriptData scriptData)
 		{
@@ -898,7 +911,8 @@ namespace ScriptHandler.ViewModels
 					vm.IsScriptIsSavedEvent = true;
 				}
 
-				GetProjectCanMessages(vm.CurrentScript);				
+				GetProjectCanMessages(vm.CurrentScript);
+				GetProjectDynamicControl(vm.CurrentScript);
 			}
 
 			foreach (DesignScriptViewModel vm in Project.ScriptsList)
