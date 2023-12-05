@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using DeviceCommunicators.MCU;
 using Entities.Models;
-using Evva.Models;
 using ScriptHandler.Enums;
 using ScriptHandler.Models;
 using ScriptHandler.Services;

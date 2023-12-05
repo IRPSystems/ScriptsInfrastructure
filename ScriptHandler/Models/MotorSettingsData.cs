@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Entities.Models;
 using System.Collections.Generic;
 
-namespace Evva.Models
+namespace ScriptHandler.Models
 {
 	public class MotorSettingsData: ObservableObject
 	{

@@ -5,7 +5,6 @@ using DeviceCommunicators.MCU;
 using DeviceHandler.Enums;
 using DeviceHandler.Services;
 using Entities.Models;
-using Evva.Models;
 using ScriptHandler.Models;
 using Services.Services;
 using System;

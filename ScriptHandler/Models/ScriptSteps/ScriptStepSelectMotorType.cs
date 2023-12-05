@@ -2,10 +2,8 @@
 using DeviceCommunicators.General;
 using DeviceCommunicators.MCU;
 using Entities.Models;
-using Evva.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
-using System;
 using System.Linq;
 using System.Threading;
 using System.Windows;
