@@ -912,7 +912,7 @@ namespace ScriptHandler.ViewModels
 				}
 
 				GetProjectCanMessages(vm.CurrentScript);
-				GetProjectDynamicControl(vm.CurrentScript);
+				//GetProjectDynamicControl(vm.CurrentScript);
 			}
 
 			foreach (DesignScriptViewModel vm in Project.ScriptsList)
