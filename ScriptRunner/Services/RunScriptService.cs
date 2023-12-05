@@ -62,7 +62,7 @@ namespace ScriptRunner.Services
 					AbortScriptStep.Script as GeneratedScriptData,
 					null,
 					StopScriptStep,
-					_selectMotor,
+					SelectMotor,
 					SaftyOfficer,
 					_devicesContainer,
 					_canMessagesService);
@@ -74,16 +74,17 @@ namespace ScriptRunner.Services
 
 
 
-		public ObservableCollection<MotorSettingsData> MotorTypesList { get; set; }
-		public ObservableCollection<ControllerSettingsData> ControllerTypesList { get; set; }
+		
 
 
-		public MotorSettingsData SelectedMotor { get; set; }
-		public ControllerSettingsData SelectedController { get; set; }
+		//public MotorSettingsData SelectedMotor { get; set; }
+		//public ControllerSettingsData SelectedController { get; set; }
 
 		public TimeSpan RunTime { get; set; }
 
 		public SaftyOfficerService SaftyOfficer { get; set; }
+
+		public ScriptStepSelectMotorType SelectMotor { get; set; }
 
 		#endregion Properties
 
@@ -111,7 +112,7 @@ namespace ScriptRunner.Services
 		public StopScriptStepService StopScriptStep;
 
 		
-		private ScriptStepSelectMotorType _selectMotor;
+
 
 		private ScriptStepNotification _stepFailed;
 		private RunSingleScriptService _stepFailedScript;
@@ -131,14 +132,10 @@ namespace ScriptRunner.Services
 		public RunScriptService(
 			ObservableCollection<DeviceParameterData> logParametersList,
 			DevicesContainer devicesContainer,
-			List<MotorSettingsData> motorSettingsList,
-			List<ControllerSettingsData> controllerSettingsList,
 			StopScriptStepService stopScriptStep,
 			CANMessagesService canMessagesService)
 		{
 			_devicesContainer = devicesContainer;
-			MotorTypesList = new ObservableCollection<MotorSettingsData>(motorSettingsList);
-			ControllerTypesList = new ObservableCollection<ControllerSettingsData>(controllerSettingsList);
 			StopScriptStep = stopScriptStep;
 			_canMessagesService = canMessagesService;
 
@@ -173,6 +170,7 @@ namespace ScriptRunner.Services
 
 
 			CreateSelectMotorType();
+
 			CreateStepFailed();
 		}
 
@@ -207,7 +205,7 @@ namespace ScriptRunner.Services
 				failedStepScript,
 				null,
 				StopScriptStep,
-				_selectMotor,
+				SelectMotor,
 				SaftyOfficer,
 				_devicesContainer,
 				_canMessagesService);
@@ -216,9 +214,9 @@ namespace ScriptRunner.Services
 
 		private void CreateSelectMotorType()
 		{
-			_selectMotor = new ScriptStepSelectMotorType();
-			_selectMotor.StopScriptStep = StopScriptStep;
-			_selectMotor.Description = "Select Motor Type";
+			SelectMotor = new ScriptStepSelectMotorType();
+			SelectMotor.StopScriptStep = StopScriptStep;
+			SelectMotor.Description = "Select Motor Type";
 
 			if (_devicesContainer.TypeToDevicesFullData.ContainsKey(Entities.Enums.DeviceTypesEnum.MCU) == false)
 			{
@@ -227,12 +225,9 @@ namespace ScriptRunner.Services
 
 			DeviceFullData mcu_deviceFullData = _devicesContainer.TypeToDevicesFullData[Entities.Enums.DeviceTypesEnum.MCU];
 
-			_selectMotor.MCU_Device = mcu_deviceFullData.Device as MCU_DeviceData;
-			_selectMotor.Communicator = mcu_deviceFullData.DeviceCommunicator;
+			SelectMotor.MCU_Device = mcu_deviceFullData.Device as MCU_DeviceData;
+			SelectMotor.Communicator = mcu_deviceFullData.DeviceCommunicator;
 
-
-			if (MotorTypesList == null || ControllerTypesList == null)
-				return;
 		}
 
 
@@ -278,8 +273,6 @@ namespace ScriptRunner.Services
 
 			ClearScriptStepsState(currentScript);
 
-			SetOfMotorType();
-
 
 
 
@@ -290,7 +283,7 @@ namespace ScriptRunner.Services
 				currentScript,
 				null,
 				StopScriptStep,
-				_selectMotor,
+				SelectMotor,
 				SaftyOfficer,
 				_devicesContainer,
 				_canMessagesService);
@@ -356,12 +349,6 @@ namespace ScriptRunner.Services
 				CurrentScript = null;
 
 			ScriptEndedEvent?.Invoke(stopMode);
-		}
-
-		private void SetOfMotorType()
-		{
-			_selectMotor.SelectedMotor = SelectedMotor;
-			_selectMotor.SelectedController = SelectedController;
 		}
 
 		private void ScriptEndedEventHandler(bool isAborted)
@@ -514,7 +501,7 @@ namespace ScriptRunner.Services
 					sweepItem.SubScript as GeneratedScriptData,
 					null,
 					StopScriptStep,
-					_selectMotor,
+					SelectMotor,
 					SaftyOfficer,
 					_devicesContainer,
 					_canMessagesService);

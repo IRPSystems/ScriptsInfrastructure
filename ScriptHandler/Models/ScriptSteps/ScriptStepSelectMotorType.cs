@@ -4,6 +4,9 @@ using DeviceCommunicators.MCU;
 using Entities.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
+using ScriptHandler.Services;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Windows;
@@ -21,6 +24,13 @@ namespace ScriptHandler.Models
 		public MotorSettingsData SelectedMotor { get; set; }
 		[JsonIgnore]
 		public ControllerSettingsData SelectedController { get; set; }
+
+		[JsonIgnore]
+		public ObservableCollection<MotorSettingsData> MotorTypesList { get; set; }
+		[JsonIgnore]
+		public ObservableCollection<ControllerSettingsData> ControllerTypesList { get; set; }
+
+
 		[JsonIgnore]
 		public DeviceCommunicator Communicator { get; set; }
 
@@ -42,6 +52,12 @@ namespace ScriptHandler.Models
 		public ScriptStepSelectMotorType()
 		{
 			Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
+
+			UpdateLists(
+				@"Data\Motor Security Command Parameters.xlsx",
+				@"Data\Motor Security Status Parameters.xlsx",
+				@"Data\Controller Security Command Parameters.xlsx",
+				@"Data\Controller Security Status Parameters.xlsx");
 
 
 			_isStopped = false;
@@ -191,6 +207,27 @@ namespace ScriptHandler.Models
 			
 
 			
+		}
+
+
+		public void UpdateLists(
+			string motorCommandPath,
+			string motorStatusPath,
+			string controllerCommandPath,
+			string controllerStatusPath)
+		{
+			ReadingMotorSettingsService readingMotorSettings = new ReadingMotorSettingsService();
+			List<MotorSettingsData> motorSettingsList = readingMotorSettings.GetMotorSettings(
+				motorCommandPath,
+				motorStatusPath);
+			MotorTypesList = new ObservableCollection<MotorSettingsData>(motorSettingsList);
+
+			ReadingControllerSettingsService readingControllerSettings = new ReadingControllerSettingsService();
+			List<ControllerSettingsData> controllerSettingsList =
+				readingControllerSettings.GetMotorSettings(
+					controllerCommandPath,
+					controllerStatusPath);
+			ControllerTypesList = new ObservableCollection<ControllerSettingsData>(controllerSettingsList);
 		}
 
 		#endregion Methods

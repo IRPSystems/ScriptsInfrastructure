@@ -62,13 +62,13 @@ namespace ScriptRunner.Services
 				End(ScriptStopModeEnum.Ended, null);
 				return false;
 			}
-			else if (_runScript.SelectedController == null)
+			else if (_runScript.SelectMotor.SelectedController == null)
 			{
 				MessageBox.Show("Please select the controller type", "Run Script");
 				End(ScriptStopModeEnum.Ended, null);
 				return false;
 			}
-			else if (_runScript.SelectedMotor == null)
+			else if (_runScript.SelectMotor.SelectedMotor == null)
 			{
 				MessageBox.Show("Please select the motor type", "Run Script");
 				End(ScriptStopModeEnum.Ended, null);

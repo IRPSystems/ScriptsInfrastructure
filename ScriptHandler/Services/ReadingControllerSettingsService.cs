@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace ScriptRunner.Services
+namespace ScriptHandler.Services
 {
 	public class ReadingControllerSettingsService : ObservableObject
 	{

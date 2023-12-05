@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Shapes;
 
-namespace ScriptRunner.Services
+namespace ScriptHandler.Services
 {
 	public class ReadingMotorSettingsService: ObservableObject
 	{
