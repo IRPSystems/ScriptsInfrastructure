@@ -53,11 +53,10 @@ namespace ScriptHandler.Models
 		{
 			Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
 
-			UpdateLists(
-				@"Data\Motor Security Command Parameters.xlsx",
-				@"Data\Motor Security Status Parameters.xlsx",
-				@"Data\Controller Security Command Parameters.xlsx",
-				@"Data\Controller Security Status Parameters.xlsx");
+			UpdateMotorList(
+				@"Data\Motor Security Command Parameters.xlsx");
+			UpdateControllerList(
+				@"Data\Controller Security Command Parameters.xlsx");
 
 
 			_isStopped = false;
@@ -210,28 +209,36 @@ namespace ScriptHandler.Models
 		}
 
 
-		public void UpdateLists(
-			string motorCommandPath,
-			string motorStatusPath,
-			string controllerCommandPath,
-			string controllerStatusPath)
+		public void UpdateMotorList(string motorCommandPath)
 		{
-			ReadingMotorSettingsService readingMotorSettings = new ReadingMotorSettingsService();
-			List<MotorSettingsData> motorSettingsList = readingMotorSettings.GetMotorSettings(
-				motorCommandPath,
-				motorStatusPath);
-			MotorTypesList = new ObservableCollection<MotorSettingsData>(motorSettingsList);
+			if (string.IsNullOrWhiteSpace(motorCommandPath) == false)
+			{
+				ReadingMotorSettingsService readingMotorSettings = new ReadingMotorSettingsService();
+				List<MotorSettingsData> motorSettingsList = readingMotorSettings.GetMotorSettings(
+					motorCommandPath,
+					@"Data\Motor Security Status Parameters.xlsx");
+				MotorTypesList = new ObservableCollection<MotorSettingsData>(motorSettingsList);
+			}
+		}
 
-			ReadingControllerSettingsService readingControllerSettings = new ReadingControllerSettingsService();
-			List<ControllerSettingsData> controllerSettingsList =
-				readingControllerSettings.GetMotorSettings(
-					controllerCommandPath,
-					controllerStatusPath);
-			ControllerTypesList = new ObservableCollection<ControllerSettingsData>(controllerSettingsList);
+
+
+		public void UpdateControllerList(string controllerCommandPath)
+		{
+			
+			if (string.IsNullOrWhiteSpace(controllerCommandPath) == false)
+			{
+				ReadingControllerSettingsService readingControllerSettings = new ReadingControllerSettingsService();
+				List<ControllerSettingsData> controllerSettingsList =
+					readingControllerSettings.GetMotorSettings(
+						controllerCommandPath,
+						@"Data\Controller Security Status Parameters.xlsx");
+				ControllerTypesList = new ObservableCollection<ControllerSettingsData>(controllerSettingsList);
+			}
 		}
 
 		#endregion Methods
 
-		
+
 	}
 }
