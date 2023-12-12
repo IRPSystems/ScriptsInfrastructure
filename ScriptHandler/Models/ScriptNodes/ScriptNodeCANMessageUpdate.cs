@@ -75,7 +75,7 @@ namespace ScriptHandler.Models.ScriptNodes
 		{
 			get
 			{
-				return "Update message 0x" + CANID.ToString("X") + "-0x" + Payload.NumericValue.ToString("X") + " - ID:" + ID;
+				return "Update message - " + MessageName + " - " + "0x" + CANID.ToString("X") + "-0x" + Payload.NumericValue.ToString("X") + " - ID:" + ID;
 			}
 		}
 
@@ -117,6 +117,7 @@ namespace ScriptHandler.Models.ScriptNodes
 				return;
 
 			CANID = canMessage.CANID;
+			MessageName = canMessage.MessageName;
 			IsDBCFile = canMessage.IsDBCFile;
 			IsFreeStyle = canMessage.IsFreeStyle;
 			DBCFilePath = canMessage.DBCFilePath;

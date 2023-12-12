@@ -440,23 +440,28 @@
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="10" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="10" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
 
-            
-
-
-            <ContentControl Name="ccRepeats" Grid.Row="0" Grid.ColumnSpan="3" Content="{Binding}" ContentTemplate="{StaticResource RepeatesSelectionTemplate}" />
-
-
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Name" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding MessageName}" />
 
             <Line Grid.Row="1" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}"/>
 
 
-            <ContentControl Grid.Row="2" Grid.ColumnSpan="3" Content="{Binding Content, ElementName=ccRepeats}" ContentTemplate="{StaticResource PayloadTemplate}" />
+            <ContentControl Name="ccRepeats" Grid.Row="2" Grid.ColumnSpan="3" Content="{Binding}" ContentTemplate="{StaticResource RepeatesSelectionTemplate}" />
+
+
+
+            <Line Grid.Row="3" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}"/>
+
+
+            <ContentControl Grid.Row="4" Grid.ColumnSpan="3" Content="{Binding Content, ElementName=ccRepeats}" ContentTemplate="{StaticResource PayloadTemplate}" />
 
         </Grid>
 

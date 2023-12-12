@@ -22,6 +22,7 @@ namespace ScriptHandler.Models.ScriptNodes
 		
 
 		public uint CANID { get; set; }
+		public string MessageName { get; set; }
 
 		[Obsolete]
 		[JsonIgnore]
@@ -108,7 +109,7 @@ namespace ScriptHandler.Models.ScriptNodes
 		{
 			get
 			{
-				return "CAN Message - " + "0x" + CANID.ToString("X") + "-0x" + Payload.NumericValue.ToString("X") + " - ID:" + ID;
+				return "CAN Message - " + MessageName + " - " + "0x" + CANID.ToString("X") + "-0x" + Payload.NumericValue.ToString("X") + " - ID:" + ID;
 			}
 		}
 

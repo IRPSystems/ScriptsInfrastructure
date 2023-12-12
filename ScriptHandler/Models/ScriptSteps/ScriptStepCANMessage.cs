@@ -26,6 +26,7 @@ namespace ScriptHandler.Models
 
 		public uint NodeId { get; set; }
 
+		public string MessageName { get; set; }
 
 		#region Repeat
 
@@ -298,6 +299,7 @@ namespace ScriptHandler.Models
 			DevicesContainer devicesContainer)
 		{
 			NodeId = (sourceNode as ScriptNodeCANMessage).CANID;
+			MessageName = (sourceNode as ScriptNodeCANMessage).MessageName;
 			IsOneTime = (sourceNode as ScriptNodeCANMessage).IsOneTime;
 			IsCyclic = (sourceNode as ScriptNodeCANMessage).IsCyclic;
 			Interval = (sourceNode as ScriptNodeCANMessage).Interval;

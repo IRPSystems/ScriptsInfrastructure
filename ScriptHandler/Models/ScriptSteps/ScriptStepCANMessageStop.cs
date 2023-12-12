@@ -16,8 +16,9 @@ namespace ScriptHandler.Models
 		public ScriptStepCANMessage StepToStop { get; set; }
 
 		public uint CANID { get; set; }
+		public string MessageName { get; set; }
 
-		
+
 
 		public override void Execute()
 		{
@@ -44,7 +45,10 @@ namespace ScriptHandler.Models
 			DevicesContainer devicesContainer)
 		{
 			if ((sourceNode as ScriptNodeStopContinuous).StepToStop is ScriptNodeCANMessage canMessage)
+			{
 				CANID = canMessage.CANID;
+				MessageName = canMessage.MessageName;
+			}
 		}
 	}
 }

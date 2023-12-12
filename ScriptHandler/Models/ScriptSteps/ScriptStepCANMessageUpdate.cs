@@ -17,6 +17,7 @@ namespace ScriptHandler.Models
 		public ScriptStepCANMessage StepToUpdate { get; set; }
 
 		public uint CANID { get; set; }
+		public string MessageName { get; set; }
 
 		public ulong Payload { get; set; }
 
@@ -59,6 +60,7 @@ namespace ScriptHandler.Models
 			Payload = (sourceNode as ScriptNodeCANMessageUpdate).Payload.NumericValue;
 
 			CANID = (sourceNode as ScriptNodeCANMessageUpdate).CANID;
+			MessageName = (sourceNode as ScriptNodeCANMessageUpdate).MessageName;
 
 			Interval = (sourceNode as ScriptNodeCANMessageUpdate).Interval;
 			IntervalUnite = (sourceNode as ScriptNodeCANMessageUpdate).IntervalUnite;
