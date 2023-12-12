@@ -16,7 +16,6 @@ namespace ScriptHandler.Models
 		public ScriptStepCANMessage StepToStop { get; set; }
 
 		public uint CANID { get; set; }
-		public string MessageName { get; set; }
 
 
 
