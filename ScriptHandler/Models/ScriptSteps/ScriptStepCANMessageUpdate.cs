@@ -17,7 +17,6 @@ namespace ScriptHandler.Models
 		public ScriptStepCANMessage StepToUpdate { get; set; }
 
 		public uint CANID { get; set; }
-		public string MessageName { get; set; }
 
 		public ulong Payload { get; set; }
 
