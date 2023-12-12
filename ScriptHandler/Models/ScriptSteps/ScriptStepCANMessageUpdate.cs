@@ -59,7 +59,6 @@ namespace ScriptHandler.Models
 			Payload = (sourceNode as ScriptNodeCANMessageUpdate).Payload.NumericValue;
 
 			CANID = (sourceNode as ScriptNodeCANMessageUpdate).CANID;
-			MessageName = (sourceNode as ScriptNodeCANMessageUpdate).MessageName;
 
 			Interval = (sourceNode as ScriptNodeCANMessageUpdate).Interval;
 			IntervalUnite = (sourceNode as ScriptNodeCANMessageUpdate).IntervalUnite;

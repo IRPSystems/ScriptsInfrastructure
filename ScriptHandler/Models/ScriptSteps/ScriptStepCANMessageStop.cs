@@ -47,7 +47,6 @@ namespace ScriptHandler.Models
 			if ((sourceNode as ScriptNodeStopContinuous).StepToStop is ScriptNodeCANMessage canMessage)
 			{
 				CANID = canMessage.CANID;
-				MessageName = canMessage.MessageName;
 			}
 		}
 	}
