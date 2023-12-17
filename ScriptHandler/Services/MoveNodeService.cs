@@ -14,7 +14,7 @@ namespace ScriptHandler.Services
 
 		public bool MoveNode(
 			ScriptNodeBase dropped_scriptNodeBase,
-			int indexOfDroppedOn,
+			ScriptNodeBase droppedOnItem,
 			ObservableCollection<IScriptItem> scriptNodeList,
 #if _USE_OLD_DIAGRAM
 			ScriptDiagramViewModel scriptDiagram
@@ -25,17 +25,14 @@ namespace ScriptHandler.Services
 		{
 			int indexOfDroppedItem = scriptNodeList.IndexOf(dropped_scriptNodeBase);
 
-			if (indexOfDroppedOn == indexOfDroppedItem)
-				return false;
 
 			List<IScriptItem> list = scriptNodeList.ToList().Where((i) => ((ScriptNodeBase)i).FailNextId == dropped_scriptNodeBase.ID).ToList();
 			
 
 			IScriptItem droppedItem = dropped_scriptNodeBase;
-			IScriptItem droppedOn = null;
-			if(indexOfDroppedOn > -1)
-				droppedOn = scriptNodeList[indexOfDroppedOn];
 			scriptNodeList.RemoveAt(indexOfDroppedItem);
+
+			int indexOfDroppedOn = scriptNodeList.IndexOf(droppedOnItem);
 
 			if (indexOfDroppedOn > -1)
 				scriptNodeList.Insert(indexOfDroppedOn, droppedItem);
@@ -48,7 +45,6 @@ namespace ScriptHandler.Services
 				scriptNodeList);
 
 			SetPassNextInOldLocation(
-				indexOfDroppedOn,
 				indexOfDroppedItem,
 				scriptNodeList);
 
@@ -65,7 +61,7 @@ namespace ScriptHandler.Services
 			{
 				scriptDiagram.MoveNode(
 					droppedItem,
-					droppedOn);
+					droppedOnItem);
 			}
 
 
@@ -77,6 +73,14 @@ namespace ScriptHandler.Services
 			int indexOfDroppedOn,
 			ObservableCollection<IScriptItem> scriptNodeList)
 		{
+			if(indexOfDroppedOn < 0)
+			{
+				scriptNodeList[scriptNodeList.Count - 1].PassNext = null;
+				scriptNodeList[scriptNodeList.Count - 2].PassNext =
+					scriptNodeList[scriptNodeList.Count - 1];
+				return;
+			}
+
 			if(indexOfDroppedOn > 0)
 				scriptNodeList[indexOfDroppedOn - 1].PassNext = scriptNodeList[indexOfDroppedOn];
 
@@ -92,7 +96,6 @@ namespace ScriptHandler.Services
 		}
 
 		private void SetPassNextInOldLocation(
-			int indexOfDroppedOn,
 			int indexOfDroppedItem,
 			ObservableCollection<IScriptItem> scriptNodeList)
 		{
@@ -100,11 +103,13 @@ namespace ScriptHandler.Services
 				return;
 
 			if (indexOfDroppedItem == (scriptNodeList.Count - 1))
+			{
 				scriptNodeList[indexOfDroppedItem].PassNext = null;
-			else if (indexOfDroppedOn < indexOfDroppedItem)
-				scriptNodeList[indexOfDroppedItem].PassNext = scriptNodeList[indexOfDroppedItem + 1];
-			else
-				scriptNodeList[indexOfDroppedItem - 1].PassNext = scriptNodeList[indexOfDroppedItem];
+				return;
+			}
+
+			scriptNodeList[indexOfDroppedItem - 1].PassNext = scriptNodeList[indexOfDroppedItem];
+			scriptNodeList[indexOfDroppedItem].PassNext = scriptNodeList[indexOfDroppedItem + 1];
 		}
 
 

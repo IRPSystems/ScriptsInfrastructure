@@ -713,7 +713,11 @@ namespace ScriptHandler.ViewModels
 			bool isUp = replaceItemIndex < itemIndex;
 
 			NodeViewModel tempNode = NodesList[itemIndex];
-			NodesList.RemoveAt(itemIndex);
+			NodesList.Remove(itemNode);
+
+			replaceItemIndex = -1;
+			if (replaceItemNode != null)
+				replaceItemIndex = NodesList.IndexOf(replaceItemNode);
 
 			if (replaceItem is ISubScript replaceSubScript)
 			{
@@ -731,7 +735,7 @@ namespace ScriptHandler.ViewModels
 			if (isUp && isLastItem)
 				replaceItemIndex--;
 
-			if (isLastItem)
+			if (replaceItemIndex < 0)
 				NodesList.Add(tempNode);
 			else
 				NodesList.Insert(replaceItemIndex, tempNode);
@@ -791,7 +795,7 @@ namespace ScriptHandler.ViewModels
 				NodeViewModel tempNode = GetItemNode(subItem);
 				NodesList.Remove(tempNode);
 
-				if (placementIndex < NodesList.Count)
+				if (placementIndex < NodesList.Count && placementIndex >= 0)
 					NodesList.Insert(placementIndex, tempNode);
 				else
 					NodesList.Add(tempNode);
