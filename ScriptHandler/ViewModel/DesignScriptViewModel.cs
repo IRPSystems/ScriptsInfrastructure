@@ -413,10 +413,9 @@ namespace ScriptHandler.ViewModels
 						}
 					}
 
-					int indexOfDroppedOn = GetNewNodePosition(e);
-					if (indexOfDroppedOn < 0)
-						return;
-					bool isContinue = MoveNode(indexOfDroppedOn);
+					ScriptNodeBase droppedOnNode;
+					int indexOfDroppedOn = GetNewNodePosition(e, out droppedOnNode);
+					bool isContinue = MoveNode(droppedOnNode);
 					if (!isContinue)
 						return;
 
@@ -556,12 +555,8 @@ namespace ScriptHandler.ViewModels
 
 				IEnumerator enumerator = _selectedItems.GetEnumerator();
 				enumerator.MoveNext();
-				int index = ScriptNodeList.IndexOf(enumerator.Current as IScriptItem);
 
-				if (index == 0)
-					return;
-
-				MoveNode(index - 1);
+				MoveNode(enumerator.Current as ScriptNodeBase);
 
 				IsChanged = true;
 			}
@@ -583,12 +578,8 @@ namespace ScriptHandler.ViewModels
 
 				IEnumerator enumerator = _selectedItems.GetEnumerator();
 				enumerator.MoveNext();
-				int index = ScriptNodeList.IndexOf(enumerator.Current as IScriptItem);
 
-				if ((index + _selectedItems.Count) == ScriptNodeList.Count)
-					return;
-
-				MoveNode(index + _selectedItems.Count);
+				MoveNode(enumerator.Current as ScriptNodeBase);
 
 				IsChanged = true;
 			}
@@ -941,9 +932,9 @@ namespace ScriptHandler.ViewModels
 			{
 				sweep.Parent = CurrentScript.Parent as ProjectData;
 			}
-			
 
-			int indexToInsertNode = GetNewNodePosition(e);
+			ScriptNodeBase droppedOnNode;
+			int indexToInsertNode = GetNewNodePosition(e, out droppedOnNode);
 			IScriptItem replacedItem = null;
 			if ((indexToInsertNode + 1) < ScriptNodeList.Count)
 				replacedItem = ScriptNodeList[indexToInsertNode + 1];
@@ -988,12 +979,14 @@ namespace ScriptHandler.ViewModels
 		}
 
 
-		private int GetNewNodePosition(DragEventArgs e)
+		private int GetNewNodePosition(
+			DragEventArgs e,
+			out ScriptNodeBase dropedOnNode)
 		{
-			if(e == null)
+			dropedOnNode = null;
+			if (e == null)
 				return -1;
 
-			ScriptNodeBase dropedOnNode = null;
 			ListViewItem listViewItem =
 						FindAncestorService.FindAncestor<ListViewItem>((DependencyObject)e.OriginalSource);
 			if (listViewItem != null)
@@ -1010,7 +1003,7 @@ namespace ScriptHandler.ViewModels
 
 
 
-		private bool MoveNode(int indexOfDroppedOn)
+		private bool MoveNode(ScriptNodeBase droppedOnNode)
 		{		
 
 			
@@ -1027,7 +1020,7 @@ namespace ScriptHandler.ViewModels
 			{
 				bool res = _moveNodeService.MoveNode(
 					item,
-					indexOfDroppedOn,
+					droppedOnNode,
 					ScriptNodeList,
 					ScriptDiagram);
 			}
