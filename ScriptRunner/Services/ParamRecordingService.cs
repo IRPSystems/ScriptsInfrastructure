@@ -208,7 +208,7 @@ namespace ScriptRunner.Services
 
 
 
-				IsRecording = true;
+				
 
 				foreach (DeviceParameterData data in LogParametersList)
 				{
@@ -231,6 +231,8 @@ namespace ScriptRunner.Services
 
 				HandleLogParam();
 
+				IsRecording = true;
+
 				Application.Current.Dispatcher.Invoke(() =>
 				{
 					Mouse.OverrideCursor = null;
@@ -249,6 +251,8 @@ namespace ScriptRunner.Services
 
 		public void StopRecording()
 		{
+			if (!IsRecording)
+				return;
 
 			lock (_lockObj)
 			{
@@ -262,6 +266,8 @@ namespace ScriptRunner.Services
 				if(_cancellationTokenSource != null)
 					_cancellationTokenSource.Cancel();
 			}
+
+			
 
 			foreach (DeviceParameterData data in LogParametersList)
 			{
