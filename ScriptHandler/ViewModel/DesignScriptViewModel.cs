@@ -387,7 +387,7 @@ namespace ScriptHandler.ViewModels
 							columnData.Parameter = param;
 						}
 					}
-					else if (listViewItem.DataContext is IScriptNodeWithParam withParam)
+					else if (listViewItem.DataContext is IScriptStepWithParameter withParam)
 					{
 						withParam.Parameter = param;
 					}
@@ -691,7 +691,7 @@ namespace ScriptHandler.ViewModels
 
 				foreach (ScriptNodeBase scriptNode in CurrentScript.ScriptItemsList)
 				{
-					if (scriptNode is IScriptNodeWithParam withParam &&
+					if (scriptNode is IScriptStepWithParameter withParam &&
 						withParam.Parameter != null)
 					{
 						DeviceParameterData data = GetParameter(
@@ -1268,7 +1268,7 @@ namespace ScriptHandler.ViewModels
 
 			foreach (IScriptItem item in list)
 			{
-				if(item is IScriptNodeWithParam withParam &&
+				if(item is IScriptStepWithParameter withParam &&
 					withParam.Parameter != null)
 				{
 					if(withParam.Parameter.Device == null) 

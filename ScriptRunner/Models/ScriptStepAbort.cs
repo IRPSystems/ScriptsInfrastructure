@@ -50,7 +50,7 @@ namespace ScriptRunner.Models
 
 			foreach (ScriptNodeBase scriptNode in sd.ScriptItemsList)
 			{
-				if (scriptNode is IScriptNodeWithParam withParam &&
+				if (scriptNode is IScriptStepWithParameter withParam &&
 					withParam.Parameter != null)
 				{
 					if (devicesContainer.TypeToDevicesFullData.ContainsKey(withParam.Parameter.DeviceType) == false)

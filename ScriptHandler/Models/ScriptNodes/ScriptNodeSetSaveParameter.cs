@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace ScriptHandler.Models.ScriptNodes
 {
-	public class ScriptNodeSetSaveParameter : ScriptNodeBase, IScriptNodeWithParam
+	public class ScriptNodeSetSaveParameter : ScriptNodeBase, IScriptStepWithParameter
 	{
 		public ScriptNodeSetSaveParameter()
 		{

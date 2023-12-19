@@ -102,7 +102,7 @@ namespace ScriptHandler.Services
 						ref usedCommunicatorsList);
                 }
 
-                if (node is IScriptNodeWithParam withParam &&
+                if (node is IScriptStepWithParameter withParam &&
                     withParam.Parameter != null &&
 					devicesContainer.TypeToDevicesFullData.ContainsKey(withParam.Parameter.DeviceType))
                 {
@@ -189,7 +189,7 @@ namespace ScriptHandler.Services
             ref string errorString)
         {
 
-            if (!(scriptNode is IScriptNodeWithParam withParam))
+            if (!(scriptNode is IScriptStepWithParameter withParam))
                 return true;
 
             if (withParam.Parameter == null)

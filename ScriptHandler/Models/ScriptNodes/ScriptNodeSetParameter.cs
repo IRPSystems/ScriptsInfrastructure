@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 
 namespace ScriptHandler.Models.ScriptNodes
 {
-	public class ScriptNodeSetParameter : ScriptNodeBase, IScriptNodeWithParam
+	public class ScriptNodeSetParameter : ScriptNodeBase, IScriptStepWithParameter
 	{
 		public ScriptNodeSetParameter()
 		{

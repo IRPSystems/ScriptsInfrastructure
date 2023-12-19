@@ -74,7 +74,7 @@ namespace ScriptHandler.Services
 			DevicesContainer devicesContainer)
 		{
 
-			if (!(scriptNode is IScriptNodeWithParam withParam))
+			if (!(scriptNode is IScriptStepWithParameter withParam))
 				return true;
 
 			if (withParam.Parameter == null)

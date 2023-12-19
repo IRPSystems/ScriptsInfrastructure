@@ -1,5 +1,6 @@
 ﻿using Controls.Views;
 using ScriptHandler.Models;
+using ScriptHandler.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,13 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ScriptHandler.Views
 {
@@ -23,6 +17,7 @@ namespace ScriptHandler.Views
 	/// </summary>
 	public partial class ErrorsListView : UserControl
 	{
+
 		public ErrorsListView()
 		{
 			InitializeComponent();
@@ -40,5 +35,19 @@ namespace ScriptHandler.Views
 		}
 
 		#endregion ErrorsList
+
+
+		#region ScriptName
+
+		public static readonly DependencyProperty ScriptNameProperty = DependencyProperty.Register(
+			"ScriptName", typeof(string), typeof(ErrorsListView));
+
+		public string ScriptName
+		{
+			get => (string)GetValue(ScriptNameProperty);
+			set => SetValue(ScriptNameProperty, value);
+		}
+
+		#endregion ScriptName
 	}
 }

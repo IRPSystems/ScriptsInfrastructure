@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 
 namespace ScriptHandler.Models.ScriptNodes
 {
-	public class ScriptNodeIncrementValue : ScriptNodeBase, IScriptNodeWithParam
+	public class ScriptNodeIncrementValue : ScriptNodeBase, IScriptStepWithParameter
 	{
 		private DeviceParameterData _parameter;
 		public DeviceParameterData Parameter

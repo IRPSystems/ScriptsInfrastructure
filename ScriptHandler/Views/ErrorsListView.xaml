@@ -49,42 +49,34 @@
     </UserControl.Resources>
     
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="{Binding ScriptName, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" />       
 
 
-        <TreeView ItemsSource="{Binding ErrorsList, 
-                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}">
 
-            <!--<TreeView.ItemContainerStyle>
-                <Style TargetType="TreeViewItem">
-                    <Setter Property="IsExpanded" Value="True" />
-                    <Setter Property="Height" Value="20" />
-                </Style>
-            </TreeView.ItemContainerStyle>
-            
+        <TreeView Grid.Row="1" ItemsSource="{Binding ErrorsList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" >
+
             <TreeView.Resources>
+                <Style TargetType="TreeView">
+                    <Style.Triggers>
 
-                
+                        <DataTrigger Binding="{Binding ErrorsList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" 
+                                     Value="{x:Null}">
 
-                <HierarchicalDataTemplate DataType="{x:Type models:InvalidScriptData}" 
-                                          ItemsSource="{Binding ErrorsList}" >
-                    <TextBlock Text="{Binding Path=Name}" Margin="0,2" />
-                </HierarchicalDataTemplate>
-                <DataTemplate DataType="{x:Type models:InvalidScriptItemData}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="250" />
-                            <ColumnDefinition Width="5" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                            <Setter Property="Visibility" Value="Collapsed"/>
 
-                        <TextBlock Grid.Column="0" Text="{Binding Name}"/>
-                        <TextBlock Grid.Column="2" Text="{Binding ErrorString}"/>
-                    </Grid>
-                </DataTemplate>
-
-            </TreeView.Resources>-->
+                        </DataTrigger>
+                        
+                    </Style.Triggers>
+                </Style>
+            </TreeView.Resources>
             
         </TreeView>
-            
+
+        
     </Grid>
 </UserControl>

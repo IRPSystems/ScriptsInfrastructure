@@ -358,6 +358,8 @@ namespace ScriptHandler.ViewModels
 				foreach(DesignScriptViewModel vm in Explorer.Project.ScriptsList)
 					vm.IsChanged = false;
 
+
+				_generateErrorsListView.ScriptName = invalidScriptData.Name;
 				if (invalidScriptData.ErrorsList.Count > 0)
 				{
 					GenerateState = GenerateStateEnum.Fail;

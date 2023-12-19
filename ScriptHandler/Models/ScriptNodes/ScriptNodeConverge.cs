@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace ScriptHandler.Models.ScriptNodes
 {
-	public class ScriptNodeConverge : ScriptNodeBase, IScriptNodeWithParam
+	public class ScriptNodeConverge : ScriptNodeBase, IScriptStepWithParameter
 	{
 		public DeviceParameterData Parameter { get; set; }
 
