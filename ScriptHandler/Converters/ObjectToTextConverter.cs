@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System;
 using Entities.Models;
+using DeviceCommunicators.Models;
 
 namespace ScriptHandler.Converter
 {

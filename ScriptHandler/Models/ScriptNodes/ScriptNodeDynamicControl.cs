@@ -1,6 +1,7 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Entities.Models;
 using ExcelDataReader;

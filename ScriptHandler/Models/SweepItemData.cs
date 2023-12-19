@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using DeviceCommunicators.Models;
 using Entities.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Enums;

@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CsvHelper;
 using DeviceCommunicators.Enums;
+using DeviceCommunicators.Models;
 using DeviceCommunicators.NI_6002;
 using DeviceHandler.Enums;
 using DeviceHandler.Models;

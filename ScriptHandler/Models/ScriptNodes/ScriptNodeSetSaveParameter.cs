@@ -1,4 +1,5 @@
-﻿using DeviceHandler.Models;
+﻿using DeviceCommunicators.Models;
+using DeviceHandler.Models;
 using Entities.Models;
 using ScriptHandler.Interfaces;
 using System.Collections.ObjectModel;

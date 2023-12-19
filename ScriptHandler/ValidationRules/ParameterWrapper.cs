@@ -1,4 +1,5 @@
 ﻿
+using DeviceCommunicators.Models;
 using Entities.Models;
 using System.Windows;
 

@@ -4,6 +4,7 @@ using System.Windows.Data;
 using System;
 using Entities.Models;
 using System.Windows;
+using DeviceCommunicators.Models;
 
 namespace ScriptHandler.Converter
 {
