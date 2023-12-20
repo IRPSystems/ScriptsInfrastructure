@@ -3,10 +3,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CsvHelper;
 using DeviceCommunicators.Enums;
-using DeviceCommunicators.NI_6002;
+using DeviceCommunicators.Models;
 using DeviceHandler.Enums;
 using DeviceHandler.Models;
-using Entities.Models;
 using ScriptRunner.Models;
 using Services.Services;
 using System;
@@ -14,7 +13,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -65,6 +63,9 @@ namespace ScriptRunner.Services
 		private string _scriptName;
 		private string _date;
 		private string _version;
+
+		private DateTime _prevTime;
+		private double _secCounter;
 
 		#endregion Fields
 
@@ -188,7 +189,7 @@ namespace ScriptRunner.Services
 				
 
 
-				_csvWriter.WriteField("Time");
+				_csvWriter.WriteField("Time [sec]");
 				foreach (DeviceParameterData data in LogParametersList)
 				{
 					_csvWriter.WriteField(data.Name + " [" + data.Units + "]");
@@ -228,7 +229,7 @@ namespace ScriptRunner.Services
 				_cancellationTokenSource = new CancellationTokenSource();
 				_cancellationToken = _cancellationTokenSource.Token;
 
-
+				_secCounter = 0;
 				HandleLogParam();
 
 				IsRecording = true;
@@ -323,10 +324,15 @@ namespace ScriptRunner.Services
 							if (_currentLogListIndex >= _logListDataPool.Count)
 								_currentLogListIndex = 0;
 
-							// Get Unix time in seconds, including miliseconds
 							DateTime now = DateTime.UtcNow;
-							double unixTime = ((DateTimeOffset)now).ToUnixTimeMilliseconds();
-							_csvWriter.WriteField(unixTime / 1000.0);
+							if(_csvWriter.Row > 2)
+							{ 
+								TimeSpan diff = now - _prevTime;
+								_secCounter += diff.TotalSeconds;
+							}
+
+							_csvWriter.WriteField(_secCounter);
+							_prevTime = now;
 
 							foreach (DeviceParameterData paramData in LogParametersList)
 							{
