@@ -1,6 +1,7 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
 using DeviceCommunicators.General;
+using DeviceCommunicators.Models;
 using Entities.Models;
 
 namespace ScriptHandler.Models

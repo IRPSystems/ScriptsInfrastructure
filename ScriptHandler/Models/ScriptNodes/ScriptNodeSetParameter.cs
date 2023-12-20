@@ -1,5 +1,6 @@
 ﻿
 using DeviceCommunicators.EvvaDevice;
+using DeviceCommunicators.Models;
 using DeviceCommunicators.NI_6002;
 using DeviceCommunicators.SwitchRelay32;
 using DeviceHandler.Models;

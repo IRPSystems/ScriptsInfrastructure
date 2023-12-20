@@ -1,5 +1,6 @@
 ﻿
 
+using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Entities.Models;
 using ScriptHandler.Enums;

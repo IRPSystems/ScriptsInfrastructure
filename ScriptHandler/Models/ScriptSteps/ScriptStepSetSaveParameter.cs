@@ -16,6 +16,7 @@ using ScriptHandler.Services;
 using System.Collections.Generic;
 using ScriptHandler.Models.ScriptNodes;
 using System.Collections.ObjectModel;
+using DeviceCommunicators.Models;
 
 namespace ScriptHandler.Models
 {
