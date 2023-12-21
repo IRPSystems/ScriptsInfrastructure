@@ -1,6 +1,7 @@
 ﻿
 using DeviceCommunicators.General;
 using DeviceHandler.Models;
+using DeviceHandler.Models.DeviceFullDataModels;
 using Newtonsoft.Json;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;

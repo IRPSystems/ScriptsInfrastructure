@@ -17,6 +17,7 @@ using System.Windows;
 using System.Windows.Input;
 using DeviceHandler.Models;
 using DeviceCommunicators.Models;
+using DeviceHandler.Models.DeviceFullDataModels;
 
 namespace ScriptRunner.Services
 {

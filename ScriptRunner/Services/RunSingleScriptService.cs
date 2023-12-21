@@ -12,6 +12,7 @@ using ScriptHandler.Services;
 using System.Windows;
 using DeviceHandler.Models;
 using DeviceCommunicators.MCU;
+using DeviceHandler.Models.DeviceFullDataModels;
 
 namespace ScriptRunner.Services
 {

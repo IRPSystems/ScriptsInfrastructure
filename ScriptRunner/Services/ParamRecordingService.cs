@@ -6,6 +6,7 @@ using DeviceCommunicators.Enums;
 using DeviceCommunicators.Models;
 using DeviceHandler.Enums;
 using DeviceHandler.Models;
+using DeviceHandler.Models.DeviceFullDataModels;
 using ScriptRunner.Models;
 using Services.Services;
 using System;
