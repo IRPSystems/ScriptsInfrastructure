@@ -360,7 +360,7 @@
             <TextBlock Name="tbDBCFile" Grid.Row="4" Grid.Column="0" Text="DBC File" VerticalAlignment="Center"/>
             <Grid Name="grdDBCFile" Grid.Row="4" Grid.Column="2" Height="27">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="300" />
                     <ColumnDefinition Width="5" />
                     <ColumnDefinition Width="40" />
                     <ColumnDefinition Width="5" />
@@ -369,7 +369,7 @@
 
                 <TextBox Grid.Column="0" Text="{Binding DBCFilePath}" 
                          ToolTip="{Binding CANID}"
-                         HorizontalAlignment="Stretch"
+                         HorizontalAlignment="Left"
                          VerticalContentAlignment="Center"
                          Name="tbDBC"/>
                 <Button Grid.Column="2" 
@@ -383,7 +383,7 @@
 
             
             
-            <Line Grid.Row="5" Grid.ColumnSpan="4" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}"/>
+            <!--<Line Grid.Row="5" Grid.ColumnSpan="4" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}"/>-->
 
             <ContentControl Name="ccFreeStylePayload" Grid.Row="6" Grid.ColumnSpan="3" Content="{Binding}" ContentTemplate="{StaticResource FreeStylePayloadTemplate}" />
             
