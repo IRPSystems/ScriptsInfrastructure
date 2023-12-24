@@ -452,14 +452,42 @@ namespace ScriptHandler.ViewModels
 			}
 
 			Project.ScriptsPathsList.Remove(relativePath);
-
 			
-
 			File.Delete(script.CurrentScript.ScriptPath);
+
+			foreach (DesignScriptViewModel scriptVm in Project.ScriptsList)
+			{
+				DeleteScriptForSubScript(scriptVm, script);
+			}
 
 			PostLoadAllScripts();
 			SaveProject();
 			Project.IsChanged = false;
+		}
+
+		private void DeleteScriptForSubScript(
+			DesignScriptViewModel scriptVM,
+			DesignScriptViewModel deletedScript)
+		{
+			bool isSubScriptChanged = false;
+			foreach(ScriptNodeBase node in scriptVM.CurrentScript.ScriptItemsList)
+			{
+				if(node is ScriptNodeSubScript subScript)
+				{
+
+					if (subScript.Script == null || subScript.Script.Name != deletedScript.CurrentScript.Name)
+						continue;
+
+					subScript.Script = null;
+					subScript.SelectedScriptName = null;
+					isSubScriptChanged = true;
+				}
+			}
+
+			if(isSubScriptChanged)
+			{
+				scriptVM.DeletedSubScript();
+			}
 		}
 
 		private void CopyScript(DesignScriptViewModel script)

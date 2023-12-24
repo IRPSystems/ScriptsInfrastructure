@@ -91,7 +91,10 @@ namespace ScriptHandler.Models.ScriptNodes
 			set
 			{
 				if (value == null)
+				{
+					_script = value;
 					return;
+				}
 
 				if(ParentScriptName != null && value.Name == ParentScriptName) 
 				{

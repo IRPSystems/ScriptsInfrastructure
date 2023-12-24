@@ -1335,6 +1335,11 @@ namespace ScriptHandler.ViewModels
 			return parentsList;
 		}
 
+		public void DeletedSubScript()
+		{
+			ScriptDiagram.DrawScript(CurrentScript);
+		}
+
 		#endregion Methods
 
 		#region Commands
