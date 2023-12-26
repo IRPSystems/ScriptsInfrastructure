@@ -369,7 +369,7 @@
 
                 <TextBox Grid.Column="0" Text="{Binding DBCFilePath}" 
                          ToolTip="{Binding CANID}"
-                         HorizontalAlignment="Left"
+                         HorizontalAlignment="Stretch"
                          VerticalContentAlignment="Center"
                          Name="tbDBC"/>
                 <Button Grid.Column="2" 
