@@ -617,6 +617,8 @@ namespace ScriptHandler.ViewModels
 				subTitle = "New script name";
 			}
 
+			string oldName = vm.CurrentScript.Name;
+
 			string scriptName = GetScriptName(
 				title,
 				subTitle,
@@ -640,7 +642,10 @@ namespace ScriptHandler.ViewModels
 
 			foreach(DesignScriptViewModel scriptData in Project.ScriptsList)
 			{
-				HandleSubScriptInScript(scriptData.CurrentScript);
+				HandleRenamedSubScriptInScript(
+					scriptData.CurrentScript,
+					oldName,
+					scriptName);
 			}
 		}
 
@@ -792,6 +797,42 @@ namespace ScriptHandler.ViewModels
 		//		canMessage.IDInTest = id++;
 		//	}
 		//}
+
+		private void HandleRenamedSubScriptInScript(
+			ScriptData scriptData,
+			string oldName,
+			string newName)
+		{
+			if (scriptData == null)
+				return;
+
+			foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
+			{
+				if (!(node is ScriptNodeSubScript subScript))
+					continue;
+
+				subScript.Parent = Project;
+
+				if (subScript.SelectedScriptName != oldName)
+					continue;
+
+
+
+				foreach (DesignScriptViewModel vm in Project.ScriptsList)
+				{
+					if (!(vm.CurrentScript is ScriptData testSubScriptData))
+						continue;
+
+					if (testSubScriptData.Name == newName)
+					{
+						subScript.Script = testSubScriptData;
+					}
+				}
+
+				HandleSubScriptInScript(
+					subScript.Script as ScriptData);
+			}
+		}
 
 		private void HandleSubScriptInScript(ScriptData scriptData)
 		{
