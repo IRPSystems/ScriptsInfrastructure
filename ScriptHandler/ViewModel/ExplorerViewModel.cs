@@ -707,18 +707,7 @@ namespace ScriptHandler.ViewModels
 
 		#endregion Script path
 
-		private void GetProjectDynamicControl(
-			ScriptData scriptData)
-		{
-			foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
-			{
-				if (node is ScriptNodeDynamicControl dynamicControl)
-				{
-					dynamicControl.ReadFile();
-				}
-			}
-
-		}
+		
 
 		private void GetProjectCanMessages(
 			ScriptData scriptData)
@@ -789,14 +778,7 @@ namespace ScriptHandler.ViewModels
 
 		}
 
-		//private void SetCanMessageIDInTest(TestData testData)
-		//{
-		//	int id = 1;
-		//	foreach (ScriptNodeCANMessage canMessage in testData.CanMessagesList)
-		//	{
-		//		canMessage.IDInTest = id++;
-		//	}
-		//}
+		
 
 		private void HandleRenamedSubScriptInScript(
 			ScriptData scriptData,
@@ -1195,6 +1177,11 @@ namespace ScriptHandler.ViewModels
 				Project.ScriptsPathsList.Insert(droppedOnIndex, droppedPath);
 			else
 				Project.ScriptsPathsList.Add(droppedPath);
+
+			foreach(DesignScriptViewModel script in Project.ScriptsList) 
+			{
+				HandleSubScriptInScript(script.CurrentScript);
+			}
 
 			Project.IsChanged = true;
 		}
