@@ -10,14 +10,12 @@ using DeviceHandler.Models.DeviceFullDataModels;
 using ScriptRunner.Models;
 using Services.Services;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 
@@ -34,10 +32,7 @@ namespace ScriptRunner.Services
 
 		#region Fields
 
-		private const int _defaultAcquisitionTime = 5;
 
-		private List<ParameterLogListData> _logListDataPool;		
-		private int _currentLogListIndex;
 
 		private CancellationTokenSource _cancellationTokenSource;
 		private CancellationToken _cancellationToken;
@@ -50,7 +45,6 @@ namespace ScriptRunner.Services
 
 		public bool IsRecording;
 
-		//private System.Timers.Timer _recordingTimer;
 
 		private bool _isFirstReceived;
 		private int _receivedCounter;
@@ -79,19 +73,6 @@ namespace ScriptRunner.Services
 			LogParametersList = logParametersList;
 			_devicesContainer = devicesContainer;
 
-			
-
-			_logListDataPool = new List<ParameterLogListData>();
-			for (int i = 0; i < 1000; i++)
-			{
-				_logListDataPool.Add(new ParameterLogListData() { Values = new List<ParameterLogData>(), });
-			}
-
-			_currentLogListIndex = 0;
-
-			//_recordingTimer = new System.Timers.Timer(
-			//	1000 / _defaultAcquisitionTime);
-			//_recordingTimer.Elapsed += RecordingTimerElapsedEventHandler;
 
 			_getUUTData = new GetUUTDataForRecordingService();
 
@@ -206,7 +187,6 @@ namespace ScriptRunner.Services
 
 				_csvWriter.NextRecord();
 
-				_currentLogListIndex = 0;
 
 
 
@@ -318,12 +298,6 @@ namespace ScriptRunner.Services
 							if (_csvWriter == null)
 								break;
 
-							
-
-							
-
-							if (_currentLogListIndex >= _logListDataPool.Count)
-								_currentLogListIndex = 0;
 
 							DateTime now = DateTime.UtcNow;
 							if(_csvWriter.Row > 2)
@@ -379,15 +353,6 @@ namespace ScriptRunner.Services
 
 								_isFirstLineInFile = false;
 							}
-							//else
-							//{
-							//	_csvWriter.WriteField("");
-							//	_csvWriter.WriteField("");
-							//	_csvWriter.WriteField("");
-							//	_csvWriter.WriteField("");
-							//	_csvWriter.WriteField("");
-							//	_csvWriter.WriteField("");
-							//}
 
 							_csvWriter.NextRecord();
 							System.Threading.Thread.Sleep(1000 / RecordingRate);
@@ -401,35 +366,6 @@ namespace ScriptRunner.Services
 				}
 			}, _cancellationToken);
 		}
-
-		//private void RecordingTimerElapsedEventHandler(object sender, ElapsedEventArgs e)
-		//{
-		//	lock (_lockObj)
-		//	{
-		//		if (_csvWriter == null)
-		//			return;
-
-		//		if (_currentLogListIndex >= _logListDataPool.Count)
-		//			_currentLogListIndex = 0;
-
-		//		_csvWriter.WriteField(DateTime.Now.ToString("HH:mm:ss.fff"));
-
-		//		foreach (DeviceParameterData data in LogParametersList)
-		//		{
-
-		//			double value = Convert.ToDouble(data.Value);
-		//			//if (data is MCU_ParamData mcuParam)
-		//			//	value = value / mcuParam.Scale;
-		//			//else if (data is Dyno_ParamData dynoParam)
-		//			//	value = value / dynoParam.Coefficient;
-
-		//			_csvWriter.WriteField(value);
-		//		}
-
-		//		_csvWriter.NextRecord();
-		//	//	System.Threading.Thread.Sleep(200);
-		//	}
-		//}
 
 		#endregion Methods
 
