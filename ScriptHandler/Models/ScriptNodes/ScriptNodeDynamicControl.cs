@@ -299,37 +299,37 @@ namespace ScriptHandler.Models.ScriptNodes
 				return true;
 			}
 
-			InvalidScriptItemData invalidScriptItemData = new InvalidScriptItemData()
-			{
-				Name = Description
-			};
+			//InvalidScriptItemData invalidScriptItemData = new InvalidScriptItemData()
+			//{
+			//	Name = Description
+			//};
 
-			if (ColumnDatasList.Count > 0) 
-			{ 
-				foreach (DynamicControlColumnData item in ColumnDatasList) 
-				{
-					if(item.Parameter == null)
-					{
-						invalidScriptItemData.ErrorString = "No parameter set for \"" + item.ColHeader + "\"";
-						errorsList.Add(invalidScriptItemData);
-						continue;
-					}
+			//if (ColumnDatasList.Count > 0) 
+			//{ 
+			//	foreach (DynamicControlColumnData item in ColumnDatasList) 
+			//	{
+			//		if(item.Parameter == null)
+			//		{
+			//			invalidScriptItemData.ErrorString = "No parameter set for \"" + item.ColHeader + "\"";
+			//			errorsList.Add(invalidScriptItemData);
+			//			continue;
+			//		}
 
-					DeviceData deviceData =
-					   devicesContainer.TypeToDevicesFullData[item.Parameter.DeviceType].Device;
+			//		DeviceData deviceData =
+			//		   devicesContainer.TypeToDevicesFullData[item.Parameter.DeviceType].Device;
 
-					DeviceParameterData data = deviceData.ParemetersList.ToList().Find((p) => p.Name == item.Parameter.Name);
-					if (data == null)
-					{
-						if (item.Parameter == null)
-						{
-							string err = "The parameter \"" + item.Parameter.Name + "\" dosn't exist in the current " + deviceData.Name + " parameter file";
-							errorsList.Add(invalidScriptItemData);
-							continue;
-						}
-					}
-				}
-			}
+			//		DeviceParameterData data = deviceData.ParemetersList.ToList().Find((p) => p.Name == item.Parameter.Name);
+			//		if (data == null)
+			//		{
+			//			if (item.Parameter == null)
+			//			{
+			//				string err = "The parameter \"" + item.Parameter.Name + "\" dosn't exist in the current " + deviceData.Name + " parameter file";
+			//				errorsList.Add(invalidScriptItemData);
+			//				continue;
+			//			}
+			//		}
+			//	}
+			//}
 
 			return false;
 		}

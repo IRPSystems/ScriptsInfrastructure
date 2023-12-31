@@ -239,7 +239,7 @@
                                 <ControlTemplate TargetType="ListViewItem">
 
                                     <Grid>
-                                        <TextBlock Text="{Binding Parameter.Name}" Width="150"
+                                        <TextBlock Text="{Binding Parameter.Name}" Width="146"
                                                    VerticalAlignment="Center" Margin="5,0,0,0"/>
 
                                         <Line Y1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" 
@@ -290,6 +290,29 @@
                     
                 </DataGrid.Resources>
 
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+
+                            <DataTrigger Binding="{Binding LineState}" Value="Running">
+                                <Setter Property="BorderBrush" Value="Magenta" />
+                                <Setter Property="BorderThickness" Value="2" />
+                            </DataTrigger>
+
+                            <DataTrigger Binding="{Binding LineState}" Value="None">
+                                <Setter Property="BorderBrush" Value="Transparent" />
+                                <Setter Property="BorderThickness" Value="0" />
+                            </DataTrigger>
+
+                            <!--<DataTrigger Binding="{Binding LineState}" Value="Ended">
+                                <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Gray3}" />
+                                <Setter Property="BorderThickness" Value="1" />
+                            </DataTrigger>-->
+
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+
                 <DataGrid.Columns>
 
                     <DataGridTemplateColumn>
@@ -322,7 +345,7 @@
 
                                                         <ControlTemplate.Triggers>
 
-                                                            <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                                                            <!--<DataTrigger Binding="{Binding IsCurrent}" Value="True">
 
                                                                 <Setter TargetName="brdr" Property="BorderBrush" Value="Magenta" />
                                                                 <Setter TargetName="brdr" Property="BorderThickness" Value="2" />
@@ -334,7 +357,7 @@
                                                                 <Setter TargetName="brdr" Property="BorderBrush" Value="Transparent" />
                                                                 <Setter TargetName="brdr" Property="BorderThickness" Value="0" />
 
-                                                            </DataTrigger>
+                                                            </DataTrigger>-->
 
                                                         </ControlTemplate.Triggers>
 
@@ -358,6 +381,33 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                         
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="5" />
+                                        <ColumnDefinition Width="300" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid Grid.Column="2" >
+                                        <ProgressBar Value="{Binding LineTime.TimeoutPercentage}"
+                                                     Minimum="0"
+                                                     Maximum="100" />
+                                        <TextBlock Text="{Binding LineTime.TimeoutPercentage, StringFormat={}{0}%}" 
+                                                   VerticalAlignment="Center" 
+                                                   HorizontalAlignment="Center"
+                                                   Foreground="White"/>
+                                    </Grid>
+
+
+
+                                </Grid>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>                        
                     </DataGridTemplateColumn>
                     
                 </DataGrid.Columns>

@@ -70,6 +70,12 @@ namespace ScriptHandler.Models
 			_cancellationTokenSource = new CancellationTokenSource();
 			_cancellationToken = _cancellationTokenSource.Token;
 
+			foreach(DynamicControlFileLine fileLine in ExecuteLinesList) 
+			{
+				fileLine.LineState = Enums.SciptStateEnum.None;
+				fileLine.LineTime = new ScriptStepDelay() { IntervalUnite = Enums.TimeUnitsEnum.ms };
+			}
+
 			_linesCounter = 1;
 			_startTime = DateTime.Now;
 			Task executeTesk = Execute_Do();
@@ -90,6 +96,8 @@ namespace ScriptHandler.Models
 				{
 					DateTime startSend = DateTime.Now;
 					DynamicControlFileLine line = ExecuteLinesList[_linesCounter - 1];
+					line.LineState = Enums.SciptStateEnum.Running;
+					OnPropertyChanged(nameof(line.LineState));
 					DynamicControlFileLine lineNext = null;
 					if (_linesCounter < ExecuteLinesList.Count)
 						lineNext = ExecuteLinesList[_linesCounter];
@@ -104,7 +112,7 @@ namespace ScriptHandler.Models
 						_setParam.Value = line.ValuesList[i].Value;
 						line.ValuesList[i].IsCurrent = true;
 						_setParam.Execute();
-						line.ValuesList[i].IsCurrent = false;
+						//line.ValuesList[i].IsCurrent = false;
 						if (_setParam.IsPass == false)
 							break;
 					}
@@ -120,27 +128,22 @@ namespace ScriptHandler.Models
 						TimeSpan sendDiff = DateTime.Now - startSend;
 						TimeSpan lineDiff = lineNext.Time - line.Time;
 						double timeToWait = lineDiff.TotalMilliseconds - sendDiff.TotalMilliseconds;
-						if((int)timeToWait > 0)
+						line.LineTime.Interval = (int)timeToWait;
+						Task.Run(() => { line.LineTime.Execute(); });
+						if ((int)timeToWait > 0)
 							Task.Delay((int)timeToWait).Wait(_cancellationToken);
 					}
 
-					//list.Add((DateTime.Now - startSend, line.ValuesList[0], line.ValuesList[1], line.ValuesList[2]));
 
 					PercentageOfLines = (int)(((double)_linesCounter / (double)ExecuteLinesList.Count) * 100.0);
+
+					line.LineState = Enums.SciptStateEnum.Ended;
+					OnPropertyChanged(nameof(line.LineState));
 					OnPropertyChanged(nameof(PercentageOfLines));
 				}
 
 				if(_linesCounter >= ExecuteLinesList.Count)
 					IsPass = true;
-
-				//using(StreamWriter sw = new StreamWriter(@"C:\Users\smadar\Documents\Stam\DynamicControl.csv"))
-				//{
-				//	foreach((TimeSpan, double, double, double) line in list)
-				//	{
-				//		string str = line.Item1 + "," + line.Item2 + "," + line.Item3 + "," + line.Item4;
-				//		sw.WriteLine(str);
-				//	}
-				//}
 			});
 		}
 
