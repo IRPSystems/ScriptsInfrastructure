@@ -62,6 +62,8 @@ namespace ScriptHandler.ViewModels
 			CopyScriptCommand = new RelayCommand<DesignScriptViewModel>(CopyScript);
 			RenameScriptCommand = new RelayCommand<DesignScriptViewModel>(RenameScript);
 
+			SelectRecordingFileCommand = new RelayCommand(SelectRecordingFile);
+
 
 		}
 
@@ -1187,6 +1189,22 @@ namespace ScriptHandler.ViewModels
 		}
 
 
+		private void SelectRecordingFile()
+		{
+			OpenFileDialog openFileDialog = new OpenFileDialog();
+			openFileDialog.Filter = "JSON files (*.json)|*.json";
+			if (string.IsNullOrEmpty(Project.RecordParametersFilePath) == false)
+			{
+				string dir = Path.GetDirectoryName(Project.RecordParametersFilePath);
+				openFileDialog.InitialDirectory = dir;
+			}
+			bool? result = openFileDialog.ShowDialog();
+			if (result != true)
+				return;
+
+			Project.RecordParametersFilePath = openFileDialog.FileName;
+		}
+
 		#endregion Methods
 
 		#region Commands
@@ -1214,7 +1232,7 @@ namespace ScriptHandler.ViewModels
 
 
 
-
+		public RelayCommand SelectRecordingFileCommand { get; private set; }
 
 
 

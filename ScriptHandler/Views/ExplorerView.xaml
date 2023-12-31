@@ -102,9 +102,15 @@
 
         <Border Grid.Row="0"
                     Background="{Binding Project.IsChanged, Converter={StaticResource IsChangedToBackgroundConverter}}"                     
-                    Margin="0,1,0,1">
+                    Margin="0,1">
+            
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" 
+                <TextBlock Grid.Column="0" 
                            FontWeight="DemiBold"
                            Text="{Binding Project.Name}" 
                            Margin="5" 
@@ -113,19 +119,48 @@
                            ToolTip="{Binding Project.Name}"
                            Foreground="White">
 
-                <TextBlock.ContextMenu>
-                    <ContextMenu>
+                    <TextBlock.ContextMenu>
+                        <ContextMenu>
 
-                        <MenuItem Header="Add new Test" Command="{Binding Path=ProjectAddNewTestCommand}"/>
-                        <MenuItem Header="Add new Script" Command="{Binding Path=ProjectAddNewScriptCommand}"/>
-                        <MenuItem Header="Add existing" Command="{Binding Path=ProjectAddExistingCommand}"/>
-                        <MenuItem Header="Rename" Command="{Binding Path=ProjectRenameCommand}"/>
+                            <MenuItem Header="Add new Test" Command="{Binding Path=ProjectAddNewTestCommand}"/>
+                            <MenuItem Header="Add new Script" Command="{Binding Path=ProjectAddNewScriptCommand}"/>
+                            <MenuItem Header="Add existing" Command="{Binding Path=ProjectAddExistingCommand}"/>
+                            <MenuItem Header="Rename" Command="{Binding Path=ProjectRenameCommand}"/>
 
-                    </ContextMenu>
-                </TextBlock.ContextMenu>
+                        </ContextMenu>
+                    </TextBlock.ContextMenu>
 
-            </TextBlock>
+                </TextBlock>
 
+                <Button Grid.Column="1"
+                        Style="{StaticResource ButtonWithIconStyle}"
+                        Width="25"
+                        Height="25"
+                        Margin="0,1"
+                        ToolTip="Select recording file"
+                        Command="{Binding SelectRecordingFileCommand}"
+                        VerticalAlignment="Center">
+                    <iconPacks:Material Kind="Monitor" />
+                </Button>
+
+            </Grid>
+
+            <Border.Resources>
+
+                <Style TargetType="Border">
+                    <Style.Triggers>
+
+                        <DataTrigger Binding="{Binding Project}" Value="{x:Null}">
+
+                            <Setter Property="Visibility" Value="Collapsed" />
+
+                        </DataTrigger>
+                        
+                    </Style.Triggers>
+                </Style>
+                
+            </Border.Resources>
+            
         </Border>
 
 

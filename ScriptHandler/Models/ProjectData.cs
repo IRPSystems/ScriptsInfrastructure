@@ -36,6 +36,8 @@ namespace ScriptHandler.Models
 		[JsonIgnore]
 		public ObservableCollection<ScriptNodeCANMessage> CanMessagesList { get; set; }
 
+		public string RecordParametersFilePath { get; set; }
+
 		public bool IsChanged { get; set; }
 
         #endregion Properties

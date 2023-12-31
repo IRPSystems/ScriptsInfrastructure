@@ -6,6 +6,7 @@ using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Entities.Enums;
 using Entities.Models;
+using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models;
 using ScriptHandler.Models.ScriptNodes;
@@ -14,8 +15,6 @@ using Services.Services;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
-using System.Windows.Media;
 
 namespace ScriptHandler.Services
 {
@@ -29,8 +28,7 @@ namespace ScriptHandler.Services
             GeneratedProjectData generatedProject = new GeneratedProjectData()
             {
                 Name = projectData.Name,
-                TestsList = new ObservableCollection<GeneratedScriptData>(),
-                //StopScriptStep = new StopScriptStepService(),
+				TestsList = new ObservableCollection<GeneratedScriptData>(),
             };
 
 			List<DeviceCommunicator> usedCommunicatorsList = new List<DeviceCommunicator>();
@@ -56,7 +54,10 @@ namespace ScriptHandler.Services
 				generatedProject.TestsList.Add(generatedScript);
 			}
 
-            return generatedProject;
+			generatedProject.RecordingParametersList = GetReordingParamList(projectData);
+
+
+			return generatedProject;
         }
 
 
@@ -280,6 +281,23 @@ namespace ScriptHandler.Services
                 devicesContainer,
 				ref usedCommunicatorsList);
         }
+
+        private ObservableCollection<DeviceParameterData> GetReordingParamList(ProjectData projectData)
+        {
+
+            if (string.IsNullOrEmpty(projectData.RecordParametersFilePath))
+                return null;
+
+			string jsonString = System.IO.File.ReadAllText(projectData.RecordParametersFilePath);
+
+			JsonSerializerSettings settings = new JsonSerializerSettings();
+			settings.Formatting = Formatting.Indented;
+			settings.TypeNameHandling = TypeNameHandling.All;
+			ObservableCollection<DeviceParameterData> parametersList = JsonConvert.DeserializeObject(jsonString, settings) as
+				ObservableCollection<DeviceParameterData>;
+
+            return parametersList;
+		}
 
         #endregion Methods
     }
