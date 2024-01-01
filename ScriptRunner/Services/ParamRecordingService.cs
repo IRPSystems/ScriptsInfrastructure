@@ -67,17 +67,11 @@ namespace ScriptRunner.Services
 		#region Constructor
 
 		public ParamRecordingService(
-			ObservableCollection<DeviceParameterData> logParametersList,
 			DevicesContainer devicesContainer)
 		{
-			LogParametersList = logParametersList;
 			_devicesContainer = devicesContainer;
 
-
 			_getUUTData = new GetUUTDataForRecordingService();
-
-			WeakReferenceMessenger.Default.Register<RECORD_LIST_CHANGEDMessage>(
-				this, new MessageHandler<object, RECORD_LIST_CHANGEDMessage>(HandleRECORD_LIST_CHANGED));
 		}
 
 		#endregion Constructor
@@ -86,35 +80,31 @@ namespace ScriptRunner.Services
 
 		public void Dispose()
 		{
-			
 
-			foreach (DeviceParameterData data in LogParametersList)
+			if (LogParametersList != null)
 			{
-				DeviceFullData deviceFullData =
-					_devicesContainer.TypeToDevicesFullData[data.DeviceType];
-				if (deviceFullData == null)
-					continue;
+				foreach (DeviceParameterData data in LogParametersList)
+				{
+					DeviceFullData deviceFullData =
+						_devicesContainer.TypeToDevicesFullData[data.DeviceType];
+					if (deviceFullData == null)
+						continue;
 
-				deviceFullData.ParametersRepository.Remove(data, null);
+					deviceFullData.ParametersRepository.Remove(data, null);
+				}
 			}
 
 			_textWriter.Close();
 			_csvWriter.Dispose();
 		}
 
-		private void HandleRECORD_LIST_CHANGED(object sender, RECORD_LIST_CHANGEDMessage recordListChanged)
-		{
-			if (IsRecording)
-				return;
-
-			LogParametersList = recordListChanged.LogParametersList;
-			OnPropertyChanged(nameof(LogParametersList));
-		}
 
 		public void StartRecording(
 			string scriptName,
-			string recordingPath)
+			string recordingPath,
+			ObservableCollection<DeviceParameterData> logParametersList)
 		{
+			LogParametersList = logParametersList;
 			_scriptName = scriptName;
 
 			try
@@ -172,7 +162,7 @@ namespace ScriptRunner.Services
 
 
 				_csvWriter.WriteField("Time [sec]");
-				foreach (DeviceParameterData data in LogParametersList)
+				foreach (DeviceParameterData data in logParametersList)
 				{
 					_csvWriter.WriteField(data.Name + " [" + data.Units + "]");
 				}
@@ -192,7 +182,7 @@ namespace ScriptRunner.Services
 
 				
 
-				foreach (DeviceParameterData data in LogParametersList)
+				foreach (DeviceParameterData data in logParametersList)
 				{
 					if (_devicesContainer.TypeToDevicesFullData.ContainsKey(data.DeviceType) == false)
 						continue;

@@ -154,7 +154,6 @@ namespace ScriptRunner.Services
 			MainScriptLogger = new TestStudioLoggerService();
 
 			_paramRecording = new ParamRecordingService(
-				logParametersList,
 				devicesContainer);
 
 			SaftyOfficer = new SaftyOfficerService();
@@ -234,6 +233,7 @@ namespace ScriptRunner.Services
 
 
 		public void Run(
+			ObservableCollection<DeviceParameterData> logParametersList,
 			GeneratedScriptData currentScript,
 			string recordingPath,
 			bool isRecord)
@@ -243,7 +243,7 @@ namespace ScriptRunner.Services
 				step.StepState = SciptStateEnum.None;
 
 			if (isRecord)
-				_paramRecording.StartRecording(currentScript.Name, recordingPath);
+				_paramRecording.StartRecording(currentScript.Name, recordingPath, logParametersList);
 
 			//Application.Current.Dispatcher.Invoke(() =>
 			//{

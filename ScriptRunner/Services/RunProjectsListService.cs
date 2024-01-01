@@ -10,6 +10,8 @@ using ScriptRunner.Enums;
 using ScriptRunner.Models;
 using System.Windows;
 using ScriptHandler.Enums;
+using DeviceCommunicators.Models;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace ScriptRunner.Services
 {
@@ -31,23 +33,41 @@ namespace ScriptRunner.Services
 
 		private ObservableCollection<GeneratedProjectData> _projectsList;
 
+		private ObservableCollection<DeviceParameterData> _logParametersList;
+
+		private bool _isChangingLogParamList;
+
 		#endregion Fields
 
 		#region Constructor
 
 		public RunProjectsListService(
+			ObservableCollection<DeviceParameterData> logParametersList,
 			RunScriptService runScript,
 			DevicesContainer devicesContainer)
 		{
+			_logParametersList = logParametersList;
 			_runScript = runScript;
 			_devicesContainer = devicesContainer;
 
 			_runScript.ScriptEndedEvent += ScriptEndedEventHandler;
+
+			_isChangingLogParamList = false;
+			WeakReferenceMessenger.Default.Register<RECORD_LIST_CHANGEDMessage>(
+				this, new MessageHandler<object, RECORD_LIST_CHANGEDMessage>(HandleRECORD_LIST_CHANGED));
 		}
 
 		#endregion Constructor
 
 		#region Methods
+
+		private void HandleRECORD_LIST_CHANGED(object sender, RECORD_LIST_CHANGEDMessage recordListChanged)
+		{
+			if (_isChangingLogParamList)
+				return;
+
+			_logParametersList = recordListChanged.LogParametersList;
+		}
 
 		public void Dispose()
 		{
@@ -100,7 +120,7 @@ namespace ScriptRunner.Services
 			}
 
 			scriptData.State = SciptStateEnum.Running;
-			_runScript.Run(scriptData, null, isRecord);
+			_runScript.Run(_logParametersList, scriptData, null, isRecord);
 		}
 
 		public void StartAll(
@@ -170,6 +190,8 @@ namespace ScriptRunner.Services
 			ObservableCollection<GeneratedProjectData> projectsList,
 			bool isRecord)
 		{
+			ObservableCollection<DeviceParameterData> logParametersList = null;
+
 			Task.Run(() =>
 			{
 				while (!_cancellationToken.IsCancellationRequested)
@@ -188,6 +210,8 @@ namespace ScriptRunner.Services
 							break;
 						}
 
+						
+						
 
 						switch (_state)
 						{
@@ -198,6 +222,8 @@ namespace ScriptRunner.Services
 									_projectIndex++;
 									break;
 								}
+
+								logParametersList = InitRecordingListForProject(projectsList[_projectIndex]);
 
 								projectsList[_projectIndex].State = SciptStateEnum.Running;
 
@@ -226,6 +252,7 @@ namespace ScriptRunner.Services
 								Application.Current.Dispatcher.Invoke(() =>
 								{
 									_runScript.Run(
+										logParametersList,
 										testData,
 										projectsList[_projectIndex].RecordingPath,
 										isRecord);
@@ -267,9 +294,31 @@ namespace ScriptRunner.Services
 					{
 						LoggerService.Error(this, "Failed running a Project\r\n", "Run Project Error", ex);
 					}
+
+
+
+					//WeakReferenceMessenger.Default.Send(new RECORD_LIST_CHANGEDMessage() { LogParametersList = _logParametersList });
 				}
 
 			}, _cancellationToken);
+		}
+
+		private ObservableCollection<DeviceParameterData> InitRecordingListForProject(
+			GeneratedProjectData currentProject)
+		{
+			_isChangingLogParamList = true;
+			ObservableCollection<DeviceParameterData> logParametersList = _logParametersList;
+
+			if (currentProject.RecordingParametersList != null &&
+									currentProject.RecordingParametersList.Count > 0)
+			{
+				logParametersList = currentProject.RecordingParametersList;
+			}
+			WeakReferenceMessenger.Default.Send(new RECORD_LIST_CHANGEDMessage() { LogParametersList = logParametersList });
+
+			_isChangingLogParamList = false;
+
+			return logParametersList;
 		}
 
 		private void ScriptEndedEventHandler(ScriptStopModeEnum stopMode)
