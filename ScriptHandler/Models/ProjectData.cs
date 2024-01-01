@@ -36,7 +36,10 @@ namespace ScriptHandler.Models
 		[JsonIgnore]
 		public ObservableCollection<ScriptNodeCANMessage> CanMessagesList { get; set; }
 
-		public string RecordParametersFilePath { get; set; }
+		public string RecordParametersFile { get; set; }
+
+		[JsonIgnore]
+		public string ProjectPath { get; set; }
 
 		public bool IsChanged { get; set; }
 

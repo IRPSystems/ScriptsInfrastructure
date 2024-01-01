@@ -30,7 +30,7 @@ namespace ScriptHandler.ViewModels
 
 		#region Fields
 
-		public string ProjectPath;
+		//public string ProjectPath;
 		private ScriptUserData _scriptUserData;
 		private DevicesContainer _devicesContainer;
 		public DockingScriptViewModel DockingScript;
@@ -95,7 +95,7 @@ namespace ScriptHandler.ViewModels
 			}
 			else if (result == MessageBoxResult.No)
 			{
-				OpenProject(ProjectPath);
+				OpenProject(Project.ProjectPath);
 			}
 			
 
@@ -126,15 +126,15 @@ namespace ScriptHandler.ViewModels
 			_scriptUserData.LastProjectPath = 
 				Path.GetDirectoryName(saveFileDialog.FileName);
 
-			ProjectPath = saveFileDialog.FileName;
-			string name = Path.GetFileName(ProjectPath);
+			Project.ProjectPath = saveFileDialog.FileName;
+			string name = Path.GetFileName(Project.ProjectPath);
 			name = name.Replace(".prj", string.Empty);
 
-			string directory = Path.GetDirectoryName(ProjectPath);
+			string directory = Path.GetDirectoryName(Project.ProjectPath);
 			directory = Path.Combine(directory, name);
 			Directory.CreateDirectory(directory);
 			directory = Path.Combine(directory, name + ".prj");
-			ProjectPath = directory;
+			Project.ProjectPath = directory;
 
 			
 
@@ -166,11 +166,7 @@ namespace ScriptHandler.ViewModels
 		public void OpenProject(string projectPath)
 		{
 
-			ProjectPath = projectPath;
-
-
-
-			string jsonString = File.ReadAllText(ProjectPath);
+			string jsonString = File.ReadAllText(projectPath);
 
 			JsonSerializerSettings settings = new JsonSerializerSettings();
 			settings.Formatting = Formatting.Indented;
@@ -203,6 +199,8 @@ namespace ScriptHandler.ViewModels
 
 
 				Project.ScriptsList.Add(vm);
+
+				Project.ProjectPath = projectPath;
 			}
 
 			PostLoadAllScripts();
@@ -233,7 +231,7 @@ namespace ScriptHandler.ViewModels
 			settings.Formatting = Formatting.Indented;
 			settings.TypeNameHandling = TypeNameHandling.All;
 			var sz = JsonConvert.SerializeObject(Project, settings);
-			File.WriteAllText(ProjectPath, sz);
+			File.WriteAllText(Project.ProjectPath, sz);
 
 			Project.IsChanged = false;
 
@@ -272,7 +270,7 @@ namespace ScriptHandler.ViewModels
 				subTitle = "Script name";
 			}
 
-			string scriptName = GetScriptName(title, subTitle, extension, "Create", "", true, ProjectPath);
+			string scriptName = GetScriptName(title, subTitle, extension, "Create", "", true, Project.ProjectPath);
 			if (string.IsNullOrEmpty(scriptName))
 				return;
 
@@ -300,7 +298,7 @@ namespace ScriptHandler.ViewModels
 
 			
 
-			vm.CurrentScript.ScriptPath = Path.Combine(Path.GetDirectoryName(ProjectPath), vm.CurrentScript.Name + extension);
+			vm.CurrentScript.ScriptPath = Path.Combine(Path.GetDirectoryName(Project.ProjectPath), vm.CurrentScript.Name + extension);
 			AddScriptPath(vm.CurrentScript, Project.ScriptsPathsList);
 			vm.Save(isTest);
 			Project.IsChanged = true;
@@ -367,7 +365,7 @@ namespace ScriptHandler.ViewModels
 		private void ProjectAddExistingTest(string path)
 		{
 			string scriptName = Path.GetFileName(path);
-			string projetDir = Path.GetDirectoryName(ProjectPath);
+			string projetDir = Path.GetDirectoryName(Project.ProjectPath);
 
 			string newPath = Path.Combine(projetDir, scriptName);
 			if (newPath != path)
@@ -391,7 +389,7 @@ namespace ScriptHandler.ViewModels
 				extension = ".tst";
 
 			Project.ScriptsList.Add(vm);
-			vm.CurrentScript.ScriptPath = Path.Combine(Path.GetDirectoryName(ProjectPath), vm.CurrentScript.Name + extension);
+			vm.CurrentScript.ScriptPath = Path.Combine(Path.GetDirectoryName(Project.ProjectPath), vm.CurrentScript.Name + extension);
 			AddScriptPath(vm.CurrentScript, Project.ScriptsPathsList);
 			Project.IsChanged = true;
 
@@ -402,14 +400,14 @@ namespace ScriptHandler.ViewModels
 		private void ProjectRename()
 		{
 			RenameProjectService renameProject = new RenameProjectService();
-			string projectPath = renameProject.ProjectRename(ProjectPath, Project.Name);
+			string projectPath = renameProject.ProjectRename(Project.ProjectPath, Project.Name);
 			if (string.IsNullOrEmpty(projectPath))
 				return;
 
 
 			_scriptUserData.LastProjectPath = Path.GetDirectoryName(projectPath);
 
-			string projectDir = Path.GetDirectoryName(ProjectPath);
+			string projectDir = Path.GetDirectoryName(Project.ProjectPath);
 			Directory.Delete(projectDir, true);
 
 			OpenProject(projectPath);
@@ -450,7 +448,7 @@ namespace ScriptHandler.ViewModels
 			if (!script.CurrentScript.ScriptPath.StartsWith("..\\") &&
 				File.Exists(script.CurrentScript.ScriptPath))
 			{
-				relativePath = Path.GetRelativePath(ProjectPath, script.CurrentScript.ScriptPath);
+				relativePath = Path.GetRelativePath(Project.ProjectPath, script.CurrentScript.ScriptPath);
 			}
 
 			Project.ScriptsPathsList.Remove(relativePath);
@@ -517,7 +515,7 @@ namespace ScriptHandler.ViewModels
 				subTitle = "Script name";
 			}
 
-			string copiedScriptName = GetScriptName(title, subTitle, extension, "Copy", script.CurrentScript.Name, true, ProjectPath);
+			string copiedScriptName = GetScriptName(title, subTitle, extension, "Copy", script.CurrentScript.Name, true, Project.ProjectPath);
 			if (copiedScriptName == null)
 				return;
 
@@ -525,7 +523,7 @@ namespace ScriptHandler.ViewModels
 				return;
 
 
-			string projDir = Path.GetDirectoryName(ProjectPath);
+			string projDir = Path.GetDirectoryName(Project.ProjectPath);
 
 			
 			List<string> existingNameFile = new List<string>();
@@ -628,7 +626,7 @@ namespace ScriptHandler.ViewModels
 				"Change",
 				vm.CurrentScript.Name,
 				true,
-				ProjectPath);
+				Project.ProjectPath);
 			if (scriptName == null)
 				return;
 
@@ -689,7 +687,7 @@ namespace ScriptHandler.ViewModels
 			ScriptData script, 
 			List<string> pathsList)
 		{
-			string relativePath = Path.GetRelativePath(ProjectPath, script.ScriptPath);
+			string relativePath = Path.GetRelativePath(Project.ProjectPath, script.ScriptPath);
 			if (pathsList.Contains(relativePath))
 				return;
 
@@ -1193,16 +1191,21 @@ namespace ScriptHandler.ViewModels
 		{
 			OpenFileDialog openFileDialog = new OpenFileDialog();
 			openFileDialog.Filter = "JSON files (*.json)|*.json";
-			if (string.IsNullOrEmpty(Project.RecordParametersFilePath) == false)
+			if (string.IsNullOrEmpty(Project.RecordParametersFile) == false)
 			{
-				string dir = Path.GetDirectoryName(Project.RecordParametersFilePath);
+				string dir = Path.GetDirectoryName(Project.RecordParametersFile);
 				openFileDialog.InitialDirectory = dir;
 			}
 			bool? result = openFileDialog.ShowDialog();
 			if (result != true)
 				return;
 
-			Project.RecordParametersFilePath = openFileDialog.FileName;
+			string projectDir = Path.GetDirectoryName(Project.ProjectPath);
+			string fileName = Path.GetFileName(openFileDialog.FileName);
+			projectDir = Path.Combine(projectDir, fileName);
+			File.Copy(openFileDialog.FileName, projectDir);
+
+			Project.RecordParametersFile = fileName;
 		}
 
 		#endregion Methods

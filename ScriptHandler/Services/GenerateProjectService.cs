@@ -14,6 +14,7 @@ using ScriptHandler.ViewModels;
 using Services.Services;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 
 namespace ScriptHandler.Services
@@ -285,10 +286,13 @@ namespace ScriptHandler.Services
         private ObservableCollection<DeviceParameterData> GetReordingParamList(ProjectData projectData)
         {
 
-            if (string.IsNullOrEmpty(projectData.RecordParametersFilePath))
+            if (string.IsNullOrEmpty(projectData.RecordParametersFile))
                 return null;
 
-			string jsonString = System.IO.File.ReadAllText(projectData.RecordParametersFilePath);
+            string projectDir = Path.GetDirectoryName(projectData.ProjectPath);
+            string recordParametersFile = Path.Combine(projectDir, projectData.RecordParametersFile);
+
+			string jsonString = System.IO.File.ReadAllText(recordParametersFile);
 
 			JsonSerializerSettings settings = new JsonSerializerSettings();
 			settings.Formatting = Formatting.Indented;

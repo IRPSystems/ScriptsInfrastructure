@@ -344,7 +344,7 @@ namespace ScriptHandler.ViewModels
 					invalidScriptData,
 					DevicesContainer);
 
-				string path = Path.GetDirectoryName(Explorer.ProjectPath);
+				string path = Path.GetDirectoryName(Explorer.Project.ProjectPath);
 				path = Path.Combine(path, Explorer.Project.Name + ".gprj");
 
 				JsonSerializerSettings settings = new JsonSerializerSettings();
