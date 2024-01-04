@@ -33,6 +33,8 @@ namespace ScriptRunner.Services
 			}
 		}
 
+		public string ScriptErrorMessage { get; set; }
+
 		#endregion Properties
 
 		#region Fields
@@ -65,7 +67,7 @@ namespace ScriptRunner.Services
 
 		private StopScriptStepService _stopScriptStep;
 
-		public string ScriptErrorMessage;
+		
 
 		private ScriptStepSelectMotorType _selectMotor;
 		private SaftyOfficerService _saftyOfficer; 

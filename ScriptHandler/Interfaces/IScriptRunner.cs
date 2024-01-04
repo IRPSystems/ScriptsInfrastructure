@@ -8,7 +8,7 @@ namespace ScriptHandler.Interfaces
 	public interface IScriptRunner
 	{
 		public GeneratedScriptData CurrentScript { get; set; }
-
+		public string ScriptErrorMessage { get; set; }
 
 		public void Start();
 
