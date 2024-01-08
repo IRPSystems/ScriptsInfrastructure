@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using DeviceHandler.Models;
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using ScriptHandler.Interfaces;
 using ScriptHandler.Models;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
@@ -819,6 +820,23 @@ namespace ScriptHandler.ViewModels
 			}
 		}
 
+		private void SetEvvaDeviceToSaftyOfficer(ScriptData scriptData)
+		{
+			if (scriptData == null)
+				return;
+
+			foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
+			{
+				if(node is IScriptStepWithParameter withParameter)
+				{
+					if(withParameter.Parameter.Name == "Safety officer on/off")
+					{
+						withParameter.Parameter.DeviceType = Entities.Enums.DeviceTypesEnum.EVVA;
+					}
+				}
+			}
+		}
+
 		private void HandleSubScriptInScript(ScriptData scriptData)
 		{
 			if (scriptData == null)
@@ -956,6 +974,7 @@ namespace ScriptHandler.ViewModels
 			foreach (DesignScriptViewModel vm in Project.ScriptsList)
 			{
 				vm.CurrentScript.Parent = Project;
+				SetEvvaDeviceToSaftyOfficer(vm.CurrentScript);
 				HandleSubScriptInScript(vm.CurrentScript);
 				HandleSweepSubScriptInScript(vm.CurrentScript);
 
@@ -987,7 +1006,7 @@ namespace ScriptHandler.ViewModels
 		}
 
 
-
+		
 
 
 
