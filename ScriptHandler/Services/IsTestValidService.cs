@@ -83,10 +83,11 @@ namespace ScriptHandler.Services
 
 			if (withParam.Parameter.DeviceType == DeviceTypesEnum.EVVA)
 			{
-				//if (errorString == string.Empty)
-				//	errorString = null;
 				return true;
 			}
+
+			if (withParam.Parameter.Name == "Safety officer on/off")
+				return true;
 
 			if (devicesContainer.TypeToDevicesFullData.ContainsKey(withParam.Parameter.DeviceType) == false)
 			{
@@ -102,6 +103,7 @@ namespace ScriptHandler.Services
 				errorsList.Add(invalidItem);
 				return false;
 			}
+
 
 			DeviceData device = devicesContainer.TypeToDevicesFullData[withParam.Parameter.DeviceType].Device;
 
