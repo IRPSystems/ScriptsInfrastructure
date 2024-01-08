@@ -121,9 +121,9 @@ namespace ScriptHandler.Models.ScriptNodes
 				FileLinesList.Clear();
 				bool isFirst = true;
 
-				if (ColumnDatasList == null)
-					ColumnDatasList = new ObservableCollection<DynamicControlColumnData>();
-				ColumnDatasList.Clear();
+
+				ObservableCollection<DynamicControlColumnData> columnsData = 
+					new ObservableCollection<DynamicControlColumnData>();
 				foreach (string line in fileLines)
 				{
 
@@ -132,20 +132,31 @@ namespace ScriptHandler.Models.ScriptNodes
 
 					string[] lineCols = line.Split(',');
 
+					#region Init the columns data
 					if (isFirst)
 					{
 						for (int col = 1; col < lineCols.Length; col++)
 						{
-							ColumnDatasList.Add(new DynamicControlColumnData()
+							DynamicControlColumnData newCol = new DynamicControlColumnData()
 							{
 								FileIndex = col,
 								ColHeader = lineCols[col],
-							});
+							};
+
+							DynamicControlColumnData column =
+								ColumnDatasList.ToList().Find((c) => c.ColHeader == lineCols[col]);
+							if(column != null)
+								newCol.Parameter = column.Parameter;
+
+							columnsData.Add(newCol);
 						}
 
 						isFirst = false;
+						ColumnDatasList = columnsData;
 						continue;
 					}
+					#endregion Init the columns data
+
 
 
 					double numberOfSecs;
