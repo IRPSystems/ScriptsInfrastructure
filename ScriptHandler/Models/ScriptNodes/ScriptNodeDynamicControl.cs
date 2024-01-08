@@ -132,6 +132,7 @@ namespace ScriptHandler.Models.ScriptNodes
 
 					string[] lineCols = line.Split(',');
 
+
 					#region Init the columns data
 					if (isFirst)
 					{
