@@ -126,11 +126,14 @@ namespace ScriptHandler.ViewModels
 			_scriptUserData.LastProjectPath = 
 				Path.GetDirectoryName(saveFileDialog.FileName);
 
-			Project.ProjectPath = saveFileDialog.FileName;
-			string name = Path.GetFileName(Project.ProjectPath);
+			
+
+			string name = Path.GetFileName(saveFileDialog.FileName);
 			name = name.Replace(".prj", string.Empty);
 
-			string directory = Path.GetDirectoryName(Project.ProjectPath);
+			Project = new ProjectData() { Name = name };
+
+			string directory = Path.GetDirectoryName(saveFileDialog.FileName);
 			directory = Path.Combine(directory, name);
 			Directory.CreateDirectory(directory);
 			directory = Path.Combine(directory, name + ".prj");
@@ -138,7 +141,7 @@ namespace ScriptHandler.ViewModels
 
 			
 
-			Project = new ProjectData() { Name = name };
+			
 
 
 			SaveProject();
