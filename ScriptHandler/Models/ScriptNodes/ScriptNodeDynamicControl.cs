@@ -1,16 +1,12 @@
 ﻿
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DeviceCommunicators.Models;
 using DeviceHandler.Models;
-using Entities.Models;
 using ExcelDataReader;
 using Microsoft.Win32;
 using Services.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -220,19 +216,30 @@ namespace ScriptHandler.Models.ScriptNodes
 				var dataTable = dataSet.Tables[0];
 
 
-				ColumnDatasList.Clear();
+				ObservableCollection<DynamicControlColumnData> columnsData =
+					new ObservableCollection<DynamicControlColumnData>();
 				for (int col = 1; col < dataTable.Columns.Count; col++)
 				{
+
 					var v = dataTable.Rows[0][col];
 					if (v == null)
 						continue;
 
-					ColumnDatasList.Add(new DynamicControlColumnData()
+					DynamicControlColumnData newCol = new DynamicControlColumnData()
 					{
 						FileIndex = col,
 						ColHeader = v.ToString(),
-					});
+					};
+
+					DynamicControlColumnData column =
+								ColumnDatasList.ToList().Find((c) => c.ColHeader == v.ToString());
+					if (column != null)
+						newCol.Parameter = column.Parameter;
+
+					columnsData.Add(newCol);
 				}
+
+				ColumnDatasList = columnsData;
 
 
 				FileLinesList.Clear();
