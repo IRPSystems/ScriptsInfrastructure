@@ -157,13 +157,13 @@ namespace ScriptHandler.Models
 							CurrentScript.ScriptErrorMessage;
 						IsPass = false;
 						CurrentScript = null;
-						_itemForRun.IsSubScriptPass = SweepItemForRunData.SubScriptStateEnum.Failure;
+						_itemForRun.SubScriptState = SweepItemForRunData.SubScriptStateEnum.Failure;
 						return;
 					}
 
 					LoggerService.Inforamtion(this, "Pass sub-script for item: " + item.Parameter.Name);
 					CurrentScript = null;
-					_itemForRun.IsSubScriptPass = SweepItemForRunData.SubScriptStateEnum.Success;
+					_itemForRun.SubScriptState = SweepItemForRunData.SubScriptStateEnum.Success;
 				}
 
 				
@@ -182,7 +182,7 @@ namespace ScriptHandler.Models
 				}
 
 
-				if (IsPass == false && ErrorMessage != "Sub script failed.")
+				if (IsPass == false && _itemForRun.SubScriptState != SweepItemForRunData.SubScriptStateEnum.Failure)
 					return;
 				
 			}
@@ -271,7 +271,7 @@ namespace ScriptHandler.Models
 						IntervalUnite = SweepItemsList[i].StepIntervalTimeUnite,
 						StopScriptStep = this.StopScriptStep,
 					},
-					IsSubScriptPass = SweepItemForRunData.SubScriptStateEnum.None,				
+					SubScriptState = SweepItemForRunData.SubScriptStateEnum.None,				
 				
 				};
 				

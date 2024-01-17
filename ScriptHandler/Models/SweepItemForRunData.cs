@@ -33,7 +33,7 @@ namespace ScriptHandler.Models
 		public IScriptRunner SubScriptRunner { get; set; }
 		public ScriptDiagramViewModel CurrentScriptDiagram { get; set; }
 
-		public SubScriptStateEnum IsSubScriptPass { get; set; }
+		public SubScriptStateEnum SubScriptState { get; set; }
 
 		//public ManualResetEvent ScriptEndedEventHandler { get; set; }
 
