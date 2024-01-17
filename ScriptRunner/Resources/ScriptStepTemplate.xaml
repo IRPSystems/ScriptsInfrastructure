@@ -40,13 +40,16 @@
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" 
-                       Name="tb"
-                       Text="{Binding Notification}"
-                       FontSize="30"
-                       TextWrapping="Wrap"
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Center"/>
+            <TextBox Grid.Row="0" 
+                     Name="tb"
+                     Text="{Binding Notification}"
+                     FontSize="30"
+                     IsReadOnly="True"
+                     BorderThickness="0"
+                     TextWrapping="Wrap"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Center"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"/>
         </Grid>
 
         <DataTemplate.Triggers>
