@@ -227,11 +227,18 @@ namespace ScriptHandler.ViewModels
 
 			try
 			{
-
+				LoggerService.Inforamtion(this, "SaveProject start");
 				foreach (DesignScriptViewModel script in Project.ScriptsList)
 				{
-					if (script.IsChanged)
+					try
+					{
+						LoggerService.Inforamtion(this, "Save \"" + script.CurrentScript.Name + "\"");
 						script.Save(script.CurrentScript is TestData);
+					}
+					catch (Exception ex)
+					{
+						LoggerService.Error(this, "Failed to save script \"" + script.CurrentScript.Name + "\"", ex);
+					}
 				}
 
 				JsonSerializerSettings settings = new JsonSerializerSettings();
