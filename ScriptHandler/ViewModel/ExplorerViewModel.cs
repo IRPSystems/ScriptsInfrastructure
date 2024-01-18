@@ -179,7 +179,7 @@ namespace ScriptHandler.ViewModels
 
 			FixOldScriptsAndProjectsService fixer = new FixOldScriptsAndProjectsService();
 			
-
+			Project.ProjectPath = projectPath;
 
 			foreach (string path in Project.ScriptsPathsList)
 			{
@@ -225,20 +225,27 @@ namespace ScriptHandler.ViewModels
 			if(Project == null) 
 				return;
 
-			foreach(DesignScriptViewModel script in Project.ScriptsList)
+			try
 			{
-				if(script.IsChanged)
-					script.Save(script.CurrentScript is TestData);
+
+				foreach (DesignScriptViewModel script in Project.ScriptsList)
+				{
+					if (script.IsChanged)
+						script.Save(script.CurrentScript is TestData);
+				}
+
+				JsonSerializerSettings settings = new JsonSerializerSettings();
+				settings.Formatting = Formatting.Indented;
+				settings.TypeNameHandling = TypeNameHandling.All;
+				var sz = JsonConvert.SerializeObject(Project, settings);
+				File.WriteAllText(Project.ProjectPath, sz);
+
+				Project.IsChanged = false;
 			}
-
-			JsonSerializerSettings settings = new JsonSerializerSettings();
-			settings.Formatting = Formatting.Indented;
-			settings.TypeNameHandling = TypeNameHandling.All;
-			var sz = JsonConvert.SerializeObject(Project, settings);
-			File.WriteAllText(Project.ProjectPath, sz);
-
-			Project.IsChanged = false;
-
+			catch(Exception ex) 
+			{
+				LoggerService.Error(this, "Failed to save the project", "Error", ex);
+			}
 		}
 
 		#endregion Project
@@ -1211,23 +1218,31 @@ namespace ScriptHandler.ViewModels
 
 		private void SelectRecordingFile()
 		{
-			OpenFileDialog openFileDialog = new OpenFileDialog();
-			openFileDialog.Filter = "JSON files (*.json)|*.json";
-			if (string.IsNullOrEmpty(Project.RecordParametersFile) == false)
+			try
 			{
-				string dir = Path.GetDirectoryName(Project.RecordParametersFile);
-				openFileDialog.InitialDirectory = dir;
+				OpenFileDialog openFileDialog = new OpenFileDialog();
+				openFileDialog.Filter = "JSON files (*.json)|*.json";
+				if (string.IsNullOrEmpty(Project.RecordParametersFile) == false)
+				{
+					string dir = Path.GetDirectoryName(Project.RecordParametersFile);
+					openFileDialog.InitialDirectory = dir;
+				}
+				bool? result = openFileDialog.ShowDialog();
+				if (result != true)
+					return;
+
+				string projectDir = Path.GetDirectoryName(Project.ProjectPath);
+				string fileName = Path.GetFileName(openFileDialog.FileName);
+				projectDir = Path.Combine(projectDir, fileName);
+				if(openFileDialog.FileName != projectDir)
+					File.Copy(openFileDialog.FileName, projectDir, true);
+
+				Project.RecordParametersFile = fileName;
 			}
-			bool? result = openFileDialog.ShowDialog();
-			if (result != true)
-				return;
-
-			string projectDir = Path.GetDirectoryName(Project.ProjectPath);
-			string fileName = Path.GetFileName(openFileDialog.FileName);
-			projectDir = Path.Combine(projectDir, fileName);
-			File.Copy(openFileDialog.FileName, projectDir);
-
-			Project.RecordParametersFile = fileName;
+			catch(Exception ex) 
+			{
+				LoggerService.Error(this, "Failed to select recording file", "Error", ex);
+			}
 		}
 
 		#endregion Methods
