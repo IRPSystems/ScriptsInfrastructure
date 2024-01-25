@@ -334,8 +334,8 @@ namespace ScriptRunner.Services
 
 							if (_isFirstLineInFile)
 							{
-								_csvWriter.WriteField(_getUUTData.FirmwareVersion);
 								_csvWriter.WriteField(_getUUTData.SerialNumber);
+								_csvWriter.WriteField(_getUUTData.FirmwareVersion);
 								_csvWriter.WriteField(_getUUTData.CoreVersion);
 								_csvWriter.WriteField(_scriptName);
 								_csvWriter.WriteField(_date);
