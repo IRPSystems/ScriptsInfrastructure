@@ -28,27 +28,7 @@ namespace ScriptRunner.Services
 
 		public RunSingleScriptService CurrentScript { get; set; }
 
-		public int RecordingRate
-		{
-			get => _recordingRate;
-			set
-			{
-				_recordingRate = value;
-				if(_paramRecording != null)
-					_paramRecording.RecordingRate = value;
-			}
-		}
-
-		public string RecordDirectory
-		{
-			get => _recordDirectory;
-			set
-			{
-				_recordDirectory = value;
-				if (_paramRecording != null)
-					_paramRecording.RecordDirectory = value;
-			}
-		}
+		public ParamRecordingService ParamRecording { get; set; }
 
 		public string AbortScriptPath { get; set; }
 		public ScriptStepAbort AbortScriptStep 
@@ -92,15 +72,13 @@ namespace ScriptRunner.Services
 
 		#region Fields
 
-		private int _recordingRate;
-		private string _recordDirectory;
 
 		private ScriptStepAbort _abortScriptStep;
 
 
 		public TestStudioLoggerService MainScriptLogger;
 
-		private ParamRecordingService _paramRecording;
+		
 
 		
 		private bool _isStopped;
@@ -153,14 +131,15 @@ namespace ScriptRunner.Services
 
 			MainScriptLogger = new TestStudioLoggerService();
 
-			_paramRecording = new ParamRecordingService(
+			ParamRecording = new ParamRecordingService(
 				devicesContainer);
 
 			SaftyOfficer = new SaftyOfficerService();
 			SaftyOfficer.AbortScriptEvent += AbortScript;
 
 
-			RecordingRate = 5;
+			ParamRecording.RecordingRate = 5;
+			ParamRecording.ActualRecordingRate = ParamRecording.RecordingRate;
 
 			RecordingRateList = new ObservableCollection<int>()
 			{
@@ -243,7 +222,7 @@ namespace ScriptRunner.Services
 				step.StepState = SciptStateEnum.None;
 
 			if (isRecord)
-				_paramRecording.StartRecording(currentScript.Name, recordingPath, logParametersList);
+				ParamRecording.StartRecording(currentScript.Name, recordingPath, logParametersList);
 
 			//Application.Current.Dispatcher.Invoke(() =>
 			//{
@@ -339,8 +318,8 @@ namespace ScriptRunner.Services
 				stopMode = ScriptStopModeEnum.Aborted;
 			}
 
-			if (_paramRecording.IsRecording)
-				_paramRecording.StopRecording();
+			if (ParamRecording.IsRecording)
+				ParamRecording.StopRecording();
 
 			SaftyOfficer.Stop();
 
@@ -393,8 +372,8 @@ namespace ScriptRunner.Services
 			_isAborted = true;
 			_stepFailed.Notification = message;
 
-			if (_paramRecording != null)
-				_paramRecording.StopRecording();
+			if (ParamRecording != null)
+				ParamRecording.StopRecording();
 
 			if (CurrentScript == null)
 			{

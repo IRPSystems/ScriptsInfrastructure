@@ -16,6 +16,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 
@@ -26,6 +27,7 @@ namespace ScriptRunner.Services
 		#region Properties
 
 		public int RecordingRate { get; set; }
+		public int ActualRecordingRate { get; set; }
 		public string RecordDirectory { get; set; }
 
 		#endregion Properties
@@ -62,9 +64,15 @@ namespace ScriptRunner.Services
 		private DateTime _prevTime;
 		private double _secCounter;
 
-		#endregion Fields
+#if _USE_TIMER
+		private System.Timers.Timer _timer;
+#endif 
 
-		#region Constructor
+		private object _lockObj;
+
+#endregion Fields
+
+#region Constructor
 
 		public ParamRecordingService(
 			DevicesContainer devicesContainer)
@@ -72,11 +80,22 @@ namespace ScriptRunner.Services
 			_devicesContainer = devicesContainer;
 
 			_getUUTData = new GetUUTDataForRecordingService();
+
+			_lockObj = new object();
+
+#if _USE_TIMER
+			_timer = new System.Timers.Timer();
+			_timer.Elapsed += _timer_Elapsed;
+#endif
+
+			
 		}
 
-		#endregion Constructor
+		
 
-		#region Methods
+#endregion Constructor
+
+#region Methods
 
 		public void Dispose()
 		{
@@ -111,6 +130,8 @@ namespace ScriptRunner.Services
 			{
 				if (Application.Current == null)
 					return;
+
+				ActualRecordingRate = RecordingRate;
 
 				_isFirstLineInFile = true;
 
@@ -201,7 +222,13 @@ namespace ScriptRunner.Services
 				_cancellationToken = _cancellationTokenSource.Token;
 
 				_secCounter = 0;
+
+#if _USE_TIMER
+				_timer.Interval = 1000 / RecordingRate;
+				_timer.Start();
+#else
 				HandleLogParam();
+#endif // _USE_TIMER
 
 				IsRecording = true;
 
@@ -223,9 +250,14 @@ namespace ScriptRunner.Services
 
 		public void StopRecording()
 		{
+#if _USE_TIMER
+			_timer.Stop();
+#endif
+
 			if (!IsRecording)
 				return;
 
+			
 			lock (_lockObj)
 			{
 				if(_csvWriter != null)
@@ -270,8 +302,85 @@ namespace ScriptRunner.Services
 			}
 		}
 
+#if _USE_TIMER
 
-		private object _lockObj = new object();
+		private void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+		{
+			try
+			{
+				if (_csvWriter == null)
+					return;
+
+				lock (_lockObj)
+				{
+
+					DateTime now = DateTime.UtcNow;
+					if (_csvWriter.Row > 2)
+					{
+						TimeSpan diff = now - _prevTime;
+						_secCounter += diff.TotalSeconds;
+					}
+
+					_csvWriter.WriteField(_secCounter);
+					_prevTime = now;
+
+					foreach (DeviceParameterData paramData in LogParametersList)
+					{
+						try
+						{
+
+							if (paramData.Value == null)
+							{
+								_csvWriter.WriteField("");
+								continue;
+							}
+
+							if (paramData.Value.GetType().Name == "String")
+							{
+								if (string.IsNullOrEmpty((string)paramData.Value))
+									LoggerService.Inforamtion(this, "string empty ");
+								LoggerService.Inforamtion(this, "string: " + paramData.Value.ToString());
+
+								_csvWriter.WriteField("NaN");
+								continue;
+							}
+
+							double value = Convert.ToDouble(paramData.Value);
+
+							_csvWriter.WriteField(value);
+
+							System.Threading.Thread.Sleep(1);
+						}
+						catch (Exception ex)
+						{
+							LoggerService.Error(this, "Failed to write record field", ex);
+						}
+					}
+
+					if (_isFirstLineInFile)
+					{
+						_csvWriter.WriteField(_getUUTData.FirmwareVersion);
+						_csvWriter.WriteField(_getUUTData.SerialNumber);
+						_csvWriter.WriteField(_getUUTData.CoreVersion);
+						_csvWriter.WriteField(_scriptName);
+						_csvWriter.WriteField(_date);
+						_csvWriter.WriteField(_version);
+
+						_isFirstLineInFile = false;
+					}
+
+					_csvWriter.NextRecord();
+				}
+				
+			}
+			catch (Exception ex)
+			{
+				LoggerService.Error(this, "Failed to log data", ex);
+			}
+		}
+
+#else // _USE_TIMER
+
 		private void HandleLogParam()
 		{
 			Task.Run(() =>
@@ -285,13 +394,15 @@ namespace ScriptRunner.Services
 					{
 						lock (_lockObj)
 						{
+
 							if (_csvWriter == null)
 								break;
 
+							DateTime start = DateTime.Now;
 
 							DateTime now = DateTime.UtcNow;
-							if(_csvWriter.Row > 2)
-							{ 
+							if (_csvWriter.Row > 2)
+							{
 								TimeSpan diff = now - _prevTime;
 								_secCounter += diff.TotalSeconds;
 							}
@@ -326,7 +437,7 @@ namespace ScriptRunner.Services
 
 									System.Threading.Thread.Sleep(1);
 								}
-								catch (Exception ex) 
+								catch (Exception ex)
 								{
 									LoggerService.Error(this, "Failed to write record field", ex);
 								}
@@ -345,7 +456,18 @@ namespace ScriptRunner.Services
 							}
 
 							_csvWriter.NextRecord();
-							System.Threading.Thread.Sleep(1000 / RecordingRate);
+
+							TimeSpan lineHandleTime = DateTime.Now - start;
+
+							double rate = ActualRecordingRate;
+							if (lineHandleTime.TotalMilliseconds > (1000 / RecordingRate))
+							{
+								rate = 1000.0 / lineHandleTime.TotalMilliseconds;
+							}
+							
+
+							ActualRecordingRate = (int)rate;
+							System.Threading.Thread.Sleep(1000 / ActualRecordingRate);
 						}
 					}
 					catch (Exception ex)
@@ -357,10 +479,12 @@ namespace ScriptRunner.Services
 			}, _cancellationToken);
 		}
 
-		#endregion Methods
+#endif // _USE_TIMER
 
-		#region Events
+#endregion Methods
 
-		#endregion Events
+#region Events
+
+#endregion Events
 	}
 }
