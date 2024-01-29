@@ -378,6 +378,7 @@ namespace ScriptHandler.ViewModels
 			{
 				LoggerService.Error(this, "Generation of the project failed.", ex);
 				GenerateState = GenerateStateEnum.Fail;
+				GenerateToolTip = ex.ToString();
 			}
 
 		}
