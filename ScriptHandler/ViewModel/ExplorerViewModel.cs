@@ -131,6 +131,7 @@ namespace ScriptHandler.ViewModels
 
 			string name = Path.GetFileName(saveFileDialog.FileName);
 			name = name.Replace(".prj", string.Empty);
+			Project.Name = name;
 
 			Project = new ProjectData() { Name = name };
 
@@ -155,8 +156,12 @@ namespace ScriptHandler.ViewModels
 			OpenFileDialog openFileDialog = new OpenFileDialog();
 			openFileDialog.Filter = "Project files (*.prj)|*.prj";
 
-			if(System.IO.Directory.Exists(_scriptUserData.LastProjectPath))
+			if (string.IsNullOrEmpty(_scriptUserData.LastProjectPath) == false &&
+				System.IO.Directory.Exists(_scriptUserData.LastProjectPath))
+			{
 				openFileDialog.InitialDirectory = _scriptUserData.LastProjectPath;
+			}
+
 			bool? result = openFileDialog.ShowDialog();
 			if (result != true)
 				return;
