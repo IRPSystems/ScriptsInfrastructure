@@ -21,7 +21,9 @@ namespace ScriptHandler.Services
 			string pathCommand, 
 			string pathSettings)
 		{
-			string fullPath = Path.GetFullPath(pathCommand);
+			if (File.Exists(pathCommand) == false)
+				return null;
+
 			List<ControllerSettingsData> motorSettingsList = ReadCommands(pathCommand);
 
 			List<ParameterValueData> statusParams = ReadSettings(pathSettings); 

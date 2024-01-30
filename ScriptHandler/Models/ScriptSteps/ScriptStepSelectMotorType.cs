@@ -218,6 +218,9 @@ namespace ScriptHandler.Models
 				List<MotorSettingsData> motorSettingsList = readingMotorSettings.GetMotorSettings(
 					motorCommandPath,
 					@"Data\Motor Security Status Parameters.xlsx");
+				if (motorSettingsList == null)
+					return;
+
 				MotorTypesList = new ObservableCollection<MotorSettingsData>(motorSettingsList);
 			}
 		}
@@ -234,6 +237,9 @@ namespace ScriptHandler.Models
 					readingControllerSettings.GetMotorSettings(
 						controllerCommandPath,
 						@"Data\Controller Security Status Parameters.xlsx");
+				if (controllerSettingsList == null)
+					return;
+
 				ControllerTypesList = new ObservableCollection<ControllerSettingsData>(controllerSettingsList);
 			}
 		}
