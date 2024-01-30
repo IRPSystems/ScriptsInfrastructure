@@ -34,6 +34,7 @@ namespace ScriptHandler.Services
 
 				IExcelDataReader reader;
 				var stream = File.Open(pathCommands, FileMode.Open, FileAccess.Read);
+				System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 				reader = ExcelReaderFactory.CreateReader(stream);
 
 				//// reader.IsFirstRowAsColumnNames
@@ -123,6 +124,7 @@ namespace ScriptHandler.Services
 		{
 			IExcelDataReader reader;
 			var stream = File.Open(pathStatus, FileMode.Open, FileAccess.Read);
+			System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 			reader = ExcelReaderFactory.CreateReader(stream);
 
 			//// reader.IsFirstRowAsColumnNames

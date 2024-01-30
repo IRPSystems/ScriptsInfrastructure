@@ -10,11 +10,9 @@ using ScriptHandler.Interfaces;
 using ScriptRunner.Models;
 using Services.Services;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
-using System.Windows.Input;
 using DeviceHandler.Models;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
@@ -68,6 +66,8 @@ namespace ScriptRunner.Services
 
 		public ScriptStepSelectMotorType SelectMotor { get; set; }
 
+		public int ExecutedStepsPercentage { get; set; }
+
 		#endregion Properties
 
 		#region Fields
@@ -104,6 +104,9 @@ namespace ScriptRunner.Services
 		private CANMessagesService _canMessagesService;
 
 		private string _testName;
+
+		private double _numOfSteps;
+		private double _stepsCounter;
 
 		#endregion Fields
 
@@ -283,6 +286,8 @@ namespace ScriptRunner.Services
 				return;
 			}
 
+			_stepsCounter = 0;
+			_numOfSteps = GetNumberOfScriptSteps(CurrentScript.CurrentScript);
 			CurrentScript.Start();
 
 
@@ -291,6 +296,34 @@ namespace ScriptRunner.Services
 				ScriptStartedEvent?.Invoke();
 			});
 
+		}
+
+		private int GetNumberOfScriptSteps(IScript script)
+		{
+			int numberOfSteps = 0;
+			foreach(IScriptItem item in script.ScriptItemsList) 
+			{
+				numberOfSteps++;
+				if(item is ScriptStepSubScript subScript) 
+				{
+					int subNumberOfSteps = GetNumberOfScriptSteps(subScript.Script);
+					if (subScript.ContinueUntilType == SubScriptContinueUntilTypeEnum.Repeats)
+					{
+						subNumberOfSteps *= subScript.Repeats;
+						subNumberOfSteps += subScript.Repeats;
+					}
+					else if (subScript.ContinueUntilType == SubScriptContinueUntilTypeEnum.Repeats)
+					{
+						int repeats = (int)subScript.TimeoutSpan.TotalSeconds;
+						subNumberOfSteps *= repeats;
+						subNumberOfSteps += repeats;
+					}
+
+					numberOfSteps += subNumberOfSteps;
+				}
+			}
+
+			return numberOfSteps;
 		}
 
 		private void ClearScriptStepsState(GeneratedScriptData script)
@@ -412,9 +445,13 @@ namespace ScriptRunner.Services
 			CurrentScript.NextStep();
 		}
 
-		private void CurrentStepChangedEventHandler()
+		private void CurrentStepChangedEventHandler(ScriptStepBase step)
 		{
 			OnPropertyChanged(nameof(CurrentScript));
+			_stepsCounter++;
+
+			if(step != null)
+				ExecutedStepsPercentage = (int)((_stepsCounter / _numOfSteps) * 100);
 		}
 
 		#region Continuous Step

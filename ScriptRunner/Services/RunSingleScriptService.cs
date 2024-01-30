@@ -525,7 +525,7 @@ namespace ScriptRunner.Services
 		{
 			_currentStep = currentStep;
 			OnPropertyChanged(nameof(CurrentStep));
-			CurrentStepChangedEvent?.Invoke();
+			CurrentStepChangedEvent?.Invoke(currentStep);
 		}
 
 
@@ -562,10 +562,10 @@ namespace ScriptRunner.Services
 			_saftyOfficer.Stop();
 		}
 
-		private void CurrentStepChangedEventHandler()
+		private void CurrentStepChangedEventHandler(ScriptStepBase step)
 		{
 			OnPropertyChanged(nameof(CurrentStep));
-			CurrentStepChangedEvent.Invoke();
+			CurrentStepChangedEvent.Invoke(step);
 		}
 
 
@@ -647,7 +647,7 @@ namespace ScriptRunner.Services
 		#region Events
 
 		public event Action<bool> ScriptEndedEvent;
-		public event Action CurrentStepChangedEvent;
+		public event Action<ScriptStepBase> CurrentStepChangedEvent;
 
 		public event Action<IScriptStepContinuous> ContinuousStepEvent;
 		public event Action<string> StopContinuousStepEvent;
