@@ -211,7 +211,7 @@ namespace ScriptRunner.ViewModels
 			}
 			catch (Exception ex)
 			{
-				LoggerService.Error(this, "Failed to init the Run view model", ex);
+				LoggerService.Error(this, "Failed to init the Run view model", "Error", ex);
 
 			}
 
