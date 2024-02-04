@@ -60,7 +60,7 @@ namespace ScriptHandler.ViewModels
 					continue;
 
 
-				if (type.Name == typeof(ScriptNodeFlash).Name)
+				if (type.Name == typeof(ScriptNodeEOLFlash).Name)
 					continue;
 
 				var c = Activator.CreateInstance(type);

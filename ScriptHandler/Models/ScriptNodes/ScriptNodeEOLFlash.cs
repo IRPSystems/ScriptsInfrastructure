@@ -3,7 +3,7 @@ using System.IO;
 
 namespace ScriptHandler.Models.ScriptNodes
 {
-	public class ScriptNodeFlash: ScriptNodeBase
+	public class ScriptNodeEOLFlash: ScriptNodeBase
 	{
 		public string FilePath { get; set; }
 
@@ -16,7 +16,7 @@ namespace ScriptHandler.Models.ScriptNodes
 			}
 		}
 
-		public ScriptNodeFlash() 
+		public ScriptNodeEOLFlash() 
 		{
 			Name = "Flash";
 		}

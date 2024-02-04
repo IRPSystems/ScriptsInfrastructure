@@ -51,7 +51,7 @@ namespace ScriptHandler.Services
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#FF7FED");
 			if (item is ScriptNodeStopContinuous || item is ScriptStepStopContinuous)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#FFB27F");
-			if (item is ScriptNodeFlash || item is ScriptStepFlash)
+			if (item is ScriptNodeEOLFlash || item is ScriptStepEOLFlash)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#7FFFC5");
 
 			return Brushes.Transparent;
