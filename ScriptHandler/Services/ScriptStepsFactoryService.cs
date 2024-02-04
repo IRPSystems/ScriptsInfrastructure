@@ -52,6 +52,8 @@ namespace ScriptHandler.Services
 				return new ScriptStepStopContinuous();
 			else if (node.GetType().Name == "ScriptNodeFlash")
 				return new ScriptStepEOLFlash();
+			else if (node.GetType().Name == "ScriptNodeCalibrate")
+				return new ScriptStepEOLCalibrate();
 			else if (node.GetType().Name == "ScriptNodeResetParentSweep")
 				return new ScriptStepResetParentSweep();
 

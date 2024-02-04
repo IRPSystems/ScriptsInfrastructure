@@ -18,7 +18,7 @@ namespace ScriptHandler.Models.ScriptNodes
 
 		public ScriptNodeEOLFlash() 
 		{
-			Name = "Flash";
+			Name = "EOL Flash";
 		}
 	}
 }

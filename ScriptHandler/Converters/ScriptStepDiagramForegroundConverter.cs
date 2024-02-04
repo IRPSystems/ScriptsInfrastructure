@@ -60,6 +60,8 @@ namespace ScriptHandler.Converter
 				return Brushes.White;
 			if (value is ScriptNodeEOLFlash || value is ScriptStepEOLFlash)
 				return Brushes.Black;
+			if (value is ScriptNodeEOLCalibrate || value is ScriptStepEOLCalibrate)
+				return Brushes.Black;
 
 			return Brushes.White;
 
