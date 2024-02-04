@@ -7,9 +7,8 @@ using System.Collections.Generic;
 
 namespace ScriptHandler.Models.ScriptSteps
 {
-	public class ScriptStepFlash: ScriptStepBase
+	public class ScriptStepEOLSendSN : ScriptStepBase
 	{
-		public string FilePath { get; set; }
 
 
 		public override void Execute()
@@ -29,7 +28,6 @@ namespace ScriptHandler.Models.ScriptSteps
 			GenerateProjectService generateService,
 			DevicesContainer devicesContainer)
 		{
-			FilePath = (sourceNode as ScriptNodeFlash).FilePath;
 		}
 	}
 }

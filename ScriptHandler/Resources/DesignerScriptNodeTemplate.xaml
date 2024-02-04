@@ -632,7 +632,7 @@
 
     </DataTemplate>
 
-    <DataTemplate x:Key="Design_FlashTemplate">
+    <DataTemplate x:Key="Design_EOLFlashTemplate">
 
         <Grid >
             <Grid.ColumnDefinitions>
@@ -645,6 +645,18 @@
             <TextBox Text="{Binding FilePath}" Grid.Column="2" />
 
         </Grid>
+
+    </DataTemplate>
+    
+    <DataTemplate x:Key="Design_EOLCalibrateTemplate">
+
+        
+
+    </DataTemplate>
+
+    <DataTemplate x:Key="Design_EOLSendSNTemplate">
+
+
 
     </DataTemplate>
 
