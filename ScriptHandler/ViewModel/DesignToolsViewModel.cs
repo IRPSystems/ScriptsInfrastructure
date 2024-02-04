@@ -61,7 +61,8 @@ namespace ScriptHandler.ViewModels
 
 
 				//if (type.Name == typeof(ScriptNodeEOLFlash).Name ||
-				//	type.Name == typeof(ScriptNodeEOLCalibrate).Name)
+				//	type.Name == typeof(ScriptNodeEOLCalibrate).Name ||
+				//	type.Name == typeof(ScriptNodeEOLSendSN).Name)
 				//	continue;
 
 				var c = Activator.CreateInstance(type);

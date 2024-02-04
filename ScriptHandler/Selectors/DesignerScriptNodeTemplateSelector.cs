@@ -42,9 +42,11 @@ namespace ScriptHandler.Selectors
 			if (item is ScriptNodeCANMessage)
 				return element.FindResource("Design_CANMessageTemplate") as DataTemplate;
 			if (item is ScriptNodeEOLFlash)
-				return element.FindResource("Design_FlashTemplate") as DataTemplate;
+				return element.FindResource("Design_EOLFlashTemplate") as DataTemplate;
 			if (item is ScriptNodeEOLCalibrate)
-				return element.FindResource("Design_CalibrateTemplate") as DataTemplate;
+				return element.FindResource("Design_EOLCalibrateTemplate") as DataTemplate;
+			if (item is ScriptNodeEOLSendSN)
+				return element.FindResource("Design_EOLSendSNTemplate") as DataTemplate;
 
 			return null;
 		}

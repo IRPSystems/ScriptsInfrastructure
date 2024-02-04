@@ -54,6 +54,8 @@ namespace ScriptHandler.Services
 				return new ScriptStepEOLFlash();
 			else if (node.GetType().Name == "ScriptNodeCalibrate")
 				return new ScriptStepEOLCalibrate();
+			else if (node.GetType().Name == "ScriptNodeSendSN")
+				return new ScriptStepEOLSendSN();
 			else if (node.GetType().Name == "ScriptNodeResetParentSweep")
 				return new ScriptStepResetParentSweep();
 

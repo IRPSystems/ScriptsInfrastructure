@@ -62,6 +62,8 @@ namespace ScriptHandler.Converter
 				return Brushes.Black;
 			if (value is ScriptNodeEOLCalibrate || value is ScriptStepEOLCalibrate)
 				return Brushes.Black;
+			if (value is ScriptNodeEOLSendSN || value is ScriptStepEOLSendSN)
+				return Brushes.Black;
 
 			return Brushes.White;
 
