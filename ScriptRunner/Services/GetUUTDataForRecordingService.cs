@@ -9,6 +9,7 @@ using Entities.Enums;
 using Entities.Models;
 using ScriptHandler.Models;
 using Services.Services;
+using System;
 using System.Linq;
 
 namespace ScriptRunner.Services
@@ -148,7 +149,8 @@ namespace ScriptRunner.Services
 				return false;
 			}
 
-			FirmwareVersion = param.Value.ToString();
+			int n = Convert.ToInt32(param.Value);
+			FirmwareVersion = n.ToString("D2");
 
 			#endregion FW Major
 
@@ -170,7 +172,8 @@ namespace ScriptRunner.Services
 				return false;
 			}
 
-			FirmwareVersion += "." + param.Value.ToString();
+			n = Convert.ToInt32(param.Value);
+			FirmwareVersion += "." + n.ToString("D2");
 
 			#endregion FW Middle
 
@@ -192,7 +195,8 @@ namespace ScriptRunner.Services
 				return false;
 			}
 
-			FirmwareVersion += "." + param.Value.ToString();
+			n = Convert.ToInt32(param.Value);
+			FirmwareVersion += "." + n.ToString("D2");
 
 			#endregion FW Minor
 
@@ -234,7 +238,9 @@ namespace ScriptRunner.Services
 				return false;
 			}
 
-			CoreVersion = param.Value.ToString();
+
+			int n = Convert.ToInt32(param.Value);
+			CoreVersion = n.ToString("D2");
 
 			#endregion CORE Major
 
@@ -256,7 +262,9 @@ namespace ScriptRunner.Services
 				return false;
 			}
 
-			CoreVersion += "." + param.Value.ToString();
+
+			n = Convert.ToInt32(param.Value);
+			CoreVersion += "." + n.ToString("D2");
 
 			#endregion CORE Middle
 
@@ -278,7 +286,8 @@ namespace ScriptRunner.Services
 				return false;
 			}
 
-			CoreVersion += "." + param.Value.ToString();
+			n = Convert.ToInt32(param.Value);
+			CoreVersion += "." + n.ToString("D2");
 
 			#endregion Core Minor
 

@@ -285,14 +285,12 @@ namespace ScriptHandler.ViewModels
 		{
 			Mouse.OverrideCursor = Cursors.Wait;
 
+			LoggerService.Inforamtion(this, "SaveAll start");
+
 			Explorer.SaveProject();
 			foreach (DesignScriptViewModel vm in DockingScript.DesignScriptsList)
 			{
-				if (Explorer.Project != null && Explorer.Project.ScriptsList.Contains(vm))
-					continue;
-
-				vm.Save();
-				vm.IsChanged = false;
+				SaveSingleScript(vm);
 			}
 
 			foreach (DesignScriptViewModel vm in DockingScript.DesignScriptsList)
@@ -301,6 +299,32 @@ namespace ScriptHandler.ViewModels
 			}
 
 			Mouse.OverrideCursor = null;
+		}
+
+		private void SaveSingleScript(DesignScriptViewModel vm)
+		{
+			try
+			{
+				LoggerService.Inforamtion(this, "Save \"" + vm.CurrentScript.Name + "\"");
+				if (Explorer.Project != null && Explorer.Project.ScriptsList.Contains(vm))
+				{
+					if (Explorer.Project != null)
+						LoggerService.Inforamtion(this, "Project is NULL");
+					else
+						LoggerService.Inforamtion(this, "Script \"" + vm.CurrentScript.Name + "\" was not found in the project");
+
+					return;
+				}
+
+				vm.Save();
+				vm.IsChanged = false;
+
+				LoggerService.Inforamtion(this, "Finished saving \"" + vm.CurrentScript.Name + "\"");
+			}
+			catch (Exception ex)
+			{
+				LoggerService.Error(this, "Failed to save script \"" + vm.CurrentScript.Name + "\"", ex);
+			}
 		}
 
 		#endregion Script file handling
@@ -378,6 +402,7 @@ namespace ScriptHandler.ViewModels
 			{
 				LoggerService.Error(this, "Generation of the project failed.", ex);
 				GenerateState = GenerateStateEnum.Fail;
+				GenerateToolTip = ex.ToString();
 			}
 
 		}

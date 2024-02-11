@@ -10,11 +10,9 @@ using ScriptHandler.Interfaces;
 using ScriptRunner.Models;
 using Services.Services;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
-using System.Windows.Input;
 using DeviceHandler.Models;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
@@ -28,27 +26,7 @@ namespace ScriptRunner.Services
 
 		public RunSingleScriptService CurrentScript { get; set; }
 
-		public int RecordingRate
-		{
-			get => _recordingRate;
-			set
-			{
-				_recordingRate = value;
-				if(_paramRecording != null)
-					_paramRecording.RecordingRate = value;
-			}
-		}
-
-		public string RecordDirectory
-		{
-			get => _recordDirectory;
-			set
-			{
-				_recordDirectory = value;
-				if (_paramRecording != null)
-					_paramRecording.RecordDirectory = value;
-			}
-		}
+		public ParamRecordingService ParamRecording { get; set; }
 
 		public string AbortScriptPath { get; set; }
 		public ScriptStepAbort AbortScriptStep 
@@ -88,19 +66,19 @@ namespace ScriptRunner.Services
 
 		public ScriptStepSelectMotorType SelectMotor { get; set; }
 
+		public int ExecutedStepsPercentage { get; set; }
+
 		#endregion Properties
 
 		#region Fields
 
-		private int _recordingRate;
-		private string _recordDirectory;
 
 		private ScriptStepAbort _abortScriptStep;
 
 
 		public TestStudioLoggerService MainScriptLogger;
 
-		private ParamRecordingService _paramRecording;
+		
 
 		
 		private bool _isStopped;
@@ -126,6 +104,9 @@ namespace ScriptRunner.Services
 		private CANMessagesService _canMessagesService;
 
 		private string _testName;
+
+		private double _numOfSteps;
+		private double _stepsCounter;
 
 		#endregion Fields
 
@@ -153,14 +134,15 @@ namespace ScriptRunner.Services
 
 			MainScriptLogger = new TestStudioLoggerService();
 
-			_paramRecording = new ParamRecordingService(
+			ParamRecording = new ParamRecordingService(
 				devicesContainer);
 
 			SaftyOfficer = new SaftyOfficerService();
 			SaftyOfficer.AbortScriptEvent += AbortScript;
 
 
-			RecordingRate = 5;
+			ParamRecording.RecordingRate = 5;
+			ParamRecording.ActualRecordingRate = ParamRecording.RecordingRate;
 
 			RecordingRateList = new ObservableCollection<int>()
 			{
@@ -243,7 +225,7 @@ namespace ScriptRunner.Services
 				step.StepState = SciptStateEnum.None;
 
 			if (isRecord)
-				_paramRecording.StartRecording(currentScript.Name, recordingPath, logParametersList);
+				ParamRecording.StartRecording(currentScript.Name, recordingPath, logParametersList);
 
 			//Application.Current.Dispatcher.Invoke(() =>
 			//{
@@ -304,6 +286,8 @@ namespace ScriptRunner.Services
 				return;
 			}
 
+			_stepsCounter = 0;
+			_numOfSteps = GetNumberOfScriptSteps(CurrentScript.CurrentScript);
 			CurrentScript.Start();
 
 
@@ -312,6 +296,34 @@ namespace ScriptRunner.Services
 				ScriptStartedEvent?.Invoke();
 			});
 
+		}
+
+		private int GetNumberOfScriptSteps(IScript script)
+		{
+			int numberOfSteps = 0;
+			foreach(IScriptItem item in script.ScriptItemsList) 
+			{
+				numberOfSteps++;
+				if(item is ScriptStepSubScript subScript) 
+				{
+					int subNumberOfSteps = GetNumberOfScriptSteps(subScript.Script);
+					if (subScript.ContinueUntilType == SubScriptContinueUntilTypeEnum.Repeats)
+					{
+						subNumberOfSteps *= subScript.Repeats;
+						subNumberOfSteps += subScript.Repeats;
+					}
+					else if (subScript.ContinueUntilType == SubScriptContinueUntilTypeEnum.Repeats)
+					{
+						int repeats = (int)subScript.TimeoutSpan.TotalSeconds;
+						subNumberOfSteps *= repeats;
+						subNumberOfSteps += repeats;
+					}
+
+					numberOfSteps += subNumberOfSteps;
+				}
+			}
+
+			return numberOfSteps;
 		}
 
 		private void ClearScriptStepsState(GeneratedScriptData script)
@@ -339,8 +351,8 @@ namespace ScriptRunner.Services
 				stopMode = ScriptStopModeEnum.Aborted;
 			}
 
-			if (_paramRecording.IsRecording)
-				_paramRecording.StopRecording();
+			if (ParamRecording.IsRecording)
+				ParamRecording.StopRecording();
 
 			SaftyOfficer.Stop();
 
@@ -393,8 +405,8 @@ namespace ScriptRunner.Services
 			_isAborted = true;
 			_stepFailed.Notification = message;
 
-			if (_paramRecording != null)
-				_paramRecording.StopRecording();
+			if (ParamRecording != null)
+				ParamRecording.StopRecording();
 
 			if (CurrentScript == null)
 			{
@@ -433,9 +445,13 @@ namespace ScriptRunner.Services
 			CurrentScript.NextStep();
 		}
 
-		private void CurrentStepChangedEventHandler()
+		private void CurrentStepChangedEventHandler(ScriptStepBase step)
 		{
 			OnPropertyChanged(nameof(CurrentScript));
+			_stepsCounter++;
+
+			if(step != null)
+				ExecutedStepsPercentage = (int)((_stepsCounter / _numOfSteps) * 100);
 		}
 
 		#region Continuous Step

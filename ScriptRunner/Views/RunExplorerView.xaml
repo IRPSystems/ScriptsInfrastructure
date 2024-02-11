@@ -1,0 +1,355 @@
+﻿<UserControl x:Class="ScriptRunner.Views.RunExplorerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:converters="clr-namespace:Converters;assembly=Converters"
+             xmlns:script_handler_views="clr-namespace:ScriptHandler.Views;assembly=ScriptHandler"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:local="clr-namespace:ScriptRunner.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Controls;component/Resources/ButtonWithIcon.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
+            
+
+            <Style x:Key="ProjectsListStyle" TargetType="ListView" >
+                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />                
+            </Style>
+
+
+
+
+            <Style x:Key="ProjectsListItemStyle" TargetType="ListViewItem" >
+                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListViewItem">
+
+                            <Grid Background="Transparent">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="27"/>
+                                    <RowDefinition Height="5"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+
+                                <Border Grid.Row="0" Margin="1,1,1,0" Background="Transparent">
+
+                                    <Border.Resources>
+
+                                        <Style TargetType="Border">
+
+                                            <Style.Triggers>
+
+                                                <DataTrigger Binding="{Binding State}" Value="Running">
+                                                    <Setter Property="BorderBrush" Value="Magenta" />
+                                                    <Setter Property="BorderThickness" Value="2" />
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent3}" />
+                                                    <Setter Property="BorderThickness" Value="2" />
+                                                </DataTrigger>
+
+                                            </Style.Triggers>
+
+                                        </Style>
+
+                                    </Border.Resources>
+                                    
+                                    <Grid Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="20"/>
+                                            <ColumnDefinition Width="1"/>
+                                            <ColumnDefinition Width="20"/>
+                                            <ColumnDefinition Width="5"/>
+                                            <ColumnDefinition Width="20"/>
+                                            <ColumnDefinition Width="5"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="5"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Button Grid.Column="0"
+                                            Height="20"
+                                            Style="{StaticResource ButtonWithIconStyle}"   
+                                            ToolTip="Up"
+                                            Command="{Binding DataContext.ScriptUpCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"
+                                            CommandParameter="{Binding}">
+                                            <iconPacks:Material Kind="ArrowUp" />
+                                        </Button>
+
+                                        <Button Grid.Column="2"
+                                            Height="20"
+                                            Style="{StaticResource ButtonWithIconStyle}"   
+                                            ToolTip="Down"
+                                            Command="{Binding DataContext.ScriptDownCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"
+                                            CommandParameter="{Binding}">
+                                            <iconPacks:Material Kind="ArrowDown" />
+                                        </Button>
+
+                                        <CheckBox Grid.Column="4" IsChecked="{Binding IsDoRun, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                                        <TextBlock Grid.Column="6" 
+                                               Text="{Binding Name}"
+                                               VerticalAlignment="Center"
+                                               FontWeight="DemiBold"/>
+
+                                        <Button Grid.Column="8" 
+                                            Style="{StaticResource ButtonWithIconStyle}"
+                                            Width="30"                        
+                                            ToolTip="Reload project"
+                                            Command="{Binding DataContext.ReloadProjectCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"
+                                            CommandParameter="{Binding}"
+                                            IsEnabled="{Binding IsGeneralEnabled}"
+                                            HorizontalAlignment="Right">
+                                            <iconPacks:PackIconMaterial Kind="Reload" />
+                                        </Button>
+
+                                    </Grid>
+
+                                    <Border.ContextMenu>
+                                        <ContextMenu>
+
+                                            <MenuItem Header="Select recording path" 
+                                                      Command="{Binding DataContext.SelectRecordingPathCommand, 
+                                                                        Source={x:Reference lv}}"
+                                                      CommandParameter="{Binding}"/>
+
+                                        </ContextMenu>
+                                    </Border.ContextMenu>
+
+                                </Border>
+
+                                <DataGrid Grid.Row="2" ItemsSource="{Binding TestsList}"
+                                          SelectedItem="{Binding SelectedScript}"
+                                          Background="Transparent"
+                                          AutoGenerateColumns="False"
+                                          CanUserAddRows="False"
+                                          CanUserDeleteRows="False"
+                                          HeadersVisibility="None"
+                                          Margin="20,0,5,0" >
+
+                                    <i:Interaction.Triggers>
+
+                                        <i:EventTrigger EventName="MouseDoubleClick">
+                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.TestsList_MouseDoubleClickCommand, 
+                                                             Mode=OneWay, 
+                                                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" 
+                                           PassEventArgsToCommand="True"/>
+                                        </i:EventTrigger>
+
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.TestsList_SelectionChangedCommand, 
+                                                             Mode=OneWay, 
+                                                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" 
+                                           PassEventArgsToCommand="True"/>
+                                        </i:EventTrigger>
+
+                                    </i:Interaction.Triggers>
+
+
+                                    <DataGrid.RowStyle>
+                                        <Style TargetType="DataGridRow">
+                                            <Setter Property="Background" Value="{Binding Background}" />
+                                            <Setter Property="Foreground" Value="{Binding Foreground}" />
+                                            <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+
+                                            <Setter Property="ToolTip">
+                                                <Setter.Value>
+                                                    <script_handler_views:ErrorsListView ErrorsList="{Binding ErrorsList}" 
+                                                                                         ScriptName="{Binding Name}"/>
+                                                </Setter.Value>
+                                            </Setter>
+
+                                            <Style.Triggers>
+
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource MahApps.Brushes.Accent2}" />
+                                                </Trigger>
+
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource MahApps.Brushes.Accent}" />
+                                                    <Setter Property="Foreground" Value="White" />
+                                                </Trigger>
+
+                                                <DataTrigger Binding="{Binding State}" Value="Running">
+                                                    <Setter Property="BorderBrush" Value="Magenta" />
+                                                    <Setter Property="BorderThickness" Value="2" />
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding State}" Value="Stopped">
+                                                    <Setter Property="BorderBrush" Value="Orange" />
+                                                    <Setter Property="BorderThickness" Value="2" />
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding ErrorDescription, Converter={StaticResource IsNotNullConverter}}" Value="True">
+                                                    <Setter Property="BorderBrush" Value="Red" />
+                                                    <Setter Property="BorderThickness" Value="2" />
+                                                </DataTrigger>
+
+                                            </Style.Triggers>
+
+                                        </Style>
+                                    </DataGrid.RowStyle>
+
+                                    <DataGrid.Columns>
+
+                                        <DataGridTemplateColumn Header="" IsReadOnly="True">
+                                            <DataGridTemplateColumn.CellEditingTemplate>
+                                                <DataTemplate>
+
+                                                    <CheckBox Grid.Column="4" IsChecked="{Binding IsDoRun, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellEditingTemplate>
+
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+
+                                                    <CheckBox Grid.Column="4" IsChecked="{Binding IsDoRun, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+
+                                        <DataGridTextColumn Header="Script" Binding="{Binding Name}" IsReadOnly="True" Width="150"/>
+                                        <DataGridTextColumn Header="Status" Binding="{Binding State}" IsReadOnly="True"/>
+
+                                        <DataGridTemplateColumn Header="" IsReadOnly="True">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+
+                                                    <Border Name="brdr" Background="Transparent">
+                                                        <TextBlock Name="tb" Text="" Margin="2" />
+                                                    </Border>
+
+                                                    <DataTemplate.Triggers>
+
+                                                        <DataTrigger Binding="{Binding IsPass}" Value="True">
+                                                            <Setter TargetName="brdr" Property="Background" Value="Green" />
+                                                            <Setter TargetName="tb" Property="Text" Value="Pass" />
+                                                            <Setter TargetName="tb" Property="Foreground" Value="White" />
+                                                        </DataTrigger>
+
+                                                        <DataTrigger Binding="{Binding IsPass}" Value="False">
+                                                            <Setter TargetName="brdr" Property="Background" Value="Red" />
+                                                            <Setter TargetName="tb" Property="Text" Value="Fail" />
+                                                            <Setter TargetName="tb" Property="Foreground" Value="White" />
+                                                        </DataTrigger>
+
+                                                    </DataTemplate.Triggers>
+
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+
+                                    </DataGrid.Columns>
+
+                                </DataGrid>
+
+
+                                
+
+                            </Grid>
+                            
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+
+                <Style.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black"/>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+                </Style.Resources>
+
+            </Style>
+
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="1"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="1,0,0,0">
+
+            <Button Style="{StaticResource ButtonWithIconStyle}"
+                    Width="30"
+                    Margin="0,0,1,0"
+                    ToolTip="Open project"
+                    Command="{Binding OpenProjectCommand}"
+                    IsEnabled="{Binding IsGeneralEnabled}">
+                <iconPacks:Material Kind="Plus" />
+            </Button>
+
+            <Button Style="{StaticResource ButtonWithIconStyle}"
+                    Width="30"
+                    Margin="0,0,5,0"
+                    ToolTip="Delete project"
+                    Command="{Binding DeleteProjectCommand}">
+                <iconPacks:PackIconMaterial Kind="Delete" />
+            </Button>
+
+            <Button Style="{StaticResource ButtonWithIconStyle}"
+                    Width="30"
+                    Margin="0,0,1,0"
+                    ToolTip="Save projects list"
+                    Command="{Binding SaveProjectsListCommand}">
+                <iconPacks:Material Kind="ContentSave" />
+            </Button>
+
+            <Button Style="{StaticResource ButtonWithIconStyle}"
+                    Width="30"
+                    Margin="0,0,5,0"
+                    ToolTip="Load projects list"
+                    Command="{Binding LoadProjectsListCommand}">
+                <iconPacks:PackIconMaterial Kind="FolderOpen" />
+            </Button>
+
+        </StackPanel>
+
+        <ListView Grid.Row="2" 
+                  Name="lv"
+                  ItemsSource="{Binding ProjectsList}"
+                  FontSize="14"
+                  Background="Transparent"
+                  BorderThickness="1"                   
+                  BorderBrush="{DynamicResource MahApps.Brushes.Accent2}"
+                  ItemContainerStyle="{StaticResource ProjectsListItemStyle}">
+
+            <ListView.InputBindings>
+
+
+                <KeyBinding Command="{Binding DeleteProjectCommand}" 
+                                Gesture="Delete" />
+
+            </ListView.InputBindings>
+
+            <i:Interaction.Triggers>
+
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding Path=DataContext.ProjectsList_SelectionChangedCommand, 
+                                                             Mode=OneWay, 
+                                                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" 
+                                           PassEventArgsToCommand="True"/>
+                </i:EventTrigger>
+
+            </i:Interaction.Triggers>
+
+        </ListView>
+
+    </Grid>
+</UserControl>

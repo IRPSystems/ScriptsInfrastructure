@@ -41,6 +41,9 @@ namespace ScriptHandler.ViewModels
 		private bool _isMouseDown;
 		private Point _startPoint;
 
+		private bool _isInRename;
+		private bool _isInDelete;
+
 		#endregion Fields
 
 
@@ -52,6 +55,8 @@ namespace ScriptHandler.ViewModels
 		{
 			_scriptUserData = scriptUserData;
 			_devicesContainer = devicesContainer;
+
+			_isInRename = false;
 
 			ProjectAddNewTestCommand = new RelayCommand(ProjectAddNewTest);
 			ProjectAddNewScriptCommand = new RelayCommand(ProjectAddNewScript);
@@ -131,6 +136,7 @@ namespace ScriptHandler.ViewModels
 
 			string name = Path.GetFileName(saveFileDialog.FileName);
 			name = name.Replace(".prj", string.Empty);
+			Project.Name = name;
 
 			Project = new ProjectData() { Name = name };
 
@@ -155,8 +161,12 @@ namespace ScriptHandler.ViewModels
 			OpenFileDialog openFileDialog = new OpenFileDialog();
 			openFileDialog.Filter = "Project files (*.prj)|*.prj";
 
-			if(System.IO.Directory.Exists(_scriptUserData.LastProjectPath))
+			if (string.IsNullOrEmpty(_scriptUserData.LastProjectPath) == false &&
+				System.IO.Directory.Exists(_scriptUserData.LastProjectPath))
+			{
 				openFileDialog.InitialDirectory = _scriptUserData.LastProjectPath;
+			}
+
 			bool? result = openFileDialog.ShowDialog();
 			if (result != true)
 				return;
@@ -227,11 +237,18 @@ namespace ScriptHandler.ViewModels
 
 			try
 			{
-
+				LoggerService.Inforamtion(this, "SaveProject start");
 				foreach (DesignScriptViewModel script in Project.ScriptsList)
 				{
-					if (script.IsChanged)
+					try
+					{
+						LoggerService.Inforamtion(this, "Save \"" + script.CurrentScript.Name + "\"");
 						script.Save(script.CurrentScript is TestData);
+					}
+					catch (Exception ex)
+					{
+						LoggerService.Error(this, "Failed to save script \"" + script.CurrentScript.Name + "\"", ex);
+					}
 				}
 
 				JsonSerializerSettings settings = new JsonSerializerSettings();
@@ -450,6 +467,8 @@ namespace ScriptHandler.ViewModels
 					return;
 			}
 
+			_isInDelete = true;
+
 			DesignScriptViewModel vm = Project.ScriptsList.ToList().Find((t) => t.CurrentScript.Name == script.CurrentScript.Name);
 			Project.ScriptsList.Remove(vm);
 
@@ -474,6 +493,8 @@ namespace ScriptHandler.ViewModels
 			PostLoadAllScripts();
 			SaveProject();
 			Project.IsChanged = false;
+
+			_isInDelete = false;
 		}
 
 		private void DeleteScriptForSubScript(
@@ -601,6 +622,7 @@ namespace ScriptHandler.ViewModels
 			ProjectAddExistingTest(path);
 		}
 
+		
 		private void RenameScript(DesignScriptViewModel vm) 
 		{
 			if (vm.CurrentScript.Name.EndsWith(" - Unloaded"))
@@ -608,6 +630,8 @@ namespace ScriptHandler.ViewModels
 				MessageBox.Show("Unloaded", "Open Script");
 				return;
 			}
+
+			_isInRename = true;
 
 			DockingScript.CloseScript(vm.CurrentScript);
 
@@ -658,6 +682,14 @@ namespace ScriptHandler.ViewModels
 					oldName,
 					scriptName);
 			}
+
+			PostLoadAllScripts();
+			foreach (DesignScriptViewModel scriptVm in Project.ScriptsList)
+			{
+				scriptVm.RefreshDiagram();
+			}
+
+			_isInRename = false;
 		}
 
 
@@ -968,6 +1000,9 @@ namespace ScriptHandler.ViewModels
 
 		private void ScriptSavedEventHandler(object sender, EventArgs e)
 		{
+			if (_isInRename || _isInDelete)
+				return;
+
 			PostLoadAllScripts();
 			foreach (DesignScriptViewModel vm in Project.ScriptsList)
 			{

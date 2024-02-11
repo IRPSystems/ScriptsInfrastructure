@@ -49,7 +49,8 @@
                      TextWrapping="Wrap"
                      VerticalAlignment="Center"
                      HorizontalAlignment="Center"
-                     ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     Background="Transparent"/>
         </Grid>
 
         <DataTemplate.Triggers>

@@ -21,7 +21,9 @@ namespace ScriptHandler.Services
 			string pathCommand, 
 			string pathSettings)
 		{
-			string fullPath = Path.GetFullPath(pathCommand);
+			if (File.Exists(pathCommand) == false)
+				return null;
+
 			List<ControllerSettingsData> motorSettingsList = ReadCommands(pathCommand);
 
 			List<ParameterValueData> statusParams = ReadSettings(pathSettings); 
@@ -84,6 +86,7 @@ namespace ScriptHandler.Services
 
 			IExcelDataReader reader;
 			var stream = File.Open(path, FileMode.Open, FileAccess.Read);
+			System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 			reader = ExcelReaderFactory.CreateReader(stream);
 
 			//// reader.IsFirstRowAsColumnNames
