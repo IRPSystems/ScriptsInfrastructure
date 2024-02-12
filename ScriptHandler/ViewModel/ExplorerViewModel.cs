@@ -43,6 +43,7 @@ namespace ScriptHandler.ViewModels
 
 		private bool _isInRename;
 		private bool _isInDelete;
+		private bool _isSaveProject;
 
 		#endregion Fields
 
@@ -57,6 +58,8 @@ namespace ScriptHandler.ViewModels
 			_devicesContainer = devicesContainer;
 
 			_isInRename = false;
+			_isInDelete = false;
+			_isSaveProject = false;
 
 			ProjectAddNewTestCommand = new RelayCommand(ProjectAddNewTest);
 			ProjectAddNewScriptCommand = new RelayCommand(ProjectAddNewScript);
@@ -237,6 +240,7 @@ namespace ScriptHandler.ViewModels
 
 			try
 			{
+				_isSaveProject = true;
 				LoggerService.Inforamtion(this, "SaveProject start");
 				foreach (DesignScriptViewModel script in Project.ScriptsList)
 				{
@@ -250,6 +254,8 @@ namespace ScriptHandler.ViewModels
 						LoggerService.Error(this, "Failed to save script \"" + script.CurrentScript.Name + "\"", ex);
 					}
 				}
+
+				_isSaveProject = false;
 
 				JsonSerializerSettings settings = new JsonSerializerSettings();
 				settings.Formatting = Formatting.Indented;
@@ -1000,7 +1006,7 @@ namespace ScriptHandler.ViewModels
 
 		private void ScriptSavedEventHandler(object sender, EventArgs e)
 		{
-			if (_isInRename || _isInDelete)
+			if (_isInRename || _isInDelete || _isSaveProject)
 				return;
 
 			PostLoadAllScripts();
