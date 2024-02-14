@@ -121,7 +121,8 @@ namespace ScriptRunner.Services
 		public void StartRecording(
 			string scriptName,
 			string recordingPath,
-			ObservableCollection<DeviceParameterData> logParametersList)
+			ObservableCollection<DeviceParameterData> logParametersList,
+			bool isAddDiviceToHeader = false)
 		{
 			LogParametersList = logParametersList;
 			_scriptName = scriptName;
@@ -185,7 +186,11 @@ namespace ScriptRunner.Services
 				_csvWriter.WriteField("Time [sec]");
 				foreach (DeviceParameterData data in logParametersList)
 				{
-					_csvWriter.WriteField(data.Name + " [" + data.Units + "]");
+					string header = string.Empty;
+					if (isAddDiviceToHeader && data.Device != null)
+						header = data.Device.Name + "-";
+					header += data.Name + " [" + data.Units + "]";
+					_csvWriter.WriteField(header);
 				}
 
 				_csvWriter.WriteField("Serial number");
