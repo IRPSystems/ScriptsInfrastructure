@@ -1,8 +1,10 @@
 ﻿using DeviceCommunicators.Models;
+using DeviceCommunicators.Scope_KeySight;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Entities.Enums;
 using Entities.Models;
+using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -66,23 +68,25 @@ namespace ScriptHandler.Models.ScriptNodes
 		public ScriptNodeScopeSave()
 		{
 			Name = "Scope Save";
-
 		}
 
-		
 
-		
+
+
 		public override void PostLoad(
 			DevicesContainer devicesContainer,
 			IScript currentScript)
 		{
-			if (devicesContainer.TypeToDevicesFullData.ContainsKey(DeviceTypesEnum.KeySight) == false)
-				return;
+			string jsonStr =
+				" {\r\n        \"$type\": \"DeviceCommunicators.Scope_KeySight.Scope_KeySight_ParamData, DeviceCommunicators\",\r\n        \"User_command\": null,\r\n        \"Command\": null,\r\n        \"Status_paramter\": null,\r\n        \"data\": null,\r\n        \"Channel\": 0,\r\n        \"Name\": \"Save\",\r\n        \"Units\": null,\r\n        \"Value\": null,\r\n        \"DropDown\": {\r\n          \"$type\": \"System.Collections.Generic.List`1[[Entities.Models.DropDownParamData, Entities]], System.Private.CoreLib\",\r\n          \"$values\": [\r\n            {\r\n              \"$type\": \"Entities.Models.DropDownParamData, Entities\",\r\n              \"Name\": \"PNG\",\r\n              \"Value\": \"0\"\r\n            },\r\n            {\r\n              \"$type\": \"Entities.Models.DropDownParamData, Entities\",\r\n              \"Name\": \"CSV\",\r\n              \"Value\": \"1\"\r\n            }\r\n          ]\r\n        },\r\n        \"DeviceType\": 4\r\n      }";
 
-			DeviceFullData deviceFullData = 
-				devicesContainer.TypeToDevicesFullData[DeviceTypesEnum.KeySight];
+			JsonSerializerSettings settings = new JsonSerializerSettings();
+			settings.Formatting = Formatting.Indented;
+			settings.TypeNameHandling = TypeNameHandling.All;
+			Scope_KeySight_ParamData param = JsonConvert.DeserializeObject(jsonStr, settings) as Scope_KeySight_ParamData;
+			param.Device = devicesContainer.DevicesList.ToList().Find((d) => d.DeviceType == DeviceTypesEnum.KeySight);
 
-			Parameter = deviceFullData.Device.ParemetersList.ToList().Find((p) => p.Name == "Save");
+			Parameter = param;
 		}
 
 
@@ -90,7 +94,11 @@ namespace ScriptHandler.Models.ScriptNodes
 			DevicesContainer devicesContainer,
 			ObservableCollection<InvalidScriptItemData> errorsList)
 		{
-			
+			if (Parameter == null)
+				return true;
+
+			if(string.IsNullOrEmpty(FilePath)) 
+				return true;
 
 			return false;
 		}
