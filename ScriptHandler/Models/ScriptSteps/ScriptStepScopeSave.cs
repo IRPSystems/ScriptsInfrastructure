@@ -52,9 +52,13 @@ namespace ScriptHandler.Models
 			DevicesContainer devicesContainer,
 			ObservableCollection<InvalidScriptItemData> errorsList)
 		{
-			
+			if (Parameter == null)
+				return true;
 
-			return true;
+			if(string.IsNullOrEmpty(FilePath)) 
+				return true;
+
+			return false;
 		}
 
 		public override void Generate(
