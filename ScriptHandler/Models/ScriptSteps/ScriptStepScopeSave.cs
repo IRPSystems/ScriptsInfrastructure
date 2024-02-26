@@ -77,6 +77,7 @@ namespace ScriptHandler.Models
 			ErrorMessage = "Scope Save\r\n";
 
 			ks_Param.data = FilePath;
+			ks_Param.Value = Value;
 
 			Communicator.SetParamValue(Parameter, 0, Callback);
 
