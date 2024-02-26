@@ -604,6 +604,8 @@ namespace ScriptHandler.ViewModels
 				script.CurrentScript.ScriptPath,
 				script.CurrentScript.Name,
 				copiedScriptName);
+
+			PostLoadAllScripts();
 		}
 
 		private void CopyScript(
