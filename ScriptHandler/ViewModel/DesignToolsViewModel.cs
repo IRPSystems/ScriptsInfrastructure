@@ -59,11 +59,8 @@ namespace ScriptHandler.ViewModels
 				if (!IsNodeBase(type))
 					continue;
 
-
-				//if (type.Name == typeof(ScriptNodeEOLFlash).Name ||
-				//	type.Name == typeof(ScriptNodeEOLCalibrate).Name ||
-				//	type.Name == typeof(ScriptNodeEOLSendSN).Name)
-				//	continue;
+				if (type.Name.StartsWith("EOL"))
+					continue;
 
 				var c = Activator.CreateInstance(type);
 				ScriptNodeToolList.Add(c as ScriptNodeBase);

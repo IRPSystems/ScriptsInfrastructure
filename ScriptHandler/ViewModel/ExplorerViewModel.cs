@@ -604,6 +604,8 @@ namespace ScriptHandler.ViewModels
 				script.CurrentScript.ScriptPath,
 				script.CurrentScript.Name,
 				copiedScriptName);
+
+			PostLoadAllScripts();
 		}
 
 		private void CopyScript(
@@ -872,7 +874,7 @@ namespace ScriptHandler.ViewModels
 
 			foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
 			{
-				if(node is IScriptStepWithParameter withParameter)
+				if(node is IScriptStepWithParameter withParameter && withParameter.Parameter != null)
 				{
 					if(withParameter.Parameter.Name == "Safety officer on/off")
 					{
