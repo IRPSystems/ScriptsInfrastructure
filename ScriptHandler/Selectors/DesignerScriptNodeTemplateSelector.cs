@@ -17,6 +17,8 @@ namespace ScriptHandler.Selectors
 				return element.FindResource("Design_SetSaveParameterTemplate") as DataTemplate;
 			if (item is ScriptNodeDelay)
 				return element.FindResource("Design_DelayTemplate") as DataTemplate;
+			if (item is ScriptNodeScopeSave)
+				return element.FindResource("Design_ScopeSaveTemplate") as DataTemplate;
 			if (item is ScriptNodeResetParentSweep)
 				return element.FindResource("Design_ResetParentSweepTemplate") as DataTemplate;
 			if (item is ScriptNodeDynamicControl)

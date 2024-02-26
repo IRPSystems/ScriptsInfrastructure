@@ -36,6 +36,8 @@ namespace ScriptHandler.Services
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#A5FF7F");
 			if (item is ScriptNodeNotification || item is ScriptStepNotification)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#4CFF00");
+			if (item is ScriptNodeScopeSave || item is ScriptStepScopeSave)
+				return (SolidColorBrush)new BrushConverter().ConvertFrom("#FF7FB6");
 			if (item is ISubScript subScript)
 			{
 				if (subScript.Script == null)
