@@ -139,8 +139,7 @@ namespace ScriptHandler.ViewModels
 
 			string name = Path.GetFileName(saveFileDialog.FileName);
 			name = name.Replace(".prj", string.Empty);
-			Project.Name = name;
-
+			
 			Project = new ProjectData() { Name = name };
 
 			string directory = Path.GetDirectoryName(saveFileDialog.FileName);
