@@ -22,6 +22,8 @@ namespace ScriptHandler.Converter
 				return Brushes.White;
 			if (value is ScriptNodeSetSaveParameter || value is ScriptStepSetSaveParameter)
 				return Brushes.White;
+			if (value is ScriptNodeScopeSave || value is ScriptStepScopeSave)
+				return Brushes.Black;
 			if (value is ScriptNodeDelay || value is ScriptStepDelay)
 				return Brushes.Black;
 			if (value is ScriptNodeDynamicControl || value is ScriptStepDynamicControl)

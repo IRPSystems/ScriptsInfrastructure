@@ -632,6 +632,57 @@
 
     </DataTemplate>
 
+
+
+
+    <DataTemplate x:Key="Design_ScopeSaveTemplate">
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="500"/>
+            </Grid.ColumnDefinitions>
+
+
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="27" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Value" VerticalAlignment="Center"/>
+
+            <ComboBox Grid.Row="0" Grid.Column="2" 
+                      Name="cb"
+                      ItemsSource="{Binding Parameter.DropDown}"
+                      Visibility="Visible" 
+                      SelectedIndex="{Binding ValueDropDwonIndex}">
+
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+
+            </ComboBox>
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="File name" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding FilePath, UpdateSourceTrigger=PropertyChanged}" />
+
+        </Grid>
+
+    </DataTemplate>
+
+
+
+
+
+
+
+
+
     <DataTemplate x:Key="Design_EOLFlashTemplate">
 
         <Grid >

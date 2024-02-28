@@ -45,6 +45,8 @@ namespace ScriptHandler.ViewModels
 		private bool _isInDelete;
 		private bool _isSaveProject;
 
+		private ProjectPostLoadService _postLoad;
+
 		#endregion Fields
 
 
@@ -73,7 +75,7 @@ namespace ScriptHandler.ViewModels
 
 			SelectRecordingFileCommand = new RelayCommand(SelectRecordingFile);
 
-
+			_postLoad = new ProjectPostLoadService();
 		}
 
 		#endregion Constructor
@@ -139,7 +141,13 @@ namespace ScriptHandler.ViewModels
 
 			string name = Path.GetFileName(saveFileDialog.FileName);
 			name = name.Replace(".prj", string.Empty);
+<<<<<<< .mine
 			
+
+=======
+			
+
+>>>>>>> .theirs
 			Project = new ProjectData() { Name = name };
 
 			string directory = Path.GetDirectoryName(saveFileDialog.FileName);
@@ -759,76 +767,6 @@ namespace ScriptHandler.ViewModels
 		#endregion Script path
 
 		
-
-		private void GetProjectCanMessages(
-			ScriptData scriptData)
-		{
-			foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
-			{
-				if (node is ScriptNodeCANMessage canMessage)
-				{
-					if (node is ScriptNodeCANMessageUpdate update)
-						update.ParentProject = Project;
-					else
-						Project.CanMessagesList.Add(canMessage);
-
-				}
-				else if (node is ScriptNodeStopContinuous stopContinuous)
-				{
-					stopContinuous.ParentProject = Project;
-				}
-			}
-
-		}
-
-		private void SetTestsCanMessagesUpdate(
-			ScriptData scriptData)
-		{
-			
-			foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
-			{
-				if (node is ScriptNodeCANMessageUpdate update)
-				{
-					if (update.StepToUpdateID != 0)
-					{
-						foreach (ScriptNodeCANMessage canMessage in Project.CanMessagesList)
-						{
-							if (canMessage.IDInProject == update.StepToUpdateID)
-							{
-								update.StepToUpdate = canMessage;
-								break;
-							}
-						}
-					}
-				}
-			}
-
-		}
-
-		private void SetTestsStopContinuous(
-			ScriptData scriptData)
-		{
-
-			foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
-			{
-				if (node is ScriptNodeStopContinuous stop)
-				{
-					if (stop.StepToStopID != 0)
-					{
-						foreach (ScriptNodeCANMessage canMessage in Project.CanMessagesList)
-						{
-							if (canMessage.IDInProject == stop.StepToStopID)
-							{
-								stop.StepToStop = canMessage;
-								break;
-							}
-						}
-					}
-				}
-			}
-
-		}
-
 		
 
 		private void HandleRenamedSubScriptInScript(
@@ -862,90 +800,17 @@ namespace ScriptHandler.ViewModels
 					}
 				}
 
-				HandleSubScriptInScript(
-					subScript.Script as ScriptData);
+				_postLoad.HandleSubScriptInScript(
+					subScript.Script as ScriptData,
+					Project);
 			}
 		}
 
-		private void SetEvvaDeviceToSaftyOfficer(ScriptData scriptData)
-		{
-			if (scriptData == null)
-				return;
-
-			foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
-			{
-				if(node is IScriptStepWithParameter withParameter && withParameter.Parameter != null)
-				{
-					if(withParameter.Parameter.Name == "Safety officer on/off")
-					{
-						withParameter.Parameter.DeviceType = Entities.Enums.DeviceTypesEnum.EVVA;
-					}
-				}
-			}
-		}
-
-		private void HandleSubScriptInScript(ScriptData scriptData)
-		{
-			if (scriptData == null)
-				return;
-
-			foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
-			{
-				if (!(node is ScriptNodeSubScript subScript))
-					continue;
-
-				subScript.Parent = Project;
-
-				if (string.IsNullOrEmpty(subScript.SelectedScriptName))
-					continue;
+		
 
 
+		
 
-				foreach(DesignScriptViewModel vm in Project.ScriptsList) 
-				{
-					if(!(vm.CurrentScript is ScriptData testSubScriptData))
-						continue;
-
-					if (testSubScriptData.Name == subScript.SelectedScriptName)
-					{
-						subScript.Script = testSubScriptData;
-					}
-				}
-
-				HandleSubScriptInScript(
-					subScript.Script as ScriptData);
-			}
-		}
-
-		private void HandleSweepSubScriptInScript(ScriptData scriptData)
-		{
-			if (scriptData == null)
-				return;
-
-			foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
-			{
-				if (!(node is ScriptNodeSweep sweep))
-					continue;
-
-				sweep.Parent = Project;
-
-
-				foreach (SweepItemData sweepItem in sweep.SweepItemsList) 
-				{
-					
-					if (sweepItem.SubScriptName == null)
-						continue;
-
-					
-					ScriptData subScript = Project.ScriptsOnlyList.ToList().Find((s) => s.Name== sweepItem.SubScriptName);
-					if(subScript == null)
-						continue;
-
-					sweepItem.SubScript = subScript;
-
-				}
-			}
-		}
 
 		private static bool IsFileExist(string fileName, string sourcePath)
 		{
@@ -1020,34 +885,7 @@ namespace ScriptHandler.ViewModels
 
 		private void PostLoadAllScripts()
 		{
-			Project.CanMessagesList.Clear();
-			foreach (DesignScriptViewModel vm in Project.ScriptsList)
-			{
-				vm.CurrentScript.Parent = Project;
-				SetEvvaDeviceToSaftyOfficer(vm.CurrentScript);
-				HandleSubScriptInScript(vm.CurrentScript);
-				HandleSweepSubScriptInScript(vm.CurrentScript);
-
-				if (!vm.IsScriptIsSavedEvent)
-				{
-					vm.ScriptIsSavedEvent += ScriptSavedEventHandler;
-					vm.IsScriptIsSavedEvent = true;
-				}
-
-				GetProjectCanMessages(vm.CurrentScript);
-				//GetProjectDynamicControl(vm.CurrentScript);
-			}
-
-			foreach (DesignScriptViewModel vm in Project.ScriptsList)
-			{
-				SetTestsCanMessagesUpdate(vm.CurrentScript);
-				SetTestsStopContinuous(vm.CurrentScript);
-			}
-
-			for (int i = 0; i < Project.CanMessagesList.Count; i++) 
-			{
-				Project.CanMessagesList[i].IDInProject = i + 1;
-			}
+			_postLoad.PostLoad(Project, ScriptSavedEventHandler);
 		}
 
 		private void ScriptReloadedEventHandler(object sender, EventArgs e)
@@ -1252,7 +1090,9 @@ namespace ScriptHandler.ViewModels
 
 			foreach(DesignScriptViewModel script in Project.ScriptsList) 
 			{
-				HandleSubScriptInScript(script.CurrentScript);
+				_postLoad.HandleSubScriptInScript(
+					script.CurrentScript,
+					Project);
 			}
 
 			Project.IsChanged = true;

@@ -3,6 +3,7 @@ using DeviceCommunicators.Enums;
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
 using DeviceCommunicators.NI_6002;
+using DeviceCommunicators.Scope_KeySight;
 using DeviceCommunicators.SwitchRelay32;
 using DeviceHandler.Models;
 using Entities.Models;
@@ -10,6 +11,8 @@ using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
+using Syncfusion.Windows.Tools;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
@@ -75,6 +78,11 @@ namespace ScriptHandler.Models
 			{
 				ni.Io_port = Ni6002_IOPort;
 				ni.Value = Ni6002_Value;
+			}
+			else if (Parameter is Scope_KeySight_ParamData ks_Param &&
+				Parameter.Name.ToLower() == "save")
+			{
+				ks_Param.data = "Evva_" + DateTime.Now.ToString("DD_MMM_YYY_HH_mm_ss");
 			}
 
 			Communicator.SetParamValue(Parameter, Value, GetCallback);

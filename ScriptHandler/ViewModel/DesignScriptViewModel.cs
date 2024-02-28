@@ -933,6 +933,10 @@ namespace ScriptHandler.ViewModels
 			{
 				sweep.Parent = CurrentScript.Parent as ProjectData;
 			}
+			if (new_scriptNodeBase is ScriptNodeScopeSave scopeSave)
+			{
+				scopeSave.PostLoad(_devicesContainer, CurrentScript);
+			}
 
 			ScriptNodeBase droppedOnNode;
 			int indexToInsertNode = GetNewNodePosition(e, out droppedOnNode);

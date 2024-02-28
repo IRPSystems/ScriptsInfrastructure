@@ -62,6 +62,9 @@ namespace ScriptHandler.ViewModels
 				if (type.Name.StartsWith("EOL"))
 					continue;
 
+				if (type.Name == "ScriptNodeScopeSave")
+					continue;
+
 				var c = Activator.CreateInstance(type);
 				ScriptNodeToolList.Add(c as ScriptNodeBase);
 			}
