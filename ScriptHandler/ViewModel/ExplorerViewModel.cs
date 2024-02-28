@@ -141,13 +141,8 @@ namespace ScriptHandler.ViewModels
 
 			string name = Path.GetFileName(saveFileDialog.FileName);
 			name = name.Replace(".prj", string.Empty);
-<<<<<<< .mine
 			
 
-=======
-			
-
->>>>>>> .theirs
 			Project = new ProjectData() { Name = name };
 
 			string directory = Path.GetDirectoryName(saveFileDialog.FileName);
@@ -648,7 +643,6 @@ namespace ScriptHandler.ViewModels
 
 			_isInRename = true;
 
-			vm.Save();
 			DockingScript.CloseScript(vm.CurrentScript);
 
 			string title = string.Empty;
