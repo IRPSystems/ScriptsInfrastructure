@@ -640,6 +640,7 @@ namespace ScriptHandler.ViewModels
 
 			_isInRename = true;
 
+			vm.Save();
 			DockingScript.CloseScript(vm.CurrentScript);
 
 			string title = string.Empty;
