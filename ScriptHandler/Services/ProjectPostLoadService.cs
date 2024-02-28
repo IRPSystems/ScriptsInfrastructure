@@ -130,76 +130,76 @@ namespace ScriptHandler.Services
 			}
 		}
 
-		private void GetProjectCanMessages(
-			ScriptData scriptData,
-			ProjectData project)
-		{
-			foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
-			{
-				if (node is ScriptNodeCANMessage canMessage)
-				{
-					if (node is ScriptNodeCANMessageUpdate update)
-						update.ParentProject = project;
-					else
-						project.CanMessagesList.Add(canMessage);
+		//private void GetProjectCanMessages(
+		//	ScriptData scriptData,
+		//	ProjectData project)
+		//{
+		//	foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
+		//	{
+		//		if (node is ScriptNodeCANMessage canMessage)
+		//		{
+		//			if (node is ScriptNodeCANMessageUpdate update)
+		//				update.ParentProject = project;
+		//			else
+		//				project.CanMessagesList.Add(canMessage);
 
-				}
-				else if (node is ScriptNodeStopContinuous stopContinuous)
-				{
-					stopContinuous.ParentProject = project;
-				}
-			}
+		//		}
+		//		else if (node is ScriptNodeStopContinuous stopContinuous)
+		//		{
+		//			stopContinuous.ParentProject = project;
+		//		}
+		//	}
 
-		}
+		//}
 
-		private void SetTestsCanMessagesUpdate(
-			ScriptData scriptData,
-			ProjectData project)
-		{
+		//private void SetTestsCanMessagesUpdate(
+		//	ScriptData scriptData,
+		//	ProjectData project)
+		//{
 
-			foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
-			{
-				if (node is ScriptNodeCANMessageUpdate update)
-				{
-					if (update.StepToUpdateID != 0)
-					{
-						foreach (ScriptNodeCANMessage canMessage in project.CanMessagesList)
-						{
-							if (canMessage.IDInProject == update.StepToUpdateID)
-							{
-								update.StepToUpdate = canMessage;
-								break;
-							}
-						}
-					}
-				}
-			}
+		//	foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
+		//	{
+		//		if (node is ScriptNodeCANMessageUpdate update)
+		//		{
+		//			if (update.StepToUpdateID != 0)
+		//			{
+		//				foreach (ScriptNodeCANMessage canMessage in project.CanMessagesList)
+		//				{
+		//					if (canMessage.IDInProject == update.StepToUpdateID)
+		//					{
+		//						update.StepToUpdate = canMessage;
+		//						break;
+		//					}
+		//				}
+		//			}
+		//		}
+		//	}
 
-		}
+		//}
 
-		private void SetTestsStopContinuous(
-			ScriptData scriptData,
-			ProjectData project)
-		{
+		//private void SetTestsStopContinuous(
+		//	ScriptData scriptData,
+		//	ProjectData project)
+		//{
 
-			foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
-			{
-				if (node is ScriptNodeStopContinuous stop)
-				{
-					if (stop.StepToStopID != 0)
-					{
-						foreach (ScriptNodeCANMessage canMessage in project.CanMessagesList)
-						{
-							if (canMessage.IDInProject == stop.StepToStopID)
-							{
-								stop.StepToStop = canMessage;
-								break;
-							}
-						}
-					}
-				}
-			}
+		//	foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
+		//	{
+		//		if (node is ScriptNodeStopContinuous stop)
+		//		{
+		//			if (stop.StepToStopID != 0)
+		//			{
+		//				foreach (ScriptNodeCANMessage canMessage in project.CanMessagesList)
+		//				{
+		//					if (canMessage.IDInProject == stop.StepToStopID)
+		//					{
+		//						stop.StepToStop = canMessage;
+		//						break;
+		//					}
+		//				}
+		//			}
+		//		}
+		//	}
 
-		}
+		//}
 	}
 }
