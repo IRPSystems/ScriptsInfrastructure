@@ -122,9 +122,9 @@ namespace ScriptHandler.ViewModels
 
 			AddScriptToFirstStepConnector(
 				NodesList[0],
-				script.ScriptItemsList[0]);
+				NodesList[1]);
 
-			SetOffsetY();
+			SetOffsetY(true);
 
 			//Mouse.OverrideCursor = null;
 		}
@@ -166,13 +166,13 @@ namespace ScriptHandler.ViewModels
 						subScriptScript,
 						left);
 
-					if (subScriptScript.ScriptItemsList != null &&
-						subScriptScript.ScriptItemsList.Count > 0)
-					{
-						AddScriptToFirstStepConnector(
-							subSubScriptNode,
-							subScriptScript.ScriptItemsList[0]);
-					}
+					//if (subScriptScript.ScriptItemsList != null &&
+					//	subScriptScript.ScriptItemsList.Count > 0)
+					//{
+					//	AddScriptToFirstStepConnector(
+					//		subSubScriptNode,
+					//		subScriptScript.ScriptItemsList[0]);
+					//}
 
 					continue;
 				}
@@ -341,19 +341,6 @@ namespace ScriptHandler.ViewModels
 		{
 			NodeViewModel node = NodesList.ToList().Find((n) => n.Content == item);
 			return node;
-		}
-
-		private void AddScriptToFirstStepConnector(
-			NodeViewModel scriptNode,
-			IScriptItem scriptFirstStep)
-		{
-			NodeViewModel nodeFirstStep = GetItemNode(scriptFirstStep);
-			if (nodeFirstStep == null)
-				return;
-
-			AddScriptToFirstStepConnector(
-				scriptNode,
-				nodeFirstStep);
 		}
 
 		private void AddScriptToFirstStepConnector(
@@ -666,7 +653,7 @@ namespace ScriptHandler.ViewModels
 
 			AddScriptToFirstStepConnector(
 				NodesList[0],
-				NodesList[1].Content as IScriptItem);
+				NodesList[1]);
 
 			for (int i = 1; i < NodesList.Count; i++)
 			{
@@ -674,12 +661,12 @@ namespace ScriptHandler.ViewModels
 					continue;
 
 				if (subScript.Script == null || subScript.Script.ScriptItemsList == null || subScript.Script.ScriptItemsList.Count == 0)
-					return;
+					continue;
 
 
 				AddScriptToFirstStepConnector(
 					NodesList[i],
-					subScript.Script.ScriptItemsList[0]);
+					NodesList[i + 1]);
 			}
 		}
 
