@@ -879,7 +879,7 @@ namespace ScriptHandler.ViewModels
 
 		private void PostLoadAllScripts()
 		{
-			_postLoad.PostLoad(Project, ScriptSavedEventHandler);
+			_postLoad.PostLoad(Project, ScriptSavedEventHandler, _devicesContainer);
 		}
 
 		private void ScriptReloadedEventHandler(object sender, EventArgs e)
