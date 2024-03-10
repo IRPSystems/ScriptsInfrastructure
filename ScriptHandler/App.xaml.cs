@@ -11,9 +11,9 @@ namespace ScriptHandler
 		public static void ChangeDarkLight(bool isLightTheme)
 		{
 			if (isLightTheme)
-				ThemeManager.Current.ChangeTheme(Current, "Light.Blue");
+				ThemeManager.Current.ChangeTheme(Current, "Light.Cobalt");
 			else
-				ThemeManager.Current.ChangeTheme(Current, "Dark.Blue");
+				ThemeManager.Current.ChangeTheme(Current, "Dark.Cobalt");
 		}
 	}
 }
