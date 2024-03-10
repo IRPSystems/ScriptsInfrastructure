@@ -1,4 +1,6 @@
 ﻿
+using DeviceHandler.Models;
+using DeviceHandler.Models.DeviceFullDataModels;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models;
 using ScriptHandler.Models.ScriptNodes;
@@ -12,7 +14,8 @@ namespace ScriptHandler.Services
 	{
 		public void PostLoad(
 			ProjectData project,
-			EventHandler scriptSavedEventHandler) 
+			EventHandler scriptSavedEventHandler,
+			DevicesContainer devicesContainer) 
 		{
 			project.CanMessagesList.Clear();
 			foreach (DesignScriptViewModel vm in project.ScriptsList)
@@ -21,6 +24,10 @@ namespace ScriptHandler.Services
 				SetEvvaDeviceToSaftyOfficer(vm.CurrentScript);
 				HandleSubScriptInScript(vm.CurrentScript, project);
 				HandleSweepSubScriptInScript(vm.CurrentScript, project);
+
+				HandleDynamicControlInScript(
+					vm.CurrentScript,
+					devicesContainer);
 
 				if (!vm.IsScriptIsSavedEvent)
 				{
@@ -129,6 +136,34 @@ namespace ScriptHandler.Services
 				}
 			}
 		}
+
+		private void HandleDynamicControlInScript(
+			ScriptData scriptData,
+			DevicesContainer devicesContainer)
+		{
+			if (scriptData == null)
+				return;
+
+			foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
+			{
+				if (!(node is ScriptNodeDynamicControl dynamicControl))
+					continue;
+
+				foreach(DynamicControlColumnData column in dynamicControl.ColumnDatasList)
+				{
+					if(column.Parameter == null) 
+						continue;
+
+					if (devicesContainer.TypeToDevicesFullData.ContainsKey(column.Parameter.DeviceType) == false)
+						continue;
+
+					DeviceFullData deviceFullData = devicesContainer.TypeToDevicesFullData[column.Parameter.DeviceType];
+					column.Parameter.Device = deviceFullData.Device;
+				}
+			}
+		}
+
+
 
 		//private void GetProjectCanMessages(
 		//	ScriptData scriptData,

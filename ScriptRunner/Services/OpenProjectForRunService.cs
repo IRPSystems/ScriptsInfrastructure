@@ -417,17 +417,26 @@ namespace ScriptRunner.Services
 				{
 					foreach (DynamicControlColumnData columnData in dynamicControl.ColumnDatasList)
 					{
-						DeviceParameterData param = null;
-						foreach(DeviceFullData deviceData in devicesContainer.DevicesFullDataList)
+						if (string.IsNullOrEmpty(columnData.ParameterNameAndDevice))
+							continue;
+
+						string[] paramData = columnData.ParameterNameAndDevice.Split(" ;; ");
+						DeviceTypesEnum dt;
+						bool res = Enum.TryParse(paramData[1].Trim(), false, out dt);
+						if (res == false)
+							continue;
+
+						if (devicesContainer.TypeToDevicesFullData.ContainsKey(dt) == false)
+							continue;
+
+						DeviceFullData deviceFullData = devicesContainer.TypeToDevicesFullData[dt];
+						DeviceParameterData param = 
+							deviceFullData.Device.ParemetersList.ToList().Find((p) => p.Name == paramData[0].Trim());
+						if (param != null)
 						{
-							param =
-								deviceData.Device.ParemetersList.ToList().Find((p) => p.Name == columnData.ColHeader);
-							if (param != null)
-							{
-								columnData.Parameter = param;
-								columnData.Communicator = deviceData.DeviceCommunicator;
-							}
-						}	
+							columnData.Parameter = param;
+							columnData.Communicator = deviceFullData.DeviceCommunicator;
+						}
 					}
 				}
 
