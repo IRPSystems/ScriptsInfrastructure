@@ -33,7 +33,7 @@ namespace ScriptHandler.Models
 
 
 
-		private ManualResetEvent _waitGetCallback;
+		private AutoResetEvent _waitGetCallback;
 		private bool _isStopped;
 
 		public ScriptStepSetParameter()
@@ -45,7 +45,9 @@ namespace ScriptHandler.Models
 					Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
 				});
 			}
-			
+
+			_waitGetCallback = new AutoResetEvent(false);
+
 			_isStopped = false;
 		}
 
@@ -60,8 +62,7 @@ namespace ScriptHandler.Models
 			IsPass = true;
 			_isStopped = false;
 
-			_waitGetCallback = new ManualResetEvent(false);
-
+			
 			ErrorMessage = "Failed to set the value.\r\n" +
 					"\tParameter: \"" + Parameter.Name + "\"\r\n" +
 					"\tValue: " + Value + "\r\n\r\n";
