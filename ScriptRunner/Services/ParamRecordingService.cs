@@ -189,7 +189,7 @@ namespace ScriptRunner.Services
 					string header = string.Empty;
 					if (isAddDiviceToHeader && data.Device != null)
 						header = data.Device.Name + "-";
-					header += data.Name + " [" + data.Units + "]";
+					header += data.Name + " (" + data.DeviceType + ")" + " [" + data.Units + "]";
 					_csvWriter.WriteField(header);
 				}
 
