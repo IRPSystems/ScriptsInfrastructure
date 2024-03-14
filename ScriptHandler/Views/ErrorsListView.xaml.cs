@@ -1,12 +1,5 @@
-﻿using Controls.Views;
-using ScriptHandler.Models;
-using ScriptHandler.ViewModel;
-using System;
-using System.Collections.Generic;
+﻿using ScriptHandler.Models;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -49,5 +42,5 @@ namespace ScriptHandler.Views
 		}
 
 		#endregion ScriptName
-	}
+    }
 }

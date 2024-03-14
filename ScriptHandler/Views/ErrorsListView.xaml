@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:models="clr-namespace:ScriptHandler.Models"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:ScriptHandler.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -24,11 +24,22 @@
                                 <RowDefinition />
                             </Grid.RowDefinitions>
 
+                            <i:Interaction.Triggers>
+
+                                <i:EventTrigger EventName="MouseDown">
+                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.ErrorList_MouseDownCommand, 
+                                                                            Mode=OneWay, 
+                                                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" 
+                                                        PassEventArgsToCommand="True"/>
+                                </i:EventTrigger>
+
+                            </i:Interaction.Triggers>
+
                             <Grid Grid.Row="0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="250"/>
                                     <ColumnDefinition Width="10"/>
-                                    <ColumnDefinition Width="250"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock Grid.Column="0" Text="{Binding Name}" />
@@ -47,36 +58,26 @@
         </Style>
         
     </UserControl.Resources>
-    
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <TextBlock Grid.Row="0" Text="{Binding ScriptName, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" />       
 
 
+    <TreeView ItemsSource="{Binding ErrorsList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" 
+              BorderThickness="0">
 
-        <TreeView Grid.Row="1" ItemsSource="{Binding ErrorsList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" >
+        <TreeView.Resources>
+            <Style TargetType="TreeView">
+                <Style.Triggers>
 
-            <TreeView.Resources>
-                <Style TargetType="TreeView">
-                    <Style.Triggers>
-
-                        <DataTrigger Binding="{Binding ErrorsList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" 
+                    <DataTrigger Binding="{Binding ErrorsList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" 
                                      Value="{x:Null}">
 
-                            <Setter Property="Visibility" Value="Collapsed"/>
+                        <Setter Property="Visibility" Value="Collapsed"/>
 
-                        </DataTrigger>
-                        
-                    </Style.Triggers>
-                </Style>
-            </TreeView.Resources>
-            
-        </TreeView>
+                    </DataTrigger>
 
-        
-    </Grid>
+                </Style.Triggers>
+            </Style>
+        </TreeView.Resources>
+
+    </TreeView>
+    
 </UserControl>

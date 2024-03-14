@@ -196,10 +196,7 @@ namespace ScriptHandler.Models
 				return true;
 			}
 
-			InvalidScriptItemData invalidScriptItemData = new InvalidScriptItemData()
-			{
-				Name = Description
-			};
+			
 
 			if (ColumnDatasList.Count > 0)
 			{
@@ -207,8 +204,13 @@ namespace ScriptHandler.Models
 				{
 					if (item.Parameter == null)
 					{
-						invalidScriptItemData.ErrorString = "No parameter set for \"" + item.ColHeader + "\"";
-						errorsList.Add(invalidScriptItemData);
+						InvalidScriptItemData_DataIsNotSet dataIsNotSet = new InvalidScriptItemData_DataIsNotSet()
+						{
+							Name = Description,
+							ScirptItem = this,
+							ErrorString = "No parameter set for \"" + item.ColHeader + "\"",
+						};
+						errorsList.Add(dataIsNotSet);
 						continue;
 					}
 
@@ -218,12 +220,16 @@ namespace ScriptHandler.Models
 					DeviceParameterData data = deviceData.ParemetersList.ToList().Find((p) => p.Name == item.Parameter.Name);
 					if (data == null)
 					{
-						if (item.Parameter == null)
+						InvalidScriptItemData_ParamDontExist paramDontExist = new InvalidScriptItemData_ParamDontExist()
 						{
-							string err = "The parameter \"" + item.Parameter.Name + "\" dosn't exist in the current " + deviceData.Name + " parameter file";
-							errorsList.Add(invalidScriptItemData);
-							continue;
-						}
+							Name = Description,
+							ScirptItem = this,
+							ErrorString = "The parameter \"" + item.Parameter.Name + "\" dosn't exist in the current " + deviceData.Name + " parameter file",
+							Parameter = item.Parameter
+						};
+						errorsList.Add(paramDontExist);
+						continue;
+
 					}
 				}
 			}

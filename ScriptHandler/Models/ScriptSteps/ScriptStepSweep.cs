@@ -356,8 +356,8 @@ namespace ScriptHandler.Models
 					InvalidScriptData invalidScriptData = new InvalidScriptData()
 					{
 						Name = item.SubScript.Name,
-						ErrorString = null,
-						ErrorsList = new ObservableCollection<InvalidScriptItemData>(),
+						Script = item.SubScript,
+						ScirptItem = this,
 					};
 
 

@@ -16,6 +16,7 @@ using DeviceHandler.ViewModel;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using ScriptHandler.Views;
+using ScriptHandler.ViewModel;
 
 namespace ScriptHandler.ViewModels
 {
@@ -51,6 +52,8 @@ namespace ScriptHandler.ViewModels
 		//public ObservableCollection<InvalidScriptItemData> ErrorsList { get; set; }
 		public object GenerateToolTip { get; set; }
 
+		public ErrorsListView GenerateErrorsListView { get; set; }
+
 		#endregion Properties
 
 		#region Fields
@@ -63,7 +66,7 @@ namespace ScriptHandler.ViewModels
 
 		private ScriptUserData _scriptUserData;
 
-		private ErrorsListView _generateErrorsListView;
+		
 
 		#endregion Fields
 
@@ -80,13 +83,14 @@ namespace ScriptHandler.ViewModels
 			_scriptUserData = scriptUserData;
 
 			GenerateToolTip = "Generate button";
-			_generateErrorsListView = new ErrorsListView();
+			GenerateErrorsListView = new ErrorsListView();
 
 
 			SaveCommand = new RelayCommand(Save);
 			SaveAllCommand = new RelayCommand(SaveAll);
+			WhatchErrorsCommand = new RelayCommand(WhatchErrors);
 
-			
+
 
 			_designDragDropData = new DragDropData();
 			DesignTools = new DesignToolsViewModel(_designDragDropData);
@@ -358,10 +362,7 @@ namespace ScriptHandler.ViewModels
 				SaveAll();
 
 				GenerateProjectService generateProject = new GenerateProjectService();
-				InvalidScriptData invalidScriptData = new InvalidScriptData()
-				{
-					ErrorsList = new ObservableCollection<InvalidScriptItemData>()
-				};
+				InvalidScriptData invalidScriptData = new InvalidScriptData();
 
 				GeneratedProjectData generatedProject = generateProject.Generate(
 					Explorer.Project,
@@ -383,12 +384,11 @@ namespace ScriptHandler.ViewModels
 					vm.IsChanged = false;
 
 
-				_generateErrorsListView.ScriptName = invalidScriptData.Name;
 				if (invalidScriptData.ErrorsList.Count > 0)
 				{
 					GenerateState = GenerateStateEnum.Fail;
-					_generateErrorsListView.ErrorsList = invalidScriptData.ErrorsList;
-					GenerateToolTip = _generateErrorsListView;
+					GenerateErrorsListView.ErrorsList = invalidScriptData.ErrorsList;
+					GenerateToolTip = GenerateErrorsListView;
 				}
 				else
 				{
@@ -413,6 +413,35 @@ namespace ScriptHandler.ViewModels
 				CurrentScript.AddNode(scriptNode, null);
 		}
 
+		private void WhatchErrors()
+		{
+			if(GenerateErrorsListView == null || GenerateErrorsListView.ErrorsList == null ||
+				Explorer.Project == null)
+			{
+				return;
+			}
+
+			GenerateErrorsViewModel generateErrorsViewModel = new GenerateErrorsViewModel(DevicesContainer)
+			{
+				ErrorsList = GenerateErrorsListView.ErrorsList,
+				Project = Explorer.Project,
+			};
+
+			generateErrorsViewModel.ReloadEvent += generateErrorsViewModel_ReloadEvent;
+
+			GenerateErrorsView view = new GenerateErrorsView()
+			{
+				DataContext = generateErrorsViewModel
+			};
+			view.ShowDialog();
+
+
+		}
+
+		private void generateErrorsViewModel_ReloadEvent()
+		{
+			Explorer.OpenProject(Explorer.Project.ProjectPath);
+		}
 
 		#endregion Methods
 
@@ -427,6 +456,8 @@ namespace ScriptHandler.ViewModels
 
 
 		public RelayCommand GenerateScriptCommand { get; private set; }
+
+		public RelayCommand WhatchErrorsCommand { get; private set; }
 
 
 		#endregion Commands

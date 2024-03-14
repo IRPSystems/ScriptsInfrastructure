@@ -29,10 +29,11 @@ namespace ScriptHandler.Services
 					invalidScriptData.ErrorsList);
 				if (isNodeSet)
 				{
-					InvalidScriptItemData invalidItem = new InvalidScriptItemData()
+					InvalidScriptItemData_DataIsNotSet invalidItem = new InvalidScriptItemData_DataIsNotSet()
 					{
 						ErrorString = "data is not set",
 						Name = item.Description,
+						ScirptItem = item
 					};
 
 					invalidScriptData.ErrorsList.Add(invalidItem);
@@ -51,8 +52,7 @@ namespace ScriptHandler.Services
 					InvalidScriptData invalidScriptData_Sub = new InvalidScriptData()
 					{
 						Name = subScript.Script.Name,
-						ErrorString = null,
-						ErrorsList = new ObservableCollection<InvalidScriptItemData>(),
+						Script = subScript.Script,
 					};
 
 
@@ -94,11 +94,13 @@ namespace ScriptHandler.Services
 				string err = "The device " + withParam.Parameter.DeviceType +
 					" of the parameter \"" + withParam.Parameter.Name + "\" doesn't exist in the setup";
 				LoggerService.Error(this, err);
-				
-				InvalidScriptItemData invalidItem = new InvalidScriptItemData()
+
+				InvalidScriptItemData_DeviceNotFound invalidItem = new InvalidScriptItemData_DeviceNotFound()
 				{
 					ErrorString = err,
 					Name = scriptNode.Description,
+					ScirptItem = scriptNode,
+					DeviceType = withParam.Parameter.DeviceType,
 				};
 				errorsList.Add(invalidItem);
 				return false;
@@ -117,11 +119,13 @@ namespace ScriptHandler.Services
 			{
 				string err = "The parameter \"" + withParam.Parameter.Name + "\" dosn't exist in the current " + device.Name + " parameter file";
 				LoggerService.Error(this, err);
-				
-				InvalidScriptItemData invalidItem = new InvalidScriptItemData()
+
+				InvalidScriptItemData_ParamDontExist invalidItem = new InvalidScriptItemData_ParamDontExist()
 				{
 					ErrorString = err,
 					Name = scriptNode.Description,
+					ScirptItem = scriptNode,
+					Parameter = withParam.Parameter,
 				};
 				errorsList.Add(invalidItem);
 

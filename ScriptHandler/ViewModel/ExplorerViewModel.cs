@@ -184,6 +184,7 @@ namespace ScriptHandler.ViewModels
 
 		public void OpenProject(string projectPath)
 		{
+			DockingScript.CloseAllScripts();
 
 			string jsonString = File.ReadAllText(projectPath);
 
@@ -1234,7 +1235,6 @@ namespace ScriptHandler.ViewModels
 		#endregion Drop
 
 		#endregion Commands
-
 
 	}
 }
