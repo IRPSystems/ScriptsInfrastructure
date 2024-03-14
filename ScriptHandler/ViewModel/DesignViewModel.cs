@@ -17,6 +17,7 @@ using System.Windows.Input;
 using System.Collections.ObjectModel;
 using ScriptHandler.Views;
 using ScriptHandler.ViewModel;
+using System.Windows;
 
 namespace ScriptHandler.ViewModels
 {
@@ -53,6 +54,7 @@ namespace ScriptHandler.ViewModels
 		public object GenerateToolTip { get; set; }
 
 		public ErrorsListView GenerateErrorsListView { get; set; }
+		public Visibility GenerateMenuVisibility { get; set; }
 
 		#endregion Properties
 
@@ -131,6 +133,7 @@ namespace ScriptHandler.ViewModels
 			GenerateScriptCommand = new RelayCommand(GenerateScript);
 
 			GenerateState = GenerateStateEnum.None;
+			GenerateMenuVisibility = Visibility.Collapsed;
 
 			LoggerService.Inforamtion(this, "Finished init of Design");
 		}
@@ -389,11 +392,13 @@ namespace ScriptHandler.ViewModels
 					GenerateState = GenerateStateEnum.Fail;
 					GenerateErrorsListView.ErrorsList = invalidScriptData.ErrorsList;
 					GenerateToolTip = GenerateErrorsListView;
+					GenerateMenuVisibility = Visibility.Visible;
 				}
 				else
 				{
 					GenerateToolTip = "Generate button";
 					GenerateState = GenerateStateEnum.Pass;
+					GenerateMenuVisibility = Visibility.Collapsed;
 				}
 
 
