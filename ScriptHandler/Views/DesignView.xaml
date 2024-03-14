@@ -106,6 +106,26 @@
                     <Button Style="{StaticResource ButtonWithIconStyle}"
                             Command="{Binding GenerateScriptCommand}"
                             IsEnabled="{Binding Explorer.Project, Converter={StaticResource ProjectExistToEnableConverter}}">
+
+                        <Button.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Whatch errors" Command="{Binding WhatchErrorsCommand}" />
+
+                                <ContextMenu.Resources>
+                                    <Style TargetType="ContextMenu" BasedOn="{StaticResource MahApps.Styles.ContextMenu}">
+                                        <Style.Triggers>
+
+                                            <DataTrigger Binding="{Binding GenerateErrorsListView.ErrorsList}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                            
+                                        </Style.Triggers>
+                                    </Style>
+                                </ContextMenu.Resources>
+                                
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                        
                         <iconPacks:PackIconMaterial Kind="AutoFix" />
                     </Button>
 

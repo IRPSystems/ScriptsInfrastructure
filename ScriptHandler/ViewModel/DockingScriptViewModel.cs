@@ -243,7 +243,9 @@ namespace ScriptHandler.ViewModels
 			}
 		}
 
-		public void CloseDesignScript(DesignScriptViewModel viewModel)
+		public void CloseDesignScript(
+			DesignScriptViewModel viewModel,
+			bool isRemoveFromDesignScriptsList = true)
 		{
 			if (_vmToControl.ContainsKey(viewModel) == false)
 				return;
@@ -252,28 +254,18 @@ namespace ScriptHandler.ViewModels
 				Children.Remove(control);
 
 			_vmToControl.Remove(viewModel);
-			DesignScriptsList.Remove(viewModel);
+			if(isRemoveFromDesignScriptsList)
+				DesignScriptsList.Remove(viewModel);
 		}
 
 
-		//public void ScriptIsChangedEventHandler(object sender, bool isChanged)
-		//{
-		//	if (!(sender is DesignScriptViewModel scriptVM))
-		//		return;
+		public void CloseAllScripts()
+		{
+			foreach (DesignScriptViewModel viewModel in DesignScriptsList)
+				CloseDesignScript(viewModel, false);
 
-		//	if (_vmToControl.ContainsKey(scriptVM) == false)
-		//		return;
-
-		//	if (scriptVM.CurrentScript == null)
-		//		return;
-
-		//	ContentControl window = _vmToControl[scriptVM];
-
-		//	if(isChanged) 
-		//		SetHeader(window, scriptVM.CurrentScript.Name + "*");
-		//	else
-		//		SetHeader(window, scriptVM.CurrentScript.Name);
-		//}
+			DesignScriptsList.Clear();
+		}
 
 		public bool IsScriptOpen(ScriptData script)
 		{

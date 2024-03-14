@@ -133,10 +133,7 @@ namespace ScriptRunner.Services
 				MatchPassFailNext(scriptData, devicesContainer, runScript);
 				SetScriptStop(scriptData, devicesContainer, runScript);
 
-				InvalidScriptData invalidScriptData = new InvalidScriptData()
-				{
-					ErrorsList = new ObservableCollection<InvalidScriptItemData>()
-				};
+				InvalidScriptData invalidScriptData = new InvalidScriptData() { Script = scriptData };
 				isTestValidService.IsValid(scriptData, invalidScriptData, devicesContainer);
 				if (invalidScriptData.ErrorsList.Count > 0)
 				{
@@ -173,18 +170,16 @@ namespace ScriptRunner.Services
 			ObservableCollection<DeviceParameterData> newList = 
 				new ObservableCollection<DeviceParameterData>();
 
-			InvalidScriptData invalidScriptData = new InvalidScriptData()
-			{
-				ErrorsList = new ObservableCollection<InvalidScriptItemData>()
-			};
+			InvalidScriptData invalidScriptData = new InvalidScriptData();
 			foreach (DeviceParameterData param in currentProject.RecordingParametersList)
 			{
 				if (devicesContainer.TypeToDevicesFullData.ContainsKey(param.DeviceType) == false)
 				{
-					InvalidScriptData error = new InvalidScriptData()
+					InvalidScriptItemData_DeviceNotFound error = new InvalidScriptItemData_DeviceNotFound()
 					{
 						Name = "Project \"" + currentProject.Name + "\"",
 						ErrorString = "The device \"" + param.DeviceType + "\" was not found",
+						DeviceType = param.DeviceType
 					};
 					invalidScriptData.ErrorsList.Add(error);
 					continue;
@@ -197,10 +192,11 @@ namespace ScriptRunner.Services
 					deviceFullData.Device.ParemetersList.ToList().Find((p) => p.Name == param.Name);
 				if (actualParam == null)
 				{
-					InvalidScriptData error = new InvalidScriptData()
+					InvalidScriptItemData_ParamDontExist error = new InvalidScriptItemData_ParamDontExist()
 					{
 						Name = "Parameter \"" + param.Name + "\"",
-						ErrorString = "The parameter \"" + param.Name + "\" was not found in device \"" + param.DeviceType + "\"",
+						ErrorString = "The recording parameter \"" + param.Name + "\" was not found in device \"" + param.DeviceType + "\"",
+						Parameter = param
 					};
 					invalidScriptData.ErrorsList.Add(error);
 					continue;
