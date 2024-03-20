@@ -297,6 +297,7 @@ namespace ScriptRunner.ViewModels
 
 		private void ScriptEndedEventHandler(ScriptStopModeEnum e)
 		{
+			_isAborted = false;
 			_runTimeTimer.Stop();
 			_isAborted = false;
 		}
