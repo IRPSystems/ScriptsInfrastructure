@@ -22,6 +22,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Timers;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace ScriptRunner.ViewModels
@@ -481,6 +482,17 @@ namespace ScriptRunner.ViewModels
 			SetIsGeneralEnabled(true);
 		}
 
+		private void RateList_SelectionChanged(SelectionChangedEventArgs e)
+		{
+			if (e.AddedItems.Count == 0)
+				return;
+
+			if (!(e.AddedItems[0] is int rate))
+				return;
+
+			RateAdjustmentNeededEvent?.Invoke(rate);
+		}
+
 		#endregion Methods
 
 		#region Commands
@@ -504,6 +516,15 @@ namespace ScriptRunner.ViewModels
 		public RelayCommand BrowseAbortScriptPathCommand { get; private set; }
 
 
+		private RelayCommand<SelectionChangedEventArgs> _RateList_SelectionChangedCommand;
+		public RelayCommand<SelectionChangedEventArgs> RateList_SelectionChangedCommand
+		{
+			get
+			{
+				return _RateList_SelectionChangedCommand ?? (_RateList_SelectionChangedCommand =
+					new RelayCommand<SelectionChangedEventArgs>(RateList_SelectionChanged));
+			}
+		}
 
 		#endregion Commands
 
@@ -511,6 +532,7 @@ namespace ScriptRunner.ViewModels
 
 		public event Action<ScriptLogDiagramViewModel> CreateScriptLogDiagramViewEvent;
 		public event Action ShowScriptLogDiagramViewEvent;
+		public event Action<int> RateAdjustmentNeededEvent;
 
 		#endregion Events
 	}

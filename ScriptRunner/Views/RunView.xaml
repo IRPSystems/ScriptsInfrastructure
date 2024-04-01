@@ -215,7 +215,20 @@
                            VerticalAlignment="Center"/>
             <ComboBox SelectedItem="{Binding RunScript.ParamRecording.RecordingRate}"
                           ItemsSource="{Binding RunScript.RecordingRateList}"
-                          Margin="0,1,5,1"/>
+                          Margin="0,1,5,1">
+
+                <i:Interaction.Triggers>
+
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding Path=DataContext.RateList_SelectionChangedCommand, 
+                                                             Mode=OneWay, 
+                                                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ComboBox}}" 
+                                           PassEventArgsToCommand="True"/>
+                    </i:EventTrigger>
+
+                </i:Interaction.Triggers>
+
+            </ComboBox>
             <TextBlock Text="Hz"
                            Margin="0,0,20,0"
                            VerticalAlignment="Center"/>
