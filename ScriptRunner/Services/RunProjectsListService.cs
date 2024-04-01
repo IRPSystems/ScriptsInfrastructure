@@ -37,6 +37,8 @@ namespace ScriptRunner.Services
 
 		private bool _isChangingLogParamList;
 
+		public bool IsAbortClicked;
+
 		#endregion Fields
 
 		#region Constructor
@@ -150,6 +152,7 @@ namespace ScriptRunner.Services
 			_state = RunProjectsState.RunProject;
 			_projectIndex = 0;
 			_testIndex = 0;
+			IsAbortClicked = false;
 
 			GoToStoppedScript(stoppedScript);
 			if(_projectIndex >= projectsList.Count) // this will happen if the stopped script is the last script, so we start from the begining.
@@ -332,7 +335,8 @@ namespace ScriptRunner.Services
 				scriptData = _projectsList[_projectIndex].TestsList[_testIndex];
 			}
 
-			if (stopMode == ScriptStopModeEnum.Aborted || stopMode == ScriptStopModeEnum.Stopped)
+			if (stopMode == ScriptStopModeEnum.Aborted || stopMode == ScriptStopModeEnum.Stopped ||
+				IsAbortClicked)
 			{
 				
 				End(stopMode, scriptData);

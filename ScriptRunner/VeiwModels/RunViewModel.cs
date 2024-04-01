@@ -404,6 +404,7 @@ namespace ScriptRunner.ViewModels
 				SetIsPlayEnabled(false);
 			}
 
+			_runProjectsList.IsAbortClicked = true;
 			RunScript.AbortScript("User abort");
 		}
 
