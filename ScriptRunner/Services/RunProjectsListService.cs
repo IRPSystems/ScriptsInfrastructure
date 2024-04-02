@@ -340,6 +340,10 @@ namespace ScriptRunner.Services
 			{
 				
 				End(stopMode, scriptData);
+				if(IsAbortClicked && stopMode != ScriptStopModeEnum.Aborted)
+				{
+					_runScript.AbortScript("User Abort");
+				}
 				return;
 			}
 
