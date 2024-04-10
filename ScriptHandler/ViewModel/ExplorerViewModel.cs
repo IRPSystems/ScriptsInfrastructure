@@ -123,13 +123,22 @@ namespace ScriptHandler.ViewModels
 		public void NewProject()
 		{
 
-			string initDir = _scriptUserData.LastProjectPath;
-			if (string.IsNullOrEmpty(initDir))
-				initDir = "";
+			
 
 			SaveFileDialog saveFileDialog = new SaveFileDialog();
 			saveFileDialog.Filter = "Project files (*.prj)|*.prj";
-			saveFileDialog.InitialDirectory = initDir;
+
+			if (_scriptUserData == null)
+				LoggerService.Error(this, "_scriptUserData == null");
+			if (_scriptUserData.LastProjectPath == null)
+				LoggerService.Error(this, "_scriptUserData.LastProjectPath == null");
+
+			if (_scriptUserData != null && string.IsNullOrEmpty(_scriptUserData.LastProjectPath) == false &&
+				System.IO.Directory.Exists(_scriptUserData.LastProjectPath))
+			{
+				saveFileDialog.InitialDirectory = _scriptUserData.LastProjectPath;
+			}
+
 			bool? result = saveFileDialog.ShowDialog();
 			if (result != true)
 				return;
