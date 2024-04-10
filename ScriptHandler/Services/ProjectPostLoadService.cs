@@ -35,19 +35,9 @@ namespace ScriptHandler.Services
 					vm.IsScriptIsSavedEvent = true;
 				}
 
-			//	GetProjectCanMessages(vm.CurrentScript, project);
+			
 			}
 
-			//foreach (DesignScriptViewModel vm in project.ScriptsList)
-			//{
-			//	SetTestsCanMessagesUpdate(vm.CurrentScript, project);
-			//	SetTestsStopContinuous(vm.CurrentScript, project);
-			//}
-
-			//for (int i = 0; i < project.CanMessagesList.Count; i++)
-			//{
-			//	project.CanMessagesList[i].IDInProject = i + 1;
-			//}
 		}
 
 

@@ -697,8 +697,7 @@ namespace ScriptHandler.ViewModels
 				vm.CurrentScript.Name,
 				scriptName);
 
-			DeleteScript(vm, false);
-			File.Delete(orignalPath);
+			
 
 			foreach(DesignScriptViewModel scriptData in Project.ScriptsList)
 			{
@@ -707,6 +706,9 @@ namespace ScriptHandler.ViewModels
 					oldName,
 					scriptName);
 			}
+
+			DeleteScript(vm, false);
+			File.Delete(orignalPath);
 
 			PostLoadAllScripts();
 			foreach (DesignScriptViewModel scriptVm in Project.ScriptsList)
