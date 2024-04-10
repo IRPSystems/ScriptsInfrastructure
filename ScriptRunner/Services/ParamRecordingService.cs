@@ -22,7 +22,7 @@ using System.Windows.Input;
 
 namespace ScriptRunner.Services
 {
-	public class ParamRecordingService: ObservableObject, IDisposable
+	public class ParamRecordingService : ObservableObject, IDisposable
 	{
 		#region Properties
 
@@ -66,13 +66,13 @@ namespace ScriptRunner.Services
 
 #if _USE_TIMER
 		private System.Timers.Timer _timer;
-#endif 
+#endif
 
 		private object _lockObj;
 
-#endregion Fields
+		#endregion Fields
 
-#region Constructor
+		#region Constructor
 
 		public ParamRecordingService(
 			DevicesContainer devicesContainer)
@@ -83,19 +83,28 @@ namespace ScriptRunner.Services
 
 			_lockObj = new object();
 
+			if(_devicesContainer.TypeToDevicesFullData.ContainsKey(Entities.Enums.DeviceTypesEnum.MCU))
+			{
+				DeviceFullData mcuData =
+					_devicesContainer.TypeToDevicesFullData[Entities.Enums.DeviceTypesEnum.MCU];
+				mcuData.DeviceCommunicator.ConnectionEvent += DeviceCommunicator_ConnectionEvent;
+				DeviceCommunicator_ConnectionEvent();
+			}
+
+
 #if _USE_TIMER
 			_timer = new System.Timers.Timer();
 			_timer.Elapsed += _timer_Elapsed;
 #endif
 
-			
+
 		}
 
-		
+		#endregion Constructor
 
-#endregion Constructor
+		#region Methods
 
-#region Methods
+
 
 		public void Dispose()
 		{
@@ -151,7 +160,7 @@ namespace ScriptRunner.Services
 
 				_version = Assembly.GetEntryAssembly().GetName().Version.ToString();
 
-				
+
 				_date = _date = DateTime.Now.ToString("dd-MMM-yyyy");
 
 				string path = Path.Combine(
@@ -163,14 +172,14 @@ namespace ScriptRunner.Services
 				_csvWriter = new CsvWriter(_textWriter, CultureInfo.CurrentCulture);
 
 
-				_getUUTData.GetUUTData(_devicesContainer);
+				
 
 				if (_csvWriter == null)
 					return;
 
 
 
-				
+
 
 
 				_csvWriter.WriteField("Time [sec]");
@@ -196,7 +205,7 @@ namespace ScriptRunner.Services
 
 
 
-				
+
 
 				foreach (DeviceParameterData data in logParametersList)
 				{
@@ -227,7 +236,7 @@ namespace ScriptRunner.Services
 
 				IsRecording = true;
 			}
-			catch(Exception ex) 
+			catch (Exception ex)
 			{
 				LoggerService.Error(this, "Failed to start the recording", "Run Error", ex);
 
@@ -247,21 +256,21 @@ namespace ScriptRunner.Services
 			if (!IsRecording)
 				return;
 
-			
+
 			lock (_lockObj)
 			{
-				if(_csvWriter != null)
+				if (_csvWriter != null)
 					_csvWriter.Dispose();
 				_csvWriter = null;
 
 				if (_textWriter != null)
 					_textWriter.Close();
 
-				if(_cancellationTokenSource != null)
+				if (_cancellationTokenSource != null)
 					_cancellationTokenSource.Cancel();
 			}
 
-			
+
 
 			foreach (DeviceParameterData data in LogParametersList)
 			{
@@ -279,13 +288,13 @@ namespace ScriptRunner.Services
 			IsRecording = false;
 		}
 
-		
+
 		private void ParamReceived(DeviceParameterData param, CommunicatorResultEnum result, string errDescription)
 		{
-			if(!_isFirstReceived)
+			if (!_isFirstReceived)
 			{
 				_receivedCounter++;
-				if(_receivedCounter > LogParametersList.Count) 
+				if (_receivedCounter > LogParametersList.Count)
 				{
 					_isFirstReceived = true;
 				}
@@ -454,7 +463,7 @@ namespace ScriptRunner.Services
 							{
 								rate = 1000.0 / lineHandleTime.TotalMilliseconds;
 							}
-							
+
 
 							ActualRecordingRate = (int)rate;
 							System.Threading.Thread.Sleep(1000 / ActualRecordingRate);
@@ -471,10 +480,24 @@ namespace ScriptRunner.Services
 
 #endif // _USE_TIMER
 
-#endregion Methods
+		private void DeviceCommunicator_ConnectionEvent()
+		{
+			if (_devicesContainer.TypeToDevicesFullData.ContainsKey(Entities.Enums.DeviceTypesEnum.MCU) == false)
+				return;
 
-#region Events
+			DeviceFullData mcuData =
+				_devicesContainer.TypeToDevicesFullData[Entities.Enums.DeviceTypesEnum.MCU];
 
-#endregion Events
+			if (mcuData.DeviceCommunicator.IsInitialized == false)
+				return;
+
+			_getUUTData.GetUUTData(_devicesContainer);
+		}
+
+		#endregion Methods
+
+		#region Events
+
+		#endregion Events
 	}
 }

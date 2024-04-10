@@ -42,12 +42,12 @@ namespace ScriptRunner.Services
 				return false;
 			}
 
-			if(deviceFullData.CheckCommunication != null &&
-				deviceFullData.CheckCommunication.Status != CommunicationStateEnum.Connected)
-			{
-				LoggerService.Error(this, "The MCU is not connected");
-				return false;
-			}
+			//if(deviceFullData.CheckCommunication != null &&
+			//	deviceFullData.CheckCommunication.Status != CommunicationStateEnum.Connected)
+			//{
+			//	LoggerService.Error(this, "The MCU is not connected");
+			//	return false;
+			//}
 
 			if (!(deviceFullData.Device is MCU_DeviceData mcu_Device))
 			{
