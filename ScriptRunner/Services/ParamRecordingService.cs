@@ -136,11 +136,6 @@ namespace ScriptRunner.Services
 
 				_isFirstLineInFile = true;
 
-				Application.Current.Dispatcher.Invoke(() =>
-				{
-					Mouse.OverrideCursor = Cursors.Wait;
-				});
-
 				_isFirstReceived = false;
 				_receivedCounter = 0;
 
@@ -151,11 +146,6 @@ namespace ScriptRunner.Services
 				if (Directory.Exists(recordingPath) == false)
 				{
 					LoggerService.Error(this, "The recording path \"" + recordingPath + "\" was not found", "Run Error");
-
-					Application.Current.Dispatcher.Invoke(() =>
-					{
-						Mouse.OverrideCursor = null;
-					});
 					return;
 				}
 
@@ -236,11 +226,6 @@ namespace ScriptRunner.Services
 #endif // _USE_TIMER
 
 				IsRecording = true;
-
-				Application.Current.Dispatcher.Invoke(() =>
-				{
-					Mouse.OverrideCursor = null;
-				});
 			}
 			catch(Exception ex) 
 			{

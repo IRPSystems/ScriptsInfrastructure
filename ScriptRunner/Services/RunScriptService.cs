@@ -16,6 +16,7 @@ using System.Windows;
 using DeviceHandler.Models;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
+using System.Windows.Input;
 
 namespace ScriptRunner.Services
 {
@@ -220,28 +221,22 @@ namespace ScriptRunner.Services
 			string recordingPath,
 			bool isRecord)
 		{
+			Application.Current.Dispatcher.Invoke(() =>
+			{
+				Mouse.OverrideCursor = Cursors.Wait;
+			});
+
 			IsAborted = false;
 			foreach (ScriptStepBase step in currentScript.ScriptItemsList)
 				step.StepState = SciptStateEnum.None;
 
+
 			if (isRecord)
 				ParamRecording.StartRecording(currentScript.Name, recordingPath, logParametersList);
 
-			//Application.Current.Dispatcher.Invoke(() =>
-			//{
-			//	Mouse.OverrideCursor = Cursors.Wait;
-			//});
+			
 
 			System.Threading.Thread.Sleep(1000);
-
-			//Application.Current.Dispatcher.Invoke(() =>
-			//{
-			//	Mouse.OverrideCursor = null;
-			//});
-
-
-
-
 
 			_isStopped = false;
 
@@ -256,9 +251,6 @@ namespace ScriptRunner.Services
 				LogTypeEnum.ScriptData);
 
 			ClearScriptStepsState(currentScript);
-
-
-
 
 
 			CurrentScript = new RunSingleScriptService(
@@ -283,6 +275,12 @@ namespace ScriptRunner.Services
 			{
 				LoggerService.Inforamtion(this, "Exist Run do to IsAborted = true");
 				ScriptEndedEvent?.Invoke(ScriptStopModeEnum.Aborted);
+
+				Application.Current.Dispatcher.Invoke(() =>
+				{
+					Mouse.OverrideCursor = null;
+				});
+
 				return;
 			}
 
@@ -294,6 +292,7 @@ namespace ScriptRunner.Services
 			Application.Current.Dispatcher.Invoke(() =>
 			{
 				ScriptStartedEvent?.Invoke();
+				Mouse.OverrideCursor = null;
 			});
 
 		}
