@@ -656,6 +656,12 @@ namespace ScriptHandler.ViewModels
 				return;
 			}
 
+			bool isCancel = vm.SaveIfNeeded();
+			if (isCancel) 
+			{
+				return;
+			}
+
 			_isInRename = true;
 
 			DockingScript.CloseScript(vm.CurrentScript);
