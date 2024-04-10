@@ -82,7 +82,7 @@ namespace ScriptRunner.Services
 
 		
 		private bool _isStopped;
-		private bool _isAborted;
+		public bool IsAborted;
 
 		private RunSingleScriptService _abortScript;
 
@@ -220,7 +220,7 @@ namespace ScriptRunner.Services
 			string recordingPath,
 			bool isRecord)
 		{
-			_isAborted = false;
+			IsAborted = false;
 			foreach (ScriptStepBase step in currentScript.ScriptItemsList)
 				step.StepState = SciptStateEnum.None;
 
@@ -279,7 +279,7 @@ namespace ScriptRunner.Services
 
 			InitiateSweepItem(CurrentScript.CurrentScript);
 
-			if (_isAborted)
+			if (IsAborted)
 			{
 				LoggerService.Inforamtion(this, "Exist Run do to IsAborted = true");
 				ScriptEndedEvent?.Invoke(ScriptStopModeEnum.Aborted);
@@ -402,7 +402,10 @@ namespace ScriptRunner.Services
 
 		public void AbortScript(string message)
 		{
-			_isAborted = true;
+			if (IsAborted)
+				return;
+
+			IsAborted = true;
 			_stepFailed.Notification = message;
 
 			if (ParamRecording != null)

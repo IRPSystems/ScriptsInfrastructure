@@ -373,7 +373,7 @@ namespace ScriptRunner.ViewModels
 		{
 			string str = "Abort clicked";
 			LoggerService.Inforamtion(this, str);
-			if (_isAborted)
+			if (_isAborted || RunScript.IsAborted)
 				return;
 
 			_isAborted = true;
