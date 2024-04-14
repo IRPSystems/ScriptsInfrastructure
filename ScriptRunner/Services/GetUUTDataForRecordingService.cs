@@ -118,89 +118,97 @@ namespace ScriptRunner.Services
 			DeviceCommunicator deviceCommunicator,
 			MCU_DeviceData mcu_Device)
 		{
-			ScriptStepGetParamValue getParam = new ScriptStepGetParamValue()
+			try
 			{
-				Communicator = deviceCommunicator
-			};
+				ScriptStepGetParamValue getParam = new ScriptStepGetParamValue()
+				{
+					Communicator = deviceCommunicator
+				};
 
-			ParamGroup group = mcu_Device.MCU_GroupList.ToList().Find((g) => g.Name == "FW Version");
-			if (group == null)
+				ParamGroup group = mcu_Device.MCU_GroupList.ToList().Find((g) => g.Name == "FW Version");
+				if (group == null)
+				{
+					LoggerService.Error(this, "Failed to find the HW Version group");
+					return false;
+				}
+
+				#region FW Major
+
+				DeviceParameterData param =
+					group.ParamList.ToList().Find((p) => p.Name == "Version Major (FW Version)");
+				if (param == null)
+				{
+					LoggerService.Error(this, "Failed to find the FW Version Major parameter");
+					return false;
+				}
+
+				getParam.Parameter = param;
+				getParam.IsPass = true;
+				getParam.SendAndReceive();
+				if (!getParam.IsPass)
+				{
+					LoggerService.Error(this, "Failed to get the FW Version Major from the UUT");
+					return false;
+				}
+
+				int n = Convert.ToInt32(param.Value);
+				FirmwareVersion = n.ToString("D2");
+
+				#endregion FW Major
+
+				#region FW Middle
+				param =
+					group.ParamList.ToList().Find((p) => p.Name == "Version Middle (FW Version)");
+				if (param == null)
+				{
+					LoggerService.Error(this, "Failed to find the FW Version Middle parameter");
+					return false;
+				}
+
+				getParam.Parameter = param;
+				getParam.IsPass = true;
+				getParam.SendAndReceive();
+				if (!getParam.IsPass)
+				{
+					LoggerService.Error(this, "Failed to get the FW Version Middle from the UUT");
+					return false;
+				}
+
+				n = Convert.ToInt32(param.Value);
+				FirmwareVersion += "." + n.ToString("D2");
+
+				#endregion FW Middle
+
+				#region FW Minor
+				param =
+					group.ParamList.ToList().Find((p) => p.Name == "Version Minor (FW Version)");
+				if (param == null)
+				{
+					LoggerService.Error(this, "Failed to find the FW Version Minor parameter");
+					return false;
+				}
+
+				getParam.Parameter = param;
+				getParam.IsPass = true;
+				getParam.SendAndReceive();
+				if (!getParam.IsPass)
+				{
+					LoggerService.Error(this, "Failed to get the FW Version Minor from the UUT");
+					return false;
+				}
+
+				n = Convert.ToInt32(param.Value);
+				FirmwareVersion += "." + n.ToString("D2");
+
+				#endregion FW Minor
+
+				return true;
+			}
+			catch(Exception ex) 
 			{
-				LoggerService.Error(this, "Failed to find the HW Version group");
+				LoggerService.Error(this, "Failed to read the FW Version", ex);
 				return false;
 			}
-
-			#region FW Major
-
-			DeviceParameterData param =
-				group.ParamList.ToList().Find((p) => p.Name == "Version Major (FW Version)");
-			if (param == null)
-			{
-				LoggerService.Error(this, "Failed to find the FW Version Major parameter");
-				return false;
-			}
-
-			getParam.Parameter = param;
-			getParam.IsPass = true;
-			getParam.SendAndReceive();
-			if (!getParam.IsPass)
-			{
-				LoggerService.Error(this, "Failed to get the FW Version Major from the UUT");
-				return false;
-			}
-
-			int n = Convert.ToInt32(param.Value);
-			FirmwareVersion = n.ToString("D2");
-
-			#endregion FW Major
-
-			#region FW Middle
-			param =
-				group.ParamList.ToList().Find((p) => p.Name == "Version Middle (FW Version)");
-			if (param == null)
-			{
-				LoggerService.Error(this, "Failed to find the FW Version Middle parameter");
-				return false;
-			}
-
-			getParam.Parameter = param;
-			getParam.IsPass = true;
-			getParam.SendAndReceive();
-			if (!getParam.IsPass)
-			{
-				LoggerService.Error(this, "Failed to get the FW Version Middle from the UUT");
-				return false;
-			}
-
-			n = Convert.ToInt32(param.Value);
-			FirmwareVersion += "." + n.ToString("D2");
-
-			#endregion FW Middle
-
-			#region FW Minor
-			param =
-				group.ParamList.ToList().Find((p) => p.Name == "Version Minor (FW Version)");
-			if (param == null)
-			{
-				LoggerService.Error(this, "Failed to find the FW Version Minor parameter");
-				return false;
-			}
-
-			getParam.Parameter = param;
-			getParam.IsPass = true;
-			getParam.SendAndReceive();
-			if (!getParam.IsPass)
-			{
-				LoggerService.Error(this, "Failed to get the FW Version Minor from the UUT");
-				return false;
-			}
-
-			n = Convert.ToInt32(param.Value);
-			FirmwareVersion += "." + n.ToString("D2");
-
-			#endregion FW Minor
-
-			return true;
 		}
 
 		private bool GetParameterValue_COREVersion(
