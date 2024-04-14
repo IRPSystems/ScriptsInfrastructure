@@ -80,38 +80,46 @@ namespace ScriptRunner.Services
 			DeviceCommunicator deviceCommunicator,
 			MCU_DeviceData mcu_Device)
 		{
-			ScriptStepGetParamValue getParam = new ScriptStepGetParamValue()
+			try
 			{
-				Communicator = deviceCommunicator
-			};
+				ScriptStepGetParamValue getParam = new ScriptStepGetParamValue()
+				{
+					Communicator = deviceCommunicator
+				};
 
-			ParamGroup group = mcu_Device.MCU_GroupList.ToList().Find((g) => g.Name == "HW Version");
-			if (group == null)
+				ParamGroup group = mcu_Device.MCU_GroupList.ToList().Find((g) => g.Name == "HW Version");
+				if (group == null)
+				{
+					LoggerService.Error(this, "Failed to find the HW Version group");
+					return false;
+				}
+
+				DeviceParameterData param =
+					group.ParamList.ToList().Find((p) => p.Name == "Serial Number");
+				if (param == null)
+				{
+					LoggerService.Error(this, "Failed to find the Serial Number parameter");
+					return false;
+				}
+
+				getParam.Parameter = param;
+				getParam.IsPass = true;
+				getParam.SendAndReceive();
+				if (!getParam.IsPass)
+				{
+					LoggerService.Error(this, "Failed to get the Serial Number from the UUT");
+					return false;
+				}
+
+				SerialNumber = param.Value.ToString();
+
+				return true;
+			}
+			catch (Exception ex)
 			{
-				LoggerService.Error(this, "Failed to find the HW Version group");
+				LoggerService.Error(this, "Failed to read the Serial Number", ex);
 				return false;
 			}
-
-			DeviceParameterData param =
-				group.ParamList.ToList().Find((p) => p.Name == "Serial Number");
-			if (param == null)
-			{
-				LoggerService.Error(this, "Failed to find the Serial Number parameter");
-				return false;
-			}
-
-			getParam.Parameter = param;
-			getParam.IsPass = true;
-			getParam.SendAndReceive();
-			if (!getParam.IsPass)
-			{
-				LoggerService.Error(this, "Failed to get the Serial Number from the UUT");
-				return false;
-			}
-
-			SerialNumber = param.Value.ToString();
-
-			return true;
 		}
 
 		private bool GetParameterValue_FWVersion(
@@ -215,91 +223,99 @@ namespace ScriptRunner.Services
 			DeviceCommunicator deviceCommunicator,
 			MCU_DeviceData mcu_Device)
 		{
-			ScriptStepGetParamValue getParam = new ScriptStepGetParamValue()
+			try
 			{
-				Communicator = deviceCommunicator
-			};
+				ScriptStepGetParamValue getParam = new ScriptStepGetParamValue()
+				{
+					Communicator = deviceCommunicator
+				};
 
-			ParamGroup group = mcu_Device.MCU_GroupList.ToList().Find((g) => g.Name == "Core Version");
-			if (group == null)
+				ParamGroup group = mcu_Device.MCU_GroupList.ToList().Find((g) => g.Name == "Core Version");
+				if (group == null)
+				{
+					LoggerService.Error(this, "Failed to find the HW Version group");
+					return false;
+				}
+
+				#region CORE Major
+
+				DeviceParameterData param =
+					group.ParamList.ToList().Find((p) => p.Name == "Version Major (Core Version)");
+				if (param == null)
+				{
+					LoggerService.Error(this, "Failed to find the CORE Version Major parameter");
+					return false;
+				}
+
+				getParam.Parameter = param;
+				getParam.IsPass = true;
+				getParam.SendAndReceive();
+				if (!getParam.IsPass)
+				{
+					LoggerService.Error(this, "Failed to get the CORE Version Major from the UUT");
+					return false;
+				}
+
+
+				int n = Convert.ToInt32(param.Value);
+				CoreVersion = n.ToString("D2");
+
+				#endregion CORE Major
+
+				#region CORE Middle
+				param =
+					group.ParamList.ToList().Find((p) => p.Name == "Version Middle (Core Version)");
+				if (param == null)
+				{
+					LoggerService.Error(this, "Failed to find the Core Version Middle parameter");
+					return false;
+				}
+
+				getParam.Parameter = param;
+				getParam.IsPass = true;
+				getParam.SendAndReceive();
+				if (!getParam.IsPass)
+				{
+					LoggerService.Error(this, "Failed to get the Core Version Middle from the UUT");
+					return false;
+				}
+
+
+				n = Convert.ToInt32(param.Value);
+				CoreVersion += "." + n.ToString("D2");
+
+				#endregion CORE Middle
+
+				#region Core Minor
+				param =
+					group.ParamList.ToList().Find((p) => p.Name == "Version Minor (Core Version)");
+				if (param == null)
+				{
+					LoggerService.Error(this, "Failed to find the Core Version Minor parameter");
+					return false;
+				}
+
+				getParam.Parameter = param;
+				getParam.IsPass = true;
+				getParam.SendAndReceive();
+				if (!getParam.IsPass)
+				{
+					LoggerService.Error(this, "Failed to get the Core Version Minor from the UUT");
+					return false;
+				}
+
+				n = Convert.ToInt32(param.Value);
+				CoreVersion += "." + n.ToString("D2");
+
+				#endregion Core Minor
+
+				return true;
+			}
+			catch (Exception ex)
 			{
-				LoggerService.Error(this, "Failed to find the HW Version group");
+				LoggerService.Error(this, "Failed to read the CORE Version", ex);
 				return false;
 			}
-
-			#region CORE Major
-
-			DeviceParameterData param =
-				group.ParamList.ToList().Find((p) => p.Name == "Version Major (Core Version)");
-			if (param == null)
-			{
-				LoggerService.Error(this, "Failed to find the CORE Version Major parameter");
-				return false;
-			}
-
-			getParam.Parameter = param;
-			getParam.IsPass = true;
-			getParam.SendAndReceive();
-			if (!getParam.IsPass)
-			{
-				LoggerService.Error(this, "Failed to get the CORE Version Major from the UUT");
-				return false;
-			}
-
-
-			int n = Convert.ToInt32(param.Value);
-			CoreVersion = n.ToString("D2");
-
-			#endregion CORE Major
-
-			#region CORE Middle
-			param =
-				group.ParamList.ToList().Find((p) => p.Name == "Version Middle (Core Version)");
-			if (param == null)
-			{
-				LoggerService.Error(this, "Failed to find the Core Version Middle parameter");
-				return false;
-			}
-
-			getParam.Parameter = param;
-			getParam.IsPass = true;
-			getParam.SendAndReceive();
-			if (!getParam.IsPass)
-			{
-				LoggerService.Error(this, "Failed to get the Core Version Middle from the UUT");
-				return false;
-			}
-
-
-			n = Convert.ToInt32(param.Value);
-			CoreVersion += "." + n.ToString("D2");
-
-			#endregion CORE Middle
-
-			#region Core Minor
-			param =
-				group.ParamList.ToList().Find((p) => p.Name == "Version Minor (Core Version)");
-			if (param == null)
-			{
-				LoggerService.Error(this, "Failed to find the Core Version Minor parameter");
-				return false;
-			}
-
-			getParam.Parameter = param;
-			getParam.IsPass = true;
-			getParam.SendAndReceive();
-			if (!getParam.IsPass)
-			{
-				LoggerService.Error(this, "Failed to get the Core Version Minor from the UUT");
-				return false;
-			}
-
-			n = Convert.ToInt32(param.Value);
-			CoreVersion += "." + n.ToString("D2");
-
-			#endregion Core Minor
-
-			return true;
 		}
 	}
 }
