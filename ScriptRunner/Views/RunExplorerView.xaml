@@ -175,6 +175,7 @@
 
                                                 <Trigger Property="IsMouseOver" Value="True">
                                                     <Setter Property="Background" Value="{StaticResource MahApps.Brushes.Accent2}" />
+                                                    <Setter Property="Foreground" Value="White" />
                                                 </Trigger>
 
                                                 <Trigger Property="IsSelected" Value="True">
