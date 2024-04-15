@@ -17,6 +17,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Controls;component/Resources/ButtonWithIcon.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Controls;component/Resources/AbortButtonStyle.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ScriptRunner;component/Resources/ScriptStepTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
@@ -78,9 +79,10 @@
                         Margin="0,0,50,0"
                         ToolTip="Abort"
                         Command="{Binding AbortCommand}"
-                        IsEnabled="{Binding IsConnected}">
+                        IsEnabled="{Binding IsConnected}"
+                        Style="{StaticResource AbortButtonStyle}">
 
-                    <Button.Resources>
+                    <!--<Button.Resources>
                         <Style TargetType="Button">
                             <Setter Property="Template">
                                 <Setter.Value>
@@ -106,7 +108,7 @@
                                 </Setter.Value>
                             </Setter>
                         </Style>
-                    </Button.Resources>
+                    </Button.Resources>-->
 
                 </Button>
 
