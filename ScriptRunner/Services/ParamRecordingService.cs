@@ -460,7 +460,10 @@ namespace ScriptRunner.Services
 
 							int sleepTime = 1000 / ActualRecordingRate;
 							sleepTime -= (int)lineHandleTime.TotalMilliseconds;
-							System.Threading.Thread.Sleep(sleepTime);
+							if (sleepTime > 0)
+							{
+								System.Threading.Thread.Sleep(sleepTime);
+							}
 						}
 					}
 					catch (Exception ex)
