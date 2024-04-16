@@ -458,15 +458,9 @@ namespace ScriptRunner.Services
 
 							TimeSpan lineHandleTime = DateTime.Now - start;
 
-							double rate = ActualRecordingRate;
-							if (lineHandleTime.TotalMilliseconds > (1000 / RecordingRate))
-							{
-								rate = 1000.0 / lineHandleTime.TotalMilliseconds;
-							}
-
-
-							ActualRecordingRate = (int)rate;
-							System.Threading.Thread.Sleep(1000 / ActualRecordingRate);
+							int sleepTime = 1000 / ActualRecordingRate;
+							sleepTime -= (int)lineHandleTime.TotalMilliseconds;
+							System.Threading.Thread.Sleep(sleepTime);
 						}
 					}
 					catch (Exception ex)
