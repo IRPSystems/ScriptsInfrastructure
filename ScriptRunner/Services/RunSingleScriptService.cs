@@ -192,7 +192,7 @@ namespace ScriptRunner.Services
 
 									_currentStep.StepState = SciptStateEnum.Running;
 
-									if(_currentStep is ISubScript subScript)
+									if (_currentStep is ISubScript subScript)
 									{
 										StartSubScript(subScript);
 									}
@@ -208,7 +208,7 @@ namespace ScriptRunner.Services
 										_state = ScriptInternalStateEnum.EndStep;
 										break;
 									}
-									else if(_currentStep is IScriptStepContinuous)
+									else if (_currentStep is IScriptStepContinuous)
 									{
 										ContinuousStepEvent?.Invoke(_currentStep as IScriptStepContinuous);
 										_currentStep.IsPass = true;
@@ -226,6 +226,7 @@ namespace ScriptRunner.Services
 
 									LoggerService.Debug(this, "Execute - " + _currentStep.Description + " - " + _currentStep.StepState);
 
+
 									_mainScriptLogger.AddLine(
 										_runTime,
 										"Start step \"" + _currentStep.Description + "\"",
@@ -234,21 +235,31 @@ namespace ScriptRunner.Services
 									if (_currentStep == null)
 										break;
 
-									if(_subScript != null)
+									try
 									{
-										_subScript.Start();
-									}									
-									else if(_currentStep is ScriptStepStartStopSaftyOfficer startStopSaftyOfficer)
-									{
-										if (startStopSaftyOfficer.IsStart)
-											_currentStep.IsPass = StartSaftyOfficer();
+										if (_subScript != null)
+										{
+											_subScript.Start();
+										}
+										else if (_currentStep is ScriptStepStartStopSaftyOfficer startStopSaftyOfficer)
+										{
+											if (startStopSaftyOfficer.IsStart)
+												_currentStep.IsPass = StartSaftyOfficer();
+											else
+												StopSaftyOfficer();
+										}
+										else if (_state == ScriptInternalStateEnum.Resume)
+											_currentStep.Resume();
 										else
-											StopSaftyOfficer();
+											_currentStep.Execute();
+
+										
 									}
-									else if (_state == ScriptInternalStateEnum.Resume)
-										_currentStep.Resume();
-									else
-										_currentStep.Execute();
+									catch (Exception ex)
+									{
+										LoggerService.Error(this, "Execution failed", ex);
+										AbortEvent?.Invoke("Execute failed\r\nScript: \"" + CurrentScript.Name + "\"\r\nStep: \"" + CurrentStep.Description + "\"");
+									}
 
 									if (_isPaused)
 										break;
@@ -502,6 +513,7 @@ namespace ScriptRunner.Services
 			_subScript.CurrentStepChangedEvent += CurrentStepChangedEventHandler;
 			_subScript.ContinuousStepEvent += SubScript_ContinuousStepEvent;
 			_subScript.StopContinuousStepEvent += SubScript_StopContinuousStepEvent;
+			_subScript.AbortEvent += SubScript_AbortEvent;
 
 
 		}
@@ -642,6 +654,11 @@ namespace ScriptRunner.Services
 			StopContinuousStepEvent?.Invoke(stepToStopDescription);
 		}
 
+		private void SubScript_AbortEvent(string abortDescription)
+		{
+			AbortEvent?.Invoke(abortDescription);
+		}
+
 		#endregion Methods
 
 		#region Events
@@ -651,6 +668,8 @@ namespace ScriptRunner.Services
 
 		public event Action<IScriptStepContinuous> ContinuousStepEvent;
 		public event Action<string> StopContinuousStepEvent;
+
+		public event Action<string> AbortEvent;
 
 		#endregion Events
 	}

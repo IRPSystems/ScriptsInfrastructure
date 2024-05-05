@@ -267,6 +267,7 @@ namespace ScriptRunner.Services
 			CurrentScript.CurrentStepChangedEvent += CurrentStepChangedEventHandler;
 			CurrentScript.ContinuousStepEvent += Script_ContinuousStepEvent;
 			CurrentScript.StopContinuousStepEvent += Script_StopContinuousStepEvent;
+			CurrentScript.AbortEvent += CurrentScript_AbortEvent;
 
 
 			InitiateSweepItem(CurrentScript.CurrentScript);
@@ -296,6 +297,8 @@ namespace ScriptRunner.Services
 			});
 
 		}
+
+		
 
 		private int GetNumberOfScriptSteps(IScript script)
 		{
@@ -455,6 +458,13 @@ namespace ScriptRunner.Services
 			if(step != null)
 				ExecutedStepsPercentage = (int)((_stepsCounter / _numOfSteps) * 100);
 		}
+
+		private void CurrentScript_AbortEvent(string abortDescription)
+		{
+			AbortScript(abortDescription);
+		}
+
+
 
 		#region Continuous Step
 

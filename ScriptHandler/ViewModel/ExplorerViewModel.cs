@@ -618,6 +618,7 @@ namespace ScriptHandler.ViewModels
 			}
 
 			CopyScript(
+				script.CurrentScript,
 				script.CurrentScript.ScriptPath,
 				script.CurrentScript.Name,
 				copiedScriptName);
@@ -626,23 +627,30 @@ namespace ScriptHandler.ViewModels
 		}
 
 		private void CopyScript(
+			ScriptData scriptData,
 			string originalPath,
 			string originalName, 
 			string newName)
 		{ 
 			string path = originalPath;
 
-			string fileStr = File.ReadAllText(originalPath);
-			fileStr = fileStr.Replace(originalName, newName);
+			scriptData.Name = newName;
+			JsonSerializerSettings settings = new JsonSerializerSettings();
+			settings.Formatting = Formatting.Indented;
+			settings.TypeNameHandling = TypeNameHandling.All;
+			string jsonStr = JsonConvert.SerializeObject(scriptData, settings);
 
+
+			#region Change the path name
 			int index = path.LastIndexOf("\\");
 			string startPath = path.Substring(0, index);
 			string endPath = path.Substring(index + 1);
 			endPath = endPath.Replace(originalName, newName);
-			
+			#endregion Change the path name
+
 			path = Path.Combine(startPath, endPath);
 
-			File.WriteAllText(path, fileStr);
+			File.WriteAllText(path, jsonStr);
 
 			ProjectAddExistingTest(path);
 		}
@@ -699,6 +707,7 @@ namespace ScriptHandler.ViewModels
 			string orignalPath = vm.CurrentScript.ScriptPath;
 
 			CopyScript(
+				vm.CurrentScript,
 				vm.CurrentScript.ScriptPath,
 				vm.CurrentScript.Name,
 				scriptName);

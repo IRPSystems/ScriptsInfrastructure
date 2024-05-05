@@ -80,11 +80,11 @@ namespace ScriptHandler.Models
 			_startTime = DateTime.Now;
 			Task executeTesk = Execute_Do();
 
-			try
-			{
+			//try
+			//{
 				executeTesk.Wait(_cancellationToken);
-			}
-			catch (OperationCanceledException) { }
+			//}
+			//catch (OperationCanceledException) { }
 		}
 
 		private  Task Execute_Do()
