@@ -3,6 +3,7 @@ using DeviceCommunicators.Enums;
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
 using DeviceCommunicators.NI_6002;
+using DeviceCommunicators.PowerSupplayEA;
 using DeviceCommunicators.Scope_KeySight;
 using DeviceCommunicators.SwitchRelay32;
 using DeviceHandler.Models;
@@ -88,7 +89,14 @@ namespace ScriptHandler.Models
 
 			Communicator.SetParamValue(Parameter, Value, GetCallback);
 
-			bool isNotTimeout = _waitGetCallback.WaitOne(1000);
+			int timeOut = 1000;
+			if(Communicator is PowerSupplayEA_Communicator &&
+				Parameter.Name.ToLower().Contains("on/off"))
+			{
+				timeOut = 3000;
+			}
+
+			bool isNotTimeout = _waitGetCallback.WaitOne(timeOut);
 			if (!isNotTimeout)
 			{
 				ErrorMessage += "Communication timeout.";
