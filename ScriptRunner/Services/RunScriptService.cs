@@ -536,8 +536,11 @@ namespace ScriptRunner.Services
 					_devicesContainer,
 					_canMessagesService);
 
-				sweepItemForRun.CurrentScriptDiagram = new ScriptHandler.ViewModels.ScriptDiagramViewModel();
-				sweepItemForRun.CurrentScriptDiagram.DrawScript(sweepItem.SubScript);
+				Application.Current.Dispatcher.Invoke(() =>
+				{
+					sweepItemForRun.CurrentScriptDiagram = new ScriptHandler.ViewModels.ScriptDiagramViewModel();
+					sweepItemForRun.CurrentScriptDiagram.DrawScript(sweepItem.SubScript);
+				});
 			}
 		}
 
