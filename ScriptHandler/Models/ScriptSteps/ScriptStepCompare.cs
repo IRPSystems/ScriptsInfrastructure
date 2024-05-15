@@ -1,6 +1,7 @@
 ﻿
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
+using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Entities.Models;
@@ -118,6 +119,18 @@ namespace ScriptHandler.Models
 				DeviceFullData deviceFullData =
 					DevicesList.ToList().Find((d) => d.Device.DeviceType == parameter.DeviceType);
 				Communicator = deviceFullData.DeviceCommunicator;
+			}
+
+			if (parameter is ICalculatedParamete calculated)
+			{
+				calculated.Calculate();
+				if(parameter.Value == null || double.IsNaN((double)parameter.Value))
+				{
+					IsPass = false;
+					return 0;
+				}
+
+				return parameter.Value;
 			}
 
 			bool isOK = SendAndReceive(parameter);

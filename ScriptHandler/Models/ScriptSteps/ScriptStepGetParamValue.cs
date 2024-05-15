@@ -70,6 +70,8 @@ namespace ScriptHandler.Models
 
 			if(parameter is ICalculatedParamete calculated)
 			{
+				LoggerService.Inforamtion(this, "Handling calculated paramtere");
+
 				calculated.DevicesList = DevicesList;
 
 				ErrorMessage = "Failed to get the calculated parameter value.\r\n" +
@@ -78,11 +80,13 @@ namespace ScriptHandler.Models
 				calculated.Calculate();
 				if(parameter.Value != null) 
 				{
+					LoggerService.Inforamtion(this, "Calculated paramtere value = " + parameter.Value);
 					IsPass = true;
 					return true;
 				}
 				else
 				{
+					LoggerService.Inforamtion(this, "Failed Calculated");
 					IsPass = false;
 					return false;
 				}
