@@ -577,7 +577,7 @@ namespace ScriptRunner.Services
 		private void CurrentStepChangedEventHandler(ScriptStepBase step)
 		{
 			OnPropertyChanged(nameof(CurrentStep));
-			CurrentStepChangedEvent.Invoke(step);
+			CurrentStepChangedEvent?.Invoke(step);
 		}
 
 

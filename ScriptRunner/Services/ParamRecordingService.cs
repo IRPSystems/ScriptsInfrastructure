@@ -424,7 +424,7 @@ namespace ScriptRunner.Services
 									{
 										if (string.IsNullOrEmpty((string)paramData.Value))
 											LoggerService.Inforamtion(this, "string empty ");
-										LoggerService.Inforamtion(this, "string: " + paramData.Value.ToString());
+										//LoggerService.Inforamtion(this, "string: " + paramData.Value.ToString());
 
 										_csvWriter.WriteField("NaN");
 										continue;
