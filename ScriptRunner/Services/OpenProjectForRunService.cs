@@ -238,7 +238,7 @@ namespace ScriptRunner.Services
 		}
 
 		private void GetRealScriptParameters(
-			GeneratedScriptData scriptData,
+			IScript scriptData,
 			DevicesContainer devicesContainer)
 		{
 			
@@ -276,8 +276,26 @@ namespace ScriptRunner.Services
 						withParameter.Parameter,
 						devicesContainer);
 				}
-				
-				
+				else if (scriptItem is ISubScript subScript)
+				{
+					GetRealScriptParameters(
+						subScript.Script,
+						devicesContainer);
+				}
+				else if (scriptItem is ScriptStepSweep sweep)
+				{
+					foreach (SweepItemData data in sweep.SweepItemsList)
+					{
+						if (data.SubScript != null)
+						{
+							GetRealScriptParameters(
+								data.SubScript,
+								devicesContainer);
+						}
+					}
+				}
+
+
 
 			}
 
