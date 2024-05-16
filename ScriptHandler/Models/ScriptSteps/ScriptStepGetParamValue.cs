@@ -80,8 +80,8 @@ namespace ScriptHandler.Models
 				if(parameter.Value != null) 
 				{
 					
-					if(parameter.IsAbsolute)
-						parameter.Value = Math.Abs((double)parameter.Value);
+					//if(parameter.IsAbsolute)
+					//	parameter.Value = Math.Abs((double)parameter.Value);
 
 					IsPass = true;
 					return true;

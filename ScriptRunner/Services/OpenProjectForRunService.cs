@@ -1,6 +1,7 @@
 ﻿
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
+using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Entities.Enums;
@@ -17,6 +18,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Media;
 
@@ -243,11 +245,15 @@ namespace ScriptRunner.Services
 		{
 			
 			foreach (IScriptItem scriptItem in scriptData.ScriptItemsList)
-			{
+			{				
+
 				if (scriptItem is IScriptStepCompare compare)
 				{
 					if (compare.ValueLeft is DeviceParameterData)
 					{
+						if (compare.ValueLeft is ICalculatedParamete)
+							continue;
+
 						compare.ValueLeft = GetRealParam(
 							compare.ValueLeft as DeviceParameterData,
 							devicesContainer);
@@ -255,6 +261,9 @@ namespace ScriptRunner.Services
 
 					if (compare.ValueRight is DeviceParameterData)
 					{
+						if (compare.ValueRight is ICalculatedParamete)
+							continue;
+
 						compare.ValueRight = GetRealParam(
 							compare.ValueRight as DeviceParameterData,
 							devicesContainer);
@@ -264,6 +273,9 @@ namespace ScriptRunner.Services
 					{
 						if (compareRange.Value is DeviceParameterData)
 						{
+							if (compareRange.Value is ICalculatedParamete)
+								continue;
+
 							compareRange.Value = GetRealParam(
 								compareRange.Value as DeviceParameterData,
 								devicesContainer);
@@ -272,6 +284,9 @@ namespace ScriptRunner.Services
 				}
 				else if (scriptItem is IScriptStepWithParameter withParameter)
 				{
+					if (withParameter.Parameter is ICalculatedParamete)
+						continue;
+
 					withParameter.Parameter = GetRealParam(
 						withParameter.Parameter,
 						devicesContainer);
@@ -308,6 +323,8 @@ namespace ScriptRunner.Services
 		{
 			if (originalParam == null)
 				return null;
+
+			
 
 			DeviceFullData deviceFullData =
 				devicesContainer.TypeToDevicesFullData[originalParam.DeviceType];
