@@ -1,12 +1,12 @@
 ﻿
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
-using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Entities.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Enums;
+using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
 using System;
@@ -17,7 +17,7 @@ using System.Windows;
 
 namespace ScriptHandler.Models
 {
-	public class ScriptStepCompare: ScriptStepGetParamValue
+	public class ScriptStepCompare: ScriptStepGetParamValue, IScriptStepCompare
 	{
 		public object ValueLeft { get; set; }
 		public object ValueRight { get; set; }
@@ -38,7 +38,7 @@ namespace ScriptHandler.Models
 			if (ValueLeft is DeviceParameterData paramLeft)
 			{
 				object val = GetCompareParaValue(paramLeft);
-				if (val == null)
+				if (val == null || IsPass == false)
 					return;
 
 				leftVal = Convert.ToDouble(val);
@@ -50,7 +50,7 @@ namespace ScriptHandler.Models
 			if (ValueRight is DeviceParameterData paramRight)
 			{
 				object val = GetCompareParaValue(paramRight);
-				if (val == null)
+				if (val == null || IsPass == false)
 					return;
 
 				rightVal = Convert.ToDouble(val);
@@ -119,18 +119,6 @@ namespace ScriptHandler.Models
 				DeviceFullData deviceFullData =
 					DevicesList.ToList().Find((d) => d.Device.DeviceType == parameter.DeviceType);
 				Communicator = deviceFullData.DeviceCommunicator;
-			}
-
-			if (parameter is ICalculatedParamete calculated)
-			{
-				calculated.Calculate();
-				if(parameter.Value == null || double.IsNaN((double)parameter.Value))
-				{
-					IsPass = false;
-					return 0;
-				}
-
-				return parameter.Value;
 			}
 
 			bool isOK = SendAndReceive(parameter);

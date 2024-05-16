@@ -112,13 +112,17 @@ namespace ScriptRunner.Services
 				if (!(scriptData is GeneratedTestData testData))
 					continue;
 
+				GetRealScriptParameters(
+					scriptData,
+					devicesContainer);
+
 				GetTestCanMessages(
 					testData,
 					scriptData);
 
 				GetUpdateStopCanMessages(
 					testData,
-				scriptData);
+					scriptData);
 
 
 				SetParentSweepToReset(scriptData); 
@@ -233,7 +237,70 @@ namespace ScriptRunner.Services
 			return script;
 		}
 
+		private void GetRealScriptParameters(
+			GeneratedScriptData scriptData,
+			DevicesContainer devicesContainer)
+		{
+			
+			foreach (IScriptItem scriptItem in scriptData.ScriptItemsList)
+			{
+				if (scriptItem is IScriptStepCompare compare)
+				{
+					if (compare.ValueLeft is DeviceParameterData)
+					{
+						compare.ValueLeft = GetRealParam(
+							compare.ValueLeft as DeviceParameterData,
+							devicesContainer);
+					}
 
+					if (compare.ValueRight is DeviceParameterData)
+					{
+						compare.ValueRight = GetRealParam(
+							compare.ValueRight as DeviceParameterData,
+							devicesContainer);
+					}
+
+					if (scriptItem is ScriptStepCompareRange compareRange)
+					{
+						if (compareRange.Value is DeviceParameterData)
+						{
+							compareRange.Value = GetRealParam(
+								compareRange.Value as DeviceParameterData,
+								devicesContainer);
+						}
+					}
+				}
+				else if (scriptItem is IScriptStepWithParameter withParameter)
+				{
+					withParameter.Parameter = GetRealParam(
+						withParameter.Parameter,
+						devicesContainer);
+				}
+				
+				
+
+			}
+
+			
+		}
+
+		private DeviceParameterData GetRealParam(
+			DeviceParameterData originalParam,
+			DevicesContainer devicesContainer)
+		{
+			if (originalParam == null)
+				return null;
+
+			DeviceFullData deviceFullData =
+				devicesContainer.TypeToDevicesFullData[originalParam.DeviceType];
+			if (deviceFullData == null)
+				return null;
+
+			DeviceParameterData actualParam =
+				deviceFullData.Device.ParemetersList.ToList().Find((p) =>
+					p.Name == originalParam.Name);
+			return actualParam;
+		}
 
 		private void SetParentSweepToReset(IScript script)
 		{

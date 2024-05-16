@@ -7,6 +7,7 @@ using Entities.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ScriptHandler.Enums;
+using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
 using System;
@@ -17,7 +18,7 @@ using System.Windows;
 
 namespace ScriptHandler.Models.ScriptSteps
 {
-	public class ScriptStepCompareRange : ScriptStepGetParamValue
+	public class ScriptStepCompareRange : ScriptStepGetParamValue, IScriptStepCompare
 	{
 		#region Properties
 

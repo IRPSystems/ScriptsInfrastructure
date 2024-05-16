@@ -8,6 +8,7 @@ using Entities.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
 using Services.Services;
+using System;
 using System.Collections.ObjectModel;
 using System.Reflection.Metadata;
 using System.Threading;
@@ -70,8 +71,6 @@ namespace ScriptHandler.Models
 
 			if(parameter is ICalculatedParamete calculated)
 			{
-				LoggerService.Inforamtion(this, "Handling calculated paramtere");
-
 				calculated.DevicesList = DevicesList;
 
 				ErrorMessage = "Failed to get the calculated parameter value.\r\n" +
@@ -80,13 +79,15 @@ namespace ScriptHandler.Models
 				calculated.Calculate();
 				if(parameter.Value != null) 
 				{
-					LoggerService.Inforamtion(this, "Calculated paramtere value = " + parameter.Value);
+					
+					if(parameter.IsAbsolute)
+						parameter.Value = Math.Abs((double)parameter.Value);
+
 					IsPass = true;
 					return true;
 				}
 				else
 				{
-					LoggerService.Inforamtion(this, "Failed Calculated");
 					IsPass = false;
 					return false;
 				}
@@ -103,7 +104,10 @@ namespace ScriptHandler.Models
 				return false;
 			}
 
-            return _isReceived;
+			if(IsPass && parameter.Value is double dValue && parameter.IsAbsolute)
+				parameter.Value = Math.Abs(dValue);
+
+			return _isReceived;
         }
 
 		private void GetValueCallback(DeviceParameterData param, CommunicatorResultEnum result, string resultDescription)
