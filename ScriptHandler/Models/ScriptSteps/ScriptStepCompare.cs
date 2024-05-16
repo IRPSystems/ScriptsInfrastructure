@@ -9,6 +9,7 @@ using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
+using Services.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -73,6 +74,21 @@ namespace ScriptHandler.Models
 
 
 			Compare(leftVal, (double)rightVal);
+
+			#region Log comparation
+			string str = leftParamName + " = " + leftVal + "; ";
+			if (!string.IsNullOrEmpty(rightParamName))
+			{
+				str += rightParamName + " = " + rightVal + "; ";
+			}
+			else
+				str += "The value = " + rightVal + "; ";
+
+			str += "\r\n" + "IsPass = " + IsPass;
+
+			LoggerService.Inforamtion(this, str);
+
+			#endregion Log comparation
 		}
 
 		private void Compare(
