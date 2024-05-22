@@ -324,7 +324,8 @@ namespace ScriptRunner.Services
 			if (originalParam == null)
 				return null;
 
-			
+			if (devicesContainer.TypeToDevicesFullData.ContainsKey(originalParam.DeviceType) == false)
+				return null;
 
 			DeviceFullData deviceFullData =
 				devicesContainer.TypeToDevicesFullData[originalParam.DeviceType];
