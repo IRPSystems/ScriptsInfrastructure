@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\Converters\Converters.csproj" />
     <ProjectReference Include="..\ScriptHandler\ScriptHandler.csproj" />
+	<ProjectReference Include="..\..\Infrastructure\J2534DotNet\J2534DotNet.csproj" />
   </ItemGroup>
 
 </Project>

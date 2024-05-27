@@ -28,6 +28,7 @@
     <ProjectReference Include="..\..\Infrastructure\DBCFileParser\DBCFileParser.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Entities\Entities.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Services\Services.csproj" />
+	<ProjectReference Include="..\..\Infrastructure\J2534DotNet\J2534DotNet.csproj" />
   </ItemGroup>
 
 </Project>
