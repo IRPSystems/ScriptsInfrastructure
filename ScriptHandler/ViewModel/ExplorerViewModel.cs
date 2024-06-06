@@ -1094,7 +1094,13 @@ namespace ScriptHandler.ViewModels
 			DesignScriptViewModel droppedOn)
 		{
 			int droppedIndex = Project.ScriptsList.IndexOf(dropped);
+			if (droppedIndex < 0 || droppedIndex > Project.ScriptsList.Count)
+				return;
+				
 			int droppedOnIndex = Project.ScriptsList.IndexOf(droppedOn);
+			if (droppedOnIndex < 0 || droppedOnIndex > Project.ScriptsList.Count)
+				return;
+
 
 			DesignScriptViewModel tmp = dropped;
 
