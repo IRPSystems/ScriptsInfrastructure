@@ -640,6 +640,7 @@ namespace ScriptHandler.ViewModels
 			settings.TypeNameHandling = TypeNameHandling.All;
 			string jsonStr = JsonConvert.SerializeObject(scriptData, settings);
 
+			scriptData.Name = originalName;
 
 			#region Change the path name
 			int index = path.LastIndexOf("\\");
