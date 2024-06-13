@@ -341,7 +341,7 @@ namespace ScriptRunner.Services
 			{
 				actualParam =
 					deviceFullData.Device.ParemetersList.ToList().Find((p) =>
-						((MCU_ParamData)p).Name == mcuParam.Cmd);
+						((MCU_ParamData)p).Cmd == mcuParam.Cmd);
 			}
 			else
 			{
