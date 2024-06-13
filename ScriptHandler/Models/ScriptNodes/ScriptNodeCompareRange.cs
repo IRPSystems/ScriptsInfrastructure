@@ -227,7 +227,7 @@ namespace ScriptHandler.Models.ScriptNodes
 			{
 				DeviceParameterData data = GetParameter(
 							compareRangeValue.DeviceType,
-							compareRangeValue.Name,
+							compareRangeValue,
 							devicesContainer);
 				if (data != null)
 					Value = data;
@@ -237,7 +237,7 @@ namespace ScriptHandler.Models.ScriptNodes
 			{
 				DeviceParameterData data = GetParameter(
 					compareParamLeft.DeviceType,
-					compareParamLeft.Name,
+					compareParamLeft,
 					devicesContainer);
 				if (data != null)
 					ValueLeft = data;
@@ -247,7 +247,7 @@ namespace ScriptHandler.Models.ScriptNodes
 			{
 				DeviceParameterData data = GetParameter(
 					compareParamRight.DeviceType,
-					compareParamRight.Name,
+					compareParamRight,
 					devicesContainer);
 				if (data != null)
 					ValueRight = data;

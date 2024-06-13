@@ -1,5 +1,6 @@
 ﻿
 using DeviceCommunicators.General;
+using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
@@ -194,7 +195,10 @@ namespace ScriptRunner.Services
 				DeviceFullData deviceFullData =
 					devicesContainer.TypeToDevicesFullData[param.DeviceType];
 
-				DeviceParameterData actualParam =
+				DeviceParameterData actualParam = null;
+				if(param is MCU_ParamData mcuParam)
+					deviceFullData.Device.ParemetersList.ToList().Find((p) => ((MCU_ParamData)p).Cmd == mcuParam.Cmd);
+				else
 					deviceFullData.Device.ParemetersList.ToList().Find((p) => p.Name == param.Name);
 				if (actualParam == null)
 				{
@@ -332,9 +336,20 @@ namespace ScriptRunner.Services
 			if (deviceFullData == null)
 				return null;
 
-			DeviceParameterData actualParam =
-				deviceFullData.Device.ParemetersList.ToList().Find((p) =>
-					p.Name == originalParam.Name);
+			DeviceParameterData actualParam = null;
+			if (originalParam is MCU_ParamData mcuParam)
+			{
+				actualParam =
+					deviceFullData.Device.ParemetersList.ToList().Find((p) =>
+						((MCU_ParamData)p).Name == mcuParam.Cmd);
+			}
+			else
+			{
+				actualParam =
+					deviceFullData.Device.ParemetersList.ToList().Find((p) =>
+						p.Name == originalParam.Name);
+			}
+
 			return actualParam;
 		}
 
@@ -529,8 +544,13 @@ namespace ScriptRunner.Services
 							continue;
 
 						DeviceFullData deviceFullData = devicesContainer.TypeToDevicesFullData[dt];
-						DeviceParameterData param = 
-							deviceFullData.Device.ParemetersList.ToList().Find((p) => p.Name == paramData[0].Trim());
+						DeviceParameterData param = null;
+						if(deviceFullData.Device.DeviceType == DeviceTypesEnum.MCU) 
+						{
+							param = deviceFullData.Device.ParemetersList.ToList().Find((p) => ((MCU_ParamData)p).Cmd == paramData[0].Trim());
+						}
+						else
+							param = deviceFullData.Device.ParemetersList.ToList().Find((p) => p.Name == paramData[0].Trim());
 						if (param != null)
 						{
 							columnData.Parameter = param;

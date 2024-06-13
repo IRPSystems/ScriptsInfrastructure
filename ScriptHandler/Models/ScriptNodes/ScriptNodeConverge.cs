@@ -71,7 +71,7 @@ namespace ScriptHandler.Models.ScriptNodes
 			{
 				DeviceParameterData data = GetParameter(
 					compareParamLeft.DeviceType,
-					compareParamLeft.Name,
+					compareParamLeft,
 					devicesContainer);
 				if (data != null)
 					TargetValue = data;

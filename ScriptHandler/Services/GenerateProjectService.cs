@@ -116,7 +116,12 @@ namespace ScriptHandler.Services
                     {
                         if (withParam.Parameter.Device == null)
                             withParam.Parameter.Device = deviceData;
-                        DeviceParameterData data = deviceData.ParemetersList.ToList().Find((p) => p.Name == withParam.Parameter.Name);
+
+                        DeviceParameterData data = null;
+						if (withParam.Parameter is MCU_ParamData mcuParam)
+							data = deviceData.ParemetersList.ToList().Find((p) => ((MCU_ParamData)p).Cmd == mcuParam.Cmd);
+                        else
+						    data = deviceData.ParemetersList.ToList().Find((p) => p.Name == withParam.Parameter.Name);
                         if (data != null)
                             withParam.Parameter = data;
                     }
@@ -219,7 +224,10 @@ namespace ScriptHandler.Services
 
             DeviceParameterData deviceParam = null;
             if (withParam.Parameter.Device.DeviceType == DeviceTypesEnum.MCU)
-                deviceParam = (device as MCU_DeviceData).MCU_FullList.ToList().Find((p) => p.Name == withParam.Parameter.Name);
+            {
+                deviceParam = (device as MCU_DeviceData).MCU_FullList.ToList().Find((p) => ((MCU_ParamData)p).Cmd ==
+                    ((MCU_ParamData)withParam.Parameter).Cmd);
+            }
             else
                 deviceParam = device.ParemetersList.ToList().Find((p) => p.Name == withParam.Parameter.Name);
 

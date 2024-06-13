@@ -1,6 +1,7 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using DeviceHandler.ViewModel;
@@ -146,13 +147,22 @@ namespace ScriptHandler.ViewModel
 			if (paramDontExist.Parameter == null)
 				return;
 
-			foreach(DesignScriptViewModel script in Project.ScriptsList)
+			MCU_ParamData mcuParamDontExist = paramDontExist.Parameter as MCU_ParamData;
+
+			foreach (DesignScriptViewModel script in Project.ScriptsList)
 			{
 				foreach(ScriptNodeBase node in script.CurrentScript.ScriptItemsList)
 				{
 					if(node is IScriptStepWithParameter withParam)
 					{
-						if(paramDontExist.Parameter.Name == withParam.Parameter.Name)
+						if(withParam.Parameter is MCU_ParamData mcuParam && mcuParamDontExist != null)
+						{
+							if (mcuParamDontExist.Cmd == mcuParam.Cmd)
+							{
+								withParam.Parameter = SelectedParameter;
+							}
+						}
+						else if(paramDontExist.Parameter.Name == withParam.Parameter.Name)
 						{
 							withParam.Parameter = SelectedParameter;
 						}
