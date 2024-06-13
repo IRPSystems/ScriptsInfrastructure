@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using DeviceHandler.ViewModel;
@@ -696,13 +695,9 @@ namespace ScriptHandler.ViewModels
 					if (scriptNode is IScriptStepWithParameter withParam &&
 						withParam.Parameter != null)
 					{
-						string name = withParam.Parameter.Name;
-						if (withParam.Parameter is MCU_ParamData mcuParam)
-							name = mcuParam.Cmd;
-
 						DeviceParameterData data = GetParameter(
 							withParam.Parameter.DeviceType,
-							name);
+							withParam.Parameter.Name);
 						if (data != null)
 							withParam.Parameter = data;
 					}
@@ -785,11 +780,7 @@ namespace ScriptHandler.ViewModels
 			DeviceData deviceData =
 				_devicesContainer.TypeToDevicesFullData[deviceType].Device;
 
-			DeviceParameterData data = null;
-			if(deviceType == DeviceTypesEnum.MCU)
-				data = deviceData.ParemetersList.ToList().Find((p) => ((MCU_ParamData)p).Cmd == paramName);
-			else
-				data = deviceData.ParemetersList.ToList().Find((p) => p.Name == paramName);
+			DeviceParameterData data = deviceData.ParemetersList.ToList().Find((p) => p.Name == paramName);
 			
 			return data;
 		}

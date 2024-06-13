@@ -31,6 +31,7 @@ namespace ScriptRunner.Services
 
 		//private ManualResetEvent _waitGetCallback;
 
+		private List<(DateTime,string, double?)> _parametersAndValueList;
 		private bool _isTest;
 		//private bool _isDoAbort;
 
@@ -80,12 +81,13 @@ namespace ScriptRunner.Services
 
 			_isTest = isTest;
 
-			
+			if(_isTest)
+				_parametersAndValueList = new List<(DateTime, string, double?)>();
 
 			foreach (ParameterValueData data in _selectedMotor.StatusParameterValueList)
 			{
 				DeviceParameterData param = 
-					_mcu_Device.MCU_FullList.ToList().Find((p) => ((MCU_ParamData)p).Cmd.ToLower() == data.ParameterName.ToLower());
+					_mcu_Device.MCU_FullList.ToList().Find((p) => p.Name.ToLower() == data.ParameterName.ToLower());
 				if(param != null)
 					parametersRepository.Add(param, RepositoryPriorityEnum.High, GetCallback);
 			}
@@ -93,7 +95,7 @@ namespace ScriptRunner.Services
 			foreach (ParameterValueData data in _selectedController.StatusParameterValueList)
 			{
 				DeviceParameterData param =
-					_mcu_Device.MCU_FullList.ToList().Find((p) => ((MCU_ParamData)p).Cmd.ToLower() == data.ParameterName.ToLower());
+					_mcu_Device.MCU_FullList.ToList().Find((p) => p.Name.ToLower() == data.ParameterName.ToLower());
 				if (param != null)
 					parametersRepository.Add(param, RepositoryPriorityEnum.High, GetCallback);
 			}
@@ -120,7 +122,7 @@ namespace ScriptRunner.Services
 				foreach (ParameterValueData data in _selectedMotor.StatusParameterValueList)
 				{
 					DeviceParameterData param =
-						_mcu_Device.MCU_FullList.ToList().Find((p) => ((MCU_ParamData)p).Cmd.ToLower() == data.ParameterName.ToLower());
+						_mcu_Device.MCU_FullList.ToList().Find((p) => p.Name.ToLower() == data.ParameterName.ToLower());
 					if (param != null)
 						_parametersRepository.Remove(param, GetCallback);
 				}
@@ -131,7 +133,7 @@ namespace ScriptRunner.Services
 				foreach (ParameterValueData data in _selectedController.StatusParameterValueList)
 				{
 					DeviceParameterData param =
-						_mcu_Device.MCU_FullList.ToList().Find((p) => ((MCU_ParamData)p).Cmd.ToLower() == data.ParameterName.ToLower());
+						_mcu_Device.MCU_FullList.ToList().Find((p) => p.Name.ToLower() == data.ParameterName.ToLower());
 					if (param != null)
 						_parametersRepository.Remove(param, GetCallback);
 				}
@@ -180,7 +182,10 @@ namespace ScriptRunner.Services
 				}
 				StatusReportEvent?.Invoke();
 				message = "Failed to get the value of \"" + param.Name + "\". Communication problem\r\n" + saftyOfficerStatus;
-				
+				if (_isTest)
+				{
+					_parametersAndValueList.Add((DateTime.Now, "received null", null));
+				}
 			}
 			else if (param.Value != null) 
 			{
@@ -202,13 +207,17 @@ namespace ScriptRunner.Services
 						"\"" + param.Name + "\" = " + value + "\r\n" +
 						"Should be less than " + expectedParam.Value;
 
-					
+					if (_isTest)
+					{
+						_parametersAndValueList.Add((DateTime.Now, param.Name, Convert.ToDouble(param.Value)));
+					}
 				}
 
 				else if (_isTest)
 				{
 					saftyOfficerStatus = "Valid value";
 					StatusReportEvent?.Invoke();
+					_parametersAndValueList.Add((DateTime.Now, param.Name, (double?)param.Value));
 				}
 			}
 			else { }

@@ -81,41 +81,41 @@ namespace ScriptHandler.Services
 
 			string extension = Path.GetExtension(file);
 			if (extension.ToLower() == ".prj")
-				newPath = newPath.Replace(fileName, newProjectName + ".prj");
+				newPath = Path.Combine(newDir, newProjectName + ".prj");
 			else if (extension.ToLower() == ".gprj")
-				newPath = newPath.Replace(fileName, newProjectName + ".gprj");
+				newPath = Path.Combine(newDir, newProjectName + ".gprj");
 
 			File.Copy(file, newPath);
 
-			if (extension.ToLower() == ".prj" || extension.ToLower() == ".gprj")
-			{
-				HandleProjectFile(
-					newPath,
-					newProjectName,
-					projectName);
-			}
+			//if (extension.ToLower() == ".prj" || extension.ToLower() == ".gprj")
+			//{
+			//	HandleProjectFile(
+			//		newPath,
+			//		newProjectName,
+			//		projectName);
+			//}
 		}
 
-		private void HandleProjectFile(
-			string newPath,
-			string newProjectName,
-			string projectName)
-		{
-			string fileData = null;
-			using (StreamReader sr = new StreamReader(newPath))
-			{
-				fileData = sr.ReadToEnd();
-			}
+		//private void HandleProjectFile(
+		//	string newPath,
+		//	string newProjectName,
+		//	string projectName)
+		//{
+		//	string fileData = null;
+		//	using (StreamReader sr = new StreamReader(newPath))
+		//	{
+		//		fileData = sr.ReadToEnd();
+		//	}
 
-			if (string.IsNullOrEmpty(fileData))
-				return;
+		//	if (string.IsNullOrEmpty(fileData))
+		//		return;
 
-			fileData = fileData.Replace(projectName, newProjectName);
+		//	fileData = fileData.Replace(projectName, newProjectName);
 
-			using (StreamWriter sw = new StreamWriter(newPath))
-			{
-				sw.Write(fileData);
-			}
-		}
+		//	using (StreamWriter sw = new StreamWriter(newPath))
+		//	{
+		//		sw.Write(fileData);
+		//	}
+		//}
 	}
 }

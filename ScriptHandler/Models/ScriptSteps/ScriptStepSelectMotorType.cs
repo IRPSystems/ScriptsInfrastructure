@@ -135,7 +135,7 @@ namespace ScriptHandler.Models
 				return;
 
 			parameterName = parameterName.Trim();
-			DeviceParameterData data = MCU_Device.MCU_FullList.ToList().Find((p) => ((MCU_ParamData)p).Cmd == parameterName);
+			DeviceParameterData data = MCU_Device.MCU_FullList.ToList().Find((p) => p.Name == parameterName);
 			if (data == null)
 				return;
 

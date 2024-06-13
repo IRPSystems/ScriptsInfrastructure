@@ -111,6 +111,7 @@ namespace ScriptRunner.Services
 		}
 
 		public void StartSingle(
+			GeneratedProjectData projects,
 			GeneratedScriptData scriptData,
 			bool isRecord)
 		{
@@ -120,6 +121,8 @@ namespace ScriptRunner.Services
 				End(ScriptStopModeEnum.Ended, null);
 				return;
 			}
+
+			InitRecordingListForProject(projects);
 
 			scriptData.State = SciptStateEnum.Running;
 			_runScript.Run(_logParametersList, scriptData, null, isRecord);

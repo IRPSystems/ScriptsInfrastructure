@@ -1,7 +1,6 @@
 ﻿
 using CommunityToolkit.Mvvm.Input;
 using DeviceCommunicators.General;
-using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Entities.Models;
@@ -218,13 +217,7 @@ namespace ScriptHandler.Models
 					DeviceData deviceData =
 					   devicesContainer.TypeToDevicesFullData[item.Parameter.DeviceType].Device;
 
-					DeviceParameterData data = null;
-					if(item.Parameter is MCU_ParamData mcuParam) 
-					{
-						data = deviceData.ParemetersList.ToList().Find((p) => ((MCU_ParamData)p).Cmd == mcuParam.Cmd);
-					}
-					else
-						data = deviceData.ParemetersList.ToList().Find((p) => p.Name == item.Parameter.Name);
+					DeviceParameterData data = deviceData.ParemetersList.ToList().Find((p) => p.Name == item.Parameter.Name);
 					if (data == null)
 					{
 						InvalidScriptItemData_ParamDontExist paramDontExist = new InvalidScriptItemData_ParamDontExist()

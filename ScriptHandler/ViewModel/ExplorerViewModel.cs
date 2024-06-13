@@ -640,6 +640,7 @@ namespace ScriptHandler.ViewModels
 			settings.TypeNameHandling = TypeNameHandling.All;
 			string jsonStr = JsonConvert.SerializeObject(scriptData, settings);
 
+			scriptData.Name = originalName;
 
 			#region Change the path name
 			int index = path.LastIndexOf("\\");
@@ -1093,7 +1094,13 @@ namespace ScriptHandler.ViewModels
 			DesignScriptViewModel droppedOn)
 		{
 			int droppedIndex = Project.ScriptsList.IndexOf(dropped);
+			if (droppedIndex < 0 || droppedIndex > Project.ScriptsList.Count)
+				return;
+				
 			int droppedOnIndex = Project.ScriptsList.IndexOf(droppedOn);
+			if (droppedOnIndex < 0 || droppedOnIndex > Project.ScriptsList.Count)
+				return;
+
 
 			DesignScriptViewModel tmp = dropped;
 

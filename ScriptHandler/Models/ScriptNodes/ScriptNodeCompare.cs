@@ -136,17 +136,16 @@ namespace ScriptHandler.Models.ScriptNodes
 			{
 				DeviceParameterData data = GetParameter(
 					compareParamLeft.DeviceType,
-					compareParamLeft,
+					compareParamLeft.Name,
 					devicesContainer);
 				if (data != null)
 					ValueLeft = data;
 			}
-
 			if (ValueRight is DeviceParameterData compareParamRight)
 			{
 				DeviceParameterData data = GetParameter(
 					compareParamRight.DeviceType,
-					compareParamRight,
+					compareParamRight.Name,
 					devicesContainer);
 				if (data != null)
 					ValueRight = data;

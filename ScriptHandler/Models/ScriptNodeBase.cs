@@ -1,5 +1,4 @@
 ﻿
-using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Entities.Enums;
@@ -166,7 +165,7 @@ namespace ScriptHandler.Models
 
 		protected DeviceParameterData GetParameter(
 			DeviceTypesEnum deviceType,
-			DeviceParameterData param,
+			string paramName,
 			DevicesContainer devicesContainer)
 		{
 			if (devicesContainer.TypeToDevicesFullData.ContainsKey(deviceType) == false)
@@ -175,17 +174,7 @@ namespace ScriptHandler.Models
 			DeviceData deviceData =
 				devicesContainer.TypeToDevicesFullData[deviceType].Device;
 
-			string name = param.Name;
-			if(param is MCU_ParamData mcuParam)
-				name = mcuParam.Cmd;
-
-			DeviceParameterData data = null;
-			if(deviceType == DeviceTypesEnum.MCU) 
-			{
-				data = deviceData.ParemetersList.ToList().Find((p) => ((MCU_ParamData)p).Cmd == name);
-			}
-			else
-				data = deviceData.ParemetersList.ToList().Find((p) => p.Name == name);
+			DeviceParameterData data = deviceData.ParemetersList.ToList().Find((p) => p.Name == paramName);
 
 			return data;
 		}

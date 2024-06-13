@@ -314,7 +314,21 @@ namespace ScriptRunner.ViewModels
 			SetIsPlayEnabled(false);
 			SetIsGeneralEnabled(false);
 
-			_runProjectsList.StartSingle(RunExplorer.SelectedScript, IsRecord);
+			foreach(GeneratedProjectData project in RunExplorer.ProjectsList)
+			{
+				foreach(GeneratedScriptData script in project.TestsList) 
+				{ 
+					if(script == RunExplorer.SelectedScript)
+					{
+						_runProjectsList.StartSingle(
+							project,
+							RunExplorer.SelectedScript,
+							IsRecord);
+					}
+				}
+			}
+
+			
 		}
 
 

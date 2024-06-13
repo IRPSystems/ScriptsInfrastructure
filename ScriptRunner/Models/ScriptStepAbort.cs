@@ -1,7 +1,6 @@
 ﻿
 using DeviceCommunicators.Enums;
 using DeviceCommunicators.General;
-using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Entities.Models;
@@ -61,11 +60,7 @@ namespace ScriptRunner.Models
 					DeviceData deviceData =
 						devicesContainer.TypeToDevicesFullData[withParam.Parameter.DeviceType].Device;
 
-					DeviceParameterData data = null;
-					if (withParam.Parameter is MCU_ParamData mcuParam)
-						data = deviceData.ParemetersList.ToList().Find((p) => ((MCU_ParamData)p).Cmd == mcuParam.Cmd);
-					else
-						data = deviceData.ParemetersList.ToList().Find((p) => p.Name == withParam.Parameter.Name);
+					DeviceParameterData data = deviceData.ParemetersList.ToList().Find((p) => p.Name == withParam.Parameter.Name);
 					if (data != null)
 						withParam.Parameter = data;
 				}

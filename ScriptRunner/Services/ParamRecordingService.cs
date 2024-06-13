@@ -7,6 +7,7 @@ using DeviceCommunicators.Models;
 using DeviceHandler.Enums;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
+using Entities.Models;
 using ScriptRunner.Models;
 using Services.Services;
 using System;
@@ -416,21 +417,18 @@ namespace ScriptRunner.Services
 
 									if (paramData.Value == null)
 									{
-										_csvWriter.WriteField("");
-										continue;
-									}
-
-									if (paramData.Value.GetType().Name == "String")
-									{
-										if (string.IsNullOrEmpty((string)paramData.Value))
-											LoggerService.Inforamtion(this, "string empty ");
-										//LoggerService.Inforamtion(this, "string: " + paramData.Value.ToString());
-
 										_csvWriter.WriteField("NaN");
 										continue;
 									}
 
-									double value = Convert.ToDouble(paramData.Value);
+									double value = 0;
+									if (paramData.Value.GetType().Name == "String")
+									{
+										HandleStringValue(paramData);
+										continue;
+									}
+									else
+										value = Convert.ToDouble(paramData.Value);
 
 									_csvWriter.WriteField(value);
 
@@ -476,6 +474,35 @@ namespace ScriptRunner.Services
 		}
 
 #endif // _USE_TIMER
+
+		private void HandleStringValue(DeviceParameterData paramData)
+		{
+			if (string.IsNullOrEmpty((string)paramData.Value))
+			{
+				LoggerService.Inforamtion(this, "string empty ");
+				//LoggerService.Inforamtion(this, "string: " + paramData.Value.ToString());
+
+				_csvWriter.WriteField("NaN");
+				return;
+			}
+
+			if (paramData is IParamWithDropDown dropDown)
+			{
+				if (paramData.Value is string str)
+				{
+					DropDownParamData ddp =
+						dropDown.DropDown.Find((d) => d.Name == str);
+					if (ddp == null)
+					{
+						_csvWriter.WriteField("NaN");
+						return;
+					}
+
+					_csvWriter.WriteField(ddp.Name);
+					return;
+				}
+			}
+		}
 
 		private void DeviceCommunicator_ConnectionEvent()
 		{
