@@ -488,6 +488,12 @@ namespace ScriptRunner.Services
 
 			if (paramData is IParamWithDropDown dropDown)
 			{
+				if (dropDown.DropDown == null)
+				{
+					_csvWriter.WriteField("NaN");
+					return;
+				}
+
 				if (paramData.Value is string str)
 				{
 					DropDownParamData ddp =
