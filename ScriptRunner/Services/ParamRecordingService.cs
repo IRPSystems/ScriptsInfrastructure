@@ -490,7 +490,7 @@ namespace ScriptRunner.Services
 			{
 				if (dropDown.DropDown == null)
 				{
-					_csvWriter.WriteField("NaN");
+					_csvWriter.WriteField(paramData.Value);
 					return;
 				}
 
@@ -500,7 +500,7 @@ namespace ScriptRunner.Services
 						dropDown.DropDown.Find((d) => d.Name == str);
 					if (ddp == null)
 					{
-						_csvWriter.WriteField("NaN");
+						_csvWriter.WriteField(paramData.Value);
 						return;
 					}
 
