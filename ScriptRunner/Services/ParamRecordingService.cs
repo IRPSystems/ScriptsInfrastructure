@@ -341,7 +341,7 @@ namespace ScriptRunner.Services
 									LoggerService.Inforamtion(this, "string empty ");
 								LoggerService.Inforamtion(this, "string: " + paramData.Value.ToString());
 
-								_csvWriter.WriteField("NaN");
+								_csvWriter.WriteField("NaN-rec");
 								continue;
 							}
 
@@ -417,7 +417,7 @@ namespace ScriptRunner.Services
 
 									if (paramData.Value == null)
 									{
-										_csvWriter.WriteField("NaN");
+										_csvWriter.WriteField("NaN-rec");
 										continue;
 									}
 
@@ -482,7 +482,7 @@ namespace ScriptRunner.Services
 				LoggerService.Inforamtion(this, "string empty ");
 				//LoggerService.Inforamtion(this, "string: " + paramData.Value.ToString());
 
-				_csvWriter.WriteField("NaN");
+				_csvWriter.WriteField("NaN-rec");
 				return;
 			}
 
