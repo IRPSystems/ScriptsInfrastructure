@@ -11,7 +11,7 @@ namespace ScriptHandler.Services
 			string projectPath,
 			string projectName)
 		{
-
+			LoggerService.Inforamtion(this, $"Renaming project \"{projectName}\"");
 			string newProjectName = GetNewName(projectName);
 			if(string.IsNullOrEmpty(newProjectName)) 
 				return null;
@@ -39,11 +39,11 @@ namespace ScriptHandler.Services
 			string[] filesList = Directory.GetFiles(originalDir);
 			foreach (string file in filesList)
 			{
+				LoggerService.Inforamtion(this, $"Copying file \"{file}\"");
 				CopyFile(
 					file,
 					newDir,
-					newProjectName,
-					projectName);
+					newProjectName);
 			}
 
 			projectPath = Path.Combine(newDir, newProjectName + ".prj");
@@ -73,49 +73,23 @@ namespace ScriptHandler.Services
 		private void CopyFile(
 			string file,
 			string newDir,
-			string newProjectName,
-			string projectName)
+			string newProjectName)
 		{
 			string fileName = Path.GetFileName(file);
 			string newPath = Path.Combine(newDir, fileName);
 
 			string extension = Path.GetExtension(file);
 			if (extension.ToLower() == ".prj")
-				newPath = newPath.Replace(fileName, newProjectName + ".prj");
+				newPath = Path.Combine(newDir, newProjectName + ".prj");
 			else if (extension.ToLower() == ".gprj")
-				newPath = newPath.Replace(fileName, newProjectName + ".gprj");
+				newPath = Path.Combine(newDir, newProjectName + ".gprj");
+
+			if (File.Exists(newPath))
+				return;
 
 			File.Copy(file, newPath);
 
-			if (extension.ToLower() == ".prj" || extension.ToLower() == ".gprj")
-			{
-				HandleProjectFile(
-					newPath,
-					newProjectName,
-					projectName);
-			}
-		}
-
-		private void HandleProjectFile(
-			string newPath,
-			string newProjectName,
-			string projectName)
-		{
-			string fileData = null;
-			using (StreamReader sr = new StreamReader(newPath))
-			{
-				fileData = sr.ReadToEnd();
-			}
-
-			if (string.IsNullOrEmpty(fileData))
-				return;
-
-			fileData = fileData.Replace(projectName, newProjectName);
-
-			using (StreamWriter sw = new StreamWriter(newPath))
-			{
-				sw.Write(fileData);
-			}
+			
 		}
 	}
 }
