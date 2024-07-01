@@ -7,12 +7,10 @@ using DeviceCommunicators.PowerSupplayEA;
 using DeviceCommunicators.Scope_KeySight;
 using DeviceCommunicators.SwitchRelay32;
 using DeviceHandler.Models;
-using Entities.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
-using Syncfusion.Windows.Tools;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -32,6 +30,18 @@ namespace ScriptHandler.Models
 		public int Ni6002_IOPort { get; set; }
 		public object Ni6002_Value { get; set; }
 
+		private DeviceParameterData _valueParameter;
+		public DeviceParameterData ValueParameter 
+		{
+			get => _valueParameter;
+			set
+			{
+				_valueParameter = value;
+				GetParamValue.Parameter = value;
+			}
+		}
+
+		public ScriptStepGetParamValue GetParamValue {  get; set; }
 
 
 		private AutoResetEvent _waitGetCallback;
@@ -48,6 +58,7 @@ namespace ScriptHandler.Models
 			}
 
 			_waitGetCallback = new AutoResetEvent(false);
+			GetParamValue = new ScriptStepGetParamValue();
 
 			_isStopped = false;
 		}
@@ -87,6 +98,14 @@ namespace ScriptHandler.Models
 				ks_Param.data = "Evva_" + DateTime.Now.ToString("DD_MMM_YYY_HH_mm_ss");
 			}
 
+			if(ValueParameter != null)
+			{
+				GetValue();
+				if (IsPass == false)
+					return;
+			}
+
+
 			Communicator.SetParamValue(Parameter, Convert.ToDouble(Value), GetCallback);
 
 			int timeOut = 1000;
@@ -103,6 +122,28 @@ namespace ScriptHandler.Models
 				IsPass = false;
 			}
 
+		}
+
+		private void GetValue()
+		{
+			if(GetParamValue.Communicator == null ||
+				GetParamValue.Parameter == null)
+			{
+				IsPass = false;
+				ErrorMessage += "Problem with getting the parameter value to set";
+				return;
+			}
+
+			bool res = GetParamValue.SendAndReceive();
+            if (res == false || GetParamValue.IsPass == false)
+			{
+				IsPass = false;
+				ErrorMessage += "Failed to get the parameter value to set";
+				return;
+			}
+
+			Value = null;
+			Value = GetParamValue.Parameter.Value;
 		}
 
 		protected override void Stop()
@@ -180,6 +221,8 @@ namespace ScriptHandler.Models
 			}
 			else
 				Value = (sourceNode as ScriptNodeSetParameter).Value;
+
+			ValueParameter = (sourceNode as ScriptNodeSetParameter).ValueParameter;
 
 
 
