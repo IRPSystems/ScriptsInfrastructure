@@ -24,7 +24,7 @@ namespace ScriptHandler.Models
 	public class ScriptStepSetParameter: ScriptStepBase, IScriptStepWithCommunicator, IScriptStepWithParameter
 	{
 		public DeviceParameterData Parameter { get; set; }
-		public double Value { get; set; }
+		public object Value { get; set; }
 
 		[JsonIgnore]
 		public DeviceCommunicator Communicator { get; set; }
@@ -87,7 +87,7 @@ namespace ScriptHandler.Models
 				ks_Param.data = "Evva_" + DateTime.Now.ToString("DD_MMM_YYY_HH_mm_ss");
 			}
 
-			Communicator.SetParamValue(Parameter, Value, GetCallback);
+			Communicator.SetParamValue(Parameter, Convert.ToDouble(Value), GetCallback);
 
 			int timeOut = 1000;
 			if(Communicator is PowerSupplayEA_Communicator &&

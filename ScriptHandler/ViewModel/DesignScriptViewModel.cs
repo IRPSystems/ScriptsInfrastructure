@@ -5,7 +5,6 @@ using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using DeviceHandler.ViewModel;
 using Entities.Enums;
-using Entities.Models;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
@@ -329,70 +328,7 @@ namespace ScriptHandler.ViewModels
 				}
 				else if (e.Data.GetDataPresent(ParametersViewModel.DragDropFormat))
 				{
-					string tbName = "";
-					TextBlock textBlock = null;
-					TextBox textBox = null;
-					if (e.OriginalSource is TextBlock)
-					{
-						textBlock = e.OriginalSource as TextBlock;
-						tbName = textBlock.Name;
-						if (!tbName.StartsWith("tbParam"))
-							return;
-					}
-					else 
-					{
-						textBox =
-							FindAncestorService.FindAncestor<TextBox>((DependencyObject)e.OriginalSource);
-						if (textBox != null)
-						{
-							tbName = textBox.Name;
-							if (!tbName.StartsWith("tbParam"))
-								return;
-						}
-					}
-
-					DeviceParameterData param = e.Data.GetData(ParametersViewModel.DragDropFormat) as DeviceParameterData;
-
-					ListViewItem listViewItem =
-						FindAncestorService.FindAncestor<ListViewItem>((DependencyObject)e.OriginalSource);
-					if (listViewItem == null)
-						return;
-
-					
-					if (listViewItem.DataContext is ScriptNodeCompare compare)
-					{
-						if (tbName.EndsWith("Left"))
-							compare.ValueLeft = param;
-						else if (tbName.EndsWith("Right"))
-							compare.ValueRight = param;
-					}
-					else if (listViewItem.DataContext is ScriptNodeCompareRange compareRange)
-					{
-						if (tbName.EndsWith("Left"))
-							compareRange.ValueLeft = param;
-						else if (tbName.EndsWith("Right"))
-							compareRange.ValueRight = param;
-						else
-							compareRange.Value = param;
-					}
-					else if (listViewItem.DataContext is ScriptNodeConverge converge)
-					{
-						if (tbName.EndsWith("TargetValue"))
-							converge.TargetValue = param;
-						else
-							converge.Parameter = param;
-					}
-					else if (listViewItem.DataContext is ScriptNodeDynamicControl dynamicControl)
-					{
-						if(textBlock != null && textBlock.DataContext is DynamicControlColumnData columnData)
-						{
-							columnData.Parameter = param;
-						}
-					}
-					else if (listViewItem.DataContext is IScriptStepWithParameter withParam)
-					{
-						withParam.Parameter = param;
-					}
+					DropOfParameter(e);
 				}
 				else if (e.Data.GetDataPresent("ScriptNodeScript"))
 				{
@@ -431,6 +367,80 @@ namespace ScriptHandler.ViewModels
 				LoggerService.Error(this, "Failed to drop", "Design Error", ex);
 			}
 
+		}
+
+		private void DropOfParameter(DragEventArgs e)
+		{
+			string tbName = "";
+			TextBlock textBlock = null;
+			TextBox textBox = null;
+			if (e.OriginalSource is TextBlock)
+			{
+				textBlock = e.OriginalSource as TextBlock;
+				tbName = textBlock.Name;
+				if (!tbName.StartsWith("tbParam"))
+					return;
+			}
+			else
+			{
+				textBox =
+					FindAncestorService.FindAncestor<TextBox>((DependencyObject)e.OriginalSource);
+				if (textBox != null)
+				{
+					tbName = textBox.Name;
+					if (!tbName.StartsWith("tbParam"))
+						return;
+				}
+			}
+
+			DeviceParameterData param = e.Data.GetData(ParametersViewModel.DragDropFormat) as DeviceParameterData;
+
+			ListViewItem listViewItem =
+				FindAncestorService.FindAncestor<ListViewItem>((DependencyObject)e.OriginalSource);
+			if (listViewItem == null)
+				return;
+
+
+			if (listViewItem.DataContext is ScriptNodeCompare compare)
+			{
+				if (tbName.EndsWith("Left"))
+					compare.ValueLeft = param;
+				else if (tbName.EndsWith("Right"))
+					compare.ValueRight = param;
+			}
+			else if (listViewItem.DataContext is ScriptNodeCompareRange compareRange)
+			{
+				if (tbName.EndsWith("Left"))
+					compareRange.ValueLeft = param;
+				else if (tbName.EndsWith("Right"))
+					compareRange.ValueRight = param;
+				else
+					compareRange.Value = param;
+			}
+			else if (listViewItem.DataContext is ScriptNodeConverge converge)
+			{
+				if (tbName.EndsWith("TargetValue"))
+					converge.TargetValue = param;
+				else
+					converge.Parameter = param;
+			}
+			else if (listViewItem.DataContext is ScriptNodeDynamicControl dynamicControl)
+			{
+				if (textBlock != null && textBlock.DataContext is DynamicControlColumnData columnData)
+				{
+					columnData.Parameter = param;
+				}
+			}
+			else if (listViewItem.DataContext is IScriptStepWithParameter withParam)
+			{
+				if (listViewItem.DataContext is ScriptNodeSetParameter setParameter &&
+					tbName == "tbParamValue")
+				{
+					setParameter.ValueParameter = param;
+				}
+				else
+					withParam.Parameter = param;
+			}
 		}
 
 		private void SetStepToStop(DragEventArgs e)
