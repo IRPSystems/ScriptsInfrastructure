@@ -341,7 +341,7 @@ namespace ScriptRunner.Services
 									LoggerService.Inforamtion(this, "string empty ");
 								LoggerService.Inforamtion(this, "string: " + paramData.Value.ToString());
 
-								_csvWriter.WriteField("NaN");
+								_csvWriter.WriteField("NaN-rec");
 								continue;
 							}
 
@@ -417,7 +417,7 @@ namespace ScriptRunner.Services
 
 									if (paramData.Value == null)
 									{
-										_csvWriter.WriteField("NaN");
+										_csvWriter.WriteField("NaN-rec");
 										continue;
 									}
 
@@ -482,19 +482,25 @@ namespace ScriptRunner.Services
 				LoggerService.Inforamtion(this, "string empty ");
 				//LoggerService.Inforamtion(this, "string: " + paramData.Value.ToString());
 
-				_csvWriter.WriteField("NaN");
+				_csvWriter.WriteField("NaN-rec");
 				return;
 			}
 
 			if (paramData is IParamWithDropDown dropDown)
 			{
+				if (dropDown.DropDown == null)
+				{
+					_csvWriter.WriteField(paramData.Value);
+					return;
+				}
+
 				if (paramData.Value is string str)
 				{
 					DropDownParamData ddp =
 						dropDown.DropDown.Find((d) => d.Name == str);
 					if (ddp == null)
 					{
-						_csvWriter.WriteField("NaN");
+						_csvWriter.WriteField(paramData.Value);
 						return;
 					}
 

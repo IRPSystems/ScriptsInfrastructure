@@ -5,6 +5,7 @@ using DeviceHandler.Models;
 using Newtonsoft.Json.Linq;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
+using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
 using System.Windows;
@@ -28,7 +29,8 @@ namespace ScriptHandler.Models
 			GenerateProjectService generateService,
 			DevicesContainer devicesContainer)
 		{
-			IsStart = (sourceNode as ScriptNodeSetParameter).Value == 1;
+			double d = Convert.ToDouble((sourceNode as ScriptNodeSetParameter).Value);
+			IsStart = d == 1;
 
 			//if(IsStart)
 			//	Description = "Start Safty Officer" + " - ID:" + ID;

@@ -462,6 +462,13 @@ namespace ScriptHandler.ViewModels
 			Directory.Delete(projectDir, true);
 
 			OpenProject(projectPath);
+
+			string projectName = Path.GetFileName(projectPath);
+			projectName = projectName.Replace(".prj", string.Empty);
+			Project.Name = projectName;
+
+			Project.ProjectPath = projectPath;
+			SaveProject();
 		}
 
 		private void DeleteScript(DesignScriptViewModel script)

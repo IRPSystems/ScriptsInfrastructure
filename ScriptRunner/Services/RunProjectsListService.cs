@@ -122,6 +122,7 @@ namespace ScriptRunner.Services
 				return;
 			}
 
+			IsAbortClicked = false;
 			InitRecordingListForProject(projects);
 
 			scriptData.State = SciptStateEnum.Running;

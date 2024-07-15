@@ -1,5 +1,6 @@
 ﻿
 using DeviceCommunicators.General;
+using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
@@ -290,6 +291,16 @@ namespace ScriptRunner.Services
 					withParameter.Parameter = GetRealParam(
 						withParameter.Parameter,
 						devicesContainer);
+
+					if(withParameter is ScriptStepSetParameter setParameter)
+					{
+						if(setParameter.ValueParameter != null)
+						{
+							setParameter.ValueParameter = GetRealParam(
+								setParameter.ValueParameter,
+								devicesContainer);
+						}
+					}
 				}
 				else if (scriptItem is ISubScript subScript)
 				{
@@ -332,9 +343,20 @@ namespace ScriptRunner.Services
 			if (deviceFullData == null)
 				return null;
 
-			DeviceParameterData actualParam =
-				deviceFullData.Device.ParemetersList.ToList().Find((p) =>
-					p.Name == originalParam.Name);
+			DeviceParameterData actualParam = null;
+			if (originalParam is MCU_ParamData mcuParam)
+			{
+				actualParam =
+					deviceFullData.Device.ParemetersList.ToList().Find((p) =>
+						((MCU_ParamData)p).Cmd == mcuParam.Cmd);
+			}
+			else
+			{
+				actualParam =
+					deviceFullData.Device.ParemetersList.ToList().Find((p) =>
+						p.Name == originalParam.Name);
+			}
+
 			return actualParam;
 		}
 
@@ -565,6 +587,24 @@ namespace ScriptRunner.Services
 						DeviceFullData device =
 									devicesContainer.TypeToDevicesFullData[DeviceTypesEnum.MCU];
 						withCommunicator.Communicator = device.DeviceCommunicator;
+					}
+				}
+
+				if(scriptStep is ScriptStepSetParameter setParameter) 
+				{
+					if (setParameter.ValueParameter != null)
+					{
+						if (devicesContainer.TypeToDevicesFullData.ContainsKey(setParameter.ValueParameter.DeviceType))
+						{
+							DeviceFullData device =
+								devicesContainer.TypeToDevicesFullData[setParameter.ValueParameter.DeviceType];
+							if (device != null)
+							{
+								setParameter.ValueParameter.Device = device.Device;
+								setParameter.GetParamValue.Communicator = device.DeviceCommunicator;
+								
+							}
+						}
 					}
 				}
 			}

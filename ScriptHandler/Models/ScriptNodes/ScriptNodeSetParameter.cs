@@ -6,6 +6,8 @@ using DeviceCommunicators.SwitchRelay32;
 using DeviceHandler.Models;
 using Entities.Models;
 using ScriptHandler.Interfaces;
+using Syncfusion.Windows.Tools;
+using System;
 using System.Collections.ObjectModel;
 
 namespace ScriptHandler.Models.ScriptNodes
@@ -41,8 +43,8 @@ namespace ScriptHandler.Models.ScriptNodes
 			}
 		}
 
-		private double _value;
-		public double Value 
+		private object _value;
+		public object Value 
 		{
 			get => _value;
 			set
@@ -87,6 +89,18 @@ namespace ScriptHandler.Models.ScriptNodes
 		public int Ni6002_IOPort { get; set; }
 		public object Ni6002_Value { get; set; }
 
+		private DeviceParameterData _valueParameter;
+		public DeviceParameterData ValueParameter 
+		{
+			get => _valueParameter;
+			set
+			{
+				_valueParameter = value;
+				if (_valueParameter != null)
+					Value = _valueParameter.Name;
+			}
+		}
+
 
 		public override string Description
 		{
@@ -96,7 +110,8 @@ namespace ScriptHandler.Models.ScriptNodes
 
 				if(_parameter is Evva_ParamData)
 				{
-					if (_value == 1)
+					double d = Convert.ToDouble(_value);
+					if (d == 1)
 						stepDescription = "Start Safty Officer" + " - ID:" + ID;
 					else
 						stepDescription = "Stop Safty Officer" + " - ID:" + ID;
