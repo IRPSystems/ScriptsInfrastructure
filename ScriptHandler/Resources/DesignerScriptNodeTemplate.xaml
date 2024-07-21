@@ -9,6 +9,7 @@
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_CANMessageTemplate.xaml" />
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_SetParameterTemplate.xaml" />
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_CompareRangeTemplate.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_EOLFlashTemplate.xaml" />
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/EnumsDictionary.xaml" />
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/ParamValueWithInfoTemplate.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -683,21 +684,7 @@
 
 
 
-    <DataTemplate x:Key="Design_EOLFlashTemplate">
-
-        <Grid >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="500"/>
-            </Grid.ColumnDefinitions>
-
-            <TextBlock Text="File path" Grid.Column="0" VerticalAlignment="Center"/>
-            <TextBox Text="{Binding FilePath}" Grid.Column="2" />
-
-        </Grid>
-
-    </DataTemplate>
+    
     
     <DataTemplate x:Key="Design_EOLCalibrateTemplate">
 
