@@ -1,12 +1,16 @@
 ﻿
+using DBCFileParser.Model;
 using DeviceCommunicators.General;
 using DeviceHandler.Models;
 using FlashingToolLib.FlashingTools;
 using Newtonsoft.Json;
+using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
+using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Windows;
+using System.Windows.Input;
 
 namespace ScriptHandler.Models.ScriptSteps
 {
@@ -35,6 +39,15 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		#endregion Properties and Fields
 
+		#region Constructor
+
+		public ScriptStepEOLFlash()
+		{
+			Template = Application.Current.MainWindow.FindResource("EOLFlashTemplate") as DataTemplate;
+		}
+
+		#endregion Constructor
+
 		#region Methods
 
 		public override void Execute()
@@ -43,9 +56,25 @@ namespace ScriptHandler.Models.ScriptSteps
 			FlashingHandler.OnWriteToTerminalEvent += FlashingHandler_OnWriteToTerminalEvent;
 			FlashingHandler.UploadEndedEvent += FlashingHandler_UploadEndedEvent;
 
-			string extension = Path.GetExtension(FilePath);
+			
+			UploadStatus = "";
+			UploadPrecent = 0;
+			RemainingTime = "";
+			ProgressMessage = "";
 
-			FlashingHandler.Flash(FilePath, RXId, TXId, UdsSequence.ToString());
+			Application.Current.Dispatcher.Invoke(() =>
+			{
+				Mouse.OverrideCursor = Cursors.AppStarting;
+			});
+			
+
+			IsPass = FlashingHandler.Flash(FilePath, RXId, TXId, UdsSequence.ToString());
+			ErrorMessage = FlashingHandler.ErrorMessage;
+
+			Application.Current.Dispatcher.Invoke(() =>
+			{
+				Mouse.OverrideCursor = null;
+			});
 
 			FlashingHandler.OnUploadProccesEvent -= FlashingHandler_OnUploadProccesEvent;
 			FlashingHandler.OnWriteToTerminalEvent -= FlashingHandler_OnWriteToTerminalEvent;
@@ -59,14 +88,26 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		private void FlashingHandler_OnWriteToTerminalEvent(string message)
 		{
-			throw new System.NotImplementedException();
+			if (Application.Current == null)
+				return;
+
+			Application.Current.Dispatcher.Invoke(() =>
+			{
+				ProgressMessage = message;
+			});
 		}
 
 		private void FlashingHandler_OnUploadProccesEvent(string uploadStatus, int uploadPrecent, string remainingTime)
 		{
-			UploadStatus = uploadStatus;
-			UploadPrecent = uploadPrecent;
-			RemainingTime = remainingTime;
+			if (Application.Current == null)
+				return;
+
+			Application.Current.Dispatcher.Invoke(() =>
+			{
+				UploadStatus = uploadStatus;
+				UploadPrecent = uploadPrecent;
+				RemainingTime = remainingTime;
+			});
 		}
 
 		protected override void Stop()

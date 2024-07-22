@@ -9,15 +9,23 @@ using FlashingToolLib;
 using System.Threading;
 using Communication.Services;
 using DeviceCommunicators.General;
+using DeviceHandler.Models;
+using DeviceHandler.Models.DeviceFullDataModels;
+using Entities.Enums;
+using DeviceHandler.Enums;
 
 namespace ScriptHandler.Services
 {
     public class FlashingHandler
     {
 
-		public event Action<string, int, string> OnUploadProccesEvent;
-		public event Action<string> OnWriteToTerminalEvent;
-        public event Action UploadEndedEvent;
+		
+
+		#region Properties
+
+        public string ErrorMessage { get; set; }
+
+		#endregion Properties
 
 		#region Fields
 
@@ -30,17 +38,17 @@ namespace ScriptHandler.Services
         private bool _isWaitFor_run_btlr;
 		private bool _isStopped;
 
-        private MCU_Communicator _mcuCommunicator;
+        private DevicesContainer _devicesContainer;
 
 		#endregion Fields
 
 		#region Constructor
 
-		public FlashingHandler(DeviceCommunicator mcuCommunicator)
+		public FlashingHandler(DevicesContainer devicesContainer)
         {
             try
             {  
-                _mcuCommunicator = mcuCommunicator as MCU_Communicator;
+                _devicesContainer = devicesContainer;
 
                 _flasherService = new FlasherService();
 				_flasherService.OnUploadProccesEvent += _flasherService_OnUploadProcces;
@@ -96,13 +104,15 @@ namespace ScriptHandler.Services
                 // Check if no firmware file was selected
                 if (string.IsNullOrEmpty(filePath))
                 {
-                    LoggerService.Error(this, "Please Select FW file", "Error");
+                    ErrorMessage = "Please Select FW file";
+					LoggerService.Error(this, ErrorMessage);
                     return false;
                 }
 
                 if (_flasherService == null)
                 {
-                    LoggerService.Error(this, "The flashing service was not initialized", "Error");
+                    ErrorMessage = "The flashing service was not initialized";
+					LoggerService.Error(this, ErrorMessage);
                     return false;
                 }
 
@@ -112,14 +122,18 @@ namespace ScriptHandler.Services
                     return false;
                 }
 
+                DeviceFullData mcuDevice = _devicesContainer.TypeToDevicesFullData[DeviceTypesEnum.MCU];
+				MCU_Communicator mcuCommunicator = mcuDevice.DeviceCommunicator as MCU_Communicator;
+				
 
 				//Check if PCAN connection is required
 				if (_flasherService.flashingTool != FlasherService.eFlashingTool.PSoC)
                 {
 
-                    if (!_mcuCommunicator.IsInitialized)
+                    if (!mcuCommunicator.IsInitialized)
                     {
-                        LoggerService.Error(this, "Please connect PCAN device");
+                        ErrorMessage = "No communication";
+						LoggerService.Error(this, ErrorMessage);
                         return false;
                     }
                 }
@@ -166,8 +180,8 @@ namespace ScriptHandler.Services
                         }
 
                         //Disconnect from peak to allow cyflash to use peak port
-                        if (_mcuCommunicator.IsInitialized)
-							_mcuCommunicator.Dispose();
+                        if (mcuCommunicator.IsInitialized)
+							mcuDevice.Disconnect();
 
                         System.Threading.Thread.Sleep(100);
 
@@ -177,14 +191,14 @@ namespace ScriptHandler.Services
                             udsSequence,
                             rx,
                             tx,
-							_mcuCommunicator.CanService.GetHwId(),
-							_mcuCommunicator.CanService.Baudrate,
+							mcuCommunicator.CanService.GetHwId(),
+							mcuCommunicator.CanService.Baudrate,
 							_udsLogPath);
                         flashStatus = _flasherService.Flash(ref errorMsg);
 
                         //Reopen can port
-                        if (!_mcuCommunicator.IsInitialized)
-                            ConnectRequiredEvent?.Invoke();
+                        if (!mcuCommunicator.IsInitialized)
+							mcuDevice.Connect();
 
 
 						break;
@@ -192,7 +206,7 @@ namespace ScriptHandler.Services
                     case FlasherService.eFlashingTool.Cyflash:
 
 						//Boot Command
-						_mcuCommunicator.GetParamValue(
+						mcuCommunicator.GetParamValue(
                             new MCU_ParamData() { Cmd = "run_btlr", Name = "Run boot" },
                             Callback);
 
@@ -207,20 +221,20 @@ namespace ScriptHandler.Services
                             break;
                         }
 
-						if (_mcuCommunicator.IsInitialized)
-							_mcuCommunicator.Dispose();
+						if (mcuCommunicator.IsInitialized)
+							mcuDevice.Disconnect();
 
 						System.Threading.Thread.Sleep(500);
 
-						ushort hwId = _mcuCommunicator.CanService.GetHwId();
+						ushort hwId = mcuCommunicator.CanService.GetHwId();
 						_flasherService.SetFlashingParamsCyFlash(
 								CanPCanService.FormatPortName(hwId),
-								_mcuCommunicator.CanService.Baudrate);
+								mcuCommunicator.CanService.Baudrate);
 						flashStatus = _flasherService.Flash(ref errorMsg);
 
 						//Reopen can port
-						if (!_mcuCommunicator.IsInitialized)
-							ConnectRequiredEvent?.Invoke();
+						if (!mcuCommunicator.IsInitialized)
+							mcuDevice.Connect();
 
 
 						break;
@@ -240,18 +254,27 @@ namespace ScriptHandler.Services
 				}
 				else
 				{
-					OnWriteToTerminalEvent?.Invoke("Flashing Error: " + errorMsg);
+                    ErrorMessage = "Flashing Error: " + errorMsg;
+					OnWriteToTerminalEvent?.Invoke(ErrorMessage);
 				}
 
 				//_flashingRemainingTime.Reset();
 				UploadEndedEvent?.Invoke();
 
+				DateTime start = DateTime.Now;
+
+				while ((DateTime.Now - start).TotalMilliseconds < 10000)
+				{
+					if (mcuDevice.CheckCommunication.Status == CommunicationStateEnum.Connected)
+						break;
+				}
 
 				return flashStatus;
             }
             catch (Exception ex)
             {
-                LoggerService.Error(this, "Failed to flash", "Error", ex);
+                ErrorMessage = "Failed to flash";
+				LoggerService.Error(this, ErrorMessage, ex);
                 return false;
             }
         }
@@ -286,13 +309,13 @@ namespace ScriptHandler.Services
 		}
 
 
+		#endregion Methods
 
+		#region Events
 
-        #endregion Methods
-
-        #region Events
-
-        public event Action ConnectRequiredEvent;
+		public event Action<string, int, string> OnUploadProccesEvent;
+		public event Action<string> OnWriteToTerminalEvent;
+		public event Action UploadEndedEvent;
 
 		#endregion Events
 	}

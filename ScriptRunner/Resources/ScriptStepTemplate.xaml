@@ -421,7 +421,51 @@
         </Grid>
 
     </DataTemplate>
-    
-    
+
+    <DataTemplate x:Key="EOLFlashTemplate">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="27"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="300" />
+            </Grid.ColumnDefinitions>
+
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Progress" />
+            <Grid Grid.Row="0" Grid.Column="2">
+
+                <ProgressBar Maximum="100" Minimum="0"
+                             Value="{Binding UploadPrecent}" />
+                <TextBlock Text="{Binding UploadStatus}" 
+                           Foreground="White"
+                           FontWeight="DemiBold" 
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+            </Grid>
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Remaining time" />
+            <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding RemainingTime}" />
+
+            <!--<TextBlock Text="{Binding ProgressMessage}" Grid.Row="4" Grid.Column="2"/>
+            <ListView Grid.Row="4" Grid.Column="2" ItemsSource="{Binding ProgressMessage}" Margin="0,30,0,0">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>-->
+
+        </Grid>
+        
+    </DataTemplate>
 
 </ResourceDictionary>
