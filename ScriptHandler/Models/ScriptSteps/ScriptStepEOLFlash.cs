@@ -29,7 +29,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			GenerateProjectService generateService,
 			DevicesContainer devicesContainer)
 		{
-			FilePath = (sourceNode as ScriptNodeEOLFlash).FilePath;
+			FilePath = (sourceNode as ScriptNodeEOLFlash).FlashFilePath;
 		}
 	}
 }
