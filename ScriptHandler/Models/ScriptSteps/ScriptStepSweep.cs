@@ -394,6 +394,7 @@ namespace ScriptHandler.Models
 						null,
 						sourceItem.SubScript,
 						devicesContainer,
+						null,
 						ref usedCommunicatorsList);
 				}
 

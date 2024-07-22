@@ -109,6 +109,7 @@ namespace ScriptRunner.Services
 					scriptPath,
 					script,
 					null,
+					null,
 					ref usedCommunicatorsList);
 
 				foreach (IScriptItem item in genScript.ScriptItemsList)

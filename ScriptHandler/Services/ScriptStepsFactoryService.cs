@@ -60,6 +60,8 @@ namespace ScriptHandler.Services
 				return new ScriptStepResetParentSweep();
 			else if (node.GetType().Name == "ScriptNodeScopeSave")
 				return new ScriptStepScopeSave();
+			else if (node.GetType().Name == "ScriptNodeEOLFlash")
+				return new ScriptStepEOLFlash();
 
 			return null;
 

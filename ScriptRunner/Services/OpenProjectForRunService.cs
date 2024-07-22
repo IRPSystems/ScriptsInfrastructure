@@ -30,6 +30,7 @@ namespace ScriptRunner.Services
 		public GeneratedProjectData Open(
 			ScriptUserData scriptUserData,
 			DevicesContainer devicesContainer,
+			FlashingHandler flashingHandler,
 			RunScriptService runScript)
 		{
 			string scriptsPath = null;
@@ -53,7 +54,7 @@ namespace ScriptRunner.Services
 				scriptUserData.LastRunScriptPath =
 					Path.GetDirectoryName(scriptsPath);
 
-				GeneratedProjectData project = Open(scriptsPath, devicesContainer, runScript);
+				GeneratedProjectData project = Open(scriptsPath, devicesContainer, flashingHandler, runScript);
 				return project;
 			}
 			catch (Exception ex)
@@ -66,6 +67,7 @@ namespace ScriptRunner.Services
 		public GeneratedProjectData Open(
 			string path,
 			DevicesContainer devicesContainer,
+			FlashingHandler flashingHandler,
 			RunScriptService runScript)
 		{
 			if (string.IsNullOrEmpty(path))
@@ -91,7 +93,7 @@ namespace ScriptRunner.Services
 			}
 			else if (extension == ".scr" || extension == ".tst")
 			{
-				GeneratedScriptData script = GetSingleScript(path, devicesContainer);
+				GeneratedScriptData script = GetSingleScript(path, devicesContainer, flashingHandler);
 				currentProject = new GeneratedProjectData()
 				{
 					TestsList = new ObservableCollection<GeneratedScriptData>() { script },
@@ -137,7 +139,7 @@ namespace ScriptRunner.Services
 
 			foreach (GeneratedScriptData scriptData in currentProject.TestsList)
 			{
-				MatchPassFailNext(scriptData, devicesContainer, runScript);
+				MatchPassFailNext(scriptData, devicesContainer, flashingHandler, runScript);
 				SetScriptStop(scriptData, devicesContainer, runScript);
 
 				InvalidScriptData invalidScriptData = new InvalidScriptData() { Script = scriptData };
@@ -225,7 +227,8 @@ namespace ScriptRunner.Services
 
 		private GeneratedScriptData GetSingleScript(
 			string scriptPath,
-			DevicesContainer devicesContainer)
+			DevicesContainer devicesContainer,
+			FlashingHandler flashingHandler)
 		{
 			DesignScriptViewModel sdvm = new DesignScriptViewModel(null, devicesContainer, false);
 			sdvm.Open(path: scriptPath);
@@ -238,6 +241,7 @@ namespace ScriptRunner.Services
 				scriptPath,
 				scriptData,
 				devicesContainer,
+				flashingHandler,
 				ref usedCommunicatorsList);
 
 			return script;
@@ -481,6 +485,7 @@ namespace ScriptRunner.Services
 		private void MatchPassFailNext(
 			IScript scriptData,
 			DevicesContainer devicesContainer,
+			FlashingHandler flashingHandler,
 			RunScriptService runScript)
 		{
 			if (scriptData == null)
@@ -519,7 +524,7 @@ namespace ScriptRunner.Services
 				if (scriptStep is ScriptStepSubScript subScript)
 				{
 				//	SetStepToCanMessageUpdateStop(subScript.Script);
-					MatchPassFailNext(subScript.Script, devicesContainer, runScript);
+					MatchPassFailNext(subScript.Script, devicesContainer, flashingHandler, runScript);
 					SetScriptStop(subScript.Script, devicesContainer, runScript);
 				}
 
@@ -531,10 +536,15 @@ namespace ScriptRunner.Services
 							continue;
 
 					//	SetStepToCanMessageUpdateStop(sweepItem.SubScript);
-						MatchPassFailNext(sweepItem.SubScript, devicesContainer, runScript);
+						MatchPassFailNext(sweepItem.SubScript, devicesContainer, flashingHandler, runScript);
 						SetScriptStop(sweepItem.SubScript, devicesContainer, runScript);
 						SetConvergeTargetValueCommunicator(sweepItem.SubScript, devicesContainer);
 					}
+				}
+
+				if (scriptStep is ScriptStepEOLFlash flash)
+				{
+					flash.FlashingHandler = flashingHandler;
 				}
 
 				if (scriptStep is ScriptStepDynamicControl dynamicControl)

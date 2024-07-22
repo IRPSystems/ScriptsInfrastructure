@@ -89,6 +89,8 @@ namespace ScriptRunner.ViewModels
 
 		private GeneratedScriptData _stoppedScript;
 
+		private FlashingHandler _flashingHandler;
+
 		#endregion Fields
 
 		#region Constructor
@@ -96,6 +98,7 @@ namespace ScriptRunner.ViewModels
 		public RunViewModel(
 			ObservableCollection<DeviceParameterData> logParametersList,
 			DevicesContainer devicesContainer,
+			FlashingHandler flashingHandler,
 			ScriptUserData ScriptUserData,
 			CANMessagesService canMessagesService)
 		{
@@ -104,6 +107,8 @@ namespace ScriptRunner.ViewModels
 			
 
 			_devicesContainer = devicesContainer;
+			_flashingHandler = flashingHandler;
+
 
 			DeviceFullData deviceFullDataSource = null;
 			if (devicesContainer.TypeToDevicesFullData.ContainsKey(DeviceTypesEnum.MCU) == true)
@@ -174,7 +179,7 @@ namespace ScriptRunner.ViewModels
 				_runProjectsList = new RunProjectsListService(logParametersList, RunScript, _devicesContainer);
 				_runProjectsList.RunEndedEvent += RunProjectsListEnded;
 
-				RunExplorer = new RunExplorerViewModel(_devicesContainer, RunScript, _scriptUserData);
+				RunExplorer = new RunExplorerViewModel(_devicesContainer, _flashingHandler, RunScript, _scriptUserData);
 				RunExplorer.TestDoubleClickedEvent += TestsDoubleClickEventHandler;
 				RunExplorer.ProjectAddedEvent += ProjectAddedEventHandler;
 

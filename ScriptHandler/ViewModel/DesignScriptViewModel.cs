@@ -912,8 +912,6 @@ namespace ScriptHandler.ViewModels
 			DragEventArgs e)
 		{
 			ScriptNodeBase new_scriptNodeBase = source_scriptNodeBase.Clone() as ScriptNodeBase;
-			if (new_scriptNodeBase is ScriptNodeEOLFlash flash)
-				flash.Name1 = "NEW";
 
 			AddNode_do(
 				new_scriptNodeBase,

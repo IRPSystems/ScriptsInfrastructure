@@ -10,6 +10,8 @@ namespace ScriptHandler.Models.ScriptNodes
 {
 	public class ScriptNodeEOLFlash: ScriptNodeBase
 	{
+		#region Fields and Properties
+
 		private string _filePath;
 		public string FlashFilePath 
 		{
@@ -36,7 +38,7 @@ namespace ScriptHandler.Models.ScriptNodes
 		[JsonIgnore]
 		public string FileExtension { get; set; }
 
-		public string Name1 { get; set; }
+		
 
 		public override string Description 
 		{ 
@@ -47,10 +49,18 @@ namespace ScriptHandler.Models.ScriptNodes
 			}
 		}
 
+		#endregion Fields and Properties
+
+		#region Constructor
+
 		public ScriptNodeEOLFlash() 
 		{
 			Init();
 		}
+
+		#endregion Constructor
+
+		#region Methods
 
 		public void Init()
 		{
@@ -110,9 +120,15 @@ namespace ScriptHandler.Models.ScriptNodes
 			return flash;
 		}
 
+		#endregion Methods
+
+		#region Commeands
+
 		[JsonIgnore]
 		public RelayCommand FlashFilePathOpenCommand { get; private set; }
 		[JsonIgnore]
 		public RelayCommand UdsSequence_SelectionChangedCommand { get; private set; }
+
+		#endregion Commeands
 	}
 }
