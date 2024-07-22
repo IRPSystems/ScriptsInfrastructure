@@ -199,9 +199,9 @@ namespace ScriptRunner.Services
 
 				DeviceParameterData actualParam = null;
 				if(param is MCU_ParamData mcuParam)
-					deviceFullData.Device.ParemetersList.ToList().Find((p) => ((MCU_ParamData)p).Cmd == mcuParam.Cmd);
+					actualParam = deviceFullData.Device.ParemetersList.ToList().Find((p) => ((MCU_ParamData)p).Cmd == mcuParam.Cmd);
 				else
-					deviceFullData.Device.ParemetersList.ToList().Find((p) => p.Name == param.Name);
+					actualParam = deviceFullData.Device.ParemetersList.ToList().Find((p) => p.Name == param.Name);
 				if (actualParam == null)
 				{
 					InvalidScriptItemData_ParamDontExist error = new InvalidScriptItemData_ParamDontExist()
