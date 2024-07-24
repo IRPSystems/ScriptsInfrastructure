@@ -1,8 +1,6 @@
 ﻿
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
-using Entities.Enums;
-using LibUsbDotNet.DeviceNotify;
 using ScriptHandler.Interfaces;
 using System.Collections.ObjectModel;
 
@@ -47,20 +45,29 @@ namespace ScriptHandler.Models.ScriptNodes
 			DevicesContainer devicesContainer,
 			IScript currentScript)
 		{
-			GainParam = GetParameter(
-				GainParam.DeviceType,
-				GainParam,
-				devicesContainer);
+			if (GainParam != null)
+			{
+				GainParam = GetParameter(
+					GainParam.DeviceType,
+					GainParam,
+					devicesContainer);
+			}
 
-			CurrentParam = GetParameter(
-				CurrentParam.DeviceType,
-				CurrentParam,
-				devicesContainer);
+			if (CurrentParam != null)
+			{
+				CurrentParam = GetParameter(
+					CurrentParam.DeviceType,
+					CurrentParam,
+					devicesContainer);
+			}
 
-			SetParameter.Parameter = GetParameter(
-				SetParameter.Parameter.DeviceType,
-				SetParameter.Parameter,
-				devicesContainer);
+			if (SetParameter != null && SetParameter.Parameter != null)
+			{
+				SetParameter.Parameter = GetParameter(
+					SetParameter.Parameter.DeviceType,
+					SetParameter.Parameter,
+					devicesContainer);
+			}
 		}
 
 		public override bool IsNotSet(
