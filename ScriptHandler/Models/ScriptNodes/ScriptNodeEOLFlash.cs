@@ -1,8 +1,11 @@
 ﻿
 using CommunityToolkit.Mvvm.Input;
+using DeviceHandler.Models;
 using FlashingToolLib.FlashingTools;
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using Syncfusion.UI.Xaml.Diagram;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Controls;
 
@@ -118,6 +121,16 @@ namespace ScriptHandler.Models.ScriptNodes
 			flash.Init();
 
 			return flash;
+		}
+
+		public override bool IsNotSet(
+			DevicesContainer devicesContainer,
+			ObservableCollection<InvalidScriptItemData> errorsList)
+		{
+			if (string.IsNullOrEmpty(FlashFilePath))
+				return true;
+
+			return false;
 		}
 
 		#endregion Methods

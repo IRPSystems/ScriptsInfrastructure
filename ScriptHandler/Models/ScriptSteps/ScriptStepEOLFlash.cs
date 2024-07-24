@@ -9,6 +9,7 @@ using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 
@@ -126,6 +127,16 @@ namespace ScriptHandler.Models.ScriptSteps
 			RXId = (sourceNode as ScriptNodeEOLFlash).RXId;
 			TXId = (sourceNode as ScriptNodeEOLFlash).TXId;
 			UdsSequence = (sourceNode as ScriptNodeEOLFlash).UdsSequence;
+		}
+
+		public override bool IsNotSet(
+			DevicesContainer devicesContainer,
+			ObservableCollection<InvalidScriptItemData> errorsList)
+		{
+			if (string.IsNullOrEmpty(FilePath))
+				return true;
+
+			return false;
 		}
 
 		#endregion Methods
