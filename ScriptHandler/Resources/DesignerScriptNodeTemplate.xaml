@@ -676,19 +676,59 @@
 
     </DataTemplate>
 
-
-
-
-
-
-
-
-
     
     
     <DataTemplate x:Key="Design_EOLCalibrateTemplate">
 
-        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="500"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="27" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="27" />
+                <RowDefinition Height="0" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="15" />
+                <RowDefinition Height="27" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Gain parameter" VerticalAlignment="Center"/>
+            <Border Grid.Row="0" Grid.Column="2" 
+                    BorderBrush="{DynamicResource MahApps.Brushes.Gray6}" BorderThickness="1"
+                    AllowDrop="True">
+                        <TextBlock Text="{Binding GainParam}" 
+                           VerticalAlignment="Center"
+                           Name="tbParamGain"/>
+            </Border>
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Current parameter" VerticalAlignment="Center"/>
+            <Border Grid.Row="2" Grid.Column="2" 
+                    BorderBrush="{DynamicResource MahApps.Brushes.Gray6}" BorderThickness="1"
+                    AllowDrop="True">
+                <TextBlock Text="{Binding CurrentParam}" 
+                           VerticalAlignment="Center"
+                           Name="tbParamCurrent"/>
+            </Border>
+
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Ref. sensor channel" FontWeight="DemiBold" VerticalAlignment="Center"/>
+            <Line Grid.Row="4" Grid.Column="2" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" />
+            <ContentControl Grid.Row="6" Grid.ColumnSpan="3" 
+                            Content="{Binding SetParameter}"
+                            ContentTemplate="{StaticResource Design_SetParameterTemplate}"/>
+
+            <Line Grid.Row="7" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" />
+
+            <TextBlock Grid.Row="8" Grid.Column="0" Text="Deviation limit" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="8" Grid.Column="2" Text="{Binding DeviationLimit}" />
+
+        </Grid>
 
     </DataTemplate>
 

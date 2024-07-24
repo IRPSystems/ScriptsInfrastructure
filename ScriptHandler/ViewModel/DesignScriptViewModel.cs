@@ -117,7 +117,6 @@ namespace ScriptHandler.ViewModels
 			_isIgnoreChanges = true;
 
 			LoadedCommand = new RelayCommand(Loaded);
-			LoadedCommand = new RelayCommand(Loaded);
 
 			MoveNodeUpCommand = new RelayCommand(MoveNodeUp);
 			MoveNodeDownCommand = new RelayCommand(MoveNodeDown);
@@ -440,6 +439,21 @@ namespace ScriptHandler.ViewModels
 				}
 				else
 					withParam.Parameter = param;
+			}
+			else if (listViewItem.DataContext is ScriptNodeEOLCalibrate calibrate)
+			{
+				if (tbName == "tbParamGain")
+				{
+					calibrate.GainParam = param;
+				}
+				else if (tbName == "tbParamCurrent")
+				{
+					calibrate.CurrentParam = param;
+				}
+				else if (tbName == "tbParam")
+				{
+					calibrate.SetParameter.Parameter = param;
+				}
 			}
 		}
 
