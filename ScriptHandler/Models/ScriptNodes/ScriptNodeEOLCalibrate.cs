@@ -4,6 +4,7 @@ using DeviceHandler.Models;
 using Entities.Enums;
 using LibUsbDotNet.DeviceNotify;
 using ScriptHandler.Interfaces;
+using System.Collections.ObjectModel;
 
 namespace ScriptHandler.Models.ScriptNodes
 {
@@ -60,6 +61,24 @@ namespace ScriptHandler.Models.ScriptNodes
 				SetParameter.Parameter.DeviceType,
 				SetParameter.Parameter,
 				devicesContainer);
+		}
+
+		public override bool IsNotSet(
+			DevicesContainer devicesContainer,
+			ObservableCollection<InvalidScriptItemData> errorsList)
+		{
+			if (GainParam == null)
+				return true;
+
+			if (CurrentParam == null)
+				return true;
+
+			if (SetParameter == null)
+				return true;
+			if (SetParameter.Parameter == null)
+				return true;
+
+			return false;
 		}
 
 		#endregion Methods

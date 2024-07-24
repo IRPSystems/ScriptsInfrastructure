@@ -290,6 +290,20 @@ namespace ScriptRunner.Services
 						}
 					}
 				}
+				else if (scriptItem is ScriptStepEOLCalibrate calibrate)
+				{
+					calibrate.GainParam = GetRealParam(
+						calibrate.GainParam,
+						devicesContainer);
+
+					calibrate.CurrentParam = GetRealParam(
+						calibrate.CurrentParam,
+						devicesContainer);
+
+					calibrate.SetParameter.Parameter = GetRealParam(
+						calibrate.SetParameter.Parameter,
+						devicesContainer);
+				}
 				else if (scriptItem is IScriptStepWithParameter withParameter)
 				{
 					if (withParameter.Parameter is ICalculatedParamete)
@@ -545,6 +559,22 @@ namespace ScriptRunner.Services
 				if (scriptStep is ScriptStepEOLFlash flash)
 				{
 					flash.FlashingHandler = flashingHandler;
+				}
+				else if (scriptStep is ScriptStepEOLCalibrate calibrate)
+				{
+					if (devicesContainer.TypeToDevicesFullData.ContainsKey(DeviceTypesEnum.MCU))
+					{
+						DeviceFullData deviceFullData = devicesContainer.TypeToDevicesFullData[DeviceTypesEnum.MCU];
+						calibrate.MCU_Communicator = deviceFullData.DeviceCommunicator;
+					}
+
+					if (calibrate.SetParameter != null && calibrate.SetParameter.Parameter != null &&
+						devicesContainer.TypeToDevicesFullData.ContainsKey(calibrate.SetParameter.Parameter.DeviceType))
+					{
+						DeviceFullData deviceFullData = devicesContainer.TypeToDevicesFullData[
+							calibrate.SetParameter.Parameter.DeviceType];
+						calibrate.RefSensorCommunicator = deviceFullData.DeviceCommunicator;
+					}
 				}
 
 				if (scriptStep is ScriptStepDynamicControl dynamicControl)
