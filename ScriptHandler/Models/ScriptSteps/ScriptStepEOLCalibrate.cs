@@ -15,9 +15,12 @@ namespace ScriptHandler.Models.ScriptSteps
 		#region Properties
 
 		public DeviceParameterData GainParam { get; set; }
-		public DeviceParameterData CurrentParam { get; set; }
+		public int GainNumOfReadings { get; set; }
 
-		public ScriptStepSetParameter SetParameter { get; set; }
+		public DeviceParameterData CurrentParam { get; set; }
+		public int CurrentNumOfReadings { get; set; }
+
+		public ScriptStepSetParameter RefSensorChannel { get; set; }
 
 		public double DeviationLimit { get; set; }
 
@@ -46,12 +49,14 @@ namespace ScriptHandler.Models.ScriptSteps
 			DevicesContainer devicesContainer)
 		{
 			GainParam = (sourceNode as ScriptNodeEOLCalibrate).GainParam;
+			GainNumOfReadings = (sourceNode as ScriptNodeEOLCalibrate).GainNumOfReadings;
 			CurrentParam = (sourceNode as ScriptNodeEOLCalibrate).CurrentParam;
+			CurrentNumOfReadings = (sourceNode as ScriptNodeEOLCalibrate).CurrentNumOfReadings;
 
-			SetParameter = new ScriptStepSetParameter()
+			RefSensorChannel = new ScriptStepSetParameter()
 			{
-				Parameter = (sourceNode as ScriptNodeEOLCalibrate).SetParameter.Parameter,
-				Value = (sourceNode as ScriptNodeEOLCalibrate).SetParameter.Value,
+				Parameter = (sourceNode as ScriptNodeEOLCalibrate).RefSensorChannel.Parameter,
+				Value = (sourceNode as ScriptNodeEOLCalibrate).RefSensorChannel.Value,
 			};
 
 			DeviationLimit = (sourceNode as ScriptNodeEOLCalibrate).DeviationLimit;
@@ -67,9 +72,9 @@ namespace ScriptHandler.Models.ScriptSteps
 			if (CurrentParam == null) 
 				return true;
 
-			if(SetParameter == null)
+			if(RefSensorChannel == null)
 				return true;
-			if(SetParameter.Parameter == null)
+			if(RefSensorChannel.Parameter == null)
 				return true;
 
 			return false;

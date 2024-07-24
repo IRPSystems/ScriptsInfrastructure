@@ -452,7 +452,7 @@ namespace ScriptHandler.ViewModels
 				}
 				else if (tbName == "tbParam")
 				{
-					calibrate.SetParameter.Parameter = param;
+					calibrate.RefSensorChannel.Parameter = param;
 				}
 			}
 		}

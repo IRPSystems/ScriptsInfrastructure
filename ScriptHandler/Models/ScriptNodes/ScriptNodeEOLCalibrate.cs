@@ -11,9 +11,12 @@ namespace ScriptHandler.Models.ScriptNodes
 		#region Properties
 
 		public DeviceParameterData GainParam { get; set; }
-		public DeviceParameterData CurrentParam { get; set; }
+		public int GainNumOfReadings { get; set; }
 
-		public ScriptNodeSetParameter SetParameter { get; set; }
+		public DeviceParameterData CurrentParam { get; set; }
+		public int CurrentNumOfReadings { get; set; }
+
+		public ScriptNodeSetParameter RefSensorChannel { get; set; }
 
 		public double DeviationLimit { get; set; }
 
@@ -34,7 +37,7 @@ namespace ScriptHandler.Models.ScriptNodes
 		{
 			Name = "EOL Clibrate";
 
-			SetParameter = new ScriptNodeSetParameter();
+			RefSensorChannel = new ScriptNodeSetParameter();
 		}
 
 		#endregion Constructor
@@ -61,11 +64,11 @@ namespace ScriptHandler.Models.ScriptNodes
 					devicesContainer);
 			}
 
-			if (SetParameter != null && SetParameter.Parameter != null)
+			if (RefSensorChannel != null && RefSensorChannel.Parameter != null)
 			{
-				SetParameter.Parameter = GetParameter(
-					SetParameter.Parameter.DeviceType,
-					SetParameter.Parameter,
+				RefSensorChannel.Parameter = GetParameter(
+					RefSensorChannel.Parameter.DeviceType,
+					RefSensorChannel.Parameter,
 					devicesContainer);
 			}
 		}
@@ -80,9 +83,9 @@ namespace ScriptHandler.Models.ScriptNodes
 			if (CurrentParam == null)
 				return true;
 
-			if (SetParameter == null)
+			if (RefSensorChannel == null)
 				return true;
-			if (SetParameter.Parameter == null)
+			if (RefSensorChannel.Parameter == null)
 				return true;
 
 			return false;

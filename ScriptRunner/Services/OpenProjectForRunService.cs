@@ -300,8 +300,8 @@ namespace ScriptRunner.Services
 						calibrate.CurrentParam,
 						devicesContainer);
 
-					calibrate.SetParameter.Parameter = GetRealParam(
-						calibrate.SetParameter.Parameter,
+					calibrate.RefSensorChannel.Parameter = GetRealParam(
+						calibrate.RefSensorChannel.Parameter,
 						devicesContainer);
 				}
 				else if (scriptItem is IScriptStepWithParameter withParameter)
@@ -568,11 +568,11 @@ namespace ScriptRunner.Services
 						calibrate.MCU_Communicator = deviceFullData.DeviceCommunicator;
 					}
 
-					if (calibrate.SetParameter != null && calibrate.SetParameter.Parameter != null &&
-						devicesContainer.TypeToDevicesFullData.ContainsKey(calibrate.SetParameter.Parameter.DeviceType))
+					if (calibrate.RefSensorChannel != null && calibrate.RefSensorChannel.Parameter != null &&
+						devicesContainer.TypeToDevicesFullData.ContainsKey(calibrate.RefSensorChannel.Parameter.DeviceType))
 					{
 						DeviceFullData deviceFullData = devicesContainer.TypeToDevicesFullData[
-							calibrate.SetParameter.Parameter.DeviceType];
+							calibrate.RefSensorChannel.Parameter.DeviceType];
 						calibrate.RefSensorCommunicator = deviceFullData.DeviceCommunicator;
 					}
 				}

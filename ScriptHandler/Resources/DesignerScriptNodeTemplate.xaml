@@ -691,7 +691,11 @@
                 <RowDefinition Height="27" />
                 <RowDefinition Height="10" />
                 <RowDefinition Height="27" />
-                <RowDefinition Height="5" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="27" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="27" />
+                <RowDefinition Height="10" />
                 <RowDefinition Height="27" />
                 <RowDefinition Height="0" />
                 <RowDefinition Height="Auto" />
@@ -708,8 +712,13 @@
                            Name="tbParamGain"/>
             </Border>
 
-            <TextBlock Grid.Row="2" Grid.Column="0" Text="Current parameter" VerticalAlignment="Center"/>
-            <Border Grid.Row="2" Grid.Column="2" 
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Gain no. of reads" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding GainNumOfReadings}" />
+
+            <Line Grid.Row="3" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" />
+
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Current parameter" VerticalAlignment="Center"/>
+            <Border Grid.Row="4" Grid.Column="2" 
                     BorderBrush="{DynamicResource MahApps.Brushes.Gray6}" BorderThickness="1"
                     AllowDrop="True">
                 <TextBlock Text="{Binding CurrentParam}" 
@@ -717,16 +726,20 @@
                            Name="tbParamCurrent"/>
             </Border>
 
-            <TextBlock Grid.Row="4" Grid.Column="0" Text="Ref. sensor channel" FontWeight="DemiBold" VerticalAlignment="Center"/>
-            <Line Grid.Row="4" Grid.Column="2" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" />
-            <ContentControl Grid.Row="6" Grid.ColumnSpan="3" 
-                            Content="{Binding SetParameter}"
-                            ContentTemplate="{StaticResource Design_SetParameterTemplate}"/>
+            <TextBlock Grid.Row="6" Grid.Column="0" Text="Current no. of reads" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding CurrentNumOfReadings}" />
 
             <Line Grid.Row="7" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" />
 
-            <TextBlock Grid.Row="8" Grid.Column="0" Text="Deviation limit" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="8" Grid.Column="2" Text="{Binding DeviationLimit}" />
+            <TextBlock Grid.Row="8" Grid.Column="0" Text="Ref. sensor channel" FontWeight="DemiBold" VerticalAlignment="Center"/>
+            <ContentControl Grid.Row="10" Grid.ColumnSpan="3" 
+                            Content="{Binding RefSensorChannel}"
+                            ContentTemplate="{StaticResource Design_SetParameterTemplate}"/>
+
+            <Line Grid.Row="11" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" />
+
+            <TextBlock Grid.Row="12" Grid.Column="0" Text="Deviation limit" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="12" Grid.Column="2" Text="{Binding DeviationLimit}" />
 
         </Grid>
 
