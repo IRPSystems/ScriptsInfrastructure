@@ -1,6 +1,7 @@
 ﻿
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
+using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Entities.Models;
@@ -324,6 +325,22 @@ namespace ScriptHandler.Models.ScriptSteps
 			Comparation2 = (sourceNode as ScriptNodeCompareRange).Comparation2;
 			IsBetween2Values = (sourceNode as ScriptNodeCompareRange).IsBetween2Values;
 			IsValueWithTolerance = (sourceNode as ScriptNodeCompareRange).IsValueWithTolerance;
+		}
+
+		public override void GetRealParamAfterLoad(
+			DevicesContainer devicesContainer)
+		{
+			base.GetRealParamAfterLoad(devicesContainer);
+
+			if (Value is DeviceParameterData)
+			{
+				if (Value is ICalculatedParamete)
+					return;
+
+				Value = GetRealParam(
+					Value as DeviceParameterData,
+					devicesContainer);
+			}
 		}
 
 		#endregion Methodes

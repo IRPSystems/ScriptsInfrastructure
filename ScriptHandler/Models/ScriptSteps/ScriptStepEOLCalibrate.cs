@@ -2,6 +2,7 @@
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
+using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
 using System.Collections.Generic;
@@ -78,6 +79,22 @@ namespace ScriptHandler.Models.ScriptSteps
 				return true;
 
 			return false;
+		}
+
+		public override void GetRealParamAfterLoad(
+			DevicesContainer devicesContainer)
+		{
+			GainParam = GetRealParam(
+						GainParam,
+						devicesContainer);
+
+			CurrentParam = GetRealParam(
+				CurrentParam,
+				devicesContainer);
+
+			RefSensorChannel.Parameter = GetRealParam(
+				RefSensorChannel.Parameter,
+				devicesContainer);
 		}
 
 		#endregion Methods

@@ -1,6 +1,7 @@
 ﻿
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
+using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Entities.Models;
@@ -170,6 +171,30 @@ namespace ScriptHandler.Models
 			ValueLeft = (sourceNode as ScriptNodeCompare).ValueLeft;
 			ValueRight = (sourceNode as ScriptNodeCompare).ValueRight;
 			Comparation = (sourceNode as ScriptNodeCompare).Comparation;
+		}
+
+		public override void GetRealParamAfterLoad(
+			DevicesContainer devicesContainer)
+		{
+			if (ValueLeft is DeviceParameterData)
+			{
+				if (ValueLeft is ICalculatedParamete)
+					return;
+
+				ValueLeft = GetRealParam(
+					ValueLeft as DeviceParameterData,
+					devicesContainer);
+			}
+
+			if (ValueRight is DeviceParameterData)
+			{
+				if (ValueRight is ICalculatedParamete)
+					return;
+
+				ValueRight = GetRealParam(
+					ValueRight as DeviceParameterData,
+					devicesContainer);
+			}
 		}
 	}
 }

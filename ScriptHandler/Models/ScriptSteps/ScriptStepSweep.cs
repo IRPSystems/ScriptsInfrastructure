@@ -1,4 +1,5 @@
 ﻿
+using ControlzEx.Standard;
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
@@ -420,6 +421,31 @@ namespace ScriptHandler.Models
 				}
 
 				SweepItemsList.Add(destItem);
+			}
+		}
+
+		public override void GetRealParamAfterLoad(
+			DevicesContainer devicesContainer)
+		{
+			foreach (SweepItemData data in SweepItemsList)
+			{
+				if (data.SubScript != null)
+				{
+					GetRealParamAfterLoad_SubScript(
+						data.SubScript,
+						devicesContainer);
+				}
+			}
+		}
+
+		private void GetRealParamAfterLoad_SubScript(
+			IScript scriptData,
+			DevicesContainer devicesContainer)
+		{
+			foreach (IScriptItem scriptItem in scriptData.ScriptItemsList)
+			{
+				if(scriptItem is ScriptStepBase step)
+					step.GetRealParamAfterLoad(devicesContainer);
 			}
 		}
 

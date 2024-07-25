@@ -250,136 +250,15 @@ namespace ScriptRunner.Services
 		private void GetRealScriptParameters(
 			IScript scriptData,
 			DevicesContainer devicesContainer)
-		{
-			
+		{			
 			foreach (IScriptItem scriptItem in scriptData.ScriptItemsList)
-			{				
-
-				if (scriptItem is IScriptStepCompare compare)
-				{
-					if (compare.ValueLeft is DeviceParameterData)
-					{
-						if (compare.ValueLeft is ICalculatedParamete)
-							continue;
-
-						compare.ValueLeft = GetRealParam(
-							compare.ValueLeft as DeviceParameterData,
-							devicesContainer);
-					}
-
-					if (compare.ValueRight is DeviceParameterData)
-					{
-						if (compare.ValueRight is ICalculatedParamete)
-							continue;
-
-						compare.ValueRight = GetRealParam(
-							compare.ValueRight as DeviceParameterData,
-							devicesContainer);
-					}
-
-					if (scriptItem is ScriptStepCompareRange compareRange)
-					{
-						if (compareRange.Value is DeviceParameterData)
-						{
-							if (compareRange.Value is ICalculatedParamete)
-								continue;
-
-							compareRange.Value = GetRealParam(
-								compareRange.Value as DeviceParameterData,
-								devicesContainer);
-						}
-					}
-				}
-				else if (scriptItem is ScriptStepEOLCalibrate calibrate)
-				{
-					calibrate.GainParam = GetRealParam(
-						calibrate.GainParam,
-						devicesContainer);
-
-					calibrate.CurrentParam = GetRealParam(
-						calibrate.CurrentParam,
-						devicesContainer);
-
-					calibrate.RefSensorChannel.Parameter = GetRealParam(
-						calibrate.RefSensorChannel.Parameter,
-						devicesContainer);
-				}
-				else if (scriptItem is IScriptStepWithParameter withParameter)
-				{
-					if (withParameter.Parameter is ICalculatedParamete)
-						continue;
-
-					withParameter.Parameter = GetRealParam(
-						withParameter.Parameter,
-						devicesContainer);
-
-					if(withParameter is ScriptStepSetParameter setParameter)
-					{
-						if(setParameter.ValueParameter != null)
-						{
-							setParameter.ValueParameter = GetRealParam(
-								setParameter.ValueParameter,
-								devicesContainer);
-						}
-					}
-				}
-				else if (scriptItem is ISubScript subScript)
-				{
-					GetRealScriptParameters(
-						subScript.Script,
-						devicesContainer);
-				}
-				else if (scriptItem is ScriptStepSweep sweep)
-				{
-					foreach (SweepItemData data in sweep.SweepItemsList)
-					{
-						if (data.SubScript != null)
-						{
-							GetRealScriptParameters(
-								data.SubScript,
-								devicesContainer);
-						}
-					}
-				}
-
-
-
+			{			
+				if(scriptItem is ScriptStepBase step)
+					step.GetRealParamAfterLoad(devicesContainer);
 			}
-
-			
 		}
 
-		private DeviceParameterData GetRealParam(
-			DeviceParameterData originalParam,
-			DevicesContainer devicesContainer)
-		{
-			if (originalParam == null)
-				return null;
-
-			if (devicesContainer.TypeToDevicesFullData.ContainsKey(originalParam.DeviceType) == false)
-				return null;
-
-			DeviceFullData deviceFullData =
-				devicesContainer.TypeToDevicesFullData[originalParam.DeviceType];
-			if (deviceFullData == null)
-				return null;
-
-			DeviceParameterData actualParam = null;
-			if (originalParam is MCU_ParamData mcuParam)
-			{
-				actualParam =
-					deviceFullData.Device.ParemetersList.ToList().Find((p) =>
-						((MCU_ParamData)p).Cmd == mcuParam.Cmd);
-			}
-			else
-			{
-				actualParam =
-					deviceFullData.Device.ParemetersList.ToList().Find((p) =>
-						p.Name == originalParam.Name);
-			}
-
-			return actualParam;
-		}
+		
 
 		private void SetParentSweepToReset(IScript script)
 		{

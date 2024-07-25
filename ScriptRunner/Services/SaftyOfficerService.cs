@@ -85,7 +85,9 @@ namespace ScriptRunner.Services
 			foreach (ParameterValueData data in _selectedMotor.StatusParameterValueList)
 			{
 				DeviceParameterData param = 
-					_mcu_Device.MCU_FullList.ToList().Find((p) => ((MCU_ParamData)p).Cmd.ToLower() == data.ParameterName.ToLower());
+					_mcu_Device.MCU_FullList.ToList().Find((p) => 
+												((MCU_ParamData)p).Cmd != null && 
+												((MCU_ParamData)p).Cmd.ToLower() == data.ParameterName.ToLower());
 				if(param != null)
 					parametersRepository.Add(param, RepositoryPriorityEnum.High, GetCallback);
 			}
@@ -93,7 +95,9 @@ namespace ScriptRunner.Services
 			foreach (ParameterValueData data in _selectedController.StatusParameterValueList)
 			{
 				DeviceParameterData param =
-					_mcu_Device.MCU_FullList.ToList().Find((p) => ((MCU_ParamData)p).Cmd.ToLower() == data.ParameterName.ToLower());
+					_mcu_Device.MCU_FullList.ToList().Find((p) =>
+												((MCU_ParamData)p).Cmd != null &&
+												((MCU_ParamData)p).Cmd.ToLower() == data.ParameterName.ToLower());
 				if (param != null)
 					parametersRepository.Add(param, RepositoryPriorityEnum.High, GetCallback);
 			}
@@ -120,7 +124,9 @@ namespace ScriptRunner.Services
 				foreach (ParameterValueData data in _selectedMotor.StatusParameterValueList)
 				{
 					DeviceParameterData param =
-						_mcu_Device.MCU_FullList.ToList().Find((p) => ((MCU_ParamData)p).Cmd.ToLower() == data.ParameterName.ToLower());
+						_mcu_Device.MCU_FullList.ToList().Find((p) => 
+									((MCU_ParamData)p).Cmd != null && 
+									((MCU_ParamData)p).Cmd.ToLower() == data.ParameterName.ToLower());
 					if (param != null)
 						_parametersRepository.Remove(param, GetCallback);
 				}
@@ -131,7 +137,9 @@ namespace ScriptRunner.Services
 				foreach (ParameterValueData data in _selectedController.StatusParameterValueList)
 				{
 					DeviceParameterData param =
-						_mcu_Device.MCU_FullList.ToList().Find((p) => ((MCU_ParamData)p).Cmd.ToLower() == data.ParameterName.ToLower());
+						_mcu_Device.MCU_FullList.ToList().Find((p) =>
+									((MCU_ParamData)p).Cmd != null &&
+									((MCU_ParamData)p).Cmd.ToLower() == data.ParameterName.ToLower());
 					if (param != null)
 						_parametersRepository.Remove(param, GetCallback);
 				}

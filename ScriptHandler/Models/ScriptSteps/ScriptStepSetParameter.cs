@@ -6,6 +6,7 @@ using DeviceCommunicators.NI_6002;
 using DeviceCommunicators.PowerSupplayEA;
 using DeviceCommunicators.Scope_KeySight;
 using DeviceCommunicators.SwitchRelay32;
+using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
@@ -233,5 +234,25 @@ namespace ScriptHandler.Models
 					(sourceNode as ScriptNodeSetParameter).SwitchRelayChannel;
 			}
 		}
+
+		public override void GetRealParamAfterLoad(
+			DevicesContainer devicesContainer)
+		{
+			if (Parameter is ICalculatedParamete)
+				return;
+
+			Parameter = GetRealParam(
+				Parameter,
+				devicesContainer);
+
+			if (ValueParameter != null)
+			{
+				ValueParameter = GetRealParam(
+					ValueParameter,
+					devicesContainer);
+			}
+
+		}
+
 	}
 }
