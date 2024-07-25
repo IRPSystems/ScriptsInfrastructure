@@ -65,6 +65,9 @@ namespace ScriptHandler.Models
 
 		private SweepItemForRunData _itemForRun;
 
+		private DevicesContainer _devicesContainer;
+		private ScriptStepGetParamValue _getParameter;
+
 
 		#endregion Fields
 
@@ -104,7 +107,23 @@ namespace ScriptHandler.Models
 			double dVal = 0;
 			if (value is DeviceParameterData param)
 			{
+				if (_devicesContainer.TypeToDevicesFullData.ContainsKey(param.DeviceType))
+				{
+					DeviceFullData deviceFullData =
+						_devicesContainer.TypeToDevicesFullData[param.DeviceType];
+					_getParameter.Parameter = param;
+					_getParameter.Communicator = deviceFullData.DeviceCommunicator;
+					IsPass = _getParameter.SendAndReceive();
+					if (IsPass == false)
+						return dVal;
 
+					double.TryParse(param.Value.ToString(), out dVal);
+				}
+				else
+				{
+					IsPass = false;
+					return dVal;
+				}
 			}
 			else
 			{				
@@ -287,6 +306,7 @@ namespace ScriptHandler.Models
 					CurrentValue = 0,
 					ActualInterval = new TimeSpan(),
 					SetParameter = new ScriptStepSetParameter() { Parameter = SweepItemsList[i].Parameter, },
+					GetParameter = new ScriptStepGetParamValue(),
 					Delay = new ScriptStepDelay()
 					{
 						Interval = SweepItemsList[i].StepInterval,
@@ -427,6 +447,8 @@ namespace ScriptHandler.Models
 		public override void GetRealParamAfterLoad(
 			DevicesContainer devicesContainer)
 		{
+			_devicesContainer = devicesContainer;
+
 			foreach (SweepItemData data in SweepItemsList)
 			{
 				if (data.SubScript != null)
