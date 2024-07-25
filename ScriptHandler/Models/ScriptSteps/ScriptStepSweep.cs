@@ -76,6 +76,8 @@ namespace ScriptHandler.Models
 		public ScriptStepSweep()
 		{
 			Template = Application.Current.MainWindow.FindResource("SweepTemplate") as DataTemplate;
+
+			_getParameter = new ScriptStepGetParamValue();
 		}
 
 		#endregion Constructor
@@ -115,13 +117,18 @@ namespace ScriptHandler.Models
 					_getParameter.Communicator = deviceFullData.DeviceCommunicator;
 					IsPass = _getParameter.SendAndReceive();
 					if (IsPass == false)
+					{
+						IsPass = false;
+						ErrorMessage += _getParameter.ErrorMessage;
 						return dVal;
+					}
 
 					double.TryParse(param.Value.ToString(), out dVal);
 				}
 				else
 				{
 					IsPass = false;
+					ErrorMessage += "Counldn't find the communicator\r\n";
 					return dVal;
 				}
 			}
@@ -142,6 +149,11 @@ namespace ScriptHandler.Models
 			double endValue = GetValues(item.EndValue);
 			double stepValue = GetValues(item.StepValue);
 
+			if(IsPass == false)
+			{
+				return;
+			}
+
 			for (double i = startValue; IsContinueLoop(endValue, stepValue, i) && !_cancellationToken.IsCancellationRequested; i += stepValue)
 			{
 				if (_isStopped)
@@ -155,7 +167,7 @@ namespace ScriptHandler.Models
 				{
 					ErrorMessage = "Communicator not initiated";
 					IsPass = false;
-						return;
+					return;
 				}
 
 				_scriptEndedEventHandler = new ManualResetEvent(false);
@@ -306,7 +318,6 @@ namespace ScriptHandler.Models
 					CurrentValue = 0,
 					ActualInterval = new TimeSpan(),
 					SetParameter = new ScriptStepSetParameter() { Parameter = SweepItemsList[i].Parameter, },
-					GetParameter = new ScriptStepGetParamValue(),
 					Delay = new ScriptStepDelay()
 					{
 						Interval = SweepItemsList[i].StepInterval,
