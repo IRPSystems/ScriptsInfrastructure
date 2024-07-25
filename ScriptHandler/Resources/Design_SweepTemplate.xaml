@@ -75,7 +75,8 @@
                                 <TextBox Text="{Binding StartValue}" 
                                          AllowDrop="True"
                                          Width="114"
-                                         Name="tbParamStart">
+                                         Name="tbParamStart"
+                                         ToolTip="{Binding StartValue}">
 
                                     <i:Interaction.Triggers>
 
@@ -99,7 +100,8 @@
                                 <TextBox Text="{Binding EndValue}" 
                                          AllowDrop="True"
                                          Width="114"
-                                         Name="tbParamEnd">
+                                         Name="tbParamEnd"
+                                         ToolTip="{Binding EndValue}">
 
                                     <i:Interaction.Triggers>
 
@@ -123,7 +125,8 @@
                                 <TextBox Text="{Binding StepValue}" 
                                          AllowDrop="True"
                                          Width="114"
-                                         Name="tbParamStep">
+                                         Name="tbParamStep"
+                                         ToolTip="{Binding StepValue}">
 
                                     <i:Interaction.Triggers>
 

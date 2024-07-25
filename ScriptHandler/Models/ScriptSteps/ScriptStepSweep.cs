@@ -1,8 +1,10 @@
 ﻿
 using DeviceCommunicators.General;
+using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
@@ -96,12 +98,31 @@ namespace ScriptHandler.Models
 			LoggerService.Inforamtion(this, "End Execute");
 		}
 
+		private double GetValues(object value)
+		{
+			double dVal = 0;
+			if (value is DeviceParameterData param)
+			{
+
+			}
+			else
+			{				
+				double.TryParse(value.ToString(), out dVal);
+			}
+
+			return dVal;
+		}
+
 		
 		private void ExecuteItem(SweepItemData item)
 		{
 			LoggerService.Inforamtion(this, "Start item: " + item.Parameter.Name);
 
-			for (double i = item.StartValue; IsContinueLoop(item.EndValue, item.StepValue, i) && !_cancellationToken.IsCancellationRequested; i += item.StepValue)
+			double startValue = GetValues(item.StartValue);
+			double endValue = GetValues(item.EndValue);
+			double stepValue = GetValues(item.StepValue);
+
+			for (double i = startValue; IsContinueLoop(endValue, stepValue, i) && !_cancellationToken.IsCancellationRequested; i += stepValue)
 			{
 				if (_isStopped)
 					break;
