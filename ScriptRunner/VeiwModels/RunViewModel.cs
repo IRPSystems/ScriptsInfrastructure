@@ -100,7 +100,7 @@ namespace ScriptRunner.ViewModels
 			DevicesContainer devicesContainer,
 			FlashingHandler flashingHandler,
 			ScriptUserData ScriptUserData,
-			CANMessagesService canMessagesService)
+			CANMessageSenderViewModel canMessageSender)
 		{
 			
 			IsRecord = true;
@@ -165,7 +165,7 @@ namespace ScriptRunner.ViewModels
 					logParametersList,
 					devicesContainer,
 					stopScriptStep,
-					canMessagesService);
+					canMessageSender);
 				RunScript.ScriptEndedEvent += ScriptEndedEventHandler;
 				RunScript.ScriptStartedEvent += ScriptStartedEventHandler;
 

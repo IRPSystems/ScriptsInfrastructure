@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:script_handler_convertors="clr-namespace:ScriptHandler.Converter;assembly=ScriptHandler"
              xmlns:converters="clr-namespace:ScriptRunner.Converter"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:local="clr-namespace:ScriptRunner.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -91,37 +92,86 @@
     </UserControl.Resources>
     
     <Grid>
-        <DataGrid Grid.Row="4"
-          ItemsSource="{Binding CANMessagesList}"
-          CanUserAddRows="False"
-          CanUserDeleteRows="False"
-          AutoGenerateColumns="False">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5, 0">
+
+            <TextBlock Text="CAN Messages Script" 
+                   VerticalAlignment="Center"
+                   Margin="0,0,5,0"/>
+            <TextBox Text="{Binding CANMessagesScriptPath}" 
+                 ToolTip="{Binding CANMessagesScriptPath}"
+                 HorizontalAlignment="Stretch"
+                 VerticalContentAlignment="Center"
+                 Width="250"
+                 Margin="0,1,5,1"/>
+            <Button Content="..."
+                Command="{Binding BrowseCANMessagesScriptPathCommand}"
+                FontSize="14"
+                Margin="0,1,20,1"/>
+
+            <Button Style="{StaticResource ButtonWithIconStyle}"
+                Width="25"
+                Height="25"
+                Margin="0,0,5,0"
+                ToolTip="Start sending the script's messages"
+                Command="{Binding StartCANMessageSenderCommand}"
+                VerticalAlignment="Center">
+                <iconPacks:PackIconMaterial Kind="Play" />
+            </Button>
+
+            <Button Style="{StaticResource ButtonWithIconStyle}"
+                Width="25"
+                Height="25"
+                Margin="0,0,5,0"
+                ToolTip="Stop sending the script's messages"
+                Command="{Binding StopCANMessageSenderCommand}"
+                VerticalAlignment="Center">
+                <iconPacks:PackIconMaterial Kind="Stop" />
+            </Button>
+
+        </StackPanel>
+
+        <Line Grid.Row="1" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" />
+
+        <DataGrid Grid.Row="2"
+                  ItemsSource="{Binding CANMessagesList}"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  AutoGenerateColumns="False"
+                  Margin="5, 0">
 
             <DataGrid.Columns>
 
                 <DataGridTextColumn Header="Name" 
-                            Binding="{Binding Message.MessageName}" 
-                            Width="150" 
-                            IsReadOnly="True"/>
+                                    Binding="{Binding Message.MessageName}" 
+                                    Width="150" 
+                                    IsReadOnly="True"/>
 
                 <DataGridTextColumn Header="ID" 
-                            Binding="{Binding Message.NodeId, Converter={StaticResource HexUintConverter}, StringFormat=0x{0}}" 
-                            Width="150" 
-                            IsReadOnly="True"/>
+                                    Binding="{Binding Message.NodeId, Converter={StaticResource HexUintConverter}, StringFormat=0x{0}}" 
+                                    Width="150" 
+                                    IsReadOnly="True"/>
 
                 <DataGridTextColumn Header="Payload" 
-                            Binding="{Binding Message.Payload, Converter={StaticResource NumberToBytesConverter}}" 
-                            Width="150" 
-                            IsReadOnly="True"/>
+                                    Binding="{Binding Message.Payload, Converter={StaticResource NumberToBytesConverter}}" 
+                                    Width="150" 
+                                    IsReadOnly="True"/>
 
                 <DataGridTextColumn Header="" 
-                            Binding="{Binding Message.NumOfMessages}" 
-                            Width="150" 
-                            IsReadOnly="True"/>
+                                    Binding="{Binding Message.NumOfMessages}" 
+                                    Width="150" 
+                                    IsReadOnly="True"/>
 
                 <DataGridTemplateColumn Header="State" 
-                                CellTemplate="{StaticResource StateTemplate}"
-                                CellEditingTemplate="{StaticResource StateTemplate}"/>
+                                        CellTemplate="{StaticResource StateTemplate}"
+                                        CellEditingTemplate="{StaticResource StateTemplate}"/>
 
             </DataGrid.Columns>
 

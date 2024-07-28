@@ -10,6 +10,14 @@ using System.Windows;
 using System;
 using Newtonsoft.Json;
 using DeviceHandler.Models;
+using ScriptRunner.Services;
+using Microsoft.Win32;
+using System.IO;
+using DeviceCommunicators.General;
+using ScriptHandler.Interfaces;
+using ScriptHandler.Services;
+using Services.Services;
+using System.Collections.Generic;
 
 namespace ScriptRunner.ViewModels
 {
@@ -24,9 +32,10 @@ namespace ScriptRunner.ViewModels
 		}
 
 		#region Properties
-
 		
 		public ObservableCollection<CANMessageForSenderData> CANMessagesList { get; set; }
+
+		public string CANMessagesScriptPath { get; set; }
 
 
 		#endregion Properties
@@ -35,20 +44,26 @@ namespace ScriptRunner.ViewModels
 
 
 		private DevicesContainer _devicesContainer;
+		private ScriptUserData _scriptUserData;
 
 		#endregion Fields
 
 		#region Constructor
 
-		public CANMessageSenderViewModel(DevicesContainer devicesContainer)
+		public CANMessageSenderViewModel(
+			DevicesContainer devicesContainer,
+			ScriptUserData scriptUserData)
 		{
 			_devicesContainer = devicesContainer;
+			_scriptUserData = scriptUserData;
+
+			BrowseCANMessagesScriptPathCommand = new RelayCommand(BrowseCANMessagesScriptPath);
+			StartCANMessageSenderCommand = new RelayCommand(StartCANMessageSender);
+			StopCANMessageSenderCommand = new RelayCommand(StopCANMessageSender);
 
 			try
 			{
-				ClosingCommand = new RelayCommand<CancelEventArgs>(Closing);
-
-				
+				ClosingCommand = new RelayCommand<CancelEventArgs>(Closing);				
 
 				CANMessagesList = new ObservableCollection<CANMessageForSenderData>();
 			}
@@ -62,7 +77,72 @@ namespace ScriptRunner.ViewModels
 
 		#region Methods
 
-		
+		private void BrowseCANMessagesScriptPath()
+		{
+			string initDir = _scriptUserData.LastCANMessageScriptPath;
+			if (string.IsNullOrEmpty(initDir))
+				initDir = "";
+			if (Directory.Exists(initDir) == false)
+				initDir = "";
+
+
+			OpenFileDialog openFileDialog = new OpenFileDialog();
+			openFileDialog.Filter = "Test and Scripts Files|*.tst;*.scr";
+			openFileDialog.InitialDirectory = initDir;
+			bool? result = openFileDialog.ShowDialog();
+			if (result != true)
+				return;
+
+			_scriptUserData.LastCANMessageScriptPath =
+					Path.GetDirectoryName(openFileDialog.FileName);
+
+			CANMessagesScriptPath = openFileDialog.FileName;
+		}
+
+
+		private void StartCANMessageSender()
+		{
+			try
+			{
+
+				string jsonString = System.IO.File.ReadAllText(CANMessagesScriptPath);
+
+				JsonSerializerSettings settings = new JsonSerializerSettings();
+				settings.Formatting = Formatting.Indented;
+				settings.TypeNameHandling = TypeNameHandling.All;
+
+				ScriptData script = JsonConvert.DeserializeObject(jsonString, settings) as
+					ScriptData;
+
+				GenerateProjectService generator = new GenerateProjectService();
+				List<DeviceCommunicator> usedCommunicatorsList = new List<DeviceCommunicator>();
+				GeneratedScriptData genScript = generator.GenerateScript(
+					CANMessagesScriptPath,
+					script,
+					null,
+					null,
+					ref usedCommunicatorsList);
+
+				foreach (IScriptItem item in genScript.ScriptItemsList)
+				{
+					if (!(item is ScriptStepCANMessage canMessage))
+						continue;
+
+					string sz = JsonConvert.SerializeObject(canMessage, settings);
+
+					CANMessageRequest(sz);
+				}
+			}
+			catch (Exception ex)
+			{
+				LoggerService.Error(this, "Failed to send script", ex);
+			}
+		}
+
+		private void StopCANMessageSender()
+		{
+			StopAllCANMessages();
+		}
 
 
 		private void Closing(CancelEventArgs e)
@@ -207,12 +287,51 @@ namespace ScriptRunner.ViewModels
 			return false;
 		}
 
+		public void SendUpdateMessage(ScriptStepCANMessageUpdate updateMessage)
+		{
+			try
+			{
+				SendStep(updateMessage);
+			}
+			catch (Exception ex)
+			{
+				LoggerService.Error(this, "Failed to update message", ex);
+			}
+		}
+
+		public void SendStopMessage(ScriptStepCANMessageStop stopMessage)
+		{
+			try
+			{
+				SendStep(stopMessage);
+			}
+			catch (Exception ex)
+			{
+				LoggerService.Error(this, "Failed to stop message", ex);
+			}
+		}
+
+		private void SendStep(ScriptStepBase step)
+		{
+			JsonSerializerSettings settings = new JsonSerializerSettings();
+			settings.Formatting = Formatting.Indented;
+			settings.TypeNameHandling = TypeNameHandling.All;
+			string sz = JsonConvert.SerializeObject(step, settings);
+
+			CANMessageRequest(sz);
+		}
+
 		#endregion Methods
 
 		#region Commands
 
 		public RelayCommand<CancelEventArgs> ClosingCommand { get; private set; }
-		
+
+		public RelayCommand BrowseCANMessagesScriptPathCommand { get; private set; }
+		public RelayCommand CANMessageSenderCommand { get; private set; }
+		public RelayCommand StartCANMessageSenderCommand { get; private set; }
+		public RelayCommand StopCANMessageSenderCommand { get; private set; }
+
 		#endregion Commands
 	}
 }
