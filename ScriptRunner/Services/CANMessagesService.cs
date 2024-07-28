@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models;
 using ScriptHandler.Services;
+using ScriptRunner.ViewModels;
 using Services.Services;
 using System;
 using System.Collections.Generic;
@@ -23,15 +24,15 @@ namespace ScriptRunner.Services
 		#region Fiedls
 
 		
-		private NamedPipeSenderSevice _pipeSender;
+		private CANMessageSenderViewModel _canMessageSender;
 
 		#endregion Fiedls
 
 		#region Constructor
 
-		public CANMessagesService()
+		public CANMessagesService(CANMessageSenderViewModel canMessageSender)
 		{
-			WaitForConnection();
+			_canMessageSender = canMessageSender;
 		}
 
 		#endregion Constructor
@@ -39,57 +40,17 @@ namespace ScriptRunner.Services
 
 		#region Methods
 
-		private void WaitForConnection()
-		{
-			Task.Run(() =>
-			{
-				_pipeSender = new NamedPipeSenderSevice();
-				_pipeSender.Init("CANMessage");
-			});
-		}
 
-		public void OpenCANMessageSender()
-		{
-			Mouse.OverrideCursor = Cursors.Wait;
-
-			Process[] processList = Process.GetProcessesByName("EvvaCANMessageSender");
-			if(processList != null && processList.Length > 0) 
-			{
-				Process process = processList[0];
-
-				IntPtr s = process.MainWindowHandle;
-				SetForegroundWindow(s);
-
-				Mouse.OverrideCursor = null;
-				return;
-			}
-
-
-			ProcessStartInfo start = new ProcessStartInfo();
-			start.FileName = "EvvaCANMessageSender\\EvvaCANMessageSender.exe";
-			Process evvaCANMessageSender = Process.Start(start);
-			Mouse.OverrideCursor = null;
-
-			Task.Run(() =>
-			{
-				evvaCANMessageSender.WaitForExit();
-				WaitForConnection();
-			});
-		}
+		
 
 		public void CloseCANMessageSender()
 		{
-			if (_pipeSender == null || !_pipeSender.IsConnected)
-				return;
-
-			_pipeSender.Send("Clear");
-			_pipeSender.Dispose();
+			_canMessageSender.StopAllCANMessages();
 		}
 
 		public void SendCANMessageScript(string scriptPath)
 		{
-			if (_pipeSender == null || !_pipeSender.IsConnected)
-				return;
+			
 
 			try
 			{
@@ -119,8 +80,7 @@ namespace ScriptRunner.Services
 
 					string sz = JsonConvert.SerializeObject(canMessage, settings);
 
-					if (_pipeSender.IsConnected)
-						_pipeSender.Send(sz);
+					_canMessageSender.CANMessageRequest(sz);
 				}
 			}
 			catch (Exception ex) 
@@ -131,11 +91,7 @@ namespace ScriptRunner.Services
 
 		public void StopSendCANMessageScript()
 		{
-			if (_pipeSender == null || !_pipeSender.IsConnected)
-				return;
-
-			if (_pipeSender.IsConnected)
-				_pipeSender.Send("Clear");
+			_canMessageSender.StopAllCANMessages();
 		}
 
 
@@ -174,8 +130,7 @@ namespace ScriptRunner.Services
 			settings.TypeNameHandling = TypeNameHandling.All;
 			string sz = JsonConvert.SerializeObject(step, settings);
 
-			if (_pipeSender.IsConnected)
-				_pipeSender.Send(sz);
+			_canMessageSender.CANMessageRequest(sz);
 		}
 
 

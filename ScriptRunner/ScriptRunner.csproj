@@ -21,4 +21,10 @@
     <ProjectReference Include="..\ScriptHandler\ScriptHandler.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Views\CANMessageSenderView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
 </Project>
