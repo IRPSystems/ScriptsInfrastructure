@@ -10,6 +10,7 @@
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_SetParameterTemplate.xaml" />
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_CompareRangeTemplate.xaml" />
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_SweepTemplate.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_EOLCalibrateTemplate.xaml" />
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_EOLFlashTemplate.xaml" />
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/EnumsDictionary.xaml" />
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/ParamValueWithInfoTemplate.xaml" />
@@ -565,72 +566,7 @@
 
     
     
-    <DataTemplate x:Key="Design_EOLCalibrateTemplate">
-
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="500"/>
-            </Grid.ColumnDefinitions>
-
-            <Grid.RowDefinitions>
-                <RowDefinition Height="27" />
-                <RowDefinition Height="10" />
-                <RowDefinition Height="27" />
-                <RowDefinition Height="10" />
-                <RowDefinition Height="27" />
-                <RowDefinition Height="10" />
-                <RowDefinition Height="27" />
-                <RowDefinition Height="10" />
-                <RowDefinition Height="27" />
-                <RowDefinition Height="0" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="15" />
-                <RowDefinition Height="27" />
-            </Grid.RowDefinitions>
-
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="Gain parameter" VerticalAlignment="Center"/>
-            <Border Grid.Row="0" Grid.Column="2" 
-                    BorderBrush="{DynamicResource MahApps.Brushes.Gray6}" BorderThickness="1"
-                    AllowDrop="True">
-                        <TextBlock Text="{Binding GainParam}" 
-                           VerticalAlignment="Center"
-                           Name="tbParamGain"/>
-            </Border>
-
-            <TextBlock Grid.Row="2" Grid.Column="0" Text="Gain no. of reads" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding GainNumOfReadings}" />
-
-            <Line Grid.Row="3" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" />
-
-            <TextBlock Grid.Row="4" Grid.Column="0" Text="Current parameter" VerticalAlignment="Center"/>
-            <Border Grid.Row="4" Grid.Column="2" 
-                    BorderBrush="{DynamicResource MahApps.Brushes.Gray6}" BorderThickness="1"
-                    AllowDrop="True">
-                <TextBlock Text="{Binding CurrentParam}" 
-                           VerticalAlignment="Center"
-                           Name="tbParamCurrent"/>
-            </Border>
-
-            <TextBlock Grid.Row="6" Grid.Column="0" Text="Current no. of reads" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding CurrentNumOfReadings}" />
-
-            <Line Grid.Row="7" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" />
-
-            <TextBlock Grid.Row="8" Grid.Column="0" Text="Ref. sensor channel" FontWeight="DemiBold" VerticalAlignment="Center"/>
-            <ContentControl Grid.Row="10" Grid.ColumnSpan="3" 
-                            Content="{Binding RefSensorChannel}"
-                            ContentTemplate="{StaticResource Design_SetParameterTemplate}"/>
-
-            <Line Grid.Row="11" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" />
-
-            <TextBlock Grid.Row="12" Grid.Column="0" Text="Deviation limit" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="12" Grid.Column="2" Text="{Binding DeviationLimit}" />
-
-        </Grid>
-
-    </DataTemplate>
+    
 
     <DataTemplate x:Key="Design_EOLSendSNTemplate">
 
