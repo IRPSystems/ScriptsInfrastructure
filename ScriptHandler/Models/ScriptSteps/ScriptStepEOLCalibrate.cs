@@ -163,9 +163,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			if (McuParam == null) 
 				return true;
 
-			if(RefSensorChannel == null)
-				return true;
-			if(RefSensorChannel.Parameter == null)
+			if(RefSensorParam == null)
 				return true;
 
 			return false;
@@ -182,8 +180,8 @@ namespace ScriptHandler.Models.ScriptSteps
 				McuParam,
 				devicesContainer);
 
-			RefSensorChannel.Parameter = GetRealParam(
-				RefSensorChannel.Parameter,
+			RefSensorParam = GetRealParam(
+				RefSensorParam,
 				devicesContainer);
 		}
 

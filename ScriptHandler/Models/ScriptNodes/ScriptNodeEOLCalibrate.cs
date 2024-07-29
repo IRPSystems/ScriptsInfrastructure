@@ -11,12 +11,14 @@ namespace ScriptHandler.Models.ScriptNodes
 		#region Properties
 
 		public DeviceParameterData GainParam { get; set; }
-		public int GainNumOfReadings { get; set; }
+		public double GainMin { get; set; }
+		public double GainMax { get; set; }
 
-		public DeviceParameterData CurrentParam { get; set; }
-		public int CurrentNumOfReadings { get; set; }
+		public DeviceParameterData McuParam { get; set; }
+		public int McuNumOfReadings { get; set; }
 
-		public ScriptNodeSetParameter RefSensorChannel { get; set; }
+		public DeviceParameterData RefSensorParam { get; set; }
+		public int RefSensorNumOfReadings { get; set; }
 
 		public double DeviationLimit { get; set; }
 
@@ -24,7 +26,7 @@ namespace ScriptHandler.Models.ScriptNodes
 		{ 
 			get
 			{
-				string description = "Calibrate - " + CurrentParam;
+				string description = "Calibrate - " + McuParam;
 				return description + " - ID:" + ID;
 			}
 		}
@@ -36,8 +38,6 @@ namespace ScriptHandler.Models.ScriptNodes
 		public ScriptNodeEOLCalibrate() 
 		{
 			Name = "EOL Clibrate";
-
-			RefSensorChannel = new ScriptNodeSetParameter();
 		}
 
 		#endregion Constructor
@@ -56,21 +56,22 @@ namespace ScriptHandler.Models.ScriptNodes
 					devicesContainer);
 			}
 
-			if (CurrentParam != null)
+			if (McuParam != null)
 			{
-				CurrentParam = GetParameter(
-					CurrentParam.DeviceType,
-					CurrentParam,
+				McuParam = GetParameter(
+					McuParam.DeviceType,
+					McuParam,
 					devicesContainer);
 			}
 
-			if (RefSensorChannel != null && RefSensorChannel.Parameter != null)
+			if (RefSensorParam != null)
 			{
-				RefSensorChannel.Parameter = GetParameter(
-					RefSensorChannel.Parameter.DeviceType,
-					RefSensorChannel.Parameter,
+				RefSensorParam = GetParameter(
+					McuParam.DeviceType,
+					McuParam,
 					devicesContainer);
 			}
+
 		}
 
 		public override bool IsNotSet(
@@ -80,12 +81,10 @@ namespace ScriptHandler.Models.ScriptNodes
 			if (GainParam == null)
 				return true;
 
-			if (CurrentParam == null)
+			if (McuParam == null)
 				return true;
 
-			if (RefSensorChannel == null)
-				return true;
-			if (RefSensorChannel.Parameter == null)
+			if (RefSensorParam == null)
 				return true;
 
 			return false;

@@ -14,14 +14,14 @@
                 <RowDefinition Height="27" />
                 <RowDefinition Height="10" />
                 <RowDefinition Height="27" />
-                <RowDefinition Height="10" />
+                <RowDefinition Height="15" />
                 <RowDefinition Height="27" />
                 <RowDefinition Height="10" />
                 <RowDefinition Height="27" />
+                <RowDefinition Height="15" />
+                <RowDefinition Height="27" />
                 <RowDefinition Height="10" />
                 <RowDefinition Height="27" />
-                <RowDefinition Height="0" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="15" />
                 <RowDefinition Height="27" />
             </Grid.RowDefinitions>
@@ -44,20 +44,13 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="5" />
                     <ColumnDefinition Width="75" />
-                    <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition Width="75" />
                 </Grid.ColumnDefinitions>
                 
-                <TextBlock Grid.Column="0" Text="Min." VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="0" Text="Minimum" VerticalAlignment="Center"/>
                 <TextBox Grid.Column="2" Text="{Binding GainMin}" VerticalAlignment="Center"/>
 
-                <TextBlock Grid.Column="4" Text="Max." VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="4" Text="Maximum" VerticalAlignment="Center"/>
                 <TextBox Grid.Column="6" Text="{Binding GainMax}" VerticalAlignment="Center"/>
-
-                <TextBlock Grid.Column="8" Text="Num of readings" VerticalAlignment="Center"/>
-                <TextBox Grid.Column="10" Text="{Binding GainNumOfReadings}" VerticalAlignment="Center"/>
 
             </Grid>
 
@@ -67,12 +60,32 @@
             <Border Grid.Row="4" Grid.Column="2" 
                     BorderBrush="{DynamicResource MahApps.Brushes.Gray6}" BorderThickness="1"
                     AllowDrop="True">
-                <TextBlock Text="{Binding MCUParam}" 
+                <TextBlock Text="{Binding McuParam}" 
                            VerticalAlignment="Center"
                            Name="tbParamMCU"/>
             </Border>
 
-            <Line Grid.Row="5" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" />
+            <TextBlock Grid.Row="6" Grid.Column="0" Text="Num. of readings" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding McuNumOfReadings}" VerticalAlignment="Center"/>
+
+            <Line Grid.Row="7" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" />
+
+            <TextBlock Grid.Row="8" Grid.Column="0" Text="Ref. Sensor param." VerticalAlignment="Center"/>
+            <Border Grid.Row="8" Grid.Column="2" 
+                    BorderBrush="{DynamicResource MahApps.Brushes.Gray6}" BorderThickness="1"
+                    AllowDrop="True">
+                <TextBlock Text="{Binding RefSensorParam}" 
+                           VerticalAlignment="Center"
+                           Name="tbParamRefSensor"/>
+            </Border>
+
+            <TextBlock Grid.Row="10" Grid.Column="0" Text="Num. of readings" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="10" Grid.Column="2" Text="{Binding RefSensorNumOfReadings}" VerticalAlignment="Center"/>
+
+            <Line Grid.Row="11" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" />
+
+            <TextBlock Grid.Row="12" Grid.Column="0" Text="Deviation limit" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="12" Grid.Column="2" Text="{Binding DeviationLimit}" VerticalAlignment="Center"/>
 
         </Grid>
 

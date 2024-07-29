@@ -447,11 +447,11 @@ namespace ScriptRunner.Services
 						calibrate.MCU_Communicator = deviceFullData.DeviceCommunicator;
 					}
 
-					if (calibrate.RefSensorChannel != null && calibrate.RefSensorChannel.Parameter != null &&
-						devicesContainer.TypeToDevicesFullData.ContainsKey(calibrate.RefSensorChannel.Parameter.DeviceType))
+					if (calibrate.RefSensorParam != null &&
+						devicesContainer.TypeToDevicesFullData.ContainsKey(calibrate.RefSensorParam.DeviceType))
 					{
 						DeviceFullData deviceFullData = devicesContainer.TypeToDevicesFullData[
-							calibrate.RefSensorChannel.Parameter.DeviceType];
+							calibrate.RefSensorParam.DeviceType];
 						calibrate.RefSensorCommunicator = deviceFullData.DeviceCommunicator;
 					}
 				}

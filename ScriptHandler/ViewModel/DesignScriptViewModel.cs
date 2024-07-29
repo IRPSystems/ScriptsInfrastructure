@@ -446,13 +446,13 @@ namespace ScriptHandler.ViewModels
 				{
 					calibrate.GainParam = param;
 				}
-				else if (tbName == "tbParamCurrent")
+				else if (tbName == "tbParamMCU")
 				{
-					calibrate.CurrentParam = param;
+					calibrate.McuParam = param;
 				}
-				else if (tbName == "tbParam")
+				else if (tbName == "tbParamRefSensor")
 				{
-					calibrate.RefSensorChannel.Parameter = param;
+					calibrate.RefSensorParam = param;
 				}
 			}
 		}
