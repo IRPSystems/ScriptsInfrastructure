@@ -59,7 +59,7 @@ namespace ScriptRunner.ViewModels
 
 			BrowseCANMessagesScriptPathCommand = new RelayCommand(BrowseCANMessagesScriptPath);
 			StartCANMessageSenderCommand = new RelayCommand(StartCANMessageSender);
-			StopCANMessageSenderCommand = new RelayCommand(StopCANMessageSender);
+			StopCANMessageSenderCommand = new RelayCommand(StopAllCANMessages);
 
 			try
 			{
@@ -99,7 +99,6 @@ namespace ScriptRunner.ViewModels
 			CANMessagesScriptPath = openFileDialog.FileName;
 		}
 
-
 		private void StartCANMessageSender()
 		{
 			try
@@ -137,21 +136,14 @@ namespace ScriptRunner.ViewModels
 			{
 				LoggerService.Error(this, "Failed to send script", ex);
 			}
-		}
+		}		
 
-		private void StopCANMessageSender()
+		private void Closing(CancelEventArgs e)
 		{
 			StopAllCANMessages();
 		}
 
-
-		private void Closing(CancelEventArgs e)
-		{
-			ClearCANMessageList();
-		}
-
-
-		public void CANMessageRequest(string messageStr)
+		private void CANMessageRequest(string messageStr)
 		{
 			if (string.IsNullOrEmpty(messageStr))
 				return;
@@ -162,12 +154,7 @@ namespace ScriptRunner.ViewModels
 			Application.Current.Dispatcher.Invoke(() =>
 			{
 
-				if (messageStr == "Clear")
-				{
-					ClearCANMessageList();
-					return;
-				}
-
+				
 				try
 				{
 
@@ -264,13 +251,6 @@ namespace ScriptRunner.ViewModels
 
 				data.Message.StopContinuous();
 			}
-		}
-
-		private void ClearCANMessageList()
-		{
-			StopAllCANMessages();
-
-			CANMessagesList.Clear();
 		}
 
 		private bool IsCANMessageExist(uint id)
