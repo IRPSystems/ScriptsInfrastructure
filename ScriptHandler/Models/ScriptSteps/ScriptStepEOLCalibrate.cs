@@ -1,4 +1,5 @@
 ﻿
+using DeviceCommunicators.Enums;
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
@@ -8,6 +9,8 @@ using ScriptHandler.Services;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection.Metadata;
+using System;
+using System.Threading;
 
 namespace ScriptHandler.Models.ScriptSteps
 {
@@ -16,28 +19,120 @@ namespace ScriptHandler.Models.ScriptSteps
 		#region Properties
 
 		public DeviceParameterData GainParam { get; set; }
-		public int GainNumOfReadings { get; set; }
 
-		public DeviceParameterData CurrentParam { get; set; }
-		public int CurrentNumOfReadings { get; set; }
+		public DeviceParameterData McuParam { get; set; }
+		public int McuNumOfReadings { get; set; }
 
-		public ScriptStepSetParameter RefSensorChannel { get; set; }
+		public DeviceParameterData RefSensorParam { get; set; }
+        public int RefSensorNumOfReadings { get; set; }
 
-		public double DeviationLimit { get; set; }
+        public double DeviationLimit { get; set; }
 
 		public DeviceCommunicator MCU_Communicator { get; set; }
 		public DeviceCommunicator RefSensorCommunicator { get; set; }
 
 		#endregion Properties
 
-		#region Methods
+		private ScriptStepGetParamValue _getValue;
+        private ScriptStepSetParameter _setValue;
+		private ScriptStepSetSaveParameter _saveValue;
 
-		public override void Execute()
+        private double avgMcuRead;
+		private double avgRefSensorRead;
+        private double prevGain;
+        private double newGain;
+		private double deviation;
+
+        #region Methods
+
+        public override void Execute()
 		{
+			//Calibrate
+			//Get reads
 
-		}
+            _getValue = new ScriptStepGetParamValue();
+            _getValue.Parameter = GainParam;
+			_getValue.Communicator = MCU_Communicator;
+			_getValue.SendAndReceive();
 
-		protected override void Stop()
+			if(GainParam.Value != null)
+			{
+                prevGain = Convert.ToDouble(GainParam.Value);
+            }
+
+			GetReadsMcuAndRefSensor();
+
+            newGain = (prevGain * avgRefSensorRead) / avgMcuRead;
+
+			//Set new gain
+            _setValue = new ScriptStepSetParameter();
+			_setValue.Parameter = GainParam;
+			_setValue.Communicator = MCU_Communicator;
+			_setValue.Value = newGain;
+			_setValue.Execute();
+
+			//Validate Calibration
+
+			Thread.Sleep(100);
+
+            GetReadsMcuAndRefSensor();
+
+            deviation = Math.Abs(((float)avgRefSensorRead - (float)avgMcuRead) * 100 * 2) /
+                         (((float)avgRefSensorRead + (float)avgMcuRead));
+
+			if(deviation > DeviationLimit)
+			{
+				IsPass = false;
+				ErrorMessage = "lo tov";
+				return;
+			}
+
+			//If succeed save param
+
+			_saveValue = new ScriptStepSetSaveParameter();
+			_saveValue.Parameter = GainParam;
+			_saveValue.Communicator = MCU_Communicator;
+			_saveValue.Value = newGain;
+			_saveValue.Execute();
+        }
+
+		/// <summary>
+		/// Reads and assign params from Mcu & RefSensor
+		/// </summary>
+		private void GetReadsMcuAndRefSensor()
+		{
+            _getValue.Parameter = McuParam;
+            _getValue.Communicator = MCU_Communicator;
+
+            avgMcuRead = GetAvgRead(_getValue, McuNumOfReadings, McuParam);
+
+            _getValue.Parameter = RefSensorParam;
+            _getValue.Communicator = MCU_Communicator;
+
+            avgRefSensorRead = GetAvgRead(_getValue, RefSensorNumOfReadings, RefSensorParam);
+        }
+
+
+        /// <summary>
+        /// Reads a given params the amount of times that is required and calculates the average
+        /// </summary>
+        private double GetAvgRead(ScriptStepGetParamValue scriptStepGetParamValue, int numOfReads, DeviceParameterData deviceParameterData)
+		{
+			double avgRead = 0;
+            for (int i = 0; i < numOfReads; i++)
+            {
+                scriptStepGetParamValue.SendAndReceive();
+                if (deviceParameterData.Value != null)
+                {
+                    avgRead += Convert.ToDouble(deviceParameterData.Value);
+                }
+            }
+            avgRead = avgRead / numOfReads;
+            return avgRead;
+        }
+
+
+        protected override void Stop()
 		{
 
 		}
@@ -50,15 +145,10 @@ namespace ScriptHandler.Models.ScriptSteps
 			DevicesContainer devicesContainer)
 		{
 			GainParam = (sourceNode as ScriptNodeEOLCalibrate).GainParam;
-			GainNumOfReadings = (sourceNode as ScriptNodeEOLCalibrate).GainNumOfReadings;
-			CurrentParam = (sourceNode as ScriptNodeEOLCalibrate).CurrentParam;
-			CurrentNumOfReadings = (sourceNode as ScriptNodeEOLCalibrate).CurrentNumOfReadings;
-
-			RefSensorChannel = new ScriptStepSetParameter()
-			{
-				Parameter = (sourceNode as ScriptNodeEOLCalibrate).RefSensorChannel.Parameter,
-				Value = (sourceNode as ScriptNodeEOLCalibrate).RefSensorChannel.Value,
-			};
+			McuParam = (sourceNode as ScriptNodeEOLCalibrate).McuParam;
+			McuNumOfReadings = (sourceNode as ScriptNodeEOLCalibrate).McuNumOfReadings;
+            RefSensorParam = (sourceNode as ScriptNodeEOLCalibrate).RefSensorParam;
+            RefSensorNumOfReadings = (sourceNode as ScriptNodeEOLCalibrate).RefSensorNumOfReadings;
 
 			DeviationLimit = (sourceNode as ScriptNodeEOLCalibrate).DeviationLimit;
 		}
@@ -70,7 +160,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			if (GainParam == null)
 				return true;
 
-			if (CurrentParam == null) 
+			if (McuParam == null) 
 				return true;
 
 			if(RefSensorChannel == null)
@@ -88,8 +178,8 @@ namespace ScriptHandler.Models.ScriptSteps
 						GainParam,
 						devicesContainer);
 
-			CurrentParam = GetRealParam(
-				CurrentParam,
+			McuParam = GetRealParam(
+				McuParam,
 				devicesContainer);
 
 			RefSensorChannel.Parameter = GetRealParam(
