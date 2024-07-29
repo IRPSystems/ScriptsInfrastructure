@@ -17,6 +17,7 @@ using DeviceHandler.Models;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using System.Windows.Input;
+using ScriptRunner.ViewModels;
 
 namespace ScriptRunner.Services
 {
@@ -46,7 +47,7 @@ namespace ScriptRunner.Services
 					SelectMotor,
 					SaftyOfficer,
 					_devicesContainer,
-					_canMessagesService);
+					_canMessageSender);
 					_abortScript.ScriptEndedEvent += AbortScriptEndedEventHandler;
 			}
 		}
@@ -102,7 +103,7 @@ namespace ScriptRunner.Services
 
 		private HandleContinuousStepsService _handleContinuousSteps;
 
-		private CANMessagesService _canMessagesService;
+		private CANMessageSenderViewModel _canMessageSender;
 
 		private string _testName;
 
@@ -117,11 +118,11 @@ namespace ScriptRunner.Services
 			ObservableCollection<DeviceParameterData> logParametersList,
 			DevicesContainer devicesContainer,
 			StopScriptStepService stopScriptStep,
-			CANMessagesService canMessagesService)
+			CANMessageSenderViewModel canMessageSender)
 		{
 			_devicesContainer = devicesContainer;
 			StopScriptStep = stopScriptStep;
-			_canMessagesService = canMessagesService;
+			_canMessageSender = canMessageSender;
 
 
 
@@ -192,7 +193,7 @@ namespace ScriptRunner.Services
 				SelectMotor,
 				SaftyOfficer,
 				_devicesContainer,
-				_canMessagesService);
+				_canMessageSender);
 			_stepFailedScript.ScriptEndedEvent += ErrorNotificationScriptEndedEventHandler;
 		}
 
@@ -262,7 +263,7 @@ namespace ScriptRunner.Services
 				SelectMotor,
 				SaftyOfficer,
 				_devicesContainer,
-				_canMessagesService);
+				_canMessageSender);
 			CurrentScript.ScriptEndedEvent += ScriptEndedEventHandler;
 			CurrentScript.CurrentStepChangedEvent += CurrentStepChangedEventHandler;
 			CurrentScript.ContinuousStepEvent += Script_ContinuousStepEvent;
@@ -534,7 +535,7 @@ namespace ScriptRunner.Services
 					SelectMotor,
 					SaftyOfficer,
 					_devicesContainer,
-					_canMessagesService);
+					_canMessageSender);
 
 				Application.Current.Dispatcher.Invoke(() =>
 				{

@@ -1,9 +1,11 @@
 ﻿
+using DBCFileParser.Model;
 using DeviceCommunicators.Enums;
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Entities.Models;
+using Newtonsoft.Json;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
@@ -66,6 +68,11 @@ namespace ScriptHandler.Models
 
 		public int IDInProject { get; set; }
 
+		[JsonIgnore]
+		public bool IsAddCRCCounter { get; set; }
+
+		public Message Message { get; set; }
+
 		#endregion Properties
 
 		#region Fields
@@ -87,6 +94,8 @@ namespace ScriptHandler.Models
 
 		private object _lockPayloadObj;
 		private int _counter;
+
+		private bool _isCrcCounterAvailable;
 
 		#endregion Fields
 
@@ -128,8 +137,9 @@ namespace ScriptHandler.Models
 			
 			try
 			{
+				GetIsCrcCounterAvailable();
 
-			
+
 				_cancellationTokenSource = new CancellationTokenSource();
 				_cancellationToken = _cancellationTokenSource.Token;
 
@@ -220,7 +230,13 @@ namespace ScriptHandler.Models
 			}
 		}
 
-		
+		private void GetIsCrcCounterAvailable()
+		{
+			
+		}
+
+
+
 		private void End(bool isPassed)
 		{
 			_sendIntervalTimer.Stop();
@@ -317,6 +333,7 @@ namespace ScriptHandler.Models
 			DBCFilePath = (sourceNode as ScriptNodeCANMessage).DBCFilePath;
 			Payload = (sourceNode as ScriptNodeCANMessage).Payload.NumericValue;
 			IDInProject = (sourceNode as ScriptNodeCANMessage).IDInProject;
+			Message = (sourceNode as ScriptNodeCANMessage).Message;
 		}
 
 		#endregion Methods
