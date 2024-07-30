@@ -60,8 +60,14 @@ namespace ScriptHandler.Models.ScriptSteps
             _getValue.Parameter = GainParam;
 			_getValue.Communicator = MCU_Communicator;
 			_getValue.SendAndReceive();
+            if (!_getValue.IsPass)
+            {
+                ErrorMessage = "Calibration Error \r\n"
+					           + _getValue.ErrorMessage;
+                return;
+            }
 
-			if(GainParam.Value != null)
+            if (GainParam.Value != null)
 			{
                 prevGain = Convert.ToDouble(GainParam.Value);
             }
@@ -77,9 +83,15 @@ namespace ScriptHandler.Models.ScriptSteps
 			_setValue.Value = newGain;
 			_setValue.Execute();
 
-			//Validate Calibration
+            if(!_setValue.IsPass)
+			{
+                ErrorMessage = "Unable to set: " + GainParam.Name;
+                return;
+            }
 
-			Thread.Sleep(100);
+            //Validate Calibration
+
+            Thread.Sleep(100);
 
             GetReadsMcuAndRefSensor();
 
@@ -89,8 +101,10 @@ namespace ScriptHandler.Models.ScriptSteps
 			if(deviation > DeviationLimit)
 			{
 				IsPass = false;
-				ErrorMessage = "lo tov";
-				return;
+				ErrorMessage = "Calibration deviation has exceeded maximum limit\r\n" +
+                                        "Deviation Result = " + deviation + "%" + "\r\n" +
+                                        "Deviation Max Limit" + DeviationLimit + "%";
+                return;
 			}
 
 			//If succeed save param
@@ -100,6 +114,15 @@ namespace ScriptHandler.Models.ScriptSteps
 			_saveValue.Communicator = MCU_Communicator;
 			_saveValue.Value = newGain;
 			_saveValue.Execute();
+
+			if(!_saveValue.IsPass)
+			{
+                IsPass = false;
+                ErrorMessage = "Calibration - unable to save: " + _saveValue.ErrorMessage;
+				return;
+            }
+			IsPass = true;
+            return;
         }
 
 		/// <summary>
@@ -128,6 +151,12 @@ namespace ScriptHandler.Models.ScriptSteps
             for (int i = 0; i < numOfReads; i++)
             {
                 scriptStepGetParamValue.SendAndReceive();
+                if (!scriptStepGetParamValue.IsPass)
+                {
+                    ErrorMessage = "Calibration Error \r\n"
+					 + _getValue.ErrorMessage;
+					break;
+                }
                 if (deviceParameterData.Value != null)
                 {
                     avgRead += Convert.ToDouble(deviceParameterData.Value);
