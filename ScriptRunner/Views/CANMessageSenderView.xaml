@@ -177,7 +177,7 @@
                 <DataGridTemplateColumn Header="Add CRC/Counter">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <CheckBox IsChecked="{Binding IsUseCRS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="True" />
+                            <CheckBox IsChecked="{Binding IsUseCRCCounter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="True" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

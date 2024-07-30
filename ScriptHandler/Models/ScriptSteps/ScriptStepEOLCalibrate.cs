@@ -11,10 +11,12 @@ using System.Collections.ObjectModel;
 using System.Reflection.Metadata;
 using System;
 using System.Threading;
+using ScriptHandler.Enums;
+using DeviceCommunicators.ZimmerPowerMeter;
 
 namespace ScriptHandler.Models.ScriptSteps
 {
-	public class ScriptStepEOLCalibrate : ScriptStepBase
+    public class ScriptStepEOLCalibrate : ScriptStepBase
 	{
 		#region Properties
 
@@ -25,8 +27,9 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		public DeviceParameterData RefSensorParam { get; set; }
         public int RefSensorNumOfReadings { get; set; }
+		public int RefSensorChannel { get; set; }
 
-        public double DeviationLimit { get; set; }
+		public double DeviationLimit { get; set; }
 
 		public DeviceCommunicator MCU_Communicator { get; set; }
 		public DeviceCommunicator RefSensorCommunicator { get; set; }
@@ -47,10 +50,13 @@ namespace ScriptHandler.Models.ScriptSteps
 
         public override void Execute()
 		{
+			if (RefSensorParam is ZimmerPowerMeter_ParamData powerMeter)
+				powerMeter.Channel = RefSensorChannel;
+
 			//Calibrate
 			//Get reads
 
-            _getValue = new ScriptStepGetParamValue();
+			_getValue = new ScriptStepGetParamValue();
             _getValue.Parameter = GainParam;
 			_getValue.Communicator = MCU_Communicator;
 			_getValue.SendAndReceive();
@@ -178,6 +184,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			McuNumOfReadings = (sourceNode as ScriptNodeEOLCalibrate).McuNumOfReadings;
             RefSensorParam = (sourceNode as ScriptNodeEOLCalibrate).RefSensorParam;
             RefSensorNumOfReadings = (sourceNode as ScriptNodeEOLCalibrate).RefSensorNumOfReadings;
+			RefSensorChannel = (int)(sourceNode as ScriptNodeEOLCalibrate).RefSensorChannel;
 
 			DeviationLimit = (sourceNode as ScriptNodeEOLCalibrate).DeviationLimit;
 		}

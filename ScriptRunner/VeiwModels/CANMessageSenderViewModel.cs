@@ -10,7 +10,6 @@ using System.Windows;
 using System;
 using Newtonsoft.Json;
 using DeviceHandler.Models;
-using ScriptRunner.Services;
 using Microsoft.Win32;
 using System.IO;
 using DeviceCommunicators.General;
