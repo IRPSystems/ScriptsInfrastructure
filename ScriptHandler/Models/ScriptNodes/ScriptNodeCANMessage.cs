@@ -100,7 +100,13 @@ namespace ScriptHandler.Models.ScriptNodes
 			get => "RepeatLengthType " + Description;
 		}
 
+		public bool IsUseCRCandCounter { get; set; }
 
+		public bool IsCRCAvailable { get; set; }
+		public string CRCFieldName { get; set; }
+
+		public bool IsCounterAvailable { get; set; }
+		public string CounterFieldName { get; set; }
 
 		public int IDInProject { get; set; }
 
