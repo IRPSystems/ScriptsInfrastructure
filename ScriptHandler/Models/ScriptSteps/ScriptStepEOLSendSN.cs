@@ -13,7 +13,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		public override void Execute()
 		{
-
+			//Get SN from UI - Temp 
 		}
 
 		protected override void Stop()
