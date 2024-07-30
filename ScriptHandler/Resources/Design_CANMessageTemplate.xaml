@@ -494,7 +494,7 @@
                               IsChecked="{Binding IsCounterAvailable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <TextBlock Grid.Column="2" Text="Field name" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="4" Text="{Binding CounterCFieldName, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Grid.Column="4" Text="{Binding CounterFieldName, UpdateSourceTrigger=PropertyChanged}"/>
 
                 </Grid>
             </Grid>
