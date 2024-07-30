@@ -1,12 +1,13 @@
 ﻿
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
+using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using System.Collections.ObjectModel;
 
 namespace ScriptHandler.Models.ScriptNodes
 {
-	public class ScriptNodeEOLCalibrate : ScriptNodeBase
+    public class ScriptNodeEOLCalibrate : ScriptNodeBase
 	{
 		#region Properties
 
@@ -19,6 +20,7 @@ namespace ScriptHandler.Models.ScriptNodes
 
 		public DeviceParameterData RefSensorParam { get; set; }
 		public int RefSensorNumOfReadings { get; set; }
+		public EolRefSensorChannelsEnum RefSensorChannel { get; set; }
 
 		public double DeviationLimit { get; set; }
 
@@ -67,8 +69,8 @@ namespace ScriptHandler.Models.ScriptNodes
 			if (RefSensorParam != null)
 			{
 				RefSensorParam = GetParameter(
-					McuParam.DeviceType,
-					McuParam,
+					RefSensorParam.DeviceType,
+					RefSensorParam,
 					devicesContainer);
 			}
 
