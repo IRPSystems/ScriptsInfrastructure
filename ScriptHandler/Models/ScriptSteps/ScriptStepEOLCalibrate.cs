@@ -36,6 +36,8 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		#endregion Properties
 
+		#region Fields
+
 		private ScriptStepGetParamValue _getValue;
         private ScriptStepSetParameter _setValue;
 		private ScriptStepSetSaveParameter _saveValue;
@@ -48,16 +50,24 @@ namespace ScriptHandler.Models.ScriptSteps
         private double gainMaxLimit;
         private double gainMinLimit;
 
-        #region Methods
+		#endregion Fields
 
-        public ScriptStepEOLCalibrate()
+		#region Constructor
+
+		public ScriptStepEOLCalibrate()
 		{
-            _getValue = new ScriptStepGetParamValue();
-            _setValue = new ScriptStepSetParameter();
-            _saveValue = new ScriptStepSetSaveParameter();
-        }
+			_getValue = new ScriptStepGetParamValue();
+			_setValue = new ScriptStepSetParameter();
+			_saveValue = new ScriptStepSetSaveParameter();
+		}
 
-        public override void Execute()
+		#endregion Constructor
+
+		#region Methods
+
+
+
+		public override void Execute()
 		{
 			if (RefSensorParam is ZimmerPowerMeter_ParamData powerMeter)
 				powerMeter.Channel = RefSensorChannel;

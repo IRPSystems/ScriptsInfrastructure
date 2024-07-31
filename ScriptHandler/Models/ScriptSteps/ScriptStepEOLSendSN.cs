@@ -1,7 +1,9 @@
 ﻿
 using DeviceCommunicators.General;
+using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
+using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
 using System;
@@ -11,23 +13,34 @@ using System.Threading;
 
 namespace ScriptHandler.Models.ScriptSteps
 {
-	public class ScriptStepEOLSendSN : ScriptStepBase
+	public class ScriptStepEOLSendSN : ScriptStepBase, IScriptStepWithCommunicator
 	{
-        #region Properties
+        #region Properties and Fields
 
         public DeviceParameterData SN_Param { get; set; }
-        public DeviceCommunicator MCU_Communicator { get; set; }
+        public DeviceCommunicator Communicator { get; set; }
 
         private ScriptStepSetParameter _setValue;
         private ScriptStepGetParamValue _getValue;
         private ScriptStepSetSaveParameter _saveValue;
 
-        string userSN = "E7P-22-00-00032";
-        string serialNumber;
+		private string userSN = "E7P-22-00-00032";
+		private string serialNumber;
 
-        #endregion Properties
+		#endregion Properties and Fields
 
-        public override void Execute()
+		#region Constructor
+
+        public ScriptStepEOLSendSN()
+        {
+			
+		}
+
+		#endregion Constructor
+
+		#region Methods
+
+		public override void Execute()
 		{
             //Get SN from UI - Temp userSN
 
@@ -40,7 +53,7 @@ namespace ScriptHandler.Models.ScriptSteps
             //Set SN
             _setValue = new ScriptStepSetParameter();
             _setValue.Parameter = SN_Param;
-            _setValue.Communicator = MCU_Communicator;
+            _setValue.Communicator = Communicator;
             _setValue.Value = serialNumber;
             _setValue.Execute();
 
@@ -54,7 +67,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
             _getValue = new ScriptStepGetParamValue();
             _getValue.Parameter = SN_Param;
-            _getValue.Communicator = MCU_Communicator;
+            _getValue.Communicator = Communicator;
             _getValue.SendAndReceive();
             if (!_getValue.IsPass)
             {
@@ -72,7 +85,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
             _saveValue = new ScriptStepSetSaveParameter();
             _saveValue.Parameter = SN_Param;
-            _saveValue.Communicator = MCU_Communicator;
+            _saveValue.Communicator = Communicator;
             _saveValue.Value = Convert.ToDouble(serialNumber);
             _saveValue.Execute();
 
@@ -98,6 +111,24 @@ namespace ScriptHandler.Models.ScriptSteps
 			GenerateProjectService generateService,
 			DevicesContainer devicesContainer)
 		{
+			
 		}
+
+		public override void GetRealParamAfterLoad(
+			DevicesContainer devicesContainer)
+		{
+			SN_Param = new MCU_ParamData()
+			{
+				Name = "Serial Number",
+				Cmd = "serialnumber",
+				DeviceType = Entities.Enums.DeviceTypesEnum.MCU
+			};
+
+			SN_Param = GetRealParam(
+				SN_Param,
+				devicesContainer);
+		}
+
+		#endregion Methods
 	}
 }
