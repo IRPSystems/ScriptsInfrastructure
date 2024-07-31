@@ -45,8 +45,17 @@ namespace ScriptHandler.Models.ScriptSteps
         private double prevGain;
         private double newGain;
 		private double deviation;
+        private double gainMaxLimit;
+        private double gainMinLimit;
 
         #region Methods
+
+        public ScriptStepEOLCalibrate()
+		{
+            _getValue = new ScriptStepGetParamValue();
+            _setValue = new ScriptStepSetParameter();
+            _saveValue = new ScriptStepSetSaveParameter();
+        }
 
         public override void Execute()
 		{
@@ -56,7 +65,6 @@ namespace ScriptHandler.Models.ScriptSteps
 			//Calibrate
 			//Get reads
 
-			_getValue = new ScriptStepGetParamValue();
             _getValue.Parameter = GainParam;
 			_getValue.Communicator = MCU_Communicator;
 			_getValue.SendAndReceive();
@@ -72,12 +80,26 @@ namespace ScriptHandler.Models.ScriptSteps
                 prevGain = Convert.ToDouble(GainParam.Value);
             }
 
-			GetReadsMcuAndRefSensor();
+			if(!GetReadsMcuAndRefSensor())
+			{
+				IsPass = false;
+				return;
+			}
 
             newGain = (prevGain * avgRefSensorRead) / avgMcuRead;
 
+			if (newGain > gainMaxLimit || newGain < gainMinLimit)
+			{
+                IsPass = false;
+                ErrorMessage = "Calculated gain has exceeded maximum limit\r\n" +
+                                "Max gain limit: " + gainMaxLimit + "\r\n" +
+                                "Min gain limit: " + gainMinLimit + "\r\n" +
+                                "Calculated gain: " + newGain + "\r\n";
+                return;
+            }
+
 			//Set new gain
-            _setValue = new ScriptStepSetParameter();
+            
 			_setValue.Parameter = GainParam;
 			_setValue.Communicator = MCU_Communicator;
 			_setValue.Value = newGain;
@@ -93,10 +115,17 @@ namespace ScriptHandler.Models.ScriptSteps
 
             Thread.Sleep(100);
 
-            GetReadsMcuAndRefSensor();
+            if (!GetReadsMcuAndRefSensor())
+            {
+                IsPass = false;
+                return;
+            }
 
             deviation = Math.Abs(((float)avgRefSensorRead - (float)avgMcuRead) * 100 * 2) /
                          (((float)avgRefSensorRead + (float)avgMcuRead));
+
+			//deviation limit temp
+			DeviationLimit = 10;
 
 			if(deviation > DeviationLimit)
 			{
@@ -109,7 +138,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			//If succeed save param
 
-			_saveValue = new ScriptStepSetSaveParameter();
+			
 			_saveValue.Parameter = GainParam;
 			_saveValue.Communicator = MCU_Communicator;
 			_saveValue.Value = newGain;
@@ -128,17 +157,31 @@ namespace ScriptHandler.Models.ScriptSteps
 		/// <summary>
 		/// Reads and assign params from Mcu & RefSensor
 		/// </summary>
-		private void GetReadsMcuAndRefSensor()
+		private bool GetReadsMcuAndRefSensor()
 		{
             _getValue.Parameter = McuParam;
             _getValue.Communicator = MCU_Communicator;
 
             avgMcuRead = GetAvgRead(_getValue, McuNumOfReadings, McuParam);
 
+			if(McuParam.Value == null)
+			{
+                ErrorMessage = "Unable to get param: " + _getValue.ErrorMessage;
+                return false;
+			}
+
             _getValue.Parameter = RefSensorParam;
-            _getValue.Communicator = MCU_Communicator;
+            _getValue.Communicator = RefSensorCommunicator;
 
             avgRefSensorRead = GetAvgRead(_getValue, RefSensorNumOfReadings, RefSensorParam);
+
+            if (RefSensorParam.Value == null)
+            {
+                ErrorMessage = "Unable to get param: " + _getValue.ErrorMessage;
+                return false;
+            }
+
+			return true;
         }
 
 
@@ -148,20 +191,20 @@ namespace ScriptHandler.Models.ScriptSteps
         private double GetAvgRead(ScriptStepGetParamValue scriptStepGetParamValue, int numOfReads, DeviceParameterData deviceParameterData)
 		{
 			double avgRead = 0;
-            for (int i = 0; i < numOfReads; i++)
-            {
-                scriptStepGetParamValue.SendAndReceive();
-                if (!scriptStepGetParamValue.IsPass)
-                {
-                    ErrorMessage = "Calibration Error \r\n"
+			for (int i = 0; i < numOfReads; i++)
+			{
+				scriptStepGetParamValue.SendAndReceive();
+				if (!scriptStepGetParamValue.IsPass)
+				{
+					ErrorMessage = "Calibration Error \r\n"
 					 + _getValue.ErrorMessage;
 					break;
-                }
-                if (deviceParameterData.Value != null)
-                {
-                    avgRead += Convert.ToDouble(deviceParameterData.Value);
-                }
-            }
+				}
+				if (deviceParameterData.Value != null)
+				{
+					avgRead += Convert.ToDouble(deviceParameterData.Value);
+				}
+			}
             avgRead = avgRead / numOfReads;
             return avgRead;
         }
@@ -185,8 +228,9 @@ namespace ScriptHandler.Models.ScriptSteps
             RefSensorParam = (sourceNode as ScriptNodeEOLCalibrate).RefSensorParam;
             RefSensorNumOfReadings = (sourceNode as ScriptNodeEOLCalibrate).RefSensorNumOfReadings;
 			RefSensorChannel = (int)(sourceNode as ScriptNodeEOLCalibrate).RefSensorChannel;
-
-			DeviationLimit = (sourceNode as ScriptNodeEOLCalibrate).DeviationLimit;
+			gainMaxLimit = (sourceNode as ScriptNodeEOLCalibrate).GainMax;
+            gainMinLimit = (sourceNode as ScriptNodeEOLCalibrate).GainMin;
+            DeviationLimit = (sourceNode as ScriptNodeEOLCalibrate).DeviationLimit;
 		}
 
 		public override bool IsNotSet(
