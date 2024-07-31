@@ -65,80 +65,79 @@ namespace ScriptHandler.Models.ScriptSteps
 			//Calibrate
 			//Get reads
 
-            _getValue.Parameter = GainParam;
+			_getValue.Parameter = GainParam;
 			_getValue.Communicator = MCU_Communicator;
 			_getValue.SendAndReceive();
-            if (!_getValue.IsPass)
-            {
-                ErrorMessage = "Calibration Error \r\n"
-					           + _getValue.ErrorMessage;
-                return;
-            }
-
-            if (GainParam.Value != null)
+			if (!_getValue.IsPass)
 			{
-                prevGain = Convert.ToDouble(GainParam.Value);
-            }
+				ErrorMessage = "Calibration Error \r\n"
+					  + _getValue.ErrorMessage;
+				return;
+			}
 
-			if(!GetReadsMcuAndRefSensor())
+			if (GainParam.Value != null)
+			{
+				prevGain = Convert.ToDouble(GainParam.Value);
+			}
+
+			if (!GetReadsMcuAndRefSensor())
 			{
 				IsPass = false;
 				return;
 			}
 
-            newGain = (prevGain * avgRefSensorRead) / avgMcuRead;
+			newGain = (prevGain * avgRefSensorRead) / avgMcuRead;
 
 			if (newGain > gainMaxLimit || newGain < gainMinLimit)
 			{
-                IsPass = false;
-                ErrorMessage = "Calculated gain has exceeded maximum limit\r\n" +
-                                "Max gain limit: " + gainMaxLimit + "\r\n" +
-                                "Min gain limit: " + gainMinLimit + "\r\n" +
-                                "Calculated gain: " + newGain + "\r\n";
-                return;
-            }
+				IsPass = false;
+				ErrorMessage = "Calculated gain has exceeded maximum limit\r\n" +
+								"Max gain limit: " + gainMaxLimit + "\r\n" +
+								"Min gain limit: " + gainMinLimit + "\r\n" +
+								"Calculated gain: " + newGain + "\r\n";
+				return;
+			}
 
 			//Set new gain
-            
+
 			_setValue.Parameter = GainParam;
 			_setValue.Communicator = MCU_Communicator;
 			_setValue.Value = newGain;
 			_setValue.Execute();
 
-            if(!_setValue.IsPass)
+			if (!_setValue.IsPass)
 			{
-                ErrorMessage = "Unable to set: " + GainParam.Name;
-                return;
-            }
+				ErrorMessage = "Unable to set: " + GainParam.Name;
+				return;
+			}
 
-            //Validate Calibration
+			//Validate Calibration
 
-            Thread.Sleep(100);
+			Thread.Sleep(100);
 
-            if (!GetReadsMcuAndRefSensor())
-            {
-                IsPass = false;
-                return;
-            }
+			if (!GetReadsMcuAndRefSensor())
+			{
+				IsPass = false;
+				return;
+			}
 
-            deviation = Math.Abs(((float)avgRefSensorRead - (float)avgMcuRead) * 100 * 2) /
-                         (((float)avgRefSensorRead + (float)avgMcuRead));
+			deviation = Math.Abs(((float)avgRefSensorRead - (float)avgMcuRead) * 100 * 2) /
+						 (((float)avgRefSensorRead + (float)avgMcuRead));
 
 			//deviation limit temp
 			DeviationLimit = 10;
 
-			if(deviation > DeviationLimit)
+			if (deviation > DeviationLimit)
 			{
 				IsPass = false;
 				ErrorMessage = "Calibration deviation has exceeded maximum limit\r\n" +
-                                        "Deviation Result = " + deviation + "%" + "\r\n" +
-                                        "Deviation Max Limit" + DeviationLimit + "%";
-                return;
+												 "Deviation Result = " + deviation + "%" + "\r\n" +
+												 "Deviation Max Limit" + DeviationLimit + "%";
+				return;
 			}
 
 			//If succeed save param
 
-			
 			_saveValue.Parameter = GainParam;
 			_saveValue.Communicator = MCU_Communicator;
 			_saveValue.Value = newGain;
