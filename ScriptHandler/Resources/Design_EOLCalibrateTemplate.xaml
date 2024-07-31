@@ -103,7 +103,10 @@
             <Line Grid.Row="13" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" />
 
             <TextBlock Grid.Row="14" Grid.Column="0" Text="Deviation limit" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="14" Grid.Column="2" Text="{Binding DeviationLimit}" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="14" Grid.Column="2" Text="{Binding DeviationLimit}"  Margin="0,0,20,0"/>
+            <TextBlock Grid.Row="14" Grid.Column="2" Text="%" 
+                       VerticalAlignment="Center" HorizontalAlignment="Right"
+                       Margin="0,0,10,0"/>
 
         </Grid>
 
