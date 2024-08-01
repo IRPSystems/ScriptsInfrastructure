@@ -22,7 +22,9 @@ namespace ScriptHandler.Services
 {
     public class GenerateProjectService
     {
-        public GeneratedProjectData Generate(
+		#region Methods
+
+		public GeneratedProjectData Generate(
             ProjectData projectData,
 			InvalidScriptData invalidScriptData,
 			DevicesContainer devicesContainer,
@@ -64,10 +66,6 @@ namespace ScriptHandler.Services
 			return generatedProject;
         }
 
-
-
-
-        #region Methods
 
         public GeneratedTestData GenerateScript(
             string scriptPath,

@@ -73,7 +73,7 @@ namespace ScriptRunner.ViewModels
 		private void ReloadProject(GeneratedProjectData e)
 		{
 			GeneratedProjectData reloadedProject = 
-				_openProjectForRun.Open(e.ProjectPath, _devicesContainer, _flashingHandler, _runScript);
+				_openProjectForRun.Open(e.ProjectPath, _devicesContainer, _flashingHandler, _runScript.StopScriptStep);
 
 			
 			for(int i = 0; i < ProjectsList.Count; i++)
@@ -173,7 +173,7 @@ namespace ScriptRunner.ViewModels
 				path,
 				_devicesContainer,
 				_flashingHandler,
-				_runScript);
+				_runScript.StopScriptStep);
 
 			if (projectData == null)
 				return;
@@ -190,7 +190,7 @@ namespace ScriptRunner.ViewModels
 				_scriptUserData,
 				_devicesContainer,
 				_flashingHandler,
-				_runScript);
+				_runScript.StopScriptStep);
 
 			if (projectData == null)
 				return;

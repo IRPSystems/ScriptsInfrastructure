@@ -31,7 +31,7 @@ namespace ScriptRunner.Services
 			ScriptUserData scriptUserData,
 			DevicesContainer devicesContainer,
 			FlashingHandler flashingHandler,
-			RunScriptService runScript)
+			StopScriptStepService stopScriptStep)
 		{
 			string scriptsPath = null;
 
@@ -54,7 +54,7 @@ namespace ScriptRunner.Services
 				scriptUserData.LastRunScriptPath =
 					Path.GetDirectoryName(scriptsPath);
 
-				GeneratedProjectData project = Open(scriptsPath, devicesContainer, flashingHandler, runScript);
+				GeneratedProjectData project = Open(scriptsPath, devicesContainer, flashingHandler, stopScriptStep);
 				return project;
 			}
 			catch (Exception ex)
@@ -68,7 +68,7 @@ namespace ScriptRunner.Services
 			string path,
 			DevicesContainer devicesContainer,
 			FlashingHandler flashingHandler,
-			RunScriptService runScript)
+			StopScriptStepService stopScriptStep)
 		{
 			if (string.IsNullOrEmpty(path))
 				return null;
@@ -139,8 +139,8 @@ namespace ScriptRunner.Services
 
 			foreach (GeneratedScriptData scriptData in currentProject.TestsList)
 			{
-				MatchPassFailNext(scriptData, devicesContainer, flashingHandler, runScript);
-				SetScriptStop(scriptData, devicesContainer, runScript);
+				MatchPassFailNext(scriptData, devicesContainer, flashingHandler, stopScriptStep);
+				SetScriptStop(scriptData, devicesContainer, stopScriptStep);
 
 				InvalidScriptData invalidScriptData = new InvalidScriptData() { Script = scriptData };
 				isTestValidService.IsValid(scriptData, invalidScriptData, devicesContainer);
@@ -225,7 +225,7 @@ namespace ScriptRunner.Services
 			return;
 		}
 
-		private GeneratedScriptData GetSingleScript(
+		public GeneratedScriptData GetSingleScript(
 			string scriptPath,
 			DevicesContainer devicesContainer,
 			FlashingHandler flashingHandler)
@@ -379,7 +379,7 @@ namespace ScriptRunner.Services
 			IScript scriptData,
 			DevicesContainer devicesContainer,
 			FlashingHandler flashingHandler,
-			RunScriptService runScript)
+			StopScriptStepService stopScriptStep)
 		{
 			if (scriptData == null)
 				return;
@@ -417,8 +417,8 @@ namespace ScriptRunner.Services
 				if (scriptStep is ScriptStepSubScript subScript)
 				{
 				//	SetStepToCanMessageUpdateStop(subScript.Script);
-					MatchPassFailNext(subScript.Script, devicesContainer, flashingHandler, runScript);
-					SetScriptStop(subScript.Script, devicesContainer, runScript);
+					MatchPassFailNext(subScript.Script, devicesContainer, flashingHandler, stopScriptStep);
+					SetScriptStop(subScript.Script, devicesContainer, stopScriptStep);
 				}
 
 				if (scriptStep is ScriptStepSweep sweep)
@@ -429,8 +429,8 @@ namespace ScriptRunner.Services
 							continue;
 
 					//	SetStepToCanMessageUpdateStop(sweepItem.SubScript);
-						MatchPassFailNext(sweepItem.SubScript, devicesContainer, flashingHandler, runScript);
-						SetScriptStop(sweepItem.SubScript, devicesContainer, runScript);
+						MatchPassFailNext(sweepItem.SubScript, devicesContainer, flashingHandler, stopScriptStep);
+						SetScriptStop(sweepItem.SubScript, devicesContainer, stopScriptStep);
 						SetConvergeTargetValueCommunicator(sweepItem.SubScript, devicesContainer);
 					}
 				}
@@ -540,7 +540,7 @@ namespace ScriptRunner.Services
 		private void SetScriptStop(
 			IScript scriptData,
 			DevicesContainer devicesContainer,
-			RunScriptService runScript)
+			StopScriptStepService stopScriptStep)
 		{
 			if (scriptData == null)
 				return;
@@ -550,7 +550,7 @@ namespace ScriptRunner.Services
 				if (!(scriptItem is ScriptStepBase step))
 					continue;
 
-				step.StopScriptStep = runScript.StopScriptStep;
+				step.StopScriptStep = stopScriptStep;
 				if (step is ScriptStepGetParamValue getParamValue)
 				{
 					getParamValue.DevicesList = devicesContainer.DevicesFullDataList;
