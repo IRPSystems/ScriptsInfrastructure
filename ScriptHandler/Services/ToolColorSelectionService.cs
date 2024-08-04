@@ -58,7 +58,7 @@ namespace ScriptHandler.Services
 			if (item is ScriptNodeEOLCalibrate || item is ScriptStepEOLCalibrate)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#7FC9FF");
 			if (item is ScriptNodeEOLSendSN || item is ScriptStepEOLSendSN)
-				return (SolidColorBrush)new BrushConverter().ConvertFrom("#7FC9FF");
+				return (SolidColorBrush)new BrushConverter().ConvertFrom("#6BFFED");
 
 			return Brushes.Transparent;
 		}

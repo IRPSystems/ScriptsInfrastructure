@@ -12,9 +12,9 @@ namespace ScriptHandler.Models
 	{
 		public DeviceParameterData Parameter { get; set; }
 
-		public double StartValue { get; set; }
-		public double EndValue { get; set; }
-		public double StepValue { get; set; }
+		public object StartValue { get; set; }
+		public object EndValue { get; set; }
+		public object StepValue { get; set; }
 
 		public int StepInterval { get; set; }
 		public TimeUnitsEnum StepIntervalTimeUnite { get; set; }

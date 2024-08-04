@@ -50,11 +50,11 @@ namespace ScriptHandler.Services
 				return new ScriptStepCANMessageStop();
 			else if (node.GetType().Name == "ScriptNodeStopContinuous")
 				return new ScriptStepStopContinuous();
-			else if (node.GetType().Name == "ScriptNodeFlash")
+			else if (node.GetType().Name == "ScriptNodeEOLFlash")
 				return new ScriptStepEOLFlash();
-			else if (node.GetType().Name == "ScriptNodeCalibrate")
+			else if (node.GetType().Name == "ScriptNodeEOLCalibrate")
 				return new ScriptStepEOLCalibrate();
-			else if (node.GetType().Name == "ScriptNodeSendSN")
+			else if (node.GetType().Name == "ScriptNodeEOLSendSN")
 				return new ScriptStepEOLSendSN();
 			else if (node.GetType().Name == "ScriptNodeResetParentSweep")
 				return new ScriptStepResetParentSweep();

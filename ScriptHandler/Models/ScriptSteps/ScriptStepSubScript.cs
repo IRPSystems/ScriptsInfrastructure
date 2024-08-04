@@ -144,5 +144,18 @@ namespace ScriptHandler.Models
 			IsStopOnFail = (sourceNode as ScriptNodeSubScript).IsStopOnFail;
 			IsStopOnPass = (sourceNode as ScriptNodeSubScript).IsStopOnPass;
 		}
+
+		public override void GetRealParamAfterLoad(
+			DevicesContainer devicesContainer)
+		{
+			if(Script == null) 
+				return;
+
+			foreach (IScriptItem scriptItem in Script.ScriptItemsList)
+			{
+				if(scriptItem is ScriptStepBase step)
+					step.GetRealParamAfterLoad(devicesContainer);
+			}
+		}
 	}
 }

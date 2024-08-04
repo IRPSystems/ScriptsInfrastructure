@@ -1,24 +1,147 @@
 ﻿
+using CommunityToolkit.Mvvm.Input;
+using DeviceHandler.Models;
+using FlashingToolLib.FlashingTools;
+using Microsoft.Win32;
+using Newtonsoft.Json;
+using Syncfusion.UI.Xaml.Diagram;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Windows.Controls;
 
 namespace ScriptHandler.Models.ScriptNodes
 {
 	public class ScriptNodeEOLFlash: ScriptNodeBase
 	{
-		public string FilePath { get; set; }
+		#region Fields and Properties
+
+		private string _filePath;
+		public string FlashFilePath 
+		{
+			get => _filePath;
+			set
+			{
+				_filePath = value;
+				if (string.IsNullOrEmpty(_filePath))
+					return;
+				
+				FileExtension = Path.GetExtension(value);
+				if (FileExtension.ToLower() == ".hex")
+				{
+					if (_filePath.ToLower().EndsWith(".brn.hex"))
+						FileExtension = ".brn.hex";
+				}
+			}
+		}
+
+		public string RXId { get; set; }
+		public string TXId { get; set; }
+		public UdsSequence UdsSequence { get; set; }
+
+		[JsonIgnore]
+		public string FileExtension { get; set; }
+
+		
 
 		public override string Description 
 		{ 
 			get
 			{
-				string description = "Flash - " + Path.GetFileName(FilePath);
+				string description = "Flash - " + Path.GetFileName(FlashFilePath);
 				return description + " - ID:" + ID;
 			}
 		}
 
+		#endregion Fields and Properties
+
+		#region Constructor
+
 		public ScriptNodeEOLFlash() 
 		{
-			Name = "EOL Flash";
+			Init();
 		}
+
+		#endregion Constructor
+
+		#region Methods
+
+		public void Init()
+		{
+			Name = "EOL Flash";
+
+			FlashFilePathOpenCommand = new RelayCommand(FlashFilePathOpen);
+			UdsSequence_SelectionChangedCommand = new RelayCommand(UdsSequence_SelectionChanged);
+
+			FileExtension = "";
+			UdsSequence = UdsSequence.generic;
+			UdsSequence_SelectionChanged();
+		}
+
+		private void FlashFilePathOpen()
+		{
+			OpenFileDialog openFileDlg = new OpenFileDialog();
+			//!todo
+			openFileDlg.DefaultExt = ".irphex|.irpcycad|.cycad|.bin|.irpbin|.hex|.txt|";
+			openFileDlg.Filter = "irphex files (*.irphex)|*.irphex|" +
+								 "cyacd files (*.cyacd)|*.cyacd|" +
+								 "irpcyacd files (*.irpcyacd)|*.irpcyacd|" +
+								 "bin files (*.bin)|*.bin|" +
+								 "irpbin files (*.irpbin)|*.irpbin|" +
+								 "hex files (*.hex)|*.hex";
+
+			var result = openFileDlg.ShowDialog();
+			if (result != true)
+				return;
+
+			FlashFilePath = openFileDlg.FileName;
+		}
+
+		private void UdsSequence_SelectionChanged()
+		{
+			
+
+			switch (UdsSequence)
+			{
+				case UdsSequence.bootloader:
+				case UdsSequence.silence:
+					RXId = "3FE";
+					TXId = "3FF";
+					break;
+				case UdsSequence.generic:
+				default:
+					RXId = "1CFFF9FE";
+					TXId = "1CFFFEF9";
+					break;
+			}
+		}
+
+		public override object Clone()
+		{
+			ScriptNodeEOLFlash flash = base.Clone() as ScriptNodeEOLFlash;
+			flash.Init();
+
+			return flash;
+		}
+
+		public override bool IsNotSet(
+			DevicesContainer devicesContainer,
+			ObservableCollection<InvalidScriptItemData> errorsList)
+		{
+			if (string.IsNullOrEmpty(FlashFilePath))
+				return true;
+
+			return false;
+		}
+
+		#endregion Methods
+
+		#region Commeands
+
+		[JsonIgnore]
+		public RelayCommand FlashFilePathOpenCommand { get; private set; }
+		[JsonIgnore]
+		public RelayCommand UdsSequence_SelectionChangedCommand { get; private set; }
+
+		#endregion Commeands
 	}
 }

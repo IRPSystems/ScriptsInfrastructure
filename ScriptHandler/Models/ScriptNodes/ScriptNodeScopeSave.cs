@@ -84,7 +84,7 @@ namespace ScriptHandler.Models.ScriptNodes
 			settings.Formatting = Formatting.Indented;
 			settings.TypeNameHandling = TypeNameHandling.All;
 			Scope_KeySight_ParamData param = JsonConvert.DeserializeObject(jsonStr, settings) as Scope_KeySight_ParamData;
-			param.Device = devicesContainer.DevicesList.ToList().Find((d) => d.DeviceType == DeviceTypesEnum.KeySight);
+			param.Device = devicesContainer.DevicesList.ToList().Find((d) => d.DeviceType == DeviceTypesEnum.ScopeKeysight);
 
 			Parameter = param;
 		}

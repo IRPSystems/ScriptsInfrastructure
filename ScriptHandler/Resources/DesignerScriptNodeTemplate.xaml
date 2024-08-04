@@ -9,6 +9,9 @@
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_CANMessageTemplate.xaml" />
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_SetParameterTemplate.xaml" />
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_CompareRangeTemplate.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_SweepTemplate.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_EOLCalibrateTemplate.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_EOLFlashTemplate.xaml" />
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/EnumsDictionary.xaml" />
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/ParamValueWithInfoTemplate.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -367,121 +370,7 @@
 
     
 
-    <DataTemplate x:Key="Design_SweepTemplate">
-
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <Grid.RowDefinitions>
-                <RowDefinition Height="27" />
-                <RowDefinition Height="5" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="Number of Dimensions" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding NumberOfDimensions}"/>
-
-
-            <TextBlock Grid.Row="2" Grid.Column="0" Text="Dimensions" VerticalAlignment="Center"/>
-            <DataGrid Grid.Row="2" Grid.Column="2" 
-                      ItemsSource="{Binding SweepItemsList}"
-                      AutoGenerateColumns="False"
-                      MaxHeight="200"
-                      AllowDrop="True" 
-                      FontSize="12"
-                      FontWeight="Normal"
-                      CanUserAddRows="False"
-                      CanUserDeleteRows="False">
-
-                <i:Interaction.Triggers>
-
-                    <i:EventTrigger EventName="PreviewDrop">
-                        <i:InvokeCommandAction Command="{Binding Path=DataContext.SweepItemsList_PreviewDropCommand, 
-                                                             Mode=OneWay, 
-                                                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" 
-                                           PassEventArgsToCommand="True"/>
-                    </i:EventTrigger>
-
-                </i:Interaction.Triggers>
-
-                <DataGrid.Columns>
-
-
-                    <DataGridTemplateColumn Header="Parameter" Width="140" IsReadOnly="True">
-
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-
-                                <Border Grid.Row="0" Grid.Column="2" 
-                                    BorderBrush="Transparent" BorderThickness="1"
-                                    AllowDrop="True"
-                                    Height="25">
-                                    <TextBlock Text="{Binding Parameter, UpdateSourceTrigger=PropertyChanged}" 
-                                           VerticalAlignment="Center"
-                                           Name="tbParam"/>
-                                </Border>
-
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-
-                    </DataGridTemplateColumn>
-
-                    <DataGridTextColumn Header="Start Value" Binding="{Binding StartValue}" />
-                    <DataGridTextColumn Header="End Value" Binding="{Binding EndValue}" />
-                    <DataGridTextColumn Header="Step Value" Binding="{Binding StepValue}" />
-
-                    <DataGridTemplateColumn Header="Step Interval" Width="180" >
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition />
-                                        <ColumnDefinition Width="1"/>
-                                        <ColumnDefinition Width="65"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBox Grid.Column="0" Text="{Binding StepInterval, UpdateSourceTrigger=PropertyChanged}"/>
-                                    <ComboBox Grid.Column="2" ItemsSource="{Binding Source={StaticResource timeUnits}}"
-                                          SelectedItem="{Binding DataContext.StepIntervalTimeUnite, RelativeSource={RelativeSource Mode=Self}}"/>
-                                </Grid>
-
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-
-                    <DataGridTemplateColumn Header="Script" Width="100">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-
-                                <ComboBox ItemsSource="{Binding DataContext.Parent.ScriptsOnlyList,
-                                                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" 
-                                          SelectedItem="{Binding SubScript, UpdateSourceTrigger=PropertyChanged}">
-
-                                    <ComboBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Name}" />
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
-
-                                </ComboBox>
-
-                            </DataTemplate>                            
-                        </DataGridTemplateColumn.CellTemplate>
-                        
-                        
-                    </DataGridTemplateColumn>
-
-                </DataGrid.Columns>
-
-            </DataGrid>
-            
-        </Grid>
-    </DataTemplate>
+    
 
     <DataTemplate x:Key="Design_StopContinuousTemplate">
 
@@ -675,35 +564,9 @@
 
     </DataTemplate>
 
-
-
-
-
-
-
-
-
-    <DataTemplate x:Key="Design_EOLFlashTemplate">
-
-        <Grid >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="500"/>
-            </Grid.ColumnDefinitions>
-
-            <TextBlock Text="File path" Grid.Column="0" VerticalAlignment="Center"/>
-            <TextBox Text="{Binding FilePath}" Grid.Column="2" />
-
-        </Grid>
-
-    </DataTemplate>
     
-    <DataTemplate x:Key="Design_EOLCalibrateTemplate">
-
-        
-
-    </DataTemplate>
+    
+    
 
     <DataTemplate x:Key="Design_EOLSendSNTemplate">
 
