@@ -102,6 +102,13 @@ namespace ScriptRunner.Services
 					parametersRepository.Add(param, RepositoryPriorityEnum.High, GetCallback);
 			}
 
+			DeviceParameterData paramFlthi =
+					_mcu_Device.MCU_FullList.ToList().Find((p) =>
+												((MCU_ParamData)p).Cmd != null &&
+												((MCU_ParamData)p).Cmd.ToLower() == "flthi");
+			if (paramFlthi != null)
+				parametersRepository.Add(paramFlthi, RepositoryPriorityEnum.High, GetCallback);
+
 			IsRunning = true;
 		}
 
@@ -144,6 +151,13 @@ namespace ScriptRunner.Services
 						_parametersRepository.Remove(param, GetCallback);
 				}
 			}
+
+			DeviceParameterData paramFlthi =
+					_mcu_Device.MCU_FullList.ToList().Find((p) =>
+												((MCU_ParamData)p).Cmd != null &&
+												((MCU_ParamData)p).Cmd.ToLower() == "flthi");
+			if (paramFlthi != null)
+				_parametersRepository.Remove(paramFlthi, GetCallback);
 		}
 
 		private void GetCallback(DeviceParameterData param, CommunicatorResultEnum result, string resultDescription)
@@ -192,7 +206,14 @@ namespace ScriptRunner.Services
 			}
 			else if (param.Value != null) 
 			{
-				if (param.Name == "Bus Current") { }
+				if (param is MCU_ParamData mcuParam &&
+					mcuParam.Cmd == "flthi")
+				{
+					bool isErrorExist = IsErrorExist(mcuParam);
+					return;
+				}
+
+
 				double value = Convert.ToDouble(param.Value);
 				//value = value / (param as MCU_ParamData).Scale;
 
@@ -231,6 +252,15 @@ namespace ScriptRunner.Services
 			}
 
 			//_waitGetCallback.Set();
+		}
+
+		private bool IsErrorExist(MCU_ParamData mcuParam)
+		{
+			uint value = (uint)Convert.ToDouble(mcuParam.Value);
+			uint errorState = (value >> 8) & 0xFF;
+
+			return true;
+
 		}
 
 		private ParameterValueData IsValueValue(
