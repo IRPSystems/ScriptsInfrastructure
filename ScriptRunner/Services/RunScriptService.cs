@@ -458,6 +458,8 @@ namespace ScriptRunner.Services
 
 			if(step != null)
 				ExecutedStepsPercentage = (int)((_stepsCounter / _numOfSteps) * 100);
+
+			CurrentStepChangedEvent?.Invoke(step);
 		}
 
 		private void CurrentScript_AbortEvent(string abortDescription)
@@ -553,6 +555,7 @@ namespace ScriptRunner.Services
 
 		public event Action ScriptStartedEvent;
 		public event Action<ScriptStopModeEnum> ScriptEndedEvent;
+		public event Action<ScriptStepBase> CurrentStepChangedEvent;
 
 		#endregion Events
 	}
