@@ -1,6 +1,7 @@
 ﻿
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
+using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Entities.Models;
@@ -28,6 +29,7 @@ namespace ScriptHandler.Models
 		public ScriptStepCompare()
 		{
 			Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
+			_totalNumOfSteps = 5;
 		}
 
 		public override void Execute()
@@ -36,6 +38,7 @@ namespace ScriptHandler.Models
 
 			double leftVal = 0;
 			string leftParamName = "";
+			_stepsCounter = 1;
 			if (ValueLeft is DeviceParameterData paramLeft)
 			{
 				object val = GetCompareParaValue(paramLeft);
@@ -46,6 +49,7 @@ namespace ScriptHandler.Models
 				leftParamName = paramLeft.Name;
 			}
 
+			_stepsCounter++;
 			double? rightVal = 0;
 			string rightParamName = "";
 			if (ValueRight is DeviceParameterData paramRight)
@@ -72,8 +76,11 @@ namespace ScriptHandler.Models
 			else
 				ErrorMessage += "The value = " + rightVal + "; ";
 
+			_stepsCounter++;
 
 			Compare(leftVal, (double)rightVal);
+
+			_stepsCounter++;
 
 			#region Log comparation
 			string str = leftParamName + " = " + leftVal + "; ";
@@ -170,6 +177,30 @@ namespace ScriptHandler.Models
 			ValueLeft = (sourceNode as ScriptNodeCompare).ValueLeft;
 			ValueRight = (sourceNode as ScriptNodeCompare).ValueRight;
 			Comparation = (sourceNode as ScriptNodeCompare).Comparation;
+		}
+
+		public override void GetRealParamAfterLoad(
+			DevicesContainer devicesContainer)
+		{
+			if (ValueLeft is DeviceParameterData)
+			{
+				if (ValueLeft is ICalculatedParamete)
+					return;
+
+				ValueLeft = GetRealParam(
+					ValueLeft as DeviceParameterData,
+					devicesContainer);
+			}
+
+			if (ValueRight is DeviceParameterData)
+			{
+				if (ValueRight is ICalculatedParamete)
+					return;
+
+				ValueRight = GetRealParam(
+					ValueRight as DeviceParameterData,
+					devicesContainer);
+			}
 		}
 	}
 }

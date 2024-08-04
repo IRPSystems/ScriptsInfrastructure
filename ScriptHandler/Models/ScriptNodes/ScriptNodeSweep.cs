@@ -1,6 +1,7 @@
 ﻿
 
 using ControlzEx.Standard;
+using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
@@ -9,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Windows;
 
 namespace ScriptHandler.Models.ScriptNodes
@@ -125,6 +127,46 @@ namespace ScriptHandler.Models.ScriptNodes
 		{
 			IsLoaded = true;
 			CleanList();
+
+			foreach(SweepItemData data in SweepItemsList)
+			{
+				DeviceParameterData param = GetParameter(
+						data.Parameter.DeviceType,
+						data.Parameter,
+						devicesContainer);
+				if (param != null)
+					data.Parameter = param;
+
+				if (data.StartValue is DeviceParameterData startValue)
+				{
+					param = GetParameter(
+						startValue.DeviceType,
+						startValue,
+						devicesContainer);
+					if (param != null)
+						data.StartValue = param;
+				}
+
+				if (data.EndValue is DeviceParameterData endValue)
+				{
+					param = GetParameter(
+						endValue.DeviceType,
+						endValue,
+						devicesContainer);
+					if (param != null)
+						data.EndValue = param;
+				}
+
+				if (data.StepValue is DeviceParameterData stepValue)
+				{
+					param = GetParameter(
+						stepValue.DeviceType,
+						stepValue,
+						devicesContainer);
+					if (param != null)
+						data.StepValue = param;
+				}
+			}
 		}
 
 		public override bool IsNotSet(

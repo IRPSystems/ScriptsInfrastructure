@@ -29,6 +29,7 @@ namespace ScriptHandler.Models
 		{
 			Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
 			_setParameter = new ScriptStepSetParameter();
+			_totalNumOfSteps = 3;
 		}
 
 
@@ -37,6 +38,8 @@ namespace ScriptHandler.Models
 		{
 			_isStoped = false;
 			IsPass = true;
+
+			_stepsCounter = 1;
 
 			_setParameter.Communicator = Communicator;
 			_setParameter.Parameter = Parameter;
@@ -53,6 +56,8 @@ namespace ScriptHandler.Models
 
 			if (_isStoped)
 				return;
+
+			_stepsCounter++;
 
 			double value = Convert.ToDouble(Parameter.Value);
 			value += IncrementValue;

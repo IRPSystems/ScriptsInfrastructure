@@ -59,8 +59,7 @@ namespace ScriptHandler.ViewModels
 				if (!IsNodeBase(type))
 					continue;
 
-				if (type.Name.StartsWith("EOL"))
-					continue;
+				
 
 				if (type.Name == "ScriptNodeScopeSave")
 					continue;

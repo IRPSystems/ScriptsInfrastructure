@@ -116,7 +116,6 @@ namespace ScriptHandler.ViewModels
 			_isIgnoreChanges = true;
 
 			LoadedCommand = new RelayCommand(Loaded);
-			LoadedCommand = new RelayCommand(Loaded);
 
 			MoveNodeUpCommand = new RelayCommand(MoveNodeUp);
 			MoveNodeDownCommand = new RelayCommand(MoveNodeDown);
@@ -439,6 +438,21 @@ namespace ScriptHandler.ViewModels
 				}
 				else
 					withParam.Parameter = param;
+			}
+			else if (listViewItem.DataContext is ScriptNodeEOLCalibrate calibrate)
+			{
+				if (tbName == "tbParamGain")
+				{
+					calibrate.GainParam = param;
+				}
+				else if (tbName == "tbParamMCU")
+				{
+					calibrate.McuParam = param;
+				}
+				else if (tbName == "tbParamRefSensor")
+				{
+					calibrate.RefSensorParam = param;
+				}
 			}
 		}
 
@@ -1316,14 +1330,32 @@ namespace ScriptHandler.ViewModels
 			e.Effects = DragDropEffects.None;
 			e.Handled = true;
 
-			if (!(e.OriginalSource is TextBlock textBlock))
+			FrameworkElement frameworkElement = null;
+			if (e.OriginalSource is TextBlock textBlock)
+				frameworkElement = textBlock;
+			else
+			{
+				TextBox textBox =
+					FindAncestorService.FindAncestor<TextBox>((DependencyObject)e.OriginalSource);
+				frameworkElement = textBox;
+			}
+
+			if (frameworkElement == null)
 				return;
 
-			if (!(textBlock.DataContext is SweepItemData sweepItem))
+			if (!(frameworkElement.DataContext is SweepItemData sweepItem))
 				return;
 
 			DeviceParameterData param = e.Data.GetData(ParametersViewModel.DragDropFormat) as DeviceParameterData;
-			sweepItem.Parameter = param;
+
+			if(frameworkElement.Name == "tbParam")
+				sweepItem.Parameter = param;
+			else if (frameworkElement.Name == "tbParamStart")
+				sweepItem.StartValue = param;
+			else if (frameworkElement.Name == "tbParamEnd")
+				sweepItem.EndValue = param;
+			else if (frameworkElement.Name == "tbParamStep")
+				sweepItem.StepValue = param;
 
 		}
 

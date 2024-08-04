@@ -1,8 +1,11 @@
 ﻿
+using ControlzEx.Standard;
 using DeviceCommunicators.General;
+using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
@@ -62,6 +65,9 @@ namespace ScriptHandler.Models
 
 		private SweepItemForRunData _itemForRun;
 
+		private DevicesContainer _devicesContainer;
+		private ScriptStepGetParamValue _getParameter;
+
 
 		#endregion Fields
 
@@ -70,6 +76,8 @@ namespace ScriptHandler.Models
 		public ScriptStepSweep()
 		{
 			Template = Application.Current.MainWindow.FindResource("SweepTemplate") as DataTemplate;
+
+			_getParameter = new ScriptStepGetParamValue();
 		}
 
 		#endregion Constructor
@@ -96,12 +104,57 @@ namespace ScriptHandler.Models
 			LoggerService.Inforamtion(this, "End Execute");
 		}
 
+		private double GetValues(object value)
+		{
+			double dVal = 0;
+			if (value is DeviceParameterData param)
+			{
+				if (_devicesContainer.TypeToDevicesFullData.ContainsKey(param.DeviceType))
+				{
+					DeviceFullData deviceFullData =
+						_devicesContainer.TypeToDevicesFullData[param.DeviceType];
+					_getParameter.Parameter = param;
+					_getParameter.Communicator = deviceFullData.DeviceCommunicator;
+					IsPass = _getParameter.SendAndReceive();
+					if (IsPass == false)
+					{
+						IsPass = false;
+						ErrorMessage += _getParameter.ErrorMessage;
+						return dVal;
+					}
+
+					double.TryParse(param.Value.ToString(), out dVal);
+				}
+				else
+				{
+					IsPass = false;
+					ErrorMessage += "Counldn't find the communicator\r\n";
+					return dVal;
+				}
+			}
+			else
+			{				
+				double.TryParse(value.ToString(), out dVal);
+			}
+
+			return dVal;
+		}
+
 		
 		private void ExecuteItem(SweepItemData item)
 		{
 			LoggerService.Inforamtion(this, "Start item: " + item.Parameter.Name);
 
-			for (double i = item.StartValue; IsContinueLoop(item.EndValue, item.StepValue, i) && !_cancellationToken.IsCancellationRequested; i += item.StepValue)
+			double startValue = GetValues(item.StartValue);
+			double endValue = GetValues(item.EndValue);
+			double stepValue = GetValues(item.StepValue);
+
+			if(IsPass == false)
+			{
+				return;
+			}
+
+			for (double i = startValue; IsContinueLoop(endValue, stepValue, i) && !_cancellationToken.IsCancellationRequested; i += stepValue)
 			{
 				if (_isStopped)
 					break;
@@ -114,7 +167,7 @@ namespace ScriptHandler.Models
 				{
 					ErrorMessage = "Communicator not initiated";
 					IsPass = false;
-						return;
+					return;
 				}
 
 				_scriptEndedEventHandler = new ManualResetEvent(false);
@@ -394,10 +447,38 @@ namespace ScriptHandler.Models
 						null,
 						sourceItem.SubScript,
 						devicesContainer,
+						null,
 						ref usedCommunicatorsList);
 				}
 
 				SweepItemsList.Add(destItem);
+			}
+		}
+
+		public override void GetRealParamAfterLoad(
+			DevicesContainer devicesContainer)
+		{
+			_devicesContainer = devicesContainer;
+
+			foreach (SweepItemData data in SweepItemsList)
+			{
+				if (data.SubScript != null)
+				{
+					GetRealParamAfterLoad_SubScript(
+						data.SubScript,
+						devicesContainer);
+				}
+			}
+		}
+
+		private void GetRealParamAfterLoad_SubScript(
+			IScript scriptData,
+			DevicesContainer devicesContainer)
+		{
+			foreach (IScriptItem scriptItem in scriptData.ScriptItemsList)
+			{
+				if(scriptItem is ScriptStepBase step)
+					step.GetRealParamAfterLoad(devicesContainer);
 			}
 		}
 

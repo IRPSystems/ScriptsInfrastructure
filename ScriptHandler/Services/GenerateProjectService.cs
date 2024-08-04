@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models;
 using ScriptHandler.Models.ScriptNodes;
+using ScriptHandler.Models.ScriptSteps;
 using ScriptHandler.ViewModels;
 using Services.Services;
 using System.Collections.Generic;
@@ -21,10 +22,13 @@ namespace ScriptHandler.Services
 {
     public class GenerateProjectService
     {
-        public GeneratedProjectData Generate(
+		#region Methods
+
+		public GeneratedProjectData Generate(
             ProjectData projectData,
 			InvalidScriptData invalidScriptData,
-			DevicesContainer devicesContainer)
+			DevicesContainer devicesContainer,
+            FlashingHandler flashingHandler)
         {
             GeneratedProjectData generatedProject = new GeneratedProjectData()
             {
@@ -49,7 +53,8 @@ namespace ScriptHandler.Services
                     testVM.CurrentScript.ScriptPath,
                     testVM.CurrentScript,
                     devicesContainer,
-                    ref usedCommunicatorsList) as GeneratedTestData;
+					flashingHandler,
+					ref usedCommunicatorsList) as GeneratedTestData;
 
                 testVM.IsChanged = false;
 				generatedProject.TestsList.Add(generatedScript);
@@ -62,14 +67,11 @@ namespace ScriptHandler.Services
         }
 
 
-
-
-        #region Methods
-
         public GeneratedTestData GenerateScript(
             string scriptPath,
             IScript scriptData,
             DevicesContainer devicesContainer,
+            FlashingHandler flashingHandler,
 			ref List<DeviceCommunicator> usedCommunicatorsList)
         {
             if (scriptData == null)
@@ -103,6 +105,7 @@ namespace ScriptHandler.Services
                         node as ScriptNodeSubScript,
                         scriptStep as ScriptStepSubScript,
 						devicesContainer,
+						flashingHandler,
 						ref usedCommunicatorsList);
                 }
 
@@ -135,7 +138,8 @@ namespace ScriptHandler.Services
                 stepNameToObject,
                 nodeNameToObject,
                 ref usedCommunicatorsList,
-                devicesContainer);
+                devicesContainer,
+				flashingHandler);
 
             return runnerScript;
         }
@@ -144,7 +148,8 @@ namespace ScriptHandler.Services
             Dictionary<int, ScriptStepBase> stepNameToObject,
             Dictionary<int, ScriptNodeBase> nodeNameToObject,
             ref List<DeviceCommunicator> usedCommunicatorsList,
-            DevicesContainer devicesContainer)
+            DevicesContainer devicesContainer,
+            FlashingHandler flashingHandler)
         {
             
             foreach (int id in stepNameToObject.Keys)
@@ -183,7 +188,12 @@ namespace ScriptHandler.Services
                     scriptStep,
                     devicesContainer,
                     usedCommunicatorsList);
-            }
+
+                SetFlashingHandler(
+                    scriptStep,
+                    flashingHandler);
+
+			}
 
 		}
 
@@ -260,11 +270,23 @@ namespace ScriptHandler.Services
 
         }
 
-        private void HandleSubScript(
+		private void SetFlashingHandler(
+			ScriptStepBase scriptStep,
+            FlashingHandler flashingHandler)
+		{
+            if (!(scriptStep is ScriptStepEOLFlash flash))
+                return;
+
+			flash.FlashingHandler = flashingHandler;
+
+		}
+
+		private void HandleSubScript(
             string scriptPath,
             ScriptNodeSubScript subScriptNode,
             ScriptStepSubScript subScript,
             DevicesContainer devicesContainer,
+            FlashingHandler flashingHandler,
 			ref List<DeviceCommunicator> usedCommunicatorsList)
         {
             bool isNodeSet = subScriptNode.IsNotSet(
@@ -280,6 +302,7 @@ namespace ScriptHandler.Services
                 scriptPath,
                 subScriptNode.Script,
                 devicesContainer,
+				flashingHandler,
 				ref usedCommunicatorsList);
         }
 

@@ -13,6 +13,7 @@ using System.Windows;
 using DeviceHandler.Models;
 using DeviceCommunicators.MCU;
 using DeviceHandler.Models.DeviceFullDataModels;
+using ScriptRunner.ViewModels;
 
 namespace ScriptRunner.Services
 {
@@ -72,7 +73,7 @@ namespace ScriptRunner.Services
 		private ScriptStepSelectMotorType _selectMotor;
 		private SaftyOfficerService _saftyOfficer; 
 		private DevicesContainer _devicesContainer;
-		private CANMessagesService _canMessagesService;
+		private CANMessageSenderViewModel _canMessageSender;
 
 		#endregion Fields
 
@@ -88,7 +89,7 @@ namespace ScriptRunner.Services
 			ScriptStepSelectMotorType selectMotor,
 			SaftyOfficerService saftyOfficer,
 			DevicesContainer devicesContainer,
-			CANMessagesService canMessagesService)
+			CANMessageSenderViewModel canMessageSender)
 		{
 			_runTime = runTime;
 			_mainScriptLogger = mainScriptLogger;
@@ -98,7 +99,7 @@ namespace ScriptRunner.Services
 			_selectMotor = selectMotor;
 			_saftyOfficer = saftyOfficer;
 			_devicesContainer = devicesContainer;
-			_canMessagesService = canMessagesService;
+			_canMessageSender = canMessageSender;
 
 			_lockCurrentStep = new object();
 			_userDecision = new ManualResetEvent(false);
@@ -508,7 +509,7 @@ namespace ScriptRunner.Services
 				_selectMotor,
 				_saftyOfficer,
 				_devicesContainer,
-				_canMessagesService);
+				_canMessageSender);
 			_subScript.ScriptEndedEvent += SubScriptEndedEventHandler;
 			_subScript.CurrentStepChangedEvent += CurrentStepChangedEventHandler;
 			_subScript.ContinuousStepEvent += SubScript_ContinuousStepEvent;
@@ -632,14 +633,14 @@ namespace ScriptRunner.Services
 		private void HandleCANMessageUpdate(ScriptStepCANMessageUpdate update)
 		{
 			update.IsPass = true;
-			_canMessagesService.SendUpdateMessage(update);
+			_canMessageSender.SendUpdateMessage(update);
 			System.Threading.Thread.Sleep(500);
 		}
 
 		private void HandleCANMessageStop(ScriptStepCANMessageStop stop)
 		{
 			stop.IsPass = true;
-			_canMessagesService.SendStopMessage(stop);
+			_canMessageSender.SendStopMessage(stop);
 			System.Threading.Thread.Sleep(500);
 		}
 

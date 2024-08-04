@@ -68,6 +68,8 @@ namespace ScriptHandler.ViewModels
 
 		private ScriptUserData _scriptUserData;
 
+		private FlashingHandler _flashingHandler;
+
 		
 
 		#endregion Fields
@@ -76,13 +78,17 @@ namespace ScriptHandler.ViewModels
 
 		public DesignViewModel(
 			DevicesContainer devicesContainer,
+			FlashingHandler flashingHandler,
 			ScriptUserData scriptUserData)
         {
+
+
 			Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(
 				"MTAwODQzOUAzMjMwMmUzNDJlMzBsQlRMeUl0THVueXVMcWhEMnlCeVJLTnZZdFhLRUh2aEZGKytIdUVIRTRBPQ==");
 
 			DevicesContainer = devicesContainer;
 			_scriptUserData = scriptUserData;
+			_flashingHandler = flashingHandler;
 
 			GenerateToolTip = "Generate button";
 			GenerateErrorsListView = new ErrorsListView();
@@ -370,7 +376,8 @@ namespace ScriptHandler.ViewModels
 				GeneratedProjectData generatedProject = generateProject.Generate(
 					Explorer.Project,
 					invalidScriptData,
-					DevicesContainer);
+					DevicesContainer,
+					_flashingHandler);
 
 				string path = Path.GetDirectoryName(Explorer.Project.ProjectPath);
 				path = Path.Combine(path, Explorer.Project.Name + ".gprj");

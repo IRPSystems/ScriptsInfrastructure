@@ -425,10 +425,83 @@
         </DataTemplate.Triggers>
 
     </DataTemplate>
-    
-    
-    
-    
+
+
+    <DataTemplate x:Key="Design_CANMessage_CRCAndCounterTemplate">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="500"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <CheckBox Grid.Row="0" Grid.Column="2"
+                      Name="cb"
+                      Content="Use CRC and counter" 
+                      IsChecked="{Binding IsUseCRCandCounter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Grid Grid.Row="2" Grid.ColumnSpan="3"
+                  Visibility="{Binding ElementName=cb, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="500"/>
+                </Grid.ColumnDefinitions>
+                
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="27" />
+                    <RowDefinition Height="10" />
+                    <RowDefinition Height="27" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="CRC" VerticalAlignment="Center"/>
+                <Grid Grid.Row="0" Grid.Column="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <CheckBox Grid.Column="0" Content="Available" 
+                              IsChecked="{Binding IsCRCAvailable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Grid.Column="2" Text="Field name" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="4" Text="{Binding CRCFieldName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                </Grid>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Counter" VerticalAlignment="Center"/>
+                <Grid Grid.Row="2" Grid.Column="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <CheckBox Grid.Column="0" Content="Available" 
+                              IsChecked="{Binding IsCounterAvailable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Grid.Column="2" Text="Field name" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="4" Text="{Binding CounterFieldName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                </Grid>
+            </Grid>
+
+        </Grid>        
+    </DataTemplate>
+
 
     <DataTemplate x:Key="Design_CANMessageTemplate">
 
@@ -445,6 +518,8 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="10" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
 
@@ -454,14 +529,29 @@
             <Line Grid.Row="1" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}"/>
 
 
-            <ContentControl Name="ccRepeats" Grid.Row="2" Grid.ColumnSpan="3" Content="{Binding}" ContentTemplate="{StaticResource RepeatesSelectionTemplate}" />
+            <ContentControl Name="ccCRCAndCounter"
+                            Grid.Row="2" Grid.ColumnSpan="3" 
+                            Content="{Binding}" 
+                            ContentTemplate="{StaticResource Design_CANMessage_CRCAndCounterTemplate}" />
 
 
 
             <Line Grid.Row="3" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}"/>
 
 
-            <ContentControl Grid.Row="4" Grid.ColumnSpan="3" Content="{Binding Content, ElementName=ccRepeats}" ContentTemplate="{StaticResource PayloadTemplate}" />
+            <ContentControl Name="ccRepeats" 
+                            Grid.Row="4" Grid.ColumnSpan="3" 
+                            Content="{Binding}" 
+                            ContentTemplate="{StaticResource RepeatesSelectionTemplate}" />
+
+
+
+            <Line Grid.Row="5" Grid.ColumnSpan="3" X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}"/>
+
+
+            <ContentControl Grid.Row="6" Grid.ColumnSpan="3" 
+                            Content="{Binding Content, ElementName=ccRepeats}" 
+                            ContentTemplate="{StaticResource PayloadTemplate}" />
 
         </Grid>
 

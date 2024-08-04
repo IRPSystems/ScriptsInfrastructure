@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using ScriptHandler.Services;
 
 namespace ScriptRunner.ViewModels
 {
@@ -34,16 +35,20 @@ namespace ScriptRunner.ViewModels
 
 		private GeneratedProjectData _selectedProject;
 
+		private FlashingHandler _flashingHandler;
+
 		#endregion Fields
 
 		#region Constructor
 
 		public RunExplorerViewModel(
 			DevicesContainer devicesContainer,
+			FlashingHandler flashingHandler,
 			RunScriptService runScript,
 			ScriptUserData scriptUserData)
 		{
 			_devicesContainer = devicesContainer;
+			_flashingHandler = flashingHandler;
 			_runScript = runScript;
 			_scriptUserData = scriptUserData;
 
@@ -68,7 +73,7 @@ namespace ScriptRunner.ViewModels
 		private void ReloadProject(GeneratedProjectData e)
 		{
 			GeneratedProjectData reloadedProject = 
-				_openProjectForRun.Open(e.ProjectPath, _devicesContainer, _runScript);
+				_openProjectForRun.Open(e.ProjectPath, _devicesContainer, _flashingHandler, _runScript.StopScriptStep);
 
 			
 			for(int i = 0; i < ProjectsList.Count; i++)
@@ -167,7 +172,8 @@ namespace ScriptRunner.ViewModels
 			GeneratedProjectData projectData = _openProjectForRun.Open(
 				path,
 				_devicesContainer,
-				_runScript);
+				_flashingHandler,
+				_runScript.StopScriptStep);
 
 			if (projectData == null)
 				return;
@@ -183,7 +189,8 @@ namespace ScriptRunner.ViewModels
 			GeneratedProjectData projectData = _openProjectForRun.Open(
 				_scriptUserData,
 				_devicesContainer,
-				_runScript);
+				_flashingHandler,
+				_runScript.StopScriptStep);
 
 			if (projectData == null)
 				return;

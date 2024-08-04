@@ -1,6 +1,7 @@
 ﻿
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
+using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Entities.Models;
@@ -42,6 +43,7 @@ namespace ScriptHandler.Models.ScriptSteps
 		public ScriptStepCompareRange()
 		{
 			Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
+			_totalNumOfSteps = 6;
 		}
 
 		#endregion Constructor
@@ -53,6 +55,8 @@ namespace ScriptHandler.Models.ScriptSteps
 			IsPass = false;
 			string errorHeader = "Compare range:\r\n";
 			string errorMessage = errorHeader + "Failed to get the compared parameter for compare range\r\n\r\n";
+
+			_stepsCounter = 1;
 
 			double paramValue = 0;
 			string paramName = "";
@@ -69,6 +73,8 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			ErrorMessage = errorHeader + "Failed to get the left value parameter for compare range";
 
+			_stepsCounter++;
+
 			double paramValue_Left = 0;
 			string paramName_Left = "";
 			res = GetValueAndName(
@@ -84,6 +90,8 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			ErrorMessage = errorHeader + "Failed to get the right value parameter for compare range";
 
+			_stepsCounter++;
+
 			double paramValue_Right = 0;
 			string paramName_Right = "";
 			res = GetValueAndName(
@@ -96,6 +104,8 @@ namespace ScriptHandler.Models.ScriptSteps
 				IsPass = false;
 				return;
 			}
+
+			_stepsCounter++;
 
 			if (IsBetween2Values)
 			{
@@ -141,6 +151,8 @@ namespace ScriptHandler.Models.ScriptSteps
 				ScriptNodeCompare.GetComperationDescription(Comparation2) + " " +
 				paramName_Right;
 
+			
+
 			Compare(
 				true,
 				paramValue,
@@ -150,6 +162,8 @@ namespace ScriptHandler.Models.ScriptSteps
 			{
 				return;
 			}
+
+			_stepsCounter++;
 
 			Compare(
 				false,
@@ -324,6 +338,22 @@ namespace ScriptHandler.Models.ScriptSteps
 			Comparation2 = (sourceNode as ScriptNodeCompareRange).Comparation2;
 			IsBetween2Values = (sourceNode as ScriptNodeCompareRange).IsBetween2Values;
 			IsValueWithTolerance = (sourceNode as ScriptNodeCompareRange).IsValueWithTolerance;
+		}
+
+		public override void GetRealParamAfterLoad(
+			DevicesContainer devicesContainer)
+		{
+			base.GetRealParamAfterLoad(devicesContainer);
+
+			if (Value is DeviceParameterData)
+			{
+				if (Value is ICalculatedParamete)
+					return;
+
+				Value = GetRealParam(
+					Value as DeviceParameterData,
+					devicesContainer);
+			}
 		}
 
 		#endregion Methodes

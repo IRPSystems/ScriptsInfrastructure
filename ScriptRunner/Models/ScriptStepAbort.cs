@@ -71,6 +71,7 @@ namespace ScriptRunner.Models
 				scriptFile,
 				sd,
 				devicesContainer,
+				null,
 				ref usedCommunicatorsList);
 
 			foreach (IScriptItem item in Script.ScriptItemsList)
