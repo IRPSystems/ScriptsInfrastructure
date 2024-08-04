@@ -33,7 +33,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
         public ScriptStepEOLSendSN()
         {
-			
+            _totalNumOfSteps = 4;
 		}
 
 		#endregion Constructor
@@ -45,6 +45,8 @@ namespace ScriptHandler.Models.ScriptSteps
             //Get SN from UI - Temp userSN
 
             //remove daash and letters
+
+            _stepsCounter = 1;
 
             serialNumber = Regex.Replace(userSN, "[A-Za-z ]", "");
             serialNumber = serialNumber.Remove(0, 1);
@@ -63,9 +65,11 @@ namespace ScriptHandler.Models.ScriptSteps
                 return;
             }
 
-            //Verify SN- get
+            _stepsCounter++;
 
-            _getValue = new ScriptStepGetParamValue();
+			//Verify SN- get
+
+			_getValue = new ScriptStepGetParamValue();
             _getValue.Parameter = SN_Param;
             _getValue.Communicator = Communicator;
             _getValue.SendAndReceive();
@@ -81,9 +85,11 @@ namespace ScriptHandler.Models.ScriptSteps
                 }
             }
 
-            //If succeed save param
+			_stepsCounter++;
 
-            _saveValue = new ScriptStepSetSaveParameter();
+			//If succeed save param
+
+			_saveValue = new ScriptStepSetSaveParameter();
             _saveValue.Parameter = SN_Param;
             _saveValue.Communicator = Communicator;
             _saveValue.Value = Convert.ToDouble(serialNumber);

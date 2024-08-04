@@ -1,17 +1,13 @@
 ﻿
-using DeviceCommunicators.Enums;
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
-using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Reflection.Metadata;
 using System;
 using System.Threading;
-using ScriptHandler.Enums;
 using DeviceCommunicators.ZimmerPowerMeter;
 
 namespace ScriptHandler.Models.ScriptSteps
@@ -59,6 +55,8 @@ namespace ScriptHandler.Models.ScriptSteps
 			_getValue = new ScriptStepGetParamValue();
 			_setValue = new ScriptStepSetParameter();
 			_saveValue = new ScriptStepSetSaveParameter();
+
+			_totalNumOfSteps = 9;
 		}
 
 		#endregion Constructor
@@ -75,6 +73,8 @@ namespace ScriptHandler.Models.ScriptSteps
 			//Calibrate
 			//Get reads
 
+			_stepsCounter = 1;
+
 			_getValue.Parameter = GainParam;
 			_getValue.Communicator = MCU_Communicator;
 			_getValue.SendAndReceive();
@@ -90,11 +90,15 @@ namespace ScriptHandler.Models.ScriptSteps
 				prevGain = Convert.ToDouble(GainParam.Value);
 			}
 
+			_stepsCounter++;
+
 			if (!GetReadsMcuAndRefSensor())
 			{
 				IsPass = false;
 				return;
 			}
+
+			_stepsCounter++;
 
 			newGain = (prevGain * avgRefSensorRead) / avgMcuRead;
 
@@ -110,6 +114,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			//Set new gain
 
+			_stepsCounter++;
 			_setValue.Parameter = GainParam;
 			_setValue.Communicator = MCU_Communicator;
 			_setValue.Value = newGain;
@@ -124,6 +129,8 @@ namespace ScriptHandler.Models.ScriptSteps
 			//Validate Calibration
 
 			Thread.Sleep(100);
+
+			_stepsCounter++;
 
 			if (!GetReadsMcuAndRefSensor())
 			{
@@ -147,6 +154,8 @@ namespace ScriptHandler.Models.ScriptSteps
 			}
 
 			//If succeed save param
+
+			_stepsCounter++;
 
 			_saveValue.Parameter = GainParam;
 			_saveValue.Communicator = MCU_Communicator;
@@ -182,13 +191,17 @@ namespace ScriptHandler.Models.ScriptSteps
             _getValue.Parameter = RefSensorParam;
             _getValue.Communicator = RefSensorCommunicator;
 
-            avgRefSensorRead = GetAvgRead(_getValue, RefSensorNumOfReadings, RefSensorParam);
+			_stepsCounter++;
+
+			avgRefSensorRead = GetAvgRead(_getValue, RefSensorNumOfReadings, RefSensorParam);
 
             if (RefSensorParam.Value == null)
             {
                 ErrorMessage = "Unable to get param: " + _getValue.ErrorMessage;
                 return false;
             }
+
+			_stepsCounter++;
 
 			return true;
         }

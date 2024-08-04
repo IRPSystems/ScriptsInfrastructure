@@ -43,6 +43,7 @@ namespace ScriptHandler.Models.ScriptSteps
 		public ScriptStepCompareRange()
 		{
 			Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
+			_totalNumOfSteps = 6;
 		}
 
 		#endregion Constructor
@@ -54,6 +55,8 @@ namespace ScriptHandler.Models.ScriptSteps
 			IsPass = false;
 			string errorHeader = "Compare range:\r\n";
 			string errorMessage = errorHeader + "Failed to get the compared parameter for compare range\r\n\r\n";
+
+			_stepsCounter = 1;
 
 			double paramValue = 0;
 			string paramName = "";
@@ -70,6 +73,8 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			ErrorMessage = errorHeader + "Failed to get the left value parameter for compare range";
 
+			_stepsCounter++;
+
 			double paramValue_Left = 0;
 			string paramName_Left = "";
 			res = GetValueAndName(
@@ -85,6 +90,8 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			ErrorMessage = errorHeader + "Failed to get the right value parameter for compare range";
 
+			_stepsCounter++;
+
 			double paramValue_Right = 0;
 			string paramName_Right = "";
 			res = GetValueAndName(
@@ -97,6 +104,8 @@ namespace ScriptHandler.Models.ScriptSteps
 				IsPass = false;
 				return;
 			}
+
+			_stepsCounter++;
 
 			if (IsBetween2Values)
 			{
@@ -142,6 +151,8 @@ namespace ScriptHandler.Models.ScriptSteps
 				ScriptNodeCompare.GetComperationDescription(Comparation2) + " " +
 				paramName_Right;
 
+			
+
 			Compare(
 				true,
 				paramValue,
@@ -151,6 +162,8 @@ namespace ScriptHandler.Models.ScriptSteps
 			{
 				return;
 			}
+
+			_stepsCounter++;
 
 			Compare(
 				false,

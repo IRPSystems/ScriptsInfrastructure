@@ -68,6 +68,8 @@ namespace ScriptHandler.Models
 		public int ID { get; set; }
 
 		public int ProgressPercentage { get; set; }
+		protected int _totalNumOfSteps;
+		protected int _stepsCounter;
 
 		public ScriptStepBase()
 		{

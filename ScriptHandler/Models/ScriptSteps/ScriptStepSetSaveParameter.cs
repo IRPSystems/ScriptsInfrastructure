@@ -49,12 +49,16 @@ namespace ScriptHandler.Models
 			};
 
 			_id = new byte[3];
+
+			_totalNumOfSteps = 6;
 		}
 
 		public override void Execute()
 		{
 			IsPass = true;
 			_isStopped = false;
+
+			_stepsCounter = 1;
 
 			if (Parameter == null)
 				return;
@@ -74,6 +78,8 @@ namespace ScriptHandler.Models
 
 			double value = Value;
 
+			_stepsCounter++;
+
 			Communicator.SetParamValue(Parameter, value, GetCallback);
 
 			bool isNotTimeout = _waitGetCallback.WaitOne(1000);
@@ -84,6 +90,8 @@ namespace ScriptHandler.Models
 			}
 
 			LoggerService.Inforamtion(this, "Set parameter for saving");
+
+			_stepsCounter++;
 
 			System.Threading.Thread.Sleep(1000);
 
@@ -113,6 +121,8 @@ namespace ScriptHandler.Models
 			var hex_id = BitConverter.ToString(_id).Replace("-", "").ToLower();
 			double value = Convert.ToInt32(hex_id, 16);
 
+			_stepsCounter++;
+
 			Communicator.SetParamValue(_saveParameter, value, GetCallback);
 
 			bool isNotTimeout = _waitGetCallback.WaitOne(1000);
@@ -122,7 +132,8 @@ namespace ScriptHandler.Models
 				IsPass = false;
 			}
 
-			if(IsPass)
+			_stepsCounter++;
+			if (IsPass)
 				LoggerService.Inforamtion(this, "Saved parameter");
 		}
 
