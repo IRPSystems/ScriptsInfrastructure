@@ -33,8 +33,10 @@ namespace ScriptHandler.Models.ScriptSteps
 
         public ScriptStepEOLSendSN()
         {
-			
-		}
+            _setValue = new ScriptStepSetParameter();
+            _getValue = new ScriptStepGetParamValue();
+            _saveValue = new ScriptStepSetSaveParameter();
+        }
 
 		#endregion Constructor
 
@@ -51,7 +53,6 @@ namespace ScriptHandler.Models.ScriptSteps
             serialNumber = serialNumber.Replace("-", "");
 
             //Set SN
-            _setValue = new ScriptStepSetParameter();
             _setValue.Parameter = SN_Param;
             _setValue.Communicator = Communicator;
             _setValue.Value = serialNumber;
@@ -64,29 +65,43 @@ namespace ScriptHandler.Models.ScriptSteps
             }
 
             //Verify SN- get
-
-            _getValue = new ScriptStepGetParamValue();
             _getValue.Parameter = SN_Param;
             _getValue.Communicator = Communicator;
             _getValue.SendAndReceive();
             if (!_getValue.IsPass)
             {
                 //Validate SN
-                if(SN_Param.Value as string == userSN)
-                {
-                    ErrorMessage = "Wrong SN \r\n"
-                    + _getValue.ErrorMessage;
-                    IsPass = false;
-                    return;
-                }
+                ErrorMessage = "Unable to get SN: \r\n"
+                + _getValue.ErrorMessage;
+                IsPass = false;
+                return;
+            }
+
+            double snCompare;
+
+            bool isParseSuccess = double.TryParse(serialNumber, out snCompare);
+
+            if (!isParseSuccess)
+            {
+                ErrorMessage = "Unable to parse SN \r\n"
+                + _getValue.ErrorMessage;
+                IsPass = false;
+                return;
+            }
+
+            //Validate SN
+            if ((double)SN_Param.Value != snCompare)
+            {
+                ErrorMessage = "Wrong SN \r\n"
+                + _getValue.ErrorMessage;
+                IsPass = false;
+                return;
             }
 
             //If succeed save param
-
-            _saveValue = new ScriptStepSetSaveParameter();
             _saveValue.Parameter = SN_Param;
             _saveValue.Communicator = Communicator;
-            _saveValue.Value = Convert.ToDouble(serialNumber);
+            _saveValue.Value = snCompare;
             _saveValue.Execute();
 
             if (!_saveValue.IsPass)
