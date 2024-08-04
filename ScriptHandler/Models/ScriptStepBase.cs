@@ -67,6 +67,8 @@ namespace ScriptHandler.Models
 
 		public int ID { get; set; }
 
+		public int ProgressPercentage { get; set; }
+
 		public ScriptStepBase()
 		{
 			
