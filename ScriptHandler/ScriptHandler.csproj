@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x86</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.9" />
+    <PackageReference Include="MahApps.Metro.IconPacks" Version="4.11.0" />
+    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="All" />
+    <PackageReference Include="Syncfusion.DocIO.Wpf" Version="24.2.7" />
+    <PackageReference Include="Syncfusion.SfDiagram.WPF" Version="24.2.7" />
+    <PackageReference Include="Syncfusion.Shared.WPF" Version="24.2.7" />
+    <PackageReference Include="Syncfusion.Tools.WPF" Version="24.2.7" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\DevicesInfrastructures\DeviceCommunicators\DeviceCommunicators.csproj" />
+    <ProjectReference Include="..\..\DevicesInfrastructures\DeviceHandler\DeviceHandler.csproj" />
+    <ProjectReference Include="..\..\FlashingToollib\FlashingToolLib\FlashingToolLib.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Controls\Controls.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Converters\Converters.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\DBCFileParser\DBCFileParser.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Entities\Entities.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Services\Services.csproj" />
+  </ItemGroup>
+
+</Project>
