@@ -5,7 +5,9 @@ using DeviceCommunicators.NI_6002;
 using DeviceCommunicators.SwitchRelay32;
 using DeviceHandler.Models;
 using Entities.Models;
+using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
+using Syncfusion.Windows.Tools;
 using System;
 using System.Collections.ObjectModel;
 
@@ -99,7 +101,22 @@ namespace ScriptHandler.Models.ScriptNodes
 
 		public bool IsWarning { get; set; }
 		public bool IsFault { get; set; }
-		public bool IsCriticalFalt { get; set; }
+		public bool IsCriticalFault { get; set; }
+
+		public SafetyOfficerErrorLevelEnum SafetyOfficerErrorLevel
+		{ 
+			get
+			{
+				if (IsWarning)
+					return SafetyOfficerErrorLevelEnum.Warning;
+				if (IsFault)
+					return SafetyOfficerErrorLevelEnum.Fault;
+				if (IsCriticalFault)
+					return SafetyOfficerErrorLevelEnum.CriticalFault;
+
+				return SafetyOfficerErrorLevelEnum.Warning;
+			}
+		}
 
 
 		public override string Description

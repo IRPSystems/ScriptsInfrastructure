@@ -1,5 +1,6 @@
 ﻿
 using DeviceCommunicators.Enums;
+using DeviceCommunicators.EvvaDevice;
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
 using DeviceCommunicators.NI_6002;
@@ -9,6 +10,7 @@ using DeviceCommunicators.SwitchRelay32;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using Newtonsoft.Json;
+using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
@@ -22,6 +24,8 @@ namespace ScriptHandler.Models
 {
 	public class ScriptStepSetParameter: ScriptStepBase, IScriptStepWithCommunicator, IScriptStepWithParameter
 	{
+		#region Properties and Fields
+
 		public DeviceParameterData Parameter { get; set; }
 		public object Value { get; set; }
 
@@ -44,9 +48,16 @@ namespace ScriptHandler.Models
 
 		public ScriptStepGetParamValue GetParamValue {  get; set; }
 
+		
+
 
 		private AutoResetEvent _waitGetCallback;
 		private bool _isStopped;
+
+
+		#endregion Properties and Fields
+
+		#region Constructor
 
 		public ScriptStepSetParameter()
 		{
@@ -65,6 +76,10 @@ namespace ScriptHandler.Models
 
 			_totalNumOfSteps = 4;
 		}
+
+		#endregion Constructor
+
+		#region Methodes
 
 		public override void Execute()
 		{
@@ -259,6 +274,8 @@ namespace ScriptHandler.Models
 			}
 
 		}
+
+		#endregion Methodes
 
 	}
 }

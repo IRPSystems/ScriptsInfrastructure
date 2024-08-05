@@ -245,7 +245,8 @@ namespace ScriptRunner.Services
 										else if (_currentStep is ScriptStepStartStopSaftyOfficer startStopSaftyOfficer)
 										{
 											if (startStopSaftyOfficer.IsStart)
-												_currentStep.IsPass = StartSaftyOfficer();
+												_currentStep.IsPass = StartSaftyOfficer(
+													startStopSaftyOfficer.SafetyOfficerErrorLevel);
 											else
 												StopSaftyOfficer();
 										}
@@ -542,7 +543,7 @@ namespace ScriptRunner.Services
 		}
 
 
-		private bool StartSaftyOfficer()
+		private bool StartSaftyOfficer(SafetyOfficerErrorLevelEnum safetyOfficerErrorLevel)
 		{
 			_selectMotor.Execute();
 
@@ -562,7 +563,8 @@ namespace ScriptRunner.Services
 					_selectMotor.SelectedMotor,
 					_selectMotor.SelectedController,
 					deviceFullData.Device as MCU_DeviceData,
-					deviceFullData.ParametersRepository);
+					deviceFullData.ParametersRepository,
+					safetyOfficerErrorLevel);
 			}
 
 

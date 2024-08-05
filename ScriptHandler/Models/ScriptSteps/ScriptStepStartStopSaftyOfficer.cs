@@ -3,6 +3,7 @@ using DeviceCommunicators.General;
 using DeviceCommunicators.SwitchRelay32;
 using DeviceHandler.Models;
 using Newtonsoft.Json.Linq;
+using ScriptHandler.Enums;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
 using System;
@@ -15,6 +16,7 @@ namespace ScriptHandler.Models
 	public class ScriptStepStartStopSaftyOfficer : ScriptStepBase
 	{
 		public bool IsStart;
+		public SafetyOfficerErrorLevelEnum SafetyOfficerErrorLevel { get; set; }
 
 		public ScriptStepStartStopSaftyOfficer()
 		{

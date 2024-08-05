@@ -29,7 +29,7 @@
             <StackPanel Grid.Column="2" Orientation="Horizontal">
                 <RadioButton Content="Warnings" IsChecked="{Binding IsWarning}" Margin="0,0,10,0" />
                 <RadioButton Content="Fault" IsChecked="{Binding IsFault}" Margin="0,0,10,0" />
-                <RadioButton Content="Critical Falt" IsChecked="{Binding IsCriticalFalt}" />
+                <RadioButton Content="Critical Falt" IsChecked="{Binding IsCriticalFault}" />
             </StackPanel>
         </Grid>
     </DataTemplate>
@@ -230,6 +230,7 @@
                 <RowDefinition Height="27"/>
                 <RowDefinition Height="5"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="5"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
@@ -268,7 +269,7 @@
                            Content="{Binding}"
                            Visibility="Collapsed"/>
 
-            <ContentControl Grid.Row="2" Grid.ColumnSpan="3"
+            <ContentControl Grid.Row="4" Grid.ColumnSpan="3"
                             ContentTemplate="{StaticResource ErrLevelForSaftyOfficer_Template}"
                             Name="ccSaftyOfficer"
                             Content="{Binding}"
@@ -300,7 +301,7 @@
 
             <DataTrigger Binding="{Binding Parameter, Converter={StaticResource TypeToNameConverter}}" Value="Evva_ParamData">
 
-                <Setter TargetName="ccRegular" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccRegular" Property="Visibility" Value="Visible"/>
                 <Setter TargetName="ccNI" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Visible"/>
