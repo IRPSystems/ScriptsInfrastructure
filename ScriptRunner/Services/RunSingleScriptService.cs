@@ -14,6 +14,7 @@ using DeviceHandler.Models;
 using DeviceCommunicators.MCU;
 using DeviceHandler.Models.DeviceFullDataModels;
 using ScriptRunner.ViewModels;
+using Entities.Enums;
 
 namespace ScriptRunner.Services
 {
@@ -543,7 +544,7 @@ namespace ScriptRunner.Services
 		}
 
 
-		private bool StartSaftyOfficer(SafetyOfficerErrorLevelEnum safetyOfficerErrorLevel)
+		private bool StartSaftyOfficer(ActiveErrorLevelEnum safetyOfficerErrorLevel)
 		{
 			_selectMotor.Execute();
 
