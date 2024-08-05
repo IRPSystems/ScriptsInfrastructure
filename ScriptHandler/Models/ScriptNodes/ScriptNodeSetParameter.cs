@@ -6,19 +6,15 @@ using DeviceCommunicators.SwitchRelay32;
 using DeviceHandler.Models;
 using Entities.Models;
 using ScriptHandler.Interfaces;
-using Syncfusion.Windows.Tools;
 using System;
 using System.Collections.ObjectModel;
 
 namespace ScriptHandler.Models.ScriptNodes
 {
 	public class ScriptNodeSetParameter : ScriptNodeBase, IScriptStepWithParameter
-	{
-		public ScriptNodeSetParameter()
-		{
-			Description = Name = "Set Parameter";
-			_valueDropDwonIndex = -1;
-		}
+	{	
+
+		#region Properties and Fields
 
 		private DeviceParameterData _parameter;
 		public DeviceParameterData Parameter
@@ -101,6 +97,10 @@ namespace ScriptHandler.Models.ScriptNodes
 			}
 		}
 
+		public bool IsWarning { get; set; }
+		public bool IsFault { get; set; }
+		public bool IsCriticalFalt { get; set; }
+
 
 		public override string Description
 		{
@@ -150,6 +150,21 @@ namespace ScriptHandler.Models.ScriptNodes
 			}
 		}
 
+		#endregion Properties and Fields
+
+		#region Constructor
+
+		public ScriptNodeSetParameter()
+		{
+			Description = Name = "Set Parameter";
+			_valueDropDwonIndex = -1;
+			IsWarning = true;
+		}
+
+		#endregion Constructor
+
+		#region Method
+
 		public override bool IsNotSet(
 			DevicesContainer devicesContainer,
 			ObservableCollection<InvalidScriptItemData> errorsList)
@@ -159,5 +174,7 @@ namespace ScriptHandler.Models.ScriptNodes
 
 			return false;
 		}
+
+		#endregion Method
 	}
 }
