@@ -180,8 +180,8 @@
                           SelectedItem="{Binding RefSensorPorts}"
                           VerticalAlignment="Center"/>
 
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="?" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding NIDAQValue}" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Shunt resistor" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding NIDAQShuntResistor}" />
                 
             </Grid>
 

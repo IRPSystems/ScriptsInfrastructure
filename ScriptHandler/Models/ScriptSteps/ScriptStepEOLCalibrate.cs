@@ -27,7 +27,7 @@ namespace ScriptHandler.Models.ScriptSteps
 		public int RefSensorChannel { get; set; }
 
 		public int RefSensorPorts { get; set; }
-		public short NIDAQValue { get; set; }
+		public short NIDAQShuntResistor { get; set; }
 
 		public double DeviationLimit { get; set; }
 
@@ -255,7 +255,7 @@ namespace ScriptHandler.Models.ScriptSteps
             RefSensorNumOfReadings = (sourceNode as ScriptNodeEOLCalibrate).RefSensorNumOfReadings;
 			RefSensorChannel = (int)(sourceNode as ScriptNodeEOLCalibrate).RefSensorChannel;
 			RefSensorPorts = (int)(sourceNode as ScriptNodeEOLCalibrate).RefSensorPorts;
-			NIDAQValue = (sourceNode as ScriptNodeEOLCalibrate).NIDAQValue;
+			NIDAQShuntResistor = (sourceNode as ScriptNodeEOLCalibrate).NIDAQShuntResistor;
 			gainMaxLimit = (sourceNode as ScriptNodeEOLCalibrate).GainMax;
             gainMinLimit = (sourceNode as ScriptNodeEOLCalibrate).GainMin;
             DeviationLimit = (sourceNode as ScriptNodeEOLCalibrate).DeviationLimit;
