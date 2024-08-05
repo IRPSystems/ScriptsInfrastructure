@@ -90,7 +90,7 @@ namespace ScriptHandler.Models.ScriptSteps
             if (RefSensorParam is ZimmerPowerMeter_ParamData powerMeter)
                 powerMeter.Channel = RefSensorChannel;
 
-            while (_eState != eState.EndSession || _eState != eState.StopOrFail)
+            while (_eState != eState.EndSession && _eState != eState.StopOrFail)
             {
                 switch (_eState)
                 {
@@ -217,10 +217,11 @@ namespace ScriptHandler.Models.ScriptSteps
                         {
                             IsPass = false;
                             ErrorMessage = "Calibration - unable to save: " + _saveValue.ErrorMessage;
-                            _eState = eState.EndSession;
+                            _eState = eState.StopOrFail;
                             break;
                         }
                         IsPass = true;
+                        _eState = eState.EndSession;
                         break;
 
                     case eState.StopOrFail:
