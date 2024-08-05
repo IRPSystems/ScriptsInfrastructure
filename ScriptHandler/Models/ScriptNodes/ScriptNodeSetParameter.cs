@@ -4,6 +4,7 @@ using DeviceCommunicators.Models;
 using DeviceCommunicators.NI_6002;
 using DeviceCommunicators.SwitchRelay32;
 using DeviceHandler.Models;
+using Entities.Enums;
 using Entities.Models;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
@@ -103,18 +104,18 @@ namespace ScriptHandler.Models.ScriptNodes
 		public bool IsFault { get; set; }
 		public bool IsCriticalFault { get; set; }
 
-		public SafetyOfficerErrorLevelEnum SafetyOfficerErrorLevel
+		public ActiveErrorLevelEnum SafetyOfficerErrorLevel
 		{ 
 			get
 			{
 				if (IsWarning)
-					return SafetyOfficerErrorLevelEnum.Warning;
+					return ActiveErrorLevelEnum.Warning;
 				if (IsFault)
-					return SafetyOfficerErrorLevelEnum.Fault;
+					return ActiveErrorLevelEnum.Fault;
 				if (IsCriticalFault)
-					return SafetyOfficerErrorLevelEnum.CriticalFault;
+					return ActiveErrorLevelEnum.CriticalFault;
 
-				return SafetyOfficerErrorLevelEnum.Warning;
+				return ActiveErrorLevelEnum.Warning;
 			}
 		}
 
