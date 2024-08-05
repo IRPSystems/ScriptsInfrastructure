@@ -22,6 +22,9 @@ namespace ScriptHandler.Models.ScriptNodes
 		public int RefSensorNumOfReadings { get; set; }
 		public EolRefSensorChannelsEnum RefSensorChannel { get; set; }
 
+		public EolRefSensorPortsEnum RefSensorPorts { get; set; }
+		public int NIDAQValue { get; set; }
+
 		public double DeviationLimit { get; set; }
 
 		public override string Description 
