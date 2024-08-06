@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 using System;
 using System.Threading;
 using DeviceCommunicators.ZimmerPowerMeter;
-using static ScriptHandler.Models.ScriptSteps.ScriptStepEOLCalibrate;
+using ScriptHandler.Enums;
 
 namespace ScriptHandler.Models.ScriptSteps
 {
@@ -25,6 +25,9 @@ namespace ScriptHandler.Models.ScriptSteps
 		public DeviceParameterData RefSensorParam { get; set; }
         public int RefSensorNumOfReadings { get; set; }
 		public int RefSensorChannel { get; set; }
+
+		public int RefSensorPorts { get; set; }
+		public short NIDAQShuntResistor { get; set; }
 
 		public double DeviationLimit { get; set; }
 
@@ -330,6 +333,8 @@ namespace ScriptHandler.Models.ScriptSteps
             RefSensorParam = (sourceNode as ScriptNodeEOLCalibrate).RefSensorParam;
             RefSensorNumOfReadings = (sourceNode as ScriptNodeEOLCalibrate).RefSensorNumOfReadings;
 			RefSensorChannel = (int)(sourceNode as ScriptNodeEOLCalibrate).RefSensorChannel;
+			RefSensorPorts = (int)(sourceNode as ScriptNodeEOLCalibrate).RefSensorPorts;
+			NIDAQShuntResistor = (sourceNode as ScriptNodeEOLCalibrate).NIDAQShuntResistor;
 			gainMaxLimit = (sourceNode as ScriptNodeEOLCalibrate).GainMax;
             gainMinLimit = (sourceNode as ScriptNodeEOLCalibrate).GainMin;
             DeviationLimit = (sourceNode as ScriptNodeEOLCalibrate).DeviationLimit;
