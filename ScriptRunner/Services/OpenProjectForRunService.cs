@@ -117,6 +117,12 @@ namespace ScriptRunner.Services
 				if (!(scriptData is GeneratedTestData testData))
 					continue;
 
+				int totlsRunSteps = 0;
+				GetTotlsRunSteps(
+					testData,
+					ref totlsRunSteps);
+				testData.TotalRunSteps = totlsRunSteps;
+
 				GetRealScriptParameters(
 					scriptData,
 					devicesContainer);
@@ -167,6 +173,24 @@ namespace ScriptRunner.Services
 			LoggerService.Inforamtion(this, "Loaded a list of scripts");
 
 			return currentProject;
+		}
+
+		private void GetTotlsRunSteps(
+			GeneratedScriptData scriptData,
+			ref int totlsRunSteps)
+		{
+			foreach (IScriptItem item in scriptData.ScriptItemsList)
+			{
+				if(item is ISubScript subScript)
+				{
+					GetTotlsRunSteps(
+						subScript.Script as GeneratedScriptData,
+						ref totlsRunSteps);
+					continue;
+				}
+
+				totlsRunSteps++;
+			}
 		}
 
 		private void GetRealRecordingParameters(
