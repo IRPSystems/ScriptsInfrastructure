@@ -5,6 +5,7 @@ using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Enums;
 using DeviceHandler.Services;
+using Entities.Enums;
 using Entities.Models;
 using ScriptHandler.Enums;
 using ScriptHandler.Models;
@@ -29,7 +30,7 @@ namespace ScriptRunner.Services
 
 		private MCU_DeviceData _mcu_Device;
 
-		private SafetyOfficerErrorLevelEnum _safetyOfficerErrorLevel;
+		private ActiveErrorLevelEnum _safetyOfficerErrorLevel;
 
 
 		//private ManualResetEvent _waitGetCallback;
@@ -64,7 +65,7 @@ namespace ScriptRunner.Services
 			ControllerSettingsData selectedController,
 			MCU_DeviceData mcu_Device,
 			ParametersRepositoryService parametersRepository,
-			SafetyOfficerErrorLevelEnum safetyOfficerErrorLevel,
+			ActiveErrorLevelEnum safetyOfficerErrorLevel,
 			bool isTest = false)
 		{
 			LoggerService.Inforamtion(this, "Starting security officer");
@@ -221,7 +222,7 @@ namespace ScriptRunner.Services
 						saftyOfficerStatus = "Abort - Error exist";
 						StatusReportEvent?.Invoke();
 						message =
-							$"Error of level {(SafetyOfficerErrorLevelEnum)errorState} exist";
+							$"Error of level {(ActiveErrorLevelEnum)errorState} exist";
 
 
 					}

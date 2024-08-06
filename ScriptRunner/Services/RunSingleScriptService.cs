@@ -14,6 +14,7 @@ using DeviceHandler.Models;
 using DeviceCommunicators.MCU;
 using DeviceHandler.Models.DeviceFullDataModels;
 using ScriptRunner.ViewModels;
+using Entities.Enums;
 
 namespace ScriptRunner.Services
 {
@@ -129,7 +130,10 @@ namespace ScriptRunner.Services
 
 			_state = ScriptInternalStateEnum.HandleSpecial;
 			CurrentScript.IsPass = null;
-			
+
+			CurrentScript.PassRunSteps = 0;
+			CurrentScript.FailRunSteps = 0;
+
 			ScriptErrorMessage = "";
 
 			if (CurrentScript.ScriptItemsList == null || 
@@ -352,6 +356,8 @@ namespace ScriptRunner.Services
 
 					if(CurrentScript.Name != "Failed Step Notification")
 						SetCurrentStep(_currentStep.PassNext as ScriptStepBase);
+
+					CurrentScript.PassRunSteps++;
 				}
 				else
 				{
@@ -366,6 +372,8 @@ namespace ScriptRunner.Services
 					ScriptErrorMessage += _currentStep.ErrorMessage;
 
 					SetCurrentStep(_currentStep.FailNext as ScriptStepBase);
+
+					CurrentScript.FailRunSteps++;
 				}
 
 				if (_isAborted)
@@ -543,7 +551,7 @@ namespace ScriptRunner.Services
 		}
 
 
-		private bool StartSaftyOfficer(SafetyOfficerErrorLevelEnum safetyOfficerErrorLevel)
+		private bool StartSaftyOfficer(ActiveErrorLevelEnum safetyOfficerErrorLevel)
 		{
 			_selectMotor.Execute();
 

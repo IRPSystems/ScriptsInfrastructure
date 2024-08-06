@@ -32,7 +32,11 @@ namespace ScriptHandler.Models
         [JsonIgnore]
 		public Brush BorderBrush { get; set; }
 
-        public ObservableCollection<InvalidScriptItemData> ErrorsList { get; set; }
+        public int TotalRunSteps { get; set; }
+		public int PassRunSteps { get; set; }
+		public int FailRunSteps { get; set; }
+
+		public ObservableCollection<InvalidScriptItemData> ErrorsList { get; set; }
 
         public GeneratedScriptData()
         {
