@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System;
 using System.Threading;
 using DeviceCommunicators.ZimmerPowerMeter;
+using static ScriptHandler.Models.ScriptSteps.ScriptStepEOLCalibrate;
 
 namespace ScriptHandler.Models.ScriptSteps
 {
@@ -46,11 +47,15 @@ namespace ScriptHandler.Models.ScriptSteps
         private double gainMaxLimit;
         private double gainMinLimit;
 
-		#endregion Fields
+        private bool _isStopped;
 
-		#region Constructor
+		eState _eState = eState.Init;
 
-		public ScriptStepEOLCalibrate()
+        #endregion Fields
+
+        #region Constructor
+
+        public ScriptStepEOLCalibrate()
 		{
 			_getValue = new ScriptStepGetParamValue();
 			_setValue = new ScriptStepSetParameter();
@@ -63,112 +68,169 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		#region Methods
 
+		public enum eState
+		{
+			Init,
+			ReadGain,
+			ReadSensorsPreCalib,
+            ReadSensorsPostCalib,
+			CalculateNewGain,
+			SetNewGain,
+            VerifyDeviation,
+            SaveGain,
+            StopOrFail,
+            EndSession
+        }
 
 
 		public override void Execute()
 		{
-			if (RefSensorParam is ZimmerPowerMeter_ParamData powerMeter)
-				powerMeter.Channel = RefSensorChannel;
+            _eState = eState.Init;
 
-			//Calibrate
-			//Get reads
+            if (RefSensorParam is ZimmerPowerMeter_ParamData powerMeter)
+                powerMeter.Channel = RefSensorChannel;
 
-			_stepsCounter = 1;
+            while (_eState != eState.EndSession && _eState != eState.StopOrFail)
+            {
+                switch (_eState)
+                {
+                    case eState.Init:
+                        _stepsCounter = 1;
+                        _eState = eState.ReadGain;
+                        break;
 
-			_getValue.Parameter = GainParam;
-			_getValue.Communicator = MCU_Communicator;
-			_getValue.SendAndReceive();
-			if (!_getValue.IsPass)
-			{
-				ErrorMessage = "Calibration Error \r\n"
-					  + _getValue.ErrorMessage;
-				return;
-			}
+                    case eState.ReadGain:
+                        _getValue.Parameter = GainParam;
+                        _getValue.Communicator = MCU_Communicator;
+                        _getValue.SendAndReceive();
+                        if (!_getValue.IsPass)
+                        {
+                            ErrorMessage = "Calibration Error \r\n"
+                                  + _getValue.ErrorMessage;
+                            return;
+                        }
 
-			if (GainParam.Value != null)
-			{
-				prevGain = Convert.ToDouble(GainParam.Value);
-			}
+                        if (GainParam.Value != null)
+                        {
+                            prevGain = Convert.ToDouble(GainParam.Value);
+                        }
 
-			_stepsCounter++;
+                        _stepsCounter++;
+                        _eState = eState.ReadSensorsPreCalib;
+                        break;
 
-			if (!GetReadsMcuAndRefSensor())
-			{
-				IsPass = false;
-				return;
-			}
+                    case eState.ReadSensorsPreCalib:
 
-			_stepsCounter++;
+                        _stepsCounter++;
 
-			newGain = (prevGain * avgRefSensorRead) / avgMcuRead;
+                        if (!GetReadsMcuAndRefSensor())
+                        {
+                            IsPass = false;
+                            _eState = eState.StopOrFail;
+                            break;
+                        }
+                        _eState = eState.CalculateNewGain;
+                        break;
 
-			if (newGain > gainMaxLimit || newGain < gainMinLimit)
-			{
-				IsPass = false;
-				ErrorMessage = "Calculated gain has exceeded maximum limit\r\n" +
-								"Max gain limit: " + gainMaxLimit + "\r\n" +
-								"Min gain limit: " + gainMinLimit + "\r\n" +
-								"Calculated gain: " + newGain + "\r\n";
-				return;
-			}
+                    case eState.CalculateNewGain:
 
-			//Set new gain
+                        _stepsCounter++;
 
-			_stepsCounter++;
-			_setValue.Parameter = GainParam;
-			_setValue.Communicator = MCU_Communicator;
-			_setValue.Value = newGain;
-			_setValue.Execute();
+                        newGain = (prevGain * avgRefSensorRead) / avgMcuRead;
 
-			if (!_setValue.IsPass)
-			{
-				ErrorMessage = "Unable to set: " + GainParam.Name;
-				return;
-			}
+                        if (newGain > gainMaxLimit || newGain < gainMinLimit)
+                        {
+                            IsPass = false;
+                            ErrorMessage = "Calculated gain has exceeded maximum limit\r\n" +
+                                            "Max gain limit: " + gainMaxLimit + "\r\n" +
+                                            "Min gain limit: " + gainMinLimit + "\r\n" +
+                                            "Calculated gain: " + newGain + "\r\n";
+                            _eState = eState.StopOrFail;
+                            break;
+                        }
+                        _eState = eState.SetNewGain;
+                        break;
 
-			//Validate Calibration
+                    case eState.SetNewGain:
 
-			Thread.Sleep(100);
+                        _stepsCounter++;
+                        _setValue.Parameter = GainParam;
+                        _setValue.Communicator = MCU_Communicator;
+                        _setValue.Value = newGain;
+                        _setValue.Execute();
 
-			_stepsCounter++;
+                        if (!_setValue.IsPass)
+                        {
+                            ErrorMessage = "Unable to set: " + GainParam.Name;
+                            _eState = eState.StopOrFail;
+                            break;
+                        }
+                        _eState = eState.ReadSensorsPostCalib;
+                        break;
 
-			if (!GetReadsMcuAndRefSensor())
-			{
-				IsPass = false;
-				return;
-			}
 
-			deviation = Math.Abs(((float)avgRefSensorRead - (float)avgMcuRead) * 100 * 2) /
-						 (((float)avgRefSensorRead + (float)avgMcuRead));
+                    case eState.ReadSensorsPostCalib:
 
-			//deviation limit temp
-			DeviationLimit = 10;
+                        Thread.Sleep(100);
 
-			if (deviation > DeviationLimit)
-			{
-				IsPass = false;
-				ErrorMessage = "Calibration deviation has exceeded maximum limit\r\n" +
-												 "Deviation Result = " + deviation + "%" + "\r\n" +
-												 "Deviation Max Limit" + DeviationLimit + "%";
-				return;
-			}
+                        _stepsCounter++;
 
-			//If succeed save param
+                        if (!GetReadsMcuAndRefSensor())
+                        {
+                            IsPass = false;
+                            _eState = eState.StopOrFail;
+                            break;
+                        }
+                        _eState = eState.VerifyDeviation;
+                        break;
 
-			_stepsCounter++;
+                    case eState.VerifyDeviation:
 
-			_saveValue.Parameter = GainParam;
-			_saveValue.Communicator = MCU_Communicator;
-			_saveValue.Value = newGain;
-			_saveValue.Execute();
+                        deviation = Math.Abs(((float)avgRefSensorRead - (float)avgMcuRead) * 100 * 2) /
+                                     (((float)avgRefSensorRead + (float)avgMcuRead));
 
-			if(!_saveValue.IsPass)
-			{
-                IsPass = false;
-                ErrorMessage = "Calibration - unable to save: " + _saveValue.ErrorMessage;
-				return;
+                        //deviation limit temp
+                        DeviationLimit = 10;
+
+                        if (deviation > DeviationLimit)
+                        {
+                            IsPass = false;
+                            ErrorMessage = "Calibration deviation has exceeded maximum limit\r\n" +
+                                                             "Deviation Result = " + deviation + "%" + "\r\n" +
+                                                             "Deviation Max Limit" + DeviationLimit + "%";
+                            _eState = eState.StopOrFail;
+                            break;
+                        }
+                        _eState = eState.SaveGain;
+                        break;
+
+                    case eState.SaveGain:
+
+                        _stepsCounter++;
+
+                        _saveValue.Parameter = GainParam;
+                        _saveValue.Communicator = MCU_Communicator;
+                        _saveValue.Value = newGain;
+                        _saveValue.Execute();
+
+                        if (!_saveValue.IsPass)
+                        {
+                            IsPass = false;
+                            ErrorMessage = "Calibration - unable to save: " + _saveValue.ErrorMessage;
+                            _eState = eState.StopOrFail;
+                            break;
+                        }
+                        IsPass = true;
+                        _eState = eState.EndSession;
+                        break;
+
+                    case eState.StopOrFail:
+
+                        IsPass = false;
+                        break;
+                }
             }
-			IsPass = true;
+
             return;
         }
 
@@ -182,6 +244,11 @@ namespace ScriptHandler.Models.ScriptSteps
 
             avgMcuRead = GetAvgRead(_getValue, McuNumOfReadings, McuParam);
 
+			if (_isStopped)
+			{
+				return false;
+			}
+
 			if(McuParam.Value == null)
 			{
                 ErrorMessage = "Unable to get param: " + _getValue.ErrorMessage;
@@ -194,6 +261,11 @@ namespace ScriptHandler.Models.ScriptSteps
 			_stepsCounter++;
 
 			avgRefSensorRead = GetAvgRead(_getValue, RefSensorNumOfReadings, RefSensorParam);
+
+            if (_isStopped)
+            {
+                return false;
+            }
 
             if (RefSensorParam.Value == null)
             {
@@ -215,6 +287,10 @@ namespace ScriptHandler.Models.ScriptSteps
 			double avgRead = 0;
 			for (int i = 0; i < numOfReads; i++)
 			{
+				if(_isStopped)
+				{
+					break;
+				}
 				scriptStepGetParamValue.SendAndReceive();
 				if (!scriptStepGetParamValue.IsPass)
 				{
@@ -234,8 +310,12 @@ namespace ScriptHandler.Models.ScriptSteps
 
         protected override void Stop()
 		{
+			_eState = eState.StopOrFail;
+            if (_isStopped)
+                return;
 
-		}
+            _isStopped = true;
+        }
 
 		public override void Generate(
 			ScriptNodeBase sourceNode,
