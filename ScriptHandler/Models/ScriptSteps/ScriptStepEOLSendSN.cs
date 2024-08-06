@@ -20,12 +20,12 @@ namespace ScriptHandler.Models.ScriptSteps
 		public DeviceParameterData SN_Param { get; set; }
 		public DeviceCommunicator Communicator { get; set; }
 
+		public string SerialNumber { get; set; }
+		public string UserSN { get; set; }
+
 		private ScriptStepSetParameter _setValue;
 		private ScriptStepGetParamValue _getValue;
 		private ScriptStepSetSaveParameter _saveValue;
-
-		private string userSN = "E7P-22-00-00032";
-		private string serialNumber;
 
 		#endregion Properties and Fields
 
@@ -34,6 +34,7 @@ namespace ScriptHandler.Models.ScriptSteps
 		public ScriptStepEOLSendSN()
 		{
 			_totalNumOfSteps = 4;
+			UserSN = "E7P-22-00-00032";
 		}
 
 		#endregion Constructor
@@ -48,15 +49,15 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			_stepsCounter = 1;
 
-			serialNumber = Regex.Replace(userSN, "[A-Za-z ]", "");
-			serialNumber = serialNumber.Remove(0, 1);
-			serialNumber = serialNumber.Replace("-", "");
+			SerialNumber = Regex.Replace(UserSN, "[A-Za-z ]", "");
+			SerialNumber = SerialNumber.Remove(0, 1);
+			SerialNumber = SerialNumber.Replace("-", "");
 
 			//Set SN
 			_setValue = new ScriptStepSetParameter();
 			_setValue.Parameter = SN_Param;
 			_setValue.Communicator = Communicator;
-			_setValue.Value = serialNumber;
+			_setValue.Value = SerialNumber;
 			_setValue.Execute();
 
 			if (!_setValue.IsPass)
@@ -76,7 +77,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			if (!_getValue.IsPass)
 			{
 				//Validate SN
-				if (SN_Param.Value as string == userSN)
+				if (SN_Param.Value as string == UserSN)
 				{
 					ErrorMessage = "Wrong SN \r\n"
 					+ _getValue.ErrorMessage;
@@ -92,7 +93,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			_saveValue = new ScriptStepSetSaveParameter();
 			_saveValue.Parameter = SN_Param;
 			_saveValue.Communicator = Communicator;
-			_saveValue.Value = Convert.ToDouble(serialNumber);
+			_saveValue.Value = Convert.ToDouble(SerialNumber);
 			_saveValue.Execute();
 
 			if (!_saveValue.IsPass)
