@@ -4,7 +4,9 @@ using DeviceCommunicators.Models;
 using DeviceCommunicators.NI_6002;
 using DeviceCommunicators.SwitchRelay32;
 using DeviceHandler.Models;
+using Entities.Enums;
 using Entities.Models;
+using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using Syncfusion.Windows.Tools;
 using System;
@@ -13,12 +15,9 @@ using System.Collections.ObjectModel;
 namespace ScriptHandler.Models.ScriptNodes
 {
 	public class ScriptNodeSetParameter : ScriptNodeBase, IScriptStepWithParameter
-	{
-		public ScriptNodeSetParameter()
-		{
-			Description = Name = "Set Parameter";
-			_valueDropDwonIndex = -1;
-		}
+	{	
+
+		#region Properties and Fields
 
 		private DeviceParameterData _parameter;
 		public DeviceParameterData Parameter
@@ -101,6 +100,25 @@ namespace ScriptHandler.Models.ScriptNodes
 			}
 		}
 
+		public bool IsWarning { get; set; }
+		public bool IsFault { get; set; }
+		public bool IsCriticalFault { get; set; }
+
+		public ActiveErrorLevelEnum SafetyOfficerErrorLevel
+		{ 
+			get
+			{
+				if (IsWarning)
+					return ActiveErrorLevelEnum.Warning;
+				if (IsFault)
+					return ActiveErrorLevelEnum.Fault;
+				if (IsCriticalFault)
+					return ActiveErrorLevelEnum.CriticalFault;
+
+				return ActiveErrorLevelEnum.Warning;
+			}
+		}
+
 
 		public override string Description
 		{
@@ -150,6 +168,21 @@ namespace ScriptHandler.Models.ScriptNodes
 			}
 		}
 
+		#endregion Properties and Fields
+
+		#region Constructor
+
+		public ScriptNodeSetParameter()
+		{
+			Description = Name = "Set Parameter";
+			_valueDropDwonIndex = -1;
+			IsWarning = true;
+		}
+
+		#endregion Constructor
+
+		#region Method
+
 		public override bool IsNotSet(
 			DevicesContainer devicesContainer,
 			ObservableCollection<InvalidScriptItemData> errorsList)
@@ -159,5 +192,7 @@ namespace ScriptHandler.Models.ScriptNodes
 
 			return false;
 		}
+
+		#endregion Method
 	}
 }

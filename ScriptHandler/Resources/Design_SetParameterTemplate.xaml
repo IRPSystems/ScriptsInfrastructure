@@ -17,7 +17,22 @@
     <local_converter:HexUintConverter x:Key="HexUintConverter"/>
     <local_converter:NIPortVisibilityConverter x:Key="NIPortVisibilityConverter" />
 
+    <DataTemplate x:Key="ErrLevelForSaftyOfficer_Template">
 
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="500"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <RadioButton Content="Warnings" IsChecked="{Binding IsWarning}" Margin="0,0,10,0" />
+                <RadioButton Content="Fault" IsChecked="{Binding IsFault}" Margin="0,0,10,0" />
+                <RadioButton Content="Critical Falt" IsChecked="{Binding IsCriticalFault}" />
+            </StackPanel>
+        </Grid>
+    </DataTemplate>
 
 
     <DataTemplate x:Key="SwitchRelayParamValue_SingleChannel_Template">
@@ -215,6 +230,7 @@
                 <RowDefinition Height="27"/>
                 <RowDefinition Height="5"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="5"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
@@ -253,6 +269,12 @@
                            Content="{Binding}"
                            Visibility="Collapsed"/>
 
+            <ContentControl Grid.Row="4" Grid.ColumnSpan="3"
+                            ContentTemplate="{StaticResource ErrLevelForSaftyOfficer_Template}"
+                            Name="ccSaftyOfficer"
+                            Content="{Binding}"
+                            Visibility="Collapsed"/>
+
 
 
         </Grid>
@@ -264,6 +286,7 @@
                 <Setter TargetName="ccRegular" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccNI" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>
 
             </DataTrigger>
 
@@ -272,6 +295,16 @@
                 <Setter TargetName="ccRegular" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccNI" Property="Visibility" Value="Visible"/>
                 <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>
+
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Parameter, Converter={StaticResource TypeToNameConverter}}" Value="Evva_ParamData">
+
+                <Setter TargetName="ccRegular" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="ccNI" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Visible"/>
 
             </DataTrigger>
 

@@ -22,8 +22,12 @@ namespace ScriptHandler.Services
 			{
 				if(node is ScriptNodeSetParameter setParameter &&
 					setParameter.Parameter is Evva_ParamData)
-				{					
-					return new ScriptStepStartStopSaftyOfficer();
+				{
+					var step = new ScriptStepStartStopSaftyOfficer()
+					{
+						SafetyOfficerErrorLevel = setParameter.SafetyOfficerErrorLevel
+					};
+					return step;
 				}
 				else
 					return new ScriptStepSetParameter();

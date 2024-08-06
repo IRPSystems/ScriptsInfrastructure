@@ -6,6 +6,7 @@ using DeviceCommunicators.Models;
 using DeviceHandler.Enums;
 using DeviceHandler.Services;
 using Entities.Models;
+using ScriptHandler.Enums;
 using ScriptHandler.Models;
 using Services.Services;
 using System;
@@ -27,6 +28,8 @@ namespace ScriptRunner.Services
 		private ParametersRepositoryService _parametersRepository;
 
 		private MCU_DeviceData _mcu_Device;
+
+		private SafetyOfficerErrorLevelEnum _safetyOfficerErrorLevel;
 
 
 		//private ManualResetEvent _waitGetCallback;
@@ -61,6 +64,7 @@ namespace ScriptRunner.Services
 			ControllerSettingsData selectedController,
 			MCU_DeviceData mcu_Device,
 			ParametersRepositoryService parametersRepository,
+			SafetyOfficerErrorLevelEnum safetyOfficerErrorLevel,
 			bool isTest = false)
 		{
 			LoggerService.Inforamtion(this, "Starting security officer");
@@ -69,6 +73,7 @@ namespace ScriptRunner.Services
 			_selectedController = selectedController;
 			_mcu_Device = mcu_Device;
 			_parametersRepository = parametersRepository;
+			_safetyOfficerErrorLevel = safetyOfficerErrorLevel;
 
 			SaftyOfficerStatus = "";
 
@@ -101,6 +106,13 @@ namespace ScriptRunner.Services
 				if (param != null)
 					parametersRepository.Add(param, RepositoryPriorityEnum.High, GetCallback);
 			}
+
+			DeviceParameterData paramFlthi =
+					_mcu_Device.MCU_FullList.ToList().Find((p) =>
+												((MCU_ParamData)p).Cmd != null &&
+												((MCU_ParamData)p).Cmd.ToLower() == "flthi");
+			if (paramFlthi != null)
+				parametersRepository.Add(paramFlthi, RepositoryPriorityEnum.High, GetCallback);
 
 			IsRunning = true;
 		}
@@ -144,6 +156,13 @@ namespace ScriptRunner.Services
 						_parametersRepository.Remove(param, GetCallback);
 				}
 			}
+
+			DeviceParameterData paramFlthi =
+					_mcu_Device.MCU_FullList.ToList().Find((p) =>
+												((MCU_ParamData)p).Cmd != null &&
+												((MCU_ParamData)p).Cmd.ToLower() == "flthi");
+			if (paramFlthi != null)
+				_parametersRepository.Remove(paramFlthi, GetCallback);
 		}
 
 		private void GetCallback(DeviceParameterData param, CommunicatorResultEnum result, string resultDescription)
@@ -192,31 +211,51 @@ namespace ScriptRunner.Services
 			}
 			else if (param.Value != null) 
 			{
-				if (param.Name == "Bus Current") { }
-				double value = Convert.ToDouble(param.Value);
-				//value = value / (param as MCU_ParamData).Scale;
-
-				string errorStr;
-				ParameterValueData expectedParam = IsValueValue(
-					param as MCU_ParamData, 
-					out errorStr);
-
-				if (expectedParam != null && value >= expectedParam.Value)
+				if (param is MCU_ParamData mcuParam &&
+					mcuParam.Cmd == "flthi")
 				{
-					saftyOfficerStatus = "Abort - Invalid Value";
-					StatusReportEvent?.Invoke();
-					message =
-						"Security Oficer Error:\r\n" +
-						"\"" + param.Name + "\" = " + value + "\r\n" +
-						"Should be less than " + expectedParam.Value;
+					uint uval = (uint)Convert.ToDouble(mcuParam.Value);
+					uint errorState = (uval >> 8) & 0xF;
+					if (errorState >= (uint)_safetyOfficerErrorLevel)
+					{
+						saftyOfficerStatus = "Abort - Error exist";
+						StatusReportEvent?.Invoke();
+						message =
+							$"Error of level {(SafetyOfficerErrorLevelEnum)errorState} exist";
 
-					
+
+					}
+
 				}
 
-				else if (_isTest)
+				else
 				{
-					saftyOfficerStatus = "Valid value";
-					StatusReportEvent?.Invoke();
+
+					double value = Convert.ToDouble(param.Value);
+					//value = value / (param as MCU_ParamData).Scale;
+
+					string errorStr;
+					ParameterValueData expectedParam = IsValueValue(
+						param as MCU_ParamData,
+						out errorStr);
+
+					if (expectedParam != null && value >= expectedParam.Value)
+					{
+						saftyOfficerStatus = "Abort - Invalid Value";
+						StatusReportEvent?.Invoke();
+						message =
+							"Security Oficer Error:\r\n" +
+							"\"" + param.Name + "\" = " + value + "\r\n" +
+							"Should be less than " + expectedParam.Value;
+
+
+					}
+
+					else if (_isTest)
+					{
+						saftyOfficerStatus = "Valid value";
+						StatusReportEvent?.Invoke();
+					}
 				}
 			}
 			else { }
