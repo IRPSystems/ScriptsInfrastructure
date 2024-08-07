@@ -10,6 +10,8 @@ using System;
 using System.Threading;
 using DeviceCommunicators.ZimmerPowerMeter;
 using ScriptHandler.Enums;
+using DeviceCommunicators.NI_6002;
+using Services.Services;
 
 namespace ScriptHandler.Models.ScriptSteps
 {
@@ -27,7 +29,7 @@ namespace ScriptHandler.Models.ScriptSteps
 		public int RefSensorChannel { get; set; }
 
 		public int RefSensorPorts { get; set; }
-		public short NIDAQShuntResistor { get; set; }
+		public double NIDAQShuntResistor { get; set; }
 
 		public double DeviationLimit { get; set; }
 
@@ -93,6 +95,14 @@ namespace ScriptHandler.Models.ScriptSteps
             if (RefSensorParam is ZimmerPowerMeter_ParamData powerMeter)
                 powerMeter.Channel = RefSensorChannel;
 
+            if (RefSensorParam is NI6002_ParamData niParamData)
+            {
+                niParamData.Io_port = RefSensorPorts;
+                niParamData.shunt_resistor = NIDAQShuntResistor;
+                LoggerService.Error(this, "Execute: Daq Port" + niParamData.Io_port.ToString());
+            }
+
+
             while (_eState != eState.EndSession && _eState != eState.StopOrFail)
             {
                 switch (_eState)
@@ -132,6 +142,7 @@ namespace ScriptHandler.Models.ScriptSteps
                             _eState = eState.StopOrFail;
 							break;
                         }
+                        LoggerService.Error(this, "ReadSensorsPreCalib: avgRefSensorRead:" + avgRefSensorRead.ToString());
                         _eState = eState.CalculateNewGain;
                         break;
 

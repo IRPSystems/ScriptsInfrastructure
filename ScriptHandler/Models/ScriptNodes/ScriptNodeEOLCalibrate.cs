@@ -23,7 +23,7 @@ namespace ScriptHandler.Models.ScriptNodes
 		public EolRefSensorChannelsEnum RefSensorChannel { get; set; }
 
 		public EolRefSensorPortsEnum RefSensorPorts { get; set; }
-		public short NIDAQShuntResistor { get; set; }
+		public double NIDAQShuntResistor { get; set; }
 
 		public double DeviationLimit { get; set; }
 
