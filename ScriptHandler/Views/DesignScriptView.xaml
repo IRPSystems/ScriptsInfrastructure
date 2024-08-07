@@ -104,11 +104,21 @@
                                                   HorizontalAlignment="Left" VerticalAlignment="Center"
                                                   Style="{StaticResource CollapseExpandToggelButtonStyle}"/>
 
-                                        <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Description}"
-                                               FontWeight="DemiBold" 
-                                               HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <Grid Grid.Row="0" Grid.Column="2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="5"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <TextBlock Grid.Column="0" Text="{Binding Description}"
+                                                   FontWeight="DemiBold" 
+                                                   HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
-
+                                            <Menu>
+                                                <MenuItem Header="Reports"/>
+                                            </Menu>
+                                        </Grid>
 
 
                                         <Grid Grid.Row="2" Grid.Column="2" Background="Transparent" AllowDrop="False"
