@@ -148,7 +148,7 @@ namespace ScriptHandler.Models
 			});
 		}
 
-		public override void Generate(
+		protected override void Generate(
 			ScriptNodeBase sourceNode,
 			Dictionary<int, ScriptStepBase> stepNameToObject,
 			ref List<DeviceCommunicator> usedCommunicatorsList,

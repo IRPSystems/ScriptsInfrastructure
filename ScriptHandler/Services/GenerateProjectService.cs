@@ -182,7 +182,7 @@ namespace ScriptHandler.Services
                     }
                 }
 
-                scriptStep.Generate(
+                scriptStep.Generate_Base(
                     scriptNode,
 					stepNameToObject,
 					ref usedCommunicatorsList,

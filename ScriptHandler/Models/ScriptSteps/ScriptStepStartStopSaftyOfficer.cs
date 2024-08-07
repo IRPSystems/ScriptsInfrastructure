@@ -21,7 +21,7 @@ namespace ScriptHandler.Models
 			Description = "Start/Stop Safty Officer";
 		}
 
-		public override void Generate(
+		protected override void Generate(
 			ScriptNodeBase sourceNode,
 			Dictionary<int, ScriptStepBase> stepNameToObject,
 			ref List<DeviceCommunicator> usedCommunicatorsList,

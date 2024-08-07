@@ -106,7 +106,7 @@ namespace ScriptHandler.Models
 			return false;
 		}
 
-		public override void Generate(
+		protected override void Generate(
 			ScriptNodeBase sourceNode,
 			Dictionary<int, ScriptStepBase> stepNameToObject,
 			ref List<DeviceCommunicator> usedCommunicatorsList,

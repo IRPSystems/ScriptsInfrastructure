@@ -9,6 +9,7 @@ using DeviceHandler.Models.DeviceFullDataModels;
 using Newtonsoft.Json;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
+using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -70,6 +71,8 @@ namespace ScriptHandler.Models
 		public int ID { get; set; }
 
 		public EOLReportsSelectionData EOLReportsSelectionData { get; set; }
+		public List<EOLStepSummeryData> EOLStepSummerysList { get; set; }
+
 
 		public int ProgressPercentage { get; set; }
 		protected int _totalNumOfSteps;
@@ -83,7 +86,7 @@ namespace ScriptHandler.Models
 
 		public ScriptStepBase()
 		{
-			
+			EOLStepSummerysList = new List<EOLStepSummeryData>();
 		}
 
 		#endregion Constructor
@@ -112,7 +115,24 @@ namespace ScriptHandler.Models
 			return false;
 		}
 
-		public virtual void Generate(
+		public virtual void Generate_Base(
+			ScriptNodeBase sourceNode,
+			Dictionary<int, ScriptStepBase> stepNameToObject,
+			ref List<DeviceCommunicator> usedCommunicatorsList,
+			GenerateProjectService generateService,
+			DevicesContainer devicesContainer)
+		{
+			EOLReportsSelectionData = sourceNode.EOLReportsSelectionData;
+
+			Generate(
+				sourceNode,
+				stepNameToObject,
+				ref usedCommunicatorsList,
+				generateService,
+				devicesContainer);
+		}
+
+		protected virtual void Generate(
 			ScriptNodeBase sourceNode,
 			Dictionary<int, ScriptStepBase> stepNameToObject,
 			ref List<DeviceCommunicator> usedCommunicatorsList,
