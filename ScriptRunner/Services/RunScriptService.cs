@@ -23,6 +23,10 @@ namespace ScriptRunner.Services
 {
 	public class RunScriptService : ObservableObject, IDisposable
 	{
+		public class RunTimeData : ObservableObject
+		{
+			public TimeSpan RunTime { get; set; }
+		}
 
 		#region Properties
 
@@ -62,13 +66,15 @@ namespace ScriptRunner.Services
 		//public MotorSettingsData SelectedMotor { get; set; }
 		//public ControllerSettingsData SelectedController { get; set; }
 
-		public TimeSpan RunTime { get; set; }
+		public RunTimeData RunTime { get; set; }
 
 		public SaftyOfficerService SaftyOfficer { get; set; }
 
 		public ScriptStepSelectMotorType SelectMotor { get; set; }
 
 		public int ExecutedStepsPercentage { get; set; }
+
+		public TestStudioLoggerService MainScriptLogger { get; set; }
 
 		#endregion Properties
 
@@ -78,7 +84,7 @@ namespace ScriptRunner.Services
 		private ScriptStepAbort _abortScriptStep;
 
 
-		public TestStudioLoggerService MainScriptLogger;
+		
 
 		
 
@@ -124,7 +130,7 @@ namespace ScriptRunner.Services
 			StopScriptStep = stopScriptStep;
 			_canMessageSender = canMessageSender;
 
-
+			RunTime = new RunTimeData();
 
 			string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 			path = Path.Combine(path, "Logs");
@@ -247,7 +253,7 @@ namespace ScriptRunner.Services
 
 			MainScriptLogger.Clear();
 			MainScriptLogger.AddLine(
-				RunTime,
+				RunTime.RunTime,
 				"Start Test \"" + currentScript.Name + "\"",
 				LogTypeEnum.ScriptData);
 

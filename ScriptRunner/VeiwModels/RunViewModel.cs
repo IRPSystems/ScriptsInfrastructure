@@ -439,7 +439,7 @@ namespace ScriptRunner.ViewModels
 
 			Application.Current.Dispatcher.Invoke(() =>
 			{
-				RunScript.RunTime = DateTime.Now - _scriptStartTime;
+				RunScript.RunTime.RunTime = DateTime.Now - _scriptStartTime;
 			});
 		}
 

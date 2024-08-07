@@ -59,7 +59,7 @@ namespace ScriptRunner.Services
 
 		private ManualResetEvent _userDecision;
 
-		private TimeSpan _runTime;
+		private RunScriptService.RunTimeData _runTime;
 
 		private TestStudioLoggerService _mainScriptLogger;
 
@@ -82,7 +82,7 @@ namespace ScriptRunner.Services
 		#region Constructor
 
 		public RunSingleScriptService(
-			TimeSpan runTime,
+			RunScriptService.RunTimeData runTime,
 			TestStudioLoggerService mainScriptLogger,
 			GeneratedScriptData currentScript,
 			ScriptStepSubScript scriptStep,
@@ -145,7 +145,7 @@ namespace ScriptRunner.Services
 			}
 
 			_mainScriptLogger.AddLine(
-				_runTime,
+				_runTime.RunTime,
 				"Start script \"" + CurrentScript.Name + "\"",
 				LogTypeEnum.ScriptData);
 
@@ -233,7 +233,7 @@ namespace ScriptRunner.Services
 
 
 									_mainScriptLogger.AddLine(
-										_runTime,
+										_runTime.RunTime,
 										"Start step \"" + _currentStep.Description + "\"",
 										LogTypeEnum.StepData);
 
@@ -350,7 +350,7 @@ namespace ScriptRunner.Services
 				if (_currentStep.IsPass)
 				{
 					_mainScriptLogger.AddLine(
-						_runTime,
+						_runTime.RunTime,
 						"Step \"" + _currentStep.Description + "\" passed",
 						LogTypeEnum.Pass);
 
@@ -362,8 +362,8 @@ namespace ScriptRunner.Services
 				else
 				{
 					_mainScriptLogger.AddLine(
-						_runTime,
-						_currentStep.ErrorMessage,
+						_runTime.RunTime,
+						$"Step \"{_currentStep.Description}\" failed\r\n{_currentStep.ErrorMessage}",
 						LogTypeEnum.Fail);
 
 					if (CurrentScript != null && _currentStep.FailNext == null)
@@ -395,7 +395,7 @@ namespace ScriptRunner.Services
 			if (CurrentScript != null)
 			{
 				_mainScriptLogger.AddLine(
-					_runTime,
+					_runTime.RunTime,
 					"End script \"" + CurrentScript.Name + "\"",
 					LogTypeEnum.ScriptData);
 
@@ -410,7 +410,7 @@ namespace ScriptRunner.Services
 			else 
 			{
 				_mainScriptLogger.AddLine(
-					_runTime,
+					_runTime.RunTime,
 					"End script \"Unknown\"",
 					LogTypeEnum.ScriptData);
 			}

@@ -63,6 +63,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			if (!_setValue.IsPass)
 			{
 				ErrorMessage = "Unable to set: " + SN_Param.Name;
+				IsPass = false;
 				return;
 			}
 
@@ -75,7 +76,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			_getValue.Communicator = Communicator;
 			_getValue.SendAndReceive();
 			if (!_getValue.IsPass)
-			{
+			{				
 				//Validate SN
 				if (SN_Param.Value as string == UserSN)
 				{
@@ -84,6 +85,12 @@ namespace ScriptHandler.Models.ScriptSteps
 					IsPass = false;
 					return;
 				}
+			}
+			else
+			{
+				ErrorMessage = "Failed to get the SN parameter";
+				IsPass = false;
+				return;
 			}
 
 			_stepsCounter++;

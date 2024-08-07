@@ -130,7 +130,7 @@ namespace ScriptHandler.Models.ScriptSteps
                         {
                             IsPass = false;
                             _eState = eState.StopOrFail;
-                            break;
+							break;
                         }
                         _eState = eState.CalculateNewGain;
                         break;

@@ -1,7 +1,6 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
 using CsvHelper;
-using Entities.Models;
 using ScriptRunner.Enums;
 using ScriptRunner.Models;
 using Services.Services;
@@ -10,8 +9,6 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Windows;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 
 namespace ScriptRunner.Services
 {
@@ -19,13 +16,13 @@ namespace ScriptRunner.Services
     {
 		#region Properties
 
-		
+		public ObservableCollection<LogLineData> LogLinesList { get; set; }
 
 		#endregion Properties
 
 		#region Fields
 
-		private ObservableCollection<LogLineData> _logLinesList { get; set; }
+
 
 		#endregion Fields
 
@@ -34,7 +31,7 @@ namespace ScriptRunner.Services
 		public TestStudioLoggerService()
         {
 			
-			_logLinesList = new ObservableCollection<LogLineData>();
+			LogLinesList = new ObservableCollection<LogLineData>();
 		}
 
 		#endregion Constructor
@@ -44,7 +41,7 @@ namespace ScriptRunner.Services
 
 		public void AddLine(LogLineData lineData)
         {
-			_logLinesList.Add(lineData);
+			LogLinesList.Add(lineData);
 		}
 
 		public void AddLine( 
@@ -59,7 +56,10 @@ namespace ScriptRunner.Services
 				LogType = logType,
 			};
 
-			_logLinesList.Add(lineData);
+			Application.Current.Dispatcher.Invoke(() =>
+			{
+				LogLinesList.Add(lineData);
+			});
 		}
 
 
@@ -68,7 +68,7 @@ namespace ScriptRunner.Services
 		}
 		public void Clear()
 		{
-			_logLinesList.Clear();
+			LogLinesList.Clear();
 		}
 
 		public void Save(string scriptName)
@@ -96,7 +96,7 @@ namespace ScriptRunner.Services
 						csvWriter.NextRecord();
 
 
-						foreach (LogLineData line in _logLinesList)
+						foreach (LogLineData line in LogLinesList)
 						{
 							if(line == null)
 								continue;
