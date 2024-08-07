@@ -191,7 +191,7 @@
                        VerticalAlignment="Center"
                        FontSize="14"
                        FontWeight="DemiBold"
-                       Text="{Binding RunScript.RunTime, StringFormat=hh\\:mm\\:ss}" />
+                       Text="{Binding RunScript.RunTime.RunTime, StringFormat=hh\\:mm\\:ss}" />
 
                 <Button Style="{StaticResource ButtonWithIconStyle}"
                     Grid.Column="4"
