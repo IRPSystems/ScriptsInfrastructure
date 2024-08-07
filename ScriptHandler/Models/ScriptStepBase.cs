@@ -20,6 +20,8 @@ namespace ScriptHandler.Models
 {
 	public class ScriptStepBase : ObservableObject, IScriptItem
 	{
+		#region Properties and Fields
+
 		public string Name { get; set; }
 		public virtual string Description { get; set; }
 
@@ -67,15 +69,26 @@ namespace ScriptHandler.Models
 
 		public int ID { get; set; }
 
+		public EOLReportsSelectionData EOLReportsSelectionData { get; set; }
+
 		public int ProgressPercentage { get; set; }
 		protected int _totalNumOfSteps;
 		protected int _stepsCounter;
+
+
+
+		#endregion Properties and Fields
+
+		#region Constructor
 
 		public ScriptStepBase()
 		{
 			
 		}
 
+		#endregion Constructor
+
+		#region Methods
 
 		public virtual void Execute()
 		{
@@ -154,6 +167,6 @@ namespace ScriptHandler.Models
 			return actualParam;
 		}
 
-
+		#endregion Methods
 	}
 }

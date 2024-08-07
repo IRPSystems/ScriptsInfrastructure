@@ -86,7 +86,7 @@
 
                                     <Grid Margin="5" >
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="27" />
+                                            <RowDefinition Height="30" />
                                             <RowDefinition Height="5" />
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
@@ -115,8 +115,24 @@
                                                    FontWeight="DemiBold" 
                                                    HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
-                                            <Menu>
-                                                <MenuItem Header="Reports"/>
+                                            <Menu Grid.Column="2"
+                                                  BorderBrush="{DynamicResource MahApps.Brushes.Gray1}"
+                                                  BorderThickness="1"
+                                                  Padding="0">
+                                                <MenuItem Header="Reports">
+                                                    <MenuItem Header="Save To Excel"
+                                                              IsCheckable="True" 
+                                                              IsChecked="{Binding EOLReportsSelectionData.IsSaveToExcel, 
+                                                                                  Mode=TwoWay, 
+                                                                                  UpdateSourceTrigger=PropertyChanged}"/>
+
+                                                    <MenuItem Header="Save To PDF"
+                                                              IsCheckable="True" 
+                                                              IsChecked="{Binding EOLReportsSelectionData.IsSaveToPdf, 
+                                                                                  Mode=TwoWay, 
+                                                                                  UpdateSourceTrigger=PropertyChanged}"/>
+
+                                                </MenuItem>
                                             </Menu>
                                         </Grid>
 

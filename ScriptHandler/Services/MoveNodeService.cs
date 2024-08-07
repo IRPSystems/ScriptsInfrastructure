@@ -2,6 +2,8 @@
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models;
 using ScriptHandler.ViewModels;
+using Services.Services;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -73,26 +75,32 @@ namespace ScriptHandler.Services
 			int indexOfDroppedOn,
 			ObservableCollection<IScriptItem> scriptNodeList)
 		{
-			if(indexOfDroppedOn < 0)
+			try
 			{
-				scriptNodeList[scriptNodeList.Count - 1].PassNext = null;
-				scriptNodeList[scriptNodeList.Count - 2].PassNext =
-					scriptNodeList[scriptNodeList.Count - 1];
-				return;
-			}
+				if (indexOfDroppedOn < 0)
+				{
+					scriptNodeList[scriptNodeList.Count - 1].PassNext = null;
+					scriptNodeList[scriptNodeList.Count - 2].PassNext =
+						scriptNodeList[scriptNodeList.Count - 1];
+					return;
+				}
 
-			if(indexOfDroppedOn > 0)
-				scriptNodeList[indexOfDroppedOn - 1].PassNext = scriptNodeList[indexOfDroppedOn];
+				if (indexOfDroppedOn > 0)
+					scriptNodeList[indexOfDroppedOn - 1].PassNext = scriptNodeList[indexOfDroppedOn];
 
-			if (indexOfDroppedOn >= 0 && indexOfDroppedOn < (scriptNodeList.Count - 1))
-			{
-				scriptNodeList[indexOfDroppedOn].PassNext = scriptNodeList[indexOfDroppedOn + 1];
+				if (indexOfDroppedOn >= 0 && indexOfDroppedOn < (scriptNodeList.Count - 1))
+				{
+					scriptNodeList[indexOfDroppedOn].PassNext = scriptNodeList[indexOfDroppedOn + 1];
+				}
+				else if (indexOfDroppedOn == (scriptNodeList.Count - 1))
+				{
+					scriptNodeList[scriptNodeList.Count - 1].PassNext = null;
+				}
 			}
-			else if (indexOfDroppedOn == (scriptNodeList.Count - 1))
+			catch(Exception ex)
 			{
-				scriptNodeList[scriptNodeList.Count - 1].PassNext = null;
+				LoggerService.Error(this, "Failed to move the tool", ex);
 			}
-				
 		}
 
 		private void SetPassNextInOldLocation(
