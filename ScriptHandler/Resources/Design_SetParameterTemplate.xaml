@@ -144,10 +144,6 @@
 
 
 
-
-
-
-
     <DataTemplate x:Key="NIExtrasTemplate">
         <Grid>
             <Grid.RowDefinitions>
@@ -166,9 +162,42 @@
             <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Ni6002_Value}" />
 
             <TextBlock Grid.Row="2" Grid.Column="0" Text="Pin out" VerticalAlignment="Center" 
-                       Visibility="{Binding Parameter, Converter={StaticResource NIPortVisibilityConverter}}" Margin="0,5,0,0"/>
+                   Visibility="{Binding Parameter, Converter={StaticResource NIPortVisibilityConverter}}" Margin="0,5,0,0"/>
             <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Ni6002_IOPort}" 
-                     Visibility="{Binding Parameter, Converter={StaticResource NIPortVisibilityConverter}}" Margin="0,5,0,0"/>
+                 Visibility="{Binding Parameter, Converter={StaticResource NIPortVisibilityConverter}}" Margin="0,5,0,0"/>
+
+        </Grid>
+    </DataTemplate>
+
+
+
+    <DataTemplate x:Key="NumatoGPIOExtrasTemplate">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="500"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Value" VerticalAlignment="Center" />
+            <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Value}" />
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Port" VerticalAlignment="Center" Margin="0,5,0,0"/>
+            <ComboBox Grid.Row="2" Grid.Column="2" 
+                      ItemsSource="{Binding Parameter.DropDown}"
+                      SelectedItem="{Binding Parameter.Io_port}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
 
         </Grid>
     </DataTemplate>
@@ -269,6 +298,12 @@
                            Content="{Binding}"
                            Visibility="Collapsed"/>
 
+            <ContentControl Grid.Row="2" Grid.ColumnSpan="3"
+                            ContentTemplate="{StaticResource NumatoGPIOExtrasTemplate}"
+                            Name="ccNumatoGPIO"
+                            Content="{Binding}"
+                            Visibility="Collapsed"/>
+
             <ContentControl Grid.Row="4" Grid.ColumnSpan="3"
                             ContentTemplate="{StaticResource ErrLevelForSaftyOfficer_Template}"
                             Name="ccSaftyOfficer"
@@ -287,6 +322,7 @@
                 <Setter TargetName="ccNI" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Visible"/>
                 <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccNumatoGPIO" Property="Visibility" Value="Collapsed"/>
 
             </DataTrigger>
 
@@ -296,6 +332,7 @@
                 <Setter TargetName="ccNI" Property="Visibility" Value="Visible"/>
                 <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccNumatoGPIO" Property="Visibility" Value="Collapsed"/>
 
             </DataTrigger>
 
@@ -305,6 +342,17 @@
                 <Setter TargetName="ccNI" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="ccNumatoGPIO" Property="Visibility" Value="Collapsed"/>
+
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Parameter, Converter={StaticResource TypeToNameConverter}}" Value="NumatoGPIO_ParamData">
+
+                <Setter TargetName="ccRegular" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccNI" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccNumatoGPIO" Property="Visibility" Value="Visible"/>
 
             </DataTrigger>
 
