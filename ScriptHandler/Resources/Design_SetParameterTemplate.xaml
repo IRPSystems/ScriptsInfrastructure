@@ -191,7 +191,7 @@
             <TextBlock Grid.Row="2" Grid.Column="0" Text="Port" VerticalAlignment="Center" Margin="0,5,0,0"/>
             <ComboBox Grid.Row="2" Grid.Column="2" 
                       ItemsSource="{Binding Parameter.DropDown}"
-                      SelectedItem="{Binding Parameter.Io_port}">
+                      SelectedIndex="{Binding NumatoGPIODropDwonIndex}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Name}" />

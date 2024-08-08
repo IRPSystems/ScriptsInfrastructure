@@ -2,6 +2,7 @@
 using DeviceCommunicators.EvvaDevice;
 using DeviceCommunicators.Models;
 using DeviceCommunicators.NI_6002;
+using DeviceCommunicators.NumatoGPIO;
 using DeviceCommunicators.SwitchRelay32;
 using DeviceHandler.Models;
 using Entities.Enums;
@@ -165,6 +166,36 @@ namespace ScriptHandler.Models.ScriptNodes
 				return stepDescription;
 
 
+			}
+		}
+
+
+
+
+		private int _numatoGPIODropDwonIndex;
+		public int NumatoGPIODropDwonIndex
+		{
+			get => _numatoGPIODropDwonIndex;
+			set
+			{
+				if (!(Parameter is NumatoGPIO_ParamData numato))
+					return;
+
+				if (numato.DropDown == null)
+					return;
+
+				_numatoGPIODropDwonIndex = value;
+
+				if (_numatoGPIODropDwonIndex < 0 || _numatoGPIODropDwonIndex >= numato.DropDown.Count)
+					return;
+
+				int iVal;
+				bool res = int.TryParse(numato.DropDown[_numatoGPIODropDwonIndex].Value, out iVal);
+				if (res)
+					numato.Io_port = iVal;
+
+				OnPropertyChanged("NumatoGPIODropDwonIndex");
+				OnPropertyChanged("Description");
 			}
 		}
 
