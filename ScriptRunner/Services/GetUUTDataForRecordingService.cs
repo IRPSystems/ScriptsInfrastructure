@@ -104,7 +104,8 @@ namespace ScriptRunner.Services
 
 				getParam.Parameter = param;
 				getParam.IsPass = true;
-				getParam.SendAndReceive();
+				EOLStepSummeryData stepSummeryData;
+				getParam.SendAndReceive(out stepSummeryData);
 				if (!getParam.IsPass)
 				{
 					LoggerService.Error(this, "Failed to get the Serial Number from the UUT");
@@ -152,7 +153,8 @@ namespace ScriptRunner.Services
 
 				getParam.Parameter = param;
 				getParam.IsPass = true;
-				getParam.SendAndReceive();
+				EOLStepSummeryData stepSummeryData;
+				getParam.SendAndReceive(out stepSummeryData);
 				if (!getParam.IsPass)
 				{
 					LoggerService.Error(this, "Failed to get the FW Version Major from the UUT");
@@ -175,7 +177,7 @@ namespace ScriptRunner.Services
 
 				getParam.Parameter = param;
 				getParam.IsPass = true;
-				getParam.SendAndReceive();
+				getParam.SendAndReceive(out stepSummeryData);
 				if (!getParam.IsPass)
 				{
 					LoggerService.Error(this, "Failed to get the FW Version Middle from the UUT");
@@ -198,7 +200,7 @@ namespace ScriptRunner.Services
 
 				getParam.Parameter = param;
 				getParam.IsPass = true;
-				getParam.SendAndReceive();
+				getParam.SendAndReceive(out stepSummeryData);
 				if (!getParam.IsPass)
 				{
 					LoggerService.Error(this, "Failed to get the FW Version Minor from the UUT");
@@ -249,7 +251,8 @@ namespace ScriptRunner.Services
 
 				getParam.Parameter = param;
 				getParam.IsPass = true;
-				getParam.SendAndReceive();
+				EOLStepSummeryData stepSummeryData;
+				getParam.SendAndReceive(out stepSummeryData);
 				if (!getParam.IsPass)
 				{
 					LoggerService.Error(this, "Failed to get the CORE Version Major from the UUT");
@@ -273,7 +276,7 @@ namespace ScriptRunner.Services
 
 				getParam.Parameter = param;
 				getParam.IsPass = true;
-				getParam.SendAndReceive();
+				getParam.SendAndReceive(out stepSummeryData);
 				if (!getParam.IsPass)
 				{
 					LoggerService.Error(this, "Failed to get the Core Version Middle from the UUT");
@@ -297,7 +300,7 @@ namespace ScriptRunner.Services
 
 				getParam.Parameter = param;
 				getParam.IsPass = true;
-				getParam.SendAndReceive();
+				getParam.SendAndReceive(out stepSummeryData);
 				if (!getParam.IsPass)
 				{
 					LoggerService.Error(this, "Failed to get the Core Version Minor from the UUT");

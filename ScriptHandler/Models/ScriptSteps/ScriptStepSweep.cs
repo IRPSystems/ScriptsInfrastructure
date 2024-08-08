@@ -115,7 +115,8 @@ namespace ScriptHandler.Models
 						_devicesContainer.TypeToDevicesFullData[param.DeviceType];
 					_getParameter.Parameter = param;
 					_getParameter.Communicator = deviceFullData.DeviceCommunicator;
-					IsPass = _getParameter.SendAndReceive();
+					EOLStepSummeryData stepSummeryData;
+					IsPass = _getParameter.SendAndReceive(out stepSummeryData);
 					if (IsPass == false)
 					{
 						IsPass = false;
