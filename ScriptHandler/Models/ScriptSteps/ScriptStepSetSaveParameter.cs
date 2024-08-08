@@ -63,6 +63,9 @@ namespace ScriptHandler.Models
 			if (Parameter == null)
 				return;
 
+			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData();
+			eolStepSummeryData.Description = Description;
+
 			_waitGetCallback = new ManualResetEvent(false);
 
 			ErrorMessage = "Failed to set the value.\r\n" +
@@ -73,6 +76,9 @@ namespace ScriptHandler.Models
 			{
 				ErrorMessage += "The communication is not initialized";
 				IsPass = false;
+				eolStepSummeryData.IsPass = false;
+				eolStepSummeryData.ErrorDescription = ErrorMessage;
+				EOLStepSummerysList.Add(eolStepSummeryData);
 				return;
 			}
 
@@ -87,6 +93,9 @@ namespace ScriptHandler.Models
 			{
 				ErrorMessage += "Communication timeout.";
 				IsPass = false;
+				eolStepSummeryData.IsPass = false;
+				eolStepSummeryData.ErrorDescription = ErrorMessage;
+				EOLStepSummerysList.Add(eolStepSummeryData);
 			}
 
 			LoggerService.Inforamtion(this, "Set parameter for saving");
@@ -98,6 +107,9 @@ namespace ScriptHandler.Models
 			if(IsPass)
 				Save();
 
+			eolStepSummeryData.IsPass = IsPass;
+			eolStepSummeryData.ErrorDescription = ErrorMessage;
+			EOLStepSummerysList.Add(eolStepSummeryData);
 		}
 
 
@@ -106,10 +118,16 @@ namespace ScriptHandler.Models
 			ErrorMessage = "Failed to save the parameter.\r\n" +
 					"\tParameter: \"" + Parameter.Name + "\r\n\r\n";
 
+			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData();
+			eolStepSummeryData.Description = Description;
+
 			if (Communicator == null || Communicator.IsInitialized == false)
 			{
 				ErrorMessage += "The communication is not initialized";
 				IsPass = false;
+				eolStepSummeryData.IsPass = false;
+				eolStepSummeryData.ErrorDescription = ErrorMessage;
+				EOLStepSummerysList.Add(eolStepSummeryData);
 				return;
 			}
 

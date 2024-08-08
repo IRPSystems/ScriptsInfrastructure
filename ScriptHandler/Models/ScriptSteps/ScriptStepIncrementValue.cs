@@ -3,11 +3,9 @@ using DeviceCommunicators.Enums;
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
-using Entities.Models;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
 using Services.Services;
-using Syncfusion.UI.Xaml.Diagram;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -46,7 +44,9 @@ namespace ScriptHandler.Models
 
 			ErrorMessage = "";
 
-			bool isOK = SendAndReceive();
+			EOLStepSummeryData eolStepSummeryData;
+			bool isOK = SendAndReceive(out eolStepSummeryData);
+			EOLStepSummerysList.Add(eolStepSummeryData);
 			if (!isOK)
 			{
 				LoggerService.Inforamtion(this, "Failed SendAndReceive");
@@ -66,7 +66,8 @@ namespace ScriptHandler.Models
 
 			_setParameter.Value = value;
 			_setParameter.Execute();
-			if(!_setParameter.IsPass)
+			EOLStepSummerysList.AddRange(_setParameter.EOLStepSummerysList);
+			if (!_setParameter.IsPass)
 			{
 				ErrorMessage += _setParameter.ErrorMessage;
 				IsPass = false;
@@ -80,7 +81,12 @@ namespace ScriptHandler.Models
 			//if(!isNotTimeOut)
 			//	IsPass = false;
 
-
+			eolStepSummeryData = new EOLStepSummeryData(
+				Description,
+				"",
+				isPass: IsPass,
+				errorDescription: ErrorMessage);
+			EOLStepSummerysList.Add(eolStepSummeryData);
 		}
 
 		private void GetValueCallback(DeviceParameterData param, CommunicatorResultEnum result, string resultDescription)

@@ -172,8 +172,10 @@ namespace ScriptHandler.Models.ScriptSteps
 					_targetValueGetter.Parameter = param;
 
 					string tempErrMessage = _errorMessageHeader + "\"" + param + "\"\r\n\r\n";
-					bool isOK = _targetValueGetter.SendAndReceive(param);
+					EOLStepSummeryData eolStepSummeryData;
+					bool isOK = _targetValueGetter.SendAndReceive(param, out eolStepSummeryData);
 					LoggerService.Inforamtion(this, "Ended SendAndReceive");
+					EOLStepSummerysList.Add(eolStepSummeryData);
 					if (!isOK)
 					{
 						ErrorMessage = tempErrMessage + _targetValueGetter.ErrorMessage + "\r\n";
@@ -293,13 +295,24 @@ namespace ScriptHandler.Models.ScriptSteps
 			IsPass = isPass;
 			_executeState = ExecuteStateEnum.None;
 			_checkValueTimer.Stop();
+
+
+
+			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
+				Description,
+				"",
+				isPass: IsPass,
+				errorDescription: ErrorMessage);
+			EOLStepSummerysList.Add(eolStepSummeryData);
 		}
 
 		private void checkValueTimer_ElapsedEventHandler(object sender, ElapsedEventArgs e)
 		{
 			_checkValueTimer.Stop();
 
-			bool isOK = SendAndReceive();
+			EOLStepSummeryData eolStepSummeryData;
+			bool isOK = SendAndReceive(out eolStepSummeryData);
+			EOLStepSummerysList.Add(eolStepSummeryData);
 			if (!isOK)
 			{
 				ErrorMessage = _errorMessageHeader + ErrorMessage + "\r\nCommunication error";

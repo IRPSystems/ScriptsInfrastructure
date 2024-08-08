@@ -2,15 +2,12 @@
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
 using DeviceHandler.Interfaces;
-using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
-using Entities.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
 using Services.Services;
 using System;
 using System.Collections.ObjectModel;
-using System.Reflection.Metadata;
 using System.Threading;
 using System.Windows;
 
@@ -42,14 +39,20 @@ namespace ScriptHandler.Models
 			catch { }
         }
 
-		public bool SendAndReceive()
+		public bool SendAndReceive(out EOLStepSummeryData eolStepSummery)
 		{
-			return SendAndReceive(Parameter);
+			return SendAndReceive(
+				Parameter,
+				out eolStepSummery);
 		}
 
 
-		public bool SendAndReceive(DeviceParameterData parameter)
+		public bool SendAndReceive(
+			DeviceParameterData parameter,
+			out EOLStepSummeryData eolStepSummery)
 		{
+			eolStepSummery = null;
+
 			if (parameter == null)
 			{
 				LoggerService.Error(this, "The parameter is not set");
@@ -61,6 +64,10 @@ namespace ScriptHandler.Models
 				LoggerService.Error(this, "The communicator is not set");
 				return false;
 			}
+
+			eolStepSummery = new EOLStepSummeryData(
+				Description,
+				$"Get the value of parameter {parameter.Name}");
 
 			_waitForGet = new ManualResetEvent(false);
 
@@ -79,15 +86,18 @@ namespace ScriptHandler.Models
 				calculated.Calculate();
 				if(parameter.Value != null) 
 				{
-					
+
 					//if(parameter.IsAbsolute)
 					//	parameter.Value = Math.Abs((double)parameter.Value);
-
+					eolStepSummery.Value = parameter.Value.ToString();
+					eolStepSummery.IsPass = true;
 					IsPass = true;
 					return true;
 				}
 				else
 				{
+					eolStepSummery.IsPass = false;
+					eolStepSummery.ErrorDescription = ErrorMessage;
 					IsPass = false;
 					return false;
 				}
@@ -100,12 +110,18 @@ namespace ScriptHandler.Models
 
 			if (!isNotTimeout)
 			{
+				IsPass = false;
 				ErrorMessage += "Communication timeout.";
-				return false;
+				eolStepSummery.IsPass = false;
+				eolStepSummery.ErrorDescription = ErrorMessage;
+				return IsPass;
 			}
 
 			if(IsPass && parameter.Value is double dValue && parameter.IsAbsolute)
 				parameter.Value = Math.Abs(dValue);
+
+			eolStepSummery.Value = parameter.Value.ToString();
+			eolStepSummery.IsPass = true;
 
 			return _isReceived;
         }

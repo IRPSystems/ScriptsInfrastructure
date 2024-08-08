@@ -4,9 +4,6 @@ using DeviceCommunicators.Models;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
-using Entities.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
@@ -129,6 +126,13 @@ namespace ScriptHandler.Models.ScriptSteps
 					paramName_Right,
 					errorHeader);
 			}
+
+			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
+				Description, 
+				"", 
+				isPass: IsPass, 
+				errorDescription: ErrorMessage); 
+			EOLStepSummerysList.Add(eolStepSummeryData);
 
 		}
 
@@ -301,7 +305,9 @@ namespace ScriptHandler.Models.ScriptSteps
 				Communicator = deviceFullData.DeviceCommunicator;
 			}
 
-			bool isOK = SendAndReceive(parameter);
+			EOLStepSummeryData eolStepSummeryData;
+			bool isOK = SendAndReceive(parameter, out eolStepSummeryData);
+			EOLStepSummerysList.Add(eolStepSummeryData);
 			if (!isOK)
 			{
 				IsPass = false;

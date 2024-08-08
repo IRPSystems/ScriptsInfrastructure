@@ -102,10 +102,11 @@ namespace ScriptHandler.Models.ScriptSteps
                 LoggerService.Error(this, "Execute: Daq Port" + niParamData.Io_port.ToString());
             }
 
-
-            while (_eState != eState.EndSession && _eState != eState.StopOrFail)
+			EOLStepSummeryData eolStepSummeryData = null;
+			while (_eState != eState.EndSession && _eState != eState.StopOrFail)
             {
-                switch (_eState)
+				
+				switch (_eState)
                 {
                     case eState.Init:
                         _stepsCounter = 1;
@@ -113,10 +114,12 @@ namespace ScriptHandler.Models.ScriptSteps
                         break;
 
                     case eState.ReadGain:
-                        _getValue.Parameter = GainParam;
+						
+						_getValue.Parameter = GainParam;
                         _getValue.Communicator = MCU_Communicator;
-                        _getValue.SendAndReceive();
-                        if (!_getValue.IsPass)
+                        _getValue.SendAndReceive(out eolStepSummeryData);
+						EOLStepSummerysList.Add(eolStepSummeryData);
+						if (!_getValue.IsPass)
                         {
                             ErrorMessage = "Calibration Error \r\n"
                                   + _getValue.ErrorMessage;
@@ -172,8 +175,9 @@ namespace ScriptHandler.Models.ScriptSteps
                         _setValue.Communicator = MCU_Communicator;
                         _setValue.Value = newGain;
                         _setValue.Execute();
+						EOLStepSummerysList.AddRange(_setValue.EOLStepSummerysList);
 
-                        if (!_setValue.IsPass)
+						if (!_setValue.IsPass)
                         {
                             ErrorMessage = "Unable to set: " + GainParam.Name;
                             _eState = eState.StopOrFail;
@@ -226,8 +230,9 @@ namespace ScriptHandler.Models.ScriptSteps
                         _saveValue.Communicator = MCU_Communicator;
                         _saveValue.Value = newGain;
                         _saveValue.Execute();
+						EOLStepSummerysList.AddRange(_saveValue.EOLStepSummerysList);
 
-                        if (!_saveValue.IsPass)
+						if (!_saveValue.IsPass)
                         {
                             IsPass = false;
                             ErrorMessage = "Calibration - unable to save: " + _saveValue.ErrorMessage;
@@ -245,7 +250,14 @@ namespace ScriptHandler.Models.ScriptSteps
                 }
             }
 
-            return;
+			eolStepSummeryData = new EOLStepSummeryData(
+				Description,
+				"",
+				isPass: IsPass,
+				errorDescription: ErrorMessage);
+			EOLStepSummerysList.Add(eolStepSummeryData);
+
+			return;
         }
 
 		/// <summary>
@@ -305,7 +317,9 @@ namespace ScriptHandler.Models.ScriptSteps
 				{
 					break;
 				}
-				scriptStepGetParamValue.SendAndReceive();
+				EOLStepSummeryData eolStepSummeryData;
+				scriptStepGetParamValue.SendAndReceive(out eolStepSummeryData);
+				EOLStepSummerysList.Add(eolStepSummeryData);
 				if (!scriptStepGetParamValue.IsPass)
 				{
 					ErrorMessage = "Calibration Error \r\n"

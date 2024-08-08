@@ -82,6 +82,13 @@ namespace ScriptHandler.Models
 
 			_stepsCounter++;
 
+			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
+				Description,
+				"",
+				isPass: IsPass,
+				errorDescription: ErrorMessage);
+			EOLStepSummerysList.Add(eolStepSummeryData);
+
 			#region Log comparation
 			string str = leftParamName + " = " + leftVal + "; ";
 			if (!string.IsNullOrEmpty(rightParamName))
@@ -144,7 +151,9 @@ namespace ScriptHandler.Models
 				Communicator = deviceFullData.DeviceCommunicator;
 			}
 
-			bool isOK = SendAndReceive(parameter);
+			EOLStepSummeryData eolStepSummeryData;
+			bool isOK = SendAndReceive(parameter, out eolStepSummeryData);
+			EOLStepSummerysList.Add(eolStepSummeryData);
 			if (!isOK)
 			{
 				IsPass = false;

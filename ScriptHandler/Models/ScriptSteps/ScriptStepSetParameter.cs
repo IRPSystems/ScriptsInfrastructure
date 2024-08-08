@@ -89,6 +89,9 @@ namespace ScriptHandler.Models
 				return;
 			}
 
+			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData();
+			eolStepSummeryData.Description = Description;
+
 			_stepsCounter = 1;
 			
 			IsPass = true;
@@ -103,6 +106,9 @@ namespace ScriptHandler.Models
 			{
 				ErrorMessage += "The communication is not initialized";
 				IsPass = false;
+				eolStepSummeryData.IsPass = false;
+				eolStepSummeryData.ErrorDescription = ErrorMessage;
+				EOLStepSummerysList.Add(eolStepSummeryData);
 				return;
 			}
 
@@ -136,13 +142,17 @@ namespace ScriptHandler.Models
 				timeOut = 3000;
 			}
 
+			
 			bool isNotTimeout = _waitGetCallback.WaitOne(timeOut);
 			if (!isNotTimeout)
-			{
+			{				
 				ErrorMessage += "Communication timeout.";
 				IsPass = false;
 			}
 
+			eolStepSummeryData.IsPass = IsPass;
+			eolStepSummeryData.ErrorDescription = ErrorMessage;
+			EOLStepSummerysList.Add(eolStepSummeryData);
 			_stepsCounter++;
 		}
 
@@ -156,8 +166,10 @@ namespace ScriptHandler.Models
 				return;
 			}
 
-			bool res = GetParamValue.SendAndReceive();
-            if (res == false || GetParamValue.IsPass == false)
+			EOLStepSummeryData eolStepSummeryData;
+			bool res = GetParamValue.SendAndReceive(out eolStepSummeryData);
+			EOLStepSummerysList.Add(eolStepSummeryData);
+			if (res == false || GetParamValue.IsPass == false)
 			{
 				IsPass = false;
 				ErrorMessage += "Failed to get the parameter value to set";
