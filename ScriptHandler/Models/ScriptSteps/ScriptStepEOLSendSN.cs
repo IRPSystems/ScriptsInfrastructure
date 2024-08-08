@@ -85,7 +85,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			_getValue.Communicator = Communicator;			
 			_getValue.SendAndReceive(out eolStepSummeryData);
 			EOLStepSummerysList.Add(eolStepSummeryData);
-			if (!_getValue.IsPass)
+			if (_getValue.IsPass)
 			{				
 				//Validate SN
 				if (SN_Param.Value as string == UserSN)
