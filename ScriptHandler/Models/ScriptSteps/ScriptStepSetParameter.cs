@@ -10,6 +10,7 @@ using DeviceCommunicators.SwitchRelay32;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
@@ -90,7 +91,7 @@ namespace ScriptHandler.Models
 			}
 
 			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData();
-			eolStepSummeryData.Description = Description;
+			eolStepSummeryData.Description = GetOnlineDescription();
 
 			_stepsCounter = 1;
 			
@@ -154,6 +155,53 @@ namespace ScriptHandler.Models
 			eolStepSummeryData.ErrorDescription = ErrorMessage;
 			EOLStepSummerysList.Add(eolStepSummeryData);
 			_stepsCounter++;
+		}
+
+		private string GetOnlineDescription()
+		{
+
+			string stepDescription = "Set ";
+
+			if (Parameter is Evva_ParamData)
+			{
+				double d = Convert.ToDouble(Value);
+				if (d == 1)
+					stepDescription = "Start Safty Officer" + " - ID:" + ID;
+				else
+					stepDescription = "Stop Safty Officer" + " - ID:" + ID;
+
+				return stepDescription;
+			}
+
+			if (Parameter is DeviceParameterData deviceParameter)
+			{
+				stepDescription += " \"" + deviceParameter + "\"";
+
+				if (Parameter is NI6002_ParamData)
+				{
+					if (deviceParameter.Name == "Digital port output" ||
+					deviceParameter.Name == "Analog port output" ||
+					deviceParameter.Name == "Read digital input" ||
+					deviceParameter.Name == "Read Anolog input")
+					{
+						stepDescription += " - Pin out " + Ni6002_IOPort;
+					}
+
+					stepDescription += " = " + Ni6002_Value;
+				}
+				else
+				{
+					stepDescription += " = " + Value;
+				}
+			}
+
+
+
+			stepDescription += " - ID:" + ID;
+			return stepDescription;
+
+
+
 		}
 
 		private void GetValue()

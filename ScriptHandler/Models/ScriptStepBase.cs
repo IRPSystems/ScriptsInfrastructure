@@ -87,6 +87,7 @@ namespace ScriptHandler.Models
 		public ScriptStepBase()
 		{
 			EOLStepSummerysList = new List<EOLStepSummeryData>();
+			EOLStepSummerysList = new List<EOLStepSummeryData>();
 		}
 
 		#endregion Constructor

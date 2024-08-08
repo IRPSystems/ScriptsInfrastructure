@@ -49,6 +49,8 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			_stepsCounter = 1;
 
+			EOLStepSummeryData eolStepSummeryData;
+
 			SerialNumber = Regex.Replace(UserSN, "[A-Za-z ]", "");
 			SerialNumber = SerialNumber.Remove(0, 1);
 			SerialNumber = SerialNumber.Replace("-", "");
@@ -59,12 +61,18 @@ namespace ScriptHandler.Models.ScriptSteps
 			_setValue.Communicator = Communicator;
 			_setValue.Value = SerialNumber;
 			_setValue.Execute();
-			EOLStepSummerysList.AddRange(_saveValue.EOLStepSummerysList);
+			EOLStepSummerysList.AddRange(_setValue.EOLStepSummerysList);
 
 			if (!_setValue.IsPass)
 			{
 				ErrorMessage = "Unable to set: " + SN_Param.Name;
 				IsPass = false;
+				eolStepSummeryData = new EOLStepSummeryData(
+					Description,
+					"",
+					isPass: IsPass,
+					errorDescription: ErrorMessage);
+				EOLStepSummerysList.Add(eolStepSummeryData);
 				return;
 			}
 
@@ -74,8 +82,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			_getValue = new ScriptStepGetParamValue();
 			_getValue.Parameter = SN_Param;
-			_getValue.Communicator = Communicator;
-			EOLStepSummeryData eolStepSummeryData;
+			_getValue.Communicator = Communicator;			
 			_getValue.SendAndReceive(out eolStepSummeryData);
 			EOLStepSummerysList.Add(eolStepSummeryData);
 			if (!_getValue.IsPass)
@@ -86,6 +93,12 @@ namespace ScriptHandler.Models.ScriptSteps
 					ErrorMessage = "Wrong SN \r\n"
 					+ _getValue.ErrorMessage;
 					IsPass = false;
+					eolStepSummeryData = new EOLStepSummeryData(
+						Description,
+						"",
+						isPass: IsPass,
+						errorDescription: ErrorMessage);
+					EOLStepSummerysList.Add(eolStepSummeryData);
 					return;
 				}
 			}
@@ -93,6 +106,12 @@ namespace ScriptHandler.Models.ScriptSteps
 			{
 				ErrorMessage = "Failed to get the SN parameter";
 				IsPass = false;
+				eolStepSummeryData = new EOLStepSummeryData(
+					Description,
+					"",
+					isPass: IsPass,
+					errorDescription: ErrorMessage);
+				EOLStepSummerysList.Add(eolStepSummeryData);
 				return;
 			}
 

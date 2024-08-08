@@ -66,7 +66,7 @@ namespace ScriptHandler.Models
 			}
 
 			eolStepSummery = new EOLStepSummeryData(
-				Description,
+				GetOnlineDescription(),
 				$"Get the value of parameter {parameter.Name}");
 
 			_waitForGet = new ManualResetEvent(false);
@@ -125,6 +125,12 @@ namespace ScriptHandler.Models
 
 			return _isReceived;
         }
+
+		private string GetOnlineDescription()
+		{
+			string description = $"Get value of \"{Parameter.Name}\"";
+			return description;
+		}
 
 		private void GetValueCallback(DeviceParameterData param, CommunicatorResultEnum result, string resultDescription)
 		{
