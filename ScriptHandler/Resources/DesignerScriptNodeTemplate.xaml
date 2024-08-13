@@ -20,7 +20,7 @@
     <converter:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
     <local_converter:HexUintConverter x:Key="HexUintConverter"/>
     <local_converter:SubScriptsListConverter x:Key="SubScriptsListConverter"/>
-
+    <local_converter:NumatoGPIOVisibilityConverter x:Key="NumatoGPIOVisibilityConverter" />
 
 
 
@@ -58,58 +58,88 @@
 
     <DataTemplate x:Key="Design_CompareTemplate">
 
-        <Grid Margin="105,0,0,0">
-
-
-
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="5" />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="5" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="500"/>
             </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="0" 
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Compare" VerticalAlignment="Center"/>
+            <Grid Grid.Row="0" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" 
                         BorderBrush="{DynamicResource MahApps.Brushes.Gray6}" BorderThickness="1"
                         AllowDrop="True">
-                <TextBlock Text="{Binding ValueLeft}" 
+                    <TextBlock Text="{Binding ValueLeft}" 
                                VerticalAlignment="Center"
                                Name="tbParamLeft"/>
-            </Border>
+                </Border>
 
-            <ComboBox Grid.Column="2" ItemsSource="{Binding Source={StaticResource comparationTypes}}"
+
+
+                <ComboBox Grid.Column="2" ItemsSource="{Binding Source={StaticResource comparationTypes}}"
                           SelectedItem="{Binding Comparation}">
 
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Converter={StaticResource EnumDescriptionConverter}}"/>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>            
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource EnumDescriptionConverter}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
 
-            <TextBox Grid.Column="4" Text="{Binding ValueRight}" 
+                <TextBox Grid.Column="4" Text="{Binding ValueRight}" 
                      VerticalAlignment="Center"
                      AllowDrop="True"
                      Name="tbParamRight">
 
-                <i:Interaction.Triggers>
+                    <i:Interaction.Triggers>
 
-                    <i:EventTrigger EventName="PreviewDragOver">
-                        <i:InvokeCommandAction Command="{Binding Path=DataContext.TextBox_PreviewDragOverCommand, 
+                        <i:EventTrigger EventName="PreviewDragOver">
+                            <i:InvokeCommandAction Command="{Binding Path=DataContext.TextBox_PreviewDragOverCommand, 
                                                                  Mode=OneWay, 
                                                                  RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" 
                                                PassEventArgsToCommand="True"/>
-                    </i:EventTrigger>
+                        </i:EventTrigger>
 
-                </i:Interaction.Triggers>
+                    </i:Interaction.Triggers>
 
-            </TextBox>
+                </TextBox>
 
+            </Grid>
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="NumatoGPIO Port" VerticalAlignment="Center"
+                       Visibility="{Binding ValueLeft, Converter={StaticResource NumatoGPIOVisibilityConverter}}" />
+            <ComboBox Grid.Row="2" Grid.Column="2" 
+                      Name="cb"
+                      ItemsSource="{Binding ValueLeft.DropDown}"
+                      Visibility="{Binding ValueLeft, Converter={StaticResource NumatoGPIOVisibilityConverter}}" 
+                      SelectedIndex="{Binding ValueDropDwonIndex}">
+
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+                
+            </ComboBox>
         </Grid>
 
-        
+
     </DataTemplate>
 
     <DataTemplate x:Key="Design_NotificationTemplate">

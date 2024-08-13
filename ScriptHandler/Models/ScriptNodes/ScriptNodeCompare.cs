@@ -1,6 +1,7 @@
 ﻿
 
 using DeviceCommunicators.Models;
+using DeviceCommunicators.NumatoGPIO;
 using DeviceHandler.Models;
 using Entities.Enums;
 using Entities.Models;
@@ -64,6 +65,30 @@ namespace ScriptHandler.Models.ScriptNodes
 				bool res = int.TryParse(dropDown.DropDown[_valueDropDwonIndex].Value, out iVal);
 				if (res)
 					ValueRight = iVal;
+
+				OnPropertyChanged("ValueDropDwonIndex");
+				OnPropertyChanged("Description");
+			}
+		}
+
+		private int _valueDropDwonIndex_NumatoGPIOPort;
+		public int ValueDropDwonIndex_NumatoGPIOPort
+		{
+			get => _valueDropDwonIndex_NumatoGPIOPort;
+			set
+			{
+				if (!(ValueLeft is NumatoGPIO_ParamData numatoGPIOParamData))
+					return;
+
+				_valueDropDwonIndex_NumatoGPIOPort = value;
+
+				if (_valueDropDwonIndex_NumatoGPIOPort < 0 || _valueDropDwonIndex_NumatoGPIOPort >= numatoGPIOParamData.DropDown.Count)
+					return;
+
+				int iVal;
+				bool res = int.TryParse(numatoGPIOParamData.DropDown[_valueDropDwonIndex_NumatoGPIOPort].Value, out iVal);
+				if (res)
+					numatoGPIOParamData.Io_port = iVal;
 
 				OnPropertyChanged("ValueDropDwonIndex");
 				OnPropertyChanged("Description");
