@@ -90,8 +90,7 @@ namespace ScriptHandler.Models.ScriptNodes
 				if (res)
 					numatoGPIOParamData.Io_port = iVal;
 
-				OnPropertyChanged("ValueDropDwonIndex");
-				OnPropertyChanged("Description");
+				OnPropertyChanged("ValueDropDwonIndex_NumatoGPIOPort");
 			}
 		}
 

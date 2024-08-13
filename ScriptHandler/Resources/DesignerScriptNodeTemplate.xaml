@@ -128,7 +128,7 @@
                       Name="cb"
                       ItemsSource="{Binding ValueLeft.DropDown}"
                       Visibility="{Binding ValueLeft, Converter={StaticResource NumatoGPIOVisibilityConverter}}" 
-                      SelectedIndex="{Binding ValueDropDwonIndex}">
+                      SelectedIndex="{Binding ValueDropDwonIndex_NumatoGPIOPort}">
 
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
