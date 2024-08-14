@@ -4,6 +4,7 @@ using DeviceCommunicators.EvvaDevice;
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
 using DeviceCommunicators.NI_6002;
+using DeviceCommunicators.NumatoGPIO;
 using DeviceCommunicators.PowerSupplayEA;
 using DeviceCommunicators.Scope_KeySight;
 using DeviceCommunicators.SwitchRelay32;
@@ -35,6 +36,8 @@ namespace ScriptHandler.Models
 
 		public int Ni6002_IOPort { get; set; }
 		public object Ni6002_Value { get; set; }
+
+		public int NumatoGPIODropDwonIndex { get; set; }
 
 		private DeviceParameterData _valueParameter;
 		public DeviceParameterData ValueParameter 
@@ -118,6 +121,10 @@ namespace ScriptHandler.Models
 			{
 				ni.Io_port = Ni6002_IOPort;
 				ni.Value = Ni6002_Value;
+			}
+			else if (Parameter is NumatoGPIO_ParamData numato)
+			{
+				numato.Io_port = NumatoGPIODropDwonIndex;
 			}
 			else if (Parameter is Scope_KeySight_ParamData ks_Param &&
 				Parameter.Name.ToLower() == "save")
@@ -300,6 +307,10 @@ namespace ScriptHandler.Models
 			{
 				Ni6002_Value = (sourceNode as ScriptNodeSetParameter).Ni6002_Value;
 				Ni6002_IOPort = (sourceNode as ScriptNodeSetParameter).Ni6002_IOPort;
+			}
+			else if ((sourceNode as ScriptNodeSetParameter).Parameter is NumatoGPIO_ParamData)
+			{
+				NumatoGPIODropDwonIndex = (sourceNode as ScriptNodeSetParameter).NumatoGPIODropDwonIndex;
 			}
 			else
 				Value = (sourceNode as ScriptNodeSetParameter).Value;
