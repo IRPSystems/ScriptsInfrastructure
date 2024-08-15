@@ -16,6 +16,8 @@ namespace ScriptHandler.Models.ScriptNodes
 {
 	public class ScriptNodeCompare : ScriptNodeBase
 	{
+		#region Properties and Fields
+
 		private DeviceParameterData _valueLeft;
 		public DeviceParameterData ValueLeft 
 		{
@@ -105,6 +107,9 @@ namespace ScriptHandler.Models.ScriptNodes
 			}
 		}
 
+		public bool IsUseAverage { get; set; }
+		public int AverageOfNRead { get; set; }
+
 		public override string Description 
 		{
 			get
@@ -130,6 +135,10 @@ namespace ScriptHandler.Models.ScriptNodes
 			}
 		}
 
+		#endregion Properties and Fields
+
+		#region Constructor
+
 		public ScriptNodeCompare()
 		{
 			Name = "Compare";
@@ -137,6 +146,9 @@ namespace ScriptHandler.Models.ScriptNodes
 			_valueDropDwonIndex = -1;
 		}
 
+		#endregion Constructor
+
+		#region Methods
 
 		public static string GetComperationDescription(ComparationTypesEnum item)
 		{
@@ -189,6 +201,8 @@ namespace ScriptHandler.Models.ScriptNodes
 
 			return false;
 		}
+
+		#endregion Methods
 	}
-	
+
 }

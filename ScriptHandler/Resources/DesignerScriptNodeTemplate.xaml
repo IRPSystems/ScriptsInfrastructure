@@ -62,6 +62,8 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="27" />
                 <RowDefinition Height="5" />
+                <RowDefinition Height="27" />
+                <RowDefinition Height="5" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
@@ -122,9 +124,42 @@
 
             </Grid>
 
-            <TextBlock Grid.Row="2" Grid.Column="0" Text="NumatoGPIO Port" VerticalAlignment="Center"
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Use average" VerticalAlignment="Center"/>
+            <Grid Grid.Row="2" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="75"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <CheckBox Grid.Column="0" Name="isUseAverage" IsChecked="{Binding IsUseAverage}" />
+
+                <Grid Grid.Column="2" 
+                      Visibility="{Binding IsChecked, 
+                                           Converter={StaticResource BooleanToVisibilityConverter}, 
+                                           ElementName=isUseAverage}">                    
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="75"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <TextBlock Grid.Column="0" Text="Average of" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="2" Text="{Binding AverageOfNRead}" />
+                    <TextBlock Grid.Column="4" Text="reads" VerticalAlignment="Center"/>
+                </Grid>
+
+            </Grid>
+
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="NumatoGPIO Port" VerticalAlignment="Center"
                        Visibility="{Binding ValueLeft, Converter={StaticResource NumatoGPIOVisibilityConverter}}" />
-            <ComboBox Grid.Row="2" Grid.Column="2" 
+            <ComboBox Grid.Row="4" Grid.Column="2" 
                       Name="cb"
                       ItemsSource="{Binding ValueLeft.DropDown}"
                       Visibility="{Binding ValueLeft, Converter={StaticResource NumatoGPIOVisibilityConverter}}" 

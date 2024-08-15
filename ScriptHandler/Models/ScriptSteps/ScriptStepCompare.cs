@@ -26,6 +26,9 @@ namespace ScriptHandler.Models
 
 		public ComparationTypesEnum Comparation { get; set; }
 
+		public bool IsUseAverage { get; set; }
+		public int AverageOfNRead { get; set; }
+
 		public ScriptStepCompare()
 		{
 			Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
@@ -36,16 +39,26 @@ namespace ScriptHandler.Models
 		{
 			IsPass = false;
 
+			if (!IsUseAverage)
+				AverageOfNRead = 1;
+
 			double leftVal = 0;
 			string leftParamName = "";
 			_stepsCounter = 1;
 			if (ValueLeft is DeviceParameterData paramLeft)
 			{
-				object val = GetCompareParaValue(paramLeft);
-				if (val == null || IsPass == false)
-					return;
+				double sum = 0;
+				for (int i = 0; i < AverageOfNRead; i++)
+				{
+					object val = GetCompareParaValue(paramLeft);
+					if (val == null || IsPass == false)
+						return;
 
-				leftVal = Convert.ToDouble(val);
+					sum += Convert.ToDouble(val);
+					System.Threading.Thread.Sleep(1);
+				}
+
+				leftVal = sum / AverageOfNRead;
 				leftParamName = paramLeft.Name;
 			}
 
@@ -186,6 +199,10 @@ namespace ScriptHandler.Models
 			ValueLeft = (sourceNode as ScriptNodeCompare).ValueLeft;
 			ValueRight = (sourceNode as ScriptNodeCompare).ValueRight;
 			Comparation = (sourceNode as ScriptNodeCompare).Comparation;
+
+
+			IsUseAverage = (sourceNode as ScriptNodeCompare).IsUseAverage;
+			AverageOfNRead = (sourceNode as ScriptNodeCompare).AverageOfNRead;
 		}
 
 		public override void GetRealParamAfterLoad(

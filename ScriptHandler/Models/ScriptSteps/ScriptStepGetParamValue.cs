@@ -128,7 +128,9 @@ namespace ScriptHandler.Models
 
 		private string GetOnlineDescription()
 		{
-			string description = $"Get value of \"{Parameter.Name}\"";
+			string description = "Get value of ";
+			if (Parameter != null)
+				description += $"\"{Parameter.Name}\"";
 			return description;
 		}
 
