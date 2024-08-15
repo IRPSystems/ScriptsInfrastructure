@@ -160,7 +160,9 @@ namespace ScriptHandler.Models.ScriptNodes
 		public bool IsBetween2Values { get; set; }
 		public bool IsValueWithTolerance { get; set; }
 
-
+		public string ToleranceTypeGroupName { get => Description + "ToleranceTypeGroupName"; }
+		public bool IsValueTolerance { get; set; }
+		public bool IsPercentageTolerance { get; set; }
 
 		public override string Description 
 		{
@@ -207,6 +209,7 @@ namespace ScriptHandler.Models.ScriptNodes
 			Comparation1 = ComparationTypesEnum.Equal;
 
 			IsBetween2Values = true;
+			IsValueTolerance = true;
 		}
 
 		#endregion Constructor

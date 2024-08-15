@@ -33,6 +33,9 @@ namespace ScriptHandler.Models.ScriptSteps
 		public bool IsBetween2Values { get; set; }
 		public bool IsValueWithTolerance { get; set; }
 
+		public bool IsValueTolerance { get; set; }
+		public bool IsPercentageTolerance { get; set; }
+
 		#endregion Properties
 
 		#region Constructor
@@ -344,6 +347,8 @@ namespace ScriptHandler.Models.ScriptSteps
 			Comparation2 = (sourceNode as ScriptNodeCompareRange).Comparation2;
 			IsBetween2Values = (sourceNode as ScriptNodeCompareRange).IsBetween2Values;
 			IsValueWithTolerance = (sourceNode as ScriptNodeCompareRange).IsValueWithTolerance;
+			IsValueTolerance = (sourceNode as ScriptNodeCompareRange).IsValueTolerance;
+			IsPercentageTolerance = (sourceNode as ScriptNodeCompareRange).IsPercentageTolerance;
 		}
 
 		public override void GetRealParamAfterLoad(
