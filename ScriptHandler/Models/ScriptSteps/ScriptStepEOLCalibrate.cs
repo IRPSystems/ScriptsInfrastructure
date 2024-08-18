@@ -289,6 +289,7 @@ namespace ScriptHandler.Models.ScriptSteps
 					avgRead += Convert.ToDouble(deviceParameterData.Value);
 				}
 			}
+
             avgRead = avgRead / numOfReads;
             return avgRead;
         }
@@ -320,7 +321,6 @@ namespace ScriptHandler.Models.ScriptSteps
 			NIDAQShuntResistor = (sourceNode as ScriptNodeEOLCalibrate).NIDAQShuntResistor;
 			gainMaxLimit = (sourceNode as ScriptNodeEOLCalibrate).GainMax;
             gainMinLimit = (sourceNode as ScriptNodeEOLCalibrate).GainMin;
-            DeviationLimit = (sourceNode as ScriptNodeEOLCalibrate).DeviationLimit;
 		}
 
 		public override bool IsNotSet(

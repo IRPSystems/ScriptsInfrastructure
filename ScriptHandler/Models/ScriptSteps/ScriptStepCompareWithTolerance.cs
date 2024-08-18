@@ -69,10 +69,12 @@ namespace ScriptHandler.Models
 
 			double paramValue_Left = 0;
 			string paramName_Left = "";
+			int amountOfReads = 2;
+
 			bool res = GetValueAndName(
 				out paramValue_Left,
 				out paramName_Left,
-				Parameter);
+				Parameter, amountOfReads);
 			if (!res)
 			{
 				ErrorMessage = errorMessage + ErrorMessage;
@@ -89,7 +91,7 @@ namespace ScriptHandler.Models
 			res = GetValueAndName(
 				out paramValue_Right,
 				out paramName_Right,
-				CompareValue);
+				CompareValue, amountOfReads);
 			if (!res)
 			{
 				ErrorMessage = errorMessage + ErrorMessage;
@@ -148,19 +150,19 @@ namespace ScriptHandler.Models
 		private bool GetValueAndName(
 			out double paramValue,
 			out string paramName,
-			object value)
+			object value, int amountOfReads)
 		{
 			paramValue = 0;
 			paramName = "";
 
 			if (value is DeviceParameterData param)
 			{
-				object val = GetCompareParaValue(param);
+				
+				object val = GetCompareParaValue(param, amountOfReads);
 				if (val == null)
 					return false;
 
 				paramValue = Convert.ToDouble(val);
-
 				paramName =
 					"(\"" + param + "\" = " + paramValue + ")";
 
@@ -186,7 +188,7 @@ namespace ScriptHandler.Models
 		}
 
 		private object GetCompareParaValue(
-			DeviceParameterData parameter)
+			DeviceParameterData parameter, int numOfReads)
 		{
 			//Parameter = parameter;
 
@@ -196,20 +198,28 @@ namespace ScriptHandler.Models
 					DevicesContainer.DevicesFullDataList.ToList().Find((d) => d.Device.DeviceType == parameter.DeviceType);
 				Communicator = deviceFullData.DeviceCommunicator;
 			}
-
-			EOLStepSummeryData eolStepSummeryData;
-			bool isOK = SendAndReceive(parameter, out eolStepSummeryData);
-			EOLStepSummerysList.Add(eolStepSummeryData);
-			if (!isOK)
+            double avgRead = 0;
+            for (int i = 0; i < numOfReads; i++)
 			{
-				IsPass = false;
-				return 0;
-			}
+				EOLStepSummeryData eolStepSummeryData;
+				bool isOK = SendAndReceive(parameter, out eolStepSummeryData);
+				EOLStepSummerysList.Add(eolStepSummeryData);
+				if (!isOK)
+				{
+                    ErrorMessage = "Compare Error \r\n"
+					+ parameter.ErrorDescription;
+                    IsPass = false;
+					return 0;
+				}
 
-			if (parameter == null)
-				return null;
+				if (parameter == null)
+					return null;
 
-			return parameter.Value;
+                avgRead += Convert.ToDouble(parameter.Value);
+            }
+            avgRead = avgRead / numOfReads;
+
+            return avgRead;
 		}
 
 
