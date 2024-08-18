@@ -80,6 +80,8 @@ namespace ScriptHandler.Models
 
 			double paramValue_Left = 0;
 			string paramName_Left = "";
+			int amountOfReads = 2;
+
 			bool res = GetValueAndName(
 				IsUseParamAverage,
 				AverageOfNRead_Param,
@@ -87,7 +89,7 @@ namespace ScriptHandler.Models
 				ParamFactor,
 				out paramValue_Left,
 				out paramName_Left,
-				Parameter);
+				Parameter, amountOfReads);
 			if (!res)
 			{
 				ErrorMessage = errorMessage + ErrorMessage;
@@ -108,7 +110,7 @@ namespace ScriptHandler.Models
 				CompareValueFactor,
 				out paramValue_Right,
 				out paramName_Right,
-				CompareValue);
+				CompareValue, amountOfReads);
 			if (!res)
 			{
 				ErrorMessage = errorMessage + ErrorMessage;
@@ -171,7 +173,7 @@ namespace ScriptHandler.Models
 			double factor,
 			out double paramValue,
 			out string paramName,
-			object value)
+			object value, int amountOfReads)
 		{
 			paramValue = 0;
 			paramName = "";
@@ -188,7 +190,6 @@ namespace ScriptHandler.Models
 					return false;
 
 				paramValue = Convert.ToDouble(val);
-
 				paramName =
 					"(\"" + param + "\" = " + paramValue + ")";
 
@@ -242,15 +243,14 @@ namespace ScriptHandler.Models
 				EOLStepSummerysList.Add(eolStepSummeryData);
 				if (!isOK)
 				{
-					IsPass = false;
+                    ErrorMessage = "Compare Error \r\n"
+					+ parameter.ErrorDescription;
+                    IsPass = false;
 					return 0;
 				}
 
-				avgSum += Convert.ToDouble(parameter.Value); 
-			}
-
-			if (parameter == null)
-				return null;
+				if (parameter == null)
+					return null;
 
 			if (!isUseAverage && !isUseFactor)
 				return parameter.Value;

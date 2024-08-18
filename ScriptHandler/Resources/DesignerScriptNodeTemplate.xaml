@@ -630,9 +630,35 @@
 
     </DataTemplate>
 
-    
-    
-    
+    <DataTemplate x:Key="Design_SaveTemplate">
+
+        <Grid Height="27">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="300"/>
+            </Grid.ColumnDefinitions>
+
+
+            <TextBlock Grid.Column="0" Text="Parameter" VerticalAlignment="Center"/>
+
+            <Border Grid.Row="0" Grid.Column="2" 
+                    BorderBrush="{Binding Path=Parameter, Converter={StaticResource SaveParameterValidattionBorderConverter}}"
+                    ToolTip="{Binding Path=Parameter, Converter={StaticResource SaveParameterValidattionToolTipConverter}}"
+                    BorderThickness="1"
+                    AllowDrop="True">
+
+                <TextBlock Text="{Binding Path=Parameter, UpdateSourceTrigger=PropertyChanged}"
+                           VerticalAlignment="Center"
+                           Name="tbParam"/>
+
+            </Border>
+
+        </Grid>
+
+    </DataTemplate>
+
+
 
     <DataTemplate x:Key="Design_EOLSendSNTemplate">
 
