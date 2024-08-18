@@ -67,11 +67,11 @@ namespace ScriptHandler.Models
 
 			_stepsCounter = 1;
 
-			double paramValue = 0;
-			string paramName = "";
+			double paramValue_Left = 0;
+			string paramName_Left = "";
 			bool res = GetValueAndName(
-				out paramValue,
-				out paramName,
+				out paramValue_Left,
+				out paramName_Left,
 				Parameter);
 			if (!res)
 			{
@@ -84,11 +84,11 @@ namespace ScriptHandler.Models
 
 			_stepsCounter++;
 
-			double paramValue_Left = 0;
-			string paramName_Left = "";
+			double paramValue_Right = 0;
+			string paramName_Right = "";
 			res = GetValueAndName(
-				out paramValue_Left,
-				out paramName_Left,
+				out paramValue_Right,
+				out paramName_Right,
 				CompareValue);
 			if (!res)
 			{
@@ -103,10 +103,10 @@ namespace ScriptHandler.Models
 
 
 			Compare_ValueWithTolerance(
-					paramValue,
-					paramName,
 					paramValue_Left,
 					paramName_Left,
+					paramValue_Right,
+					paramName_Right,
 					Tolerance,
 					errorHeader);
 			
@@ -121,23 +121,23 @@ namespace ScriptHandler.Models
 		}
 
 		private void Compare_ValueWithTolerance(
-			double paramValue,
-			string paramName,
 			double paramValue_Left,
 			string paramName_Left,
+			double paramValue_Right,
+			string paramName_Right,
 			double tolerance,
 			string errorHeader)
 		{
 			ErrorMessage =
 				errorHeader +
-				paramName + " = " +
-				paramName_Left + " ± " +
+				paramName_Left + " = " +
+				paramName_Right + " ± " +
 				tolerance;
 
-			double lowest = paramValue_Left - tolerance;
-			double heighest = paramValue_Left + tolerance;
+			double lowest = paramValue_Right - tolerance;
+			double heighest = paramValue_Right + tolerance;
 
-			if (lowest <= paramValue && paramValue <= heighest)
+			if (lowest <= paramValue_Left && paramValue_Left <= heighest)
 				IsPass = true;
 			else
 				IsPass = false;
