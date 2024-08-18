@@ -81,8 +81,6 @@ namespace ScriptHandler.Models.ScriptSteps
             ReadSensorsPostCalib,
 			CalculateNewGain,
 			SetNewGain,
-            VerifyDeviation,
-            SaveGain,
             StopOrFail,
             EndSession
         }
@@ -196,46 +194,6 @@ namespace ScriptHandler.Models.ScriptSteps
                         if (!GetReadsMcuAndRefSensor())
                         {
                             IsPass = false;
-                            _eState = eState.StopOrFail;
-                            break;
-                        }
-                        _eState = eState.VerifyDeviation;
-                        break;
-
-                    case eState.VerifyDeviation:
-
-                        deviation = Math.Abs(((float)avgRefSensorRead - (float)avgMcuRead) * 100 * 2) /
-                                     (((float)avgRefSensorRead + (float)avgMcuRead));
-
-                        //deviation limit temp
-                        DeviationLimit = 10;
-
-                        if (deviation > DeviationLimit)
-                        {
-                            IsPass = false;
-                            ErrorMessage = "Calibration deviation has exceeded maximum limit\r\n" +
-                                                             "Deviation Result = " + deviation + "%" + "\r\n" +
-                                                             "Deviation Max Limit" + DeviationLimit + "%";
-                            _eState = eState.StopOrFail;
-                            break;
-                        }
-                        _eState = eState.SaveGain;
-                        break;
-
-                    case eState.SaveGain:
-
-                        _stepsCounter++;
-
-                        _saveValue.Parameter = GainParam;
-                        _saveValue.Communicator = MCU_Communicator;
-                        _saveValue.Value = newGain;
-                        _saveValue.Execute();
-						EOLStepSummerysList.AddRange(_saveValue.EOLStepSummerysList);
-
-						if (!_saveValue.IsPass)
-                        {
-                            IsPass = false;
-                            ErrorMessage = "Calibration - unable to save: " + _saveValue.ErrorMessage;
                             _eState = eState.StopOrFail;
                             break;
                         }
