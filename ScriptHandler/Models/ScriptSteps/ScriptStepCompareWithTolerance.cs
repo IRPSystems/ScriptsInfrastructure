@@ -1,6 +1,8 @@
 ﻿
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
+using DeviceCommunicators.NI_6002;
+using DeviceCommunicators.ZimmerPowerMeter;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
@@ -15,8 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ScriptHandler.Models
@@ -36,10 +36,22 @@ namespace ScriptHandler.Models
 		public bool IsValueTolerance { get; set; }
 		public bool IsPercentageTolerance { get; set; }
 
+		public bool IsUseParamAverage { get; set; }
+		public int AverageOfNRead_Param { get; set; }
+
+		public bool IsUseParamFactor { get; set; }
+		public double ParamFactor { get; set; }
+
+
+		public bool IsUseCompareValueAverage { get; set; }
+		public int AverageOfNRead_CompareValue { get; set; }
+
+		public bool IsUseCompareValueFactor { get; set; }
+		public double CompareValueFactor { get; set; }
+
+
 
 		#endregion Properties
-
-
 
 		#region Constructor
 
@@ -56,7 +68,6 @@ namespace ScriptHandler.Models
 
 		#endregion Constructor
 
-
 		#region Methods
 
 		public override void Execute()
@@ -70,6 +81,10 @@ namespace ScriptHandler.Models
 			double paramValue_Left = 0;
 			string paramName_Left = "";
 			bool res = GetValueAndName(
+				IsUseParamAverage,
+				AverageOfNRead_Param,
+				IsUseParamFactor,
+				ParamFactor,
 				out paramValue_Left,
 				out paramName_Left,
 				Parameter);
@@ -87,6 +102,10 @@ namespace ScriptHandler.Models
 			double paramValue_Right = 0;
 			string paramName_Right = "";
 			res = GetValueAndName(
+				IsUseCompareValueAverage,
+				AverageOfNRead_CompareValue,
+				IsUseCompareValueFactor,
+				CompareValueFactor,
 				out paramValue_Right,
 				out paramName_Right,
 				CompareValue);
@@ -146,6 +165,10 @@ namespace ScriptHandler.Models
 
 
 		private bool GetValueAndName(
+			bool isUseAverage,
+			int averageOfNRead,
+			bool isUseFactor,
+			double factor,
 			out double paramValue,
 			out string paramName,
 			object value)
@@ -155,7 +178,12 @@ namespace ScriptHandler.Models
 
 			if (value is DeviceParameterData param)
 			{
-				object val = GetCompareParaValue(param);
+				object val = GetCompareParaValue(
+					isUseAverage,
+					averageOfNRead,
+					isUseFactor,
+					factor, 
+					param);
 				if (val == null)
 					return false;
 
@@ -186,6 +214,10 @@ namespace ScriptHandler.Models
 		}
 
 		private object GetCompareParaValue(
+			bool isUseAverage,
+			int averageOfNRead,
+			bool isUseFactor,
+			double factor,
 			DeviceParameterData parameter)
 		{
 			//Parameter = parameter;
@@ -197,19 +229,34 @@ namespace ScriptHandler.Models
 				Communicator = deviceFullData.DeviceCommunicator;
 			}
 
-			EOLStepSummeryData eolStepSummeryData;
-			bool isOK = SendAndReceive(parameter, out eolStepSummeryData);
-			EOLStepSummerysList.Add(eolStepSummeryData);
-			if (!isOK)
+			if(!isUseAverage)
+				averageOfNRead = 1;
+			if(!isUseFactor) 
+				factor = 1;
+
+			double avgSum = 0;
+			for (int i = 0; i < averageOfNRead; i++)
 			{
-				IsPass = false;
-				return 0;
+				EOLStepSummeryData eolStepSummeryData;
+				bool isOK = SendAndReceive(parameter, out eolStepSummeryData);
+				EOLStepSummerysList.Add(eolStepSummeryData);
+				if (!isOK)
+				{
+					IsPass = false;
+					return 0;
+				}
+
+				avgSum += Convert.ToDouble(parameter.Value); 
 			}
 
 			if (parameter == null)
 				return null;
 
-			return parameter.Value;
+			if (!isUseAverage && !isUseFactor)
+				return parameter.Value;
+
+			
+			return (avgSum / averageOfNRead) * factor;
 		}
 
 
@@ -238,6 +285,43 @@ namespace ScriptHandler.Models
 			Comparation = (sourceNode as ScriptNodeCompareWithTolerance).Comparation;
 			IsValueTolerance = (sourceNode as ScriptNodeCompareWithTolerance).IsValueTolerance;
 			IsPercentageTolerance = (sourceNode as ScriptNodeCompareWithTolerance).IsPercentageTolerance;
+
+			IsUseParamAverage = (sourceNode as ScriptNodeCompareWithTolerance).IsUseParamAverage;
+			AverageOfNRead_Param = (sourceNode as ScriptNodeCompareWithTolerance).AverageOfNRead_Param;
+			IsUseParamFactor = (sourceNode as ScriptNodeCompareWithTolerance).IsUseParamFactor;
+			ParamFactor = (sourceNode as ScriptNodeCompareWithTolerance).ParamFactor;
+
+			IsUseCompareValueAverage = (sourceNode as ScriptNodeCompareWithTolerance).IsUseCompareValueAverage;
+			AverageOfNRead_CompareValue = (sourceNode as ScriptNodeCompareWithTolerance).AverageOfNRead_CompareValue;
+			IsUseCompareValueFactor = (sourceNode as ScriptNodeCompareWithTolerance).IsUseCompareValueFactor;
+			CompareValueFactor = (sourceNode as ScriptNodeCompareWithTolerance).CompareValueFactor;
+
+
+			if (Parameter is NI6002_ParamData ni &&
+				(sourceNode as ScriptNodeCompareWithTolerance).Parameter is NI6002_ParamData sourceNI)
+			{
+				ni.Io_port = sourceNI.Io_port;
+			}
+
+			if (Parameter is ZimmerPowerMeter_ParamData zimmer &&
+				(sourceNode as ScriptNodeCompareWithTolerance).Parameter is ZimmerPowerMeter_ParamData sourceZimmer)
+			{
+				zimmer.Channel = sourceZimmer.Channel;
+			}
+
+
+
+			if (CompareValue is NI6002_ParamData niCompareValue &&
+				(sourceNode as ScriptNodeCompareWithTolerance).CompareValue is NI6002_ParamData sourceNICompareValue)
+			{
+				niCompareValue.Io_port = sourceNICompareValue.Io_port;
+			}
+
+			if (CompareValue is ZimmerPowerMeter_ParamData zimmerCompareValue &&
+				(sourceNode as ScriptNodeCompareWithTolerance).CompareValue is ZimmerPowerMeter_ParamData sourceZimmerCompareValue)
+			{
+				zimmerCompareValue.Channel = sourceZimmerCompareValue.Channel;
+			}
 		}
 
 		public override void GetRealParamAfterLoad(
