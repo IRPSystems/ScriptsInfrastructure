@@ -1,0 +1,305 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+                    xmlns:converters="clr-namespace:ScriptHandler.Converter">
+
+    <converters:CompareWithTolerancePortVisiNIConverter x:Key="CompareWithTolerancePortVisiNIConverter" />
+    <converters:CompareWithTolerancePortVisiZimmerConverter x:Key="CompareWithTolerancePortVisiZimmerConverter" />
+
+    <DataTemplate x:Key="Design_CompareWithToleranceTemplate">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="550"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Row="0" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <RadioButton Grid.Column="0" 
+                             Content="Value tolerance" 
+                             IsChecked="{Binding IsValueTolerance}" 
+                             VerticalAlignment="Center"
+                             GroupName="{Binding ToleranceTypeGroupName}"/>
+
+                <RadioButton Grid.Column="2" 
+                             Content="Percentage tolerance" 
+                             IsChecked="{Binding IsPercentageTolerance}" 
+                             VerticalAlignment="Center"
+                             GroupName="{Binding ToleranceTypeGroupName}"/>
+            </Grid>
+
+            <Grid Grid.Row="2" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="27"/>
+                        <RowDefinition Height="0"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="27"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="27"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" 
+                            BorderBrush="{DynamicResource MahApps.Brushes.Gray6}" BorderThickness="1"
+                            AllowDrop="True">
+                        <TextBlock Text="{Binding Parameter}" 
+                                   VerticalAlignment="Center"
+                                   Name="tbParam"/>
+                    </Border>
+
+                    <Grid Grid.Row="2" Name="grdParamPortNI" Margin="0,5,0,0"
+                          Visibility="{Binding Parameter, Converter={StaticResource CompareWithTolerancePortVisiNIConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock Grid.Column="0" Text="Port" VerticalAlignment="Center" Margin="0,5,0,0"/>
+                        <TextBox Grid.Column="2" Text="{Binding Parameter.Io_port}" />
+                    </Grid>
+
+                    <Grid Grid.Row="2" Name="grdParamPortZimmer" Margin="0,5,0,0"
+                          Visibility="{Binding Parameter, Converter={StaticResource CompareWithTolerancePortVisiZimmerConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="Channel" VerticalAlignment="Center" Margin="0,5,0,0"/>
+                        <TextBox Grid.Column="2" Text="{Binding Parameter.Channel}" />
+                    </Grid>
+
+                    <Grid Grid.Row="4" MaxWidth="210" HorizontalAlignment="Left">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="0"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="75"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox Grid.Column="0" Name="isUseParamAverage" IsChecked="{Binding IsUseParamAverage}" />
+
+                        <Grid Grid.Column="2" 
+                              Visibility="{Binding IsChecked, 
+                              Converter={StaticResource BooleanToVisibilityConverter}, 
+                              ElementName=isUseParamAverage}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="55"/>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition Width="75"/>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Text="Average of" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="2" Text="{Binding AverageOfNRead_Param}" />
+                            <TextBlock Grid.Column="4" Text="reads" VerticalAlignment="Center"/>
+                        </Grid>
+
+                    </Grid>
+
+                    <Grid Grid.Row="6" MaxWidth="210" HorizontalAlignment="Left">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="0"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="75"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox Grid.Column="0" Name="isUseParamFactor" IsChecked="{Binding IsUseParamFactor}" />
+
+                        <Grid Grid.Column="2" 
+                              Visibility="{Binding IsChecked, 
+                              Converter={StaticResource BooleanToVisibilityConverter}, 
+                              ElementName=isUseParamFactor}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="55"/>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition Width="75"/>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBlock Grid.Column="0" Text="Factor" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="2" Text="{Binding ParamFactor}" />
+                        </Grid>
+                    </Grid>
+
+                </Grid>
+
+                <TextBlock Grid.Column="2" Text="=" VerticalAlignment="Top" Margin="0,2,0,0"/>
+
+                <Grid Grid.Column="4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="27"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="27"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="27"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBox Grid.Row="0" Text="{Binding CompareValue}" 
+                             VerticalAlignment="Center"
+                             AllowDrop="True"
+                             Name="tbParamCompareValue">
+
+                        <i:Interaction.Triggers>
+
+                            <i:EventTrigger EventName="PreviewDragOver">
+                                <i:InvokeCommandAction Command="{Binding Path=DataContext.TextBox_PreviewDragOverCommand, 
+                                                                         Mode=OneWay, 
+                                                                         RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" 
+                                                       PassEventArgsToCommand="True"/>
+                            </i:EventTrigger>
+
+                        </i:Interaction.Triggers>
+
+                    </TextBox>
+
+                    <Grid Grid.Row="2" Name="grdCompareValuePortNI" Margin="0,5,0,0"
+                          Visibility="{Binding CompareValue, Converter={StaticResource CompareWithTolerancePortVisiNIConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="Port" VerticalAlignment="Center" Margin="0,5,0,0"/>
+                        <TextBox Grid.Column="2" Text="{Binding CompareValue.Io_port}" />
+                    </Grid>
+
+                    <Grid Grid.Row="2" Name="grdCompareValuePortZimmer" Margin="0,5,0,0"
+                          Visibility="{Binding CompareValue, Converter={StaticResource CompareWithTolerancePortVisiZimmerConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="Channel" VerticalAlignment="Center" Margin="0,5,0,0"/>
+                        <TextBox Grid.Column="2" Text="{Binding CompareValue.Channel}" />
+                    </Grid>
+
+                    <Grid Grid.Row="4" MaxWidth="210" HorizontalAlignment="Left">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="0"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="75"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox Grid.Column="0" Name="isUseCompareValueAverage" IsChecked="{Binding IsUseCompareValueAverage}" />
+
+                        <Grid Grid.Column="2" 
+                              Visibility="{Binding IsChecked, 
+                              Converter={StaticResource BooleanToVisibilityConverter}, 
+                              ElementName=isUseCompareValueAverage}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="55"/>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition Width="75"/>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Text="Average of" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="2" Text="{Binding AverageOfNRead_CompareValue}" />
+                            <TextBlock Grid.Column="4" Text="reads" VerticalAlignment="Center"/>
+                        </Grid>
+
+                    </Grid>
+
+                    <Grid Grid.Row="6" MaxWidth="210" HorizontalAlignment="Left">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="0"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="75"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox Grid.Column="0" Name="isUseCompareValueFactor" IsChecked="{Binding IsUseCompareValueFactor}" />
+
+                        <Grid Grid.Column="2" 
+                              Visibility="{Binding IsChecked, 
+                              Converter={StaticResource BooleanToVisibilityConverter}, 
+                              ElementName=isUseCompareValueFactor}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="55"/>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition Width="75"/>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Text="Factor" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="2" Text="{Binding CompareValueFactor}" />
+                        </Grid>
+                    </Grid>
+
+                </Grid>
+
+
+                <TextBlock Grid.Column="6" Text="±" VerticalAlignment="Top" Margin="0,2,0,0"/>
+
+                <TextBox Grid.Column="8" Text="{Binding Tolerance}" 
+                         VerticalAlignment="Top"
+                         Name="tbParamTolerance"/>
+
+                <TextBlock Grid.Column="10" 
+                           Text="{Binding Value.Units}" 
+                           VerticalAlignment="Center"
+                           Visibility="{Binding IsValueTolerance, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                <TextBlock Grid.Column="10" Text="%" 
+                           VerticalAlignment="Top"
+                           Margin="0,2,0,0"
+                           Visibility="{Binding IsPercentageTolerance, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+            </Grid>
+        </Grid>
+    </DataTemplate>
+
+</ResourceDictionary>
