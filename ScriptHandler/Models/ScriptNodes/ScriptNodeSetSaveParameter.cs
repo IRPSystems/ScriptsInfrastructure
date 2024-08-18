@@ -67,7 +67,7 @@ namespace ScriptHandler.Models.ScriptNodes
 		{
 			get
 			{
-				string stepDescription = "Set and Save ";
+				string stepDescription = "Save ";
 				if (_parameter is DeviceParameterData deviceParameter)
 				{
 					stepDescription += " \"" + deviceParameter + "\"";
@@ -77,8 +77,6 @@ namespace ScriptHandler.Models.ScriptNodes
 
 				stepDescription += " - ID:" + ID;
 				return stepDescription;
-
-
 			}
 		}
 

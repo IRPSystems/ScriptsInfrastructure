@@ -630,7 +630,7 @@
 
     </DataTemplate>
 
-    <DataTemplate x:Key="Design_SaveTemplate">
+    <DataTemplate x:Key="Design_SaveParameterTemplate">
 
         <Grid Height="27">
             <Grid.ColumnDefinitions>

@@ -13,8 +13,10 @@ namespace ScriptHandler.Services
 		public static Brush SelectColor(IScriptItem item)
 		{
 			if (item is ScriptNodeSetParameter || item is ScriptStepSetParameter)
-				return (SolidColorBrush)new BrushConverter().ConvertFrom("#CA59FF"); 
-			if (item is ScriptStepStartStopSaftyOfficer)
+				return (SolidColorBrush)new BrushConverter().ConvertFrom("#CA59FF");
+            if (item is ScriptNodeSaveParameter || item is ScriptStepSaveParameter)
+                return (SolidColorBrush)new BrushConverter().ConvertFrom("#CA45FF");
+            if (item is ScriptStepStartStopSaftyOfficer)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#8E66FF");
 			if (item is ScriptNodeSetSaveParameter || item is ScriptStepSetSaveParameter)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#FF6A00");
