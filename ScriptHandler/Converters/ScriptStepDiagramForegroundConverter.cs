@@ -18,7 +18,9 @@ namespace ScriptHandler.Converter
 		{
 			if (value is ScriptNodeSetParameter || value is ScriptStepSetParameter)
 				return Brushes.White;
-			if (value is ScriptStepStartStopSaftyOfficer)
+            if (value is ScriptNodeSaveParameter || value is ScriptStepSaveParameter)
+                return Brushes.White;
+            if (value is ScriptStepStartStopSaftyOfficer)
 				return Brushes.White;
 			if (value is ScriptNodeSetSaveParameter || value is ScriptStepSetSaveParameter)
 				return Brushes.White;

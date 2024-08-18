@@ -34,7 +34,9 @@ namespace ScriptHandler.Services
 			}
 			else if (node.GetType().Name == "ScriptNodeSetSaveParameter")
 				return new ScriptStepSetSaveParameter();
-			else if (node.GetType().Name == "ScriptNodeNotification")
+            else if (node.GetType().Name == "ScriptNodeSaveParameter")
+                return new ScriptStepSaveParameter();
+            else if (node.GetType().Name == "ScriptNodeNotification")
 				return new ScriptStepNotification();
 			else if (node.GetType().Name == "ScriptNodeSubScript")
 				return new ScriptStepSubScript();
