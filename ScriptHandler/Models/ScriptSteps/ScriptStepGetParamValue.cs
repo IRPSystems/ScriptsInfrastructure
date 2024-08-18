@@ -2,6 +2,7 @@
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
 using DeviceHandler.Interfaces;
+using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
@@ -21,7 +22,7 @@ namespace ScriptHandler.Models
 		public DeviceCommunicator Communicator { get; set; }
 
 		[JsonIgnore]
-		public ObservableCollection<DeviceFullData> DevicesList { get; set; }
+		public DevicesContainer DevicesContainer { get; set; }
 
 		protected ManualResetEvent _waitForGet;
 		private bool _isReceived;
@@ -78,7 +79,7 @@ namespace ScriptHandler.Models
 
 			if(parameter is ICalculatedParamete calculated)
 			{
-				calculated.DevicesList = DevicesList;
+				calculated.DevicesList = DevicesContainer.DevicesFullDataList;
 
 				ErrorMessage = "Failed to get the calculated parameter value.\r\n" +
 					"\tParameter: " + parameter + "\r\n\r\n";

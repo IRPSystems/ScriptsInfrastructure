@@ -577,7 +577,7 @@ namespace ScriptRunner.Services
 				step.StopScriptStep = stopScriptStep;
 				if (step is ScriptStepGetParamValue getParamValue)
 				{
-					getParamValue.DevicesList = devicesContainer.DevicesFullDataList;
+					getParamValue.DevicesContainer = devicesContainer;
 				}
 				if (step is ScriptStepSweep sweep)
 				{

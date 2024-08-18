@@ -416,6 +416,13 @@ namespace ScriptHandler.ViewModels
 				else
 					compareRange.Value = param;
 			}
+			else if (listViewItem.DataContext is ScriptNodeCompareWithTolerance compareWithTolerance)
+			{
+				if (tbName.EndsWith("CompareValue"))
+					compareWithTolerance.CompareValue = param;
+				else
+					compareWithTolerance.Parameter = param;
+			}
 			else if (listViewItem.DataContext is ScriptNodeConverge converge)
 			{
 				if (tbName.EndsWith("TargetValue"))

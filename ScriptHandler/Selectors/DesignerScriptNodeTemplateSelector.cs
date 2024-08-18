@@ -37,6 +37,8 @@ namespace ScriptHandler.Selectors
 				return element.FindResource("Design_ConvergeTemplate") as DataTemplate;
 			if (item is ScriptNodeCompareRange)
 				return element.FindResource("Design_CompareRangeTemplate") as DataTemplate;
+			if (item is ScriptNodeCompareWithTolerance)
+				return element.FindResource("Design_CompareWithToleranceTemplate") as DataTemplate;
 			if (item is ScriptNodeStopContinuous)
 				return element.FindResource("Design_StopContinuousTemplate") as DataTemplate;
 			if (item is ScriptNodeCANMessageUpdate)

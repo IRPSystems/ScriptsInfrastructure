@@ -298,4 +298,100 @@
         
     </DataTemplate>
 
+    <DataTemplate x:Key="Design_CompareWithToleranceTemplate">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="27"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="500"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Row="0" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <RadioButton Grid.Column="0" 
+                     Content="Value tolerance" 
+                     IsChecked="{Binding IsValueTolerance}" 
+                     VerticalAlignment="Center"
+                     GroupName="{Binding ToleranceTypeGroupName}"/>
+
+                <RadioButton Grid.Column="2" 
+                     Content="Percentage tolerance" 
+                     IsChecked="{Binding IsPercentageTolerance}" 
+                     VerticalAlignment="Center"
+                     GroupName="{Binding ToleranceTypeGroupName}"/>
+            </Grid>
+
+            <Grid Grid.Row="2" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" 
+                        BorderBrush="{DynamicResource MahApps.Brushes.Gray6}" BorderThickness="1"
+                        AllowDrop="True">
+                    <TextBlock Text="{Binding Parameter}" 
+                               VerticalAlignment="Center"
+                               Name="tbParam"/>
+                </Border>
+
+                <TextBlock Grid.Column="2" Text="=" VerticalAlignment="Center"/>
+
+                <TextBox Grid.Column="4" Text="{Binding CompareValue}" 
+                         VerticalAlignment="Center"
+                         AllowDrop="True"
+                         Name="tbParamCompareValue">
+
+                    <i:Interaction.Triggers>
+
+                        <i:EventTrigger EventName="PreviewDragOver">
+                            <i:InvokeCommandAction Command="{Binding Path=DataContext.TextBox_PreviewDragOverCommand, 
+                                                                     Mode=OneWay, 
+                                                                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" 
+                                                   PassEventArgsToCommand="True"/>
+                        </i:EventTrigger>
+
+                    </i:Interaction.Triggers>
+
+                </TextBox>
+
+                <TextBlock Grid.Column="6" Text="±" VerticalAlignment="Center"/>
+
+                <TextBox Grid.Column="8" Text="{Binding Tolerance}" 
+                         VerticalAlignment="Center"
+                         Name="tbParamTolerance"/>
+
+                <TextBlock Grid.Column="10" 
+                           Text="{Binding Value.Units}" 
+                           VerticalAlignment="Center"
+                           Visibility="{Binding IsValueTolerance, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                <TextBlock Grid.Column="10" Text="%" 
+                           VerticalAlignment="Center"
+                           Visibility="{Binding IsPercentageTolerance, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+            </Grid>
+        </Grid>
+    </DataTemplate>
+
 </ResourceDictionary>

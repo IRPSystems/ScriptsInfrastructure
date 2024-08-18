@@ -32,7 +32,8 @@ namespace ScriptHandler.Converter
 				return Brushes.White;
 			if (value is ScriptNodeSweep || value is ScriptStepSweep)
 				return Brushes.White;
-			if (value is ScriptNodeCompareRange || value is ScriptStepCompareRange)
+			if (value is ScriptNodeCompareRange || value is ScriptStepCompareRange ||
+				value is ScriptNodeCompareWithTolerance || value is ScriptStepCompareWithTolerance)
 				return Brushes.White;
 			if (value is ScriptNodeCompare || value is ScriptStepCompare)
 				return Brushes.Black;
