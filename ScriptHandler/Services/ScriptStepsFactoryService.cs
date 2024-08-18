@@ -46,6 +46,8 @@ namespace ScriptHandler.Services
 				return new ScriptStepConverge();
 			else if (node.GetType().Name == "ScriptNodeCompareRange")
 				return new ScriptStepCompareRange();
+			else if (node.GetType().Name == "ScriptNodeCompareWithTolerance")
+				return new ScriptStepCompareWithTolerance();
 			else if (node.GetType().Name == "ScriptNodeCANMessage")
 				return new ScriptStepCANMessage();
 			else if (node.GetType().Name == "ScriptNodeCANMessageUpdate")
