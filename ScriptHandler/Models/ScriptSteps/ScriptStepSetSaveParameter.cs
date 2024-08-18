@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using ScriptHandler.Models.ScriptNodes;
 using System.Collections.ObjectModel;
 using DeviceCommunicators.Models;
+using DeviceHandler.Interfaces;
 
 namespace ScriptHandler.Models
 {
@@ -220,6 +221,18 @@ namespace ScriptHandler.Models
 		{
 			Parameter = (sourceNode as ScriptNodeSetSaveParameter).Parameter;
 			Value = (sourceNode as ScriptNodeSetSaveParameter).Value;
+		}
+
+		public override void GetRealParamAfterLoad(
+			DevicesContainer devicesContainer)
+		{
+			if (Parameter is ICalculatedParamete)
+				return;
+
+			Parameter = GetRealParam(
+				Parameter,
+				devicesContainer);
+
 		}
 	}
 }

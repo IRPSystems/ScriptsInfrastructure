@@ -2,6 +2,7 @@
 using DeviceCommunicators.General;
 using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
+using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using Newtonsoft.Json.Linq;
 using ScriptHandler.Interfaces;
@@ -144,7 +145,18 @@ namespace ScriptHandler.Models.ScriptSteps
             GenerateProjectService generateService,
             DevicesContainer devicesContainer)
         {
-            //Parameter = (sourceNode as ScriptNodeSetSaveParameter).Parameter;
+            Parameter = (sourceNode as ScriptNodeSaveParameter).Parameter;
         }
-    }
+
+		public override void GetRealParamAfterLoad(
+			DevicesContainer devicesContainer)
+		{
+			if (Parameter is ICalculatedParamete)
+				return;
+
+			Parameter = GetRealParam(
+				Parameter,
+				devicesContainer);
+		}
+	}
 }
