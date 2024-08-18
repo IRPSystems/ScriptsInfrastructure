@@ -243,11 +243,12 @@ namespace ScriptHandler.Models
 				EOLStepSummerysList.Add(eolStepSummeryData);
 				if (!isOK)
 				{
-                    ErrorMessage = "Compare Error \r\n"
+					ErrorMessage = "Compare Error \r\n"
 					+ parameter.ErrorDescription;
-                    IsPass = false;
+					IsPass = false;
 					return 0;
 				}
+			}
 
 				if (parameter == null)
 					return null;
