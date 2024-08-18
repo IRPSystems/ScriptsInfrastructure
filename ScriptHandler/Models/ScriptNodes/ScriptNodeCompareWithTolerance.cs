@@ -85,6 +85,20 @@ namespace ScriptHandler.Models.ScriptNodes
 		public bool IsValueTolerance { get; set; }
 		public bool IsPercentageTolerance { get; set; }
 
+		public bool IsUseParamAverage { get; set; }
+		public int AverageOfNRead_Param { get; set; }
+
+		public bool IsUseParamFactor { get; set; }
+		public double ParamFactor { get; set; }
+
+
+		public bool IsUseCompareValueAverage { get; set; }
+		public int AverageOfNRead_CompareValue { get; set; }
+
+		public bool IsUseCompareValueFactor { get; set; }
+		public double CompareValueFactor { get; set; }
+
+
 
 		public override string Description
 		{
