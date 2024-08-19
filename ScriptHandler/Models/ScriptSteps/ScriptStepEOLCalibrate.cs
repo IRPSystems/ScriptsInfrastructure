@@ -36,6 +36,9 @@ namespace ScriptHandler.Models.ScriptSteps
 		public DeviceCommunicator MCU_Communicator { get; set; }
 		public DeviceCommunicator RefSensorCommunicator { get; set; }
 
+		public double GainMaxLimit {  get; set; }
+		public double GainMinLimit { get; set; }
+
 		#endregion Properties
 
 		#region Fields
@@ -49,8 +52,7 @@ namespace ScriptHandler.Models.ScriptSteps
         private double prevGain;
         private double newGain;
 		private double deviation;
-        private double gainMaxLimit;
-        private double gainMinLimit;
+        
 
         private bool _isStopped;
 
@@ -153,12 +155,12 @@ namespace ScriptHandler.Models.ScriptSteps
 
                         newGain = (prevGain * avgRefSensorRead) / avgMcuRead;
 
-                        if (newGain > gainMaxLimit || newGain < gainMinLimit)
+                        if (newGain > GainMaxLimit || newGain < GainMinLimit)
                         {
                             IsPass = false;
                             ErrorMessage = "Calculated gain has exceeded maximum limit\r\n" +
-                                            "Max gain limit: " + gainMaxLimit + "\r\n" +
-                                            "Min gain limit: " + gainMinLimit + "\r\n" +
+                                            "Max gain limit: " + GainMaxLimit + "\r\n" +
+                                            "Min gain limit: " + GainMinLimit + "\r\n" +
                                             "Calculated gain: " + newGain + "\r\n";
                             _eState = eState.StopOrFail;
                             break;
@@ -319,8 +321,8 @@ namespace ScriptHandler.Models.ScriptSteps
 			RefSensorChannel = (int)(sourceNode as ScriptNodeEOLCalibrate).RefSensorChannel;
 			RefSensorPorts = (int)(sourceNode as ScriptNodeEOLCalibrate).RefSensorPorts;
 			NIDAQShuntResistor = (sourceNode as ScriptNodeEOLCalibrate).NIDAQShuntResistor;
-			gainMaxLimit = (sourceNode as ScriptNodeEOLCalibrate).GainMax;
-            gainMinLimit = (sourceNode as ScriptNodeEOLCalibrate).GainMin;
+			GainMaxLimit = (sourceNode as ScriptNodeEOLCalibrate).GainMax;
+            GainMinLimit = (sourceNode as ScriptNodeEOLCalibrate).GainMin;
 		}
 
 		public override bool IsNotSet(
