@@ -109,7 +109,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <CheckBox Grid.Column="0" Name="isUseParamAverage" IsChecked="{Binding IsUseParamAverage}" />
+                        <CheckBox Grid.Column="0" Content="Use avarage" Name="isUseParamAverage" IsChecked="{Binding IsUseParamAverage}" />
 
                         <Grid Grid.Column="2" 
                               Visibility="{Binding IsChecked, 
@@ -123,7 +123,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Grid.Column="0" Text="Average of" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="0" Text="of" VerticalAlignment="Center"/>
                             <TextBox Grid.Column="2" Text="{Binding AverageOfNRead_Param}" />
                             <TextBlock Grid.Column="4" Text="reads" VerticalAlignment="Center"/>
                         </Grid>
