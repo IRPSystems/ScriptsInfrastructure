@@ -155,14 +155,34 @@ namespace ScriptHandler.Models
 				paramName_Right + " ± " +
 				tolerance;
 
-			double lowest = paramValue_Right - tolerance;
-			double heighest = paramValue_Right + tolerance;
-
-			if (lowest <= paramValue_Left && paramValue_Left <= heighest)
-				IsPass = true;
+			if (IsPercentageTolerance)
+			{
+				double deviationPrecentage = Math.Abs((paramValue_Left - paramValue_Right) * 100 * 2) /
+								 ((paramValue_Left + paramValue_Right));
+				if (deviationPrecentage < tolerance)
+				{
+					IsPass = true;
+				}
+				else
+				{
+                    ErrorMessage =
+						errorHeader + "Tolerance deviation exceeds limits" +
+						paramName_Left + " = " +
+						paramName_Right + " ± " +
+						tolerance;
+                    IsPass = false;
+				}
+			}
 			else
-				IsPass = false;
+			{
+                double lowest = paramValue_Right - tolerance;
+                double heighest = paramValue_Right + tolerance;
 
+                if (lowest <= paramValue_Left && paramValue_Left <= heighest)
+                    IsPass = true;
+                else
+                    IsPass = false;
+            }
 		}
 
 
