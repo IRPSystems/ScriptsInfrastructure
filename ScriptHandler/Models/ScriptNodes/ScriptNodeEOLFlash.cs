@@ -38,10 +38,16 @@ namespace ScriptHandler.Models.ScriptNodes
 		public string TXId { get; set; }
 		public UdsSequence UdsSequence { get; set; }
 
+
+
+		public int NumOfFlashFile { get; set; }
+
+		public string SourceModeGroupName { get => $"EOLSourceMode_{Description}"; }
+		public bool IsEolSource { get; set; }
+		public bool IsToolSource { get; set; }
+
 		[JsonIgnore]
 		public string FileExtension { get; set; }
-
-		
 
 		public override string Description 
 		{ 
