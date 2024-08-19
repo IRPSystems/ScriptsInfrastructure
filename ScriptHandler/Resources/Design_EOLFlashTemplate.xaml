@@ -27,67 +27,120 @@
                 <RowDefinition Height="27"/>
                 <RowDefinition Height="5"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Column="0" Grid.Row="0" Text="File" VerticalAlignment="Center"/>
-
-            <Grid Name="grdFlashFile" Grid.Column="2" Grid.Row="0" Height="27">
+            <TextBlock Grid.Column="0" Grid.Row="0" Text="File source" VerticalAlignment="Center"/>
+            <Grid Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition Width="40" />
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBox Grid.Column="0"
-                         Text="{Binding FlashFilePath}" 
-                         HorizontalAlignment="Stretch"
-                         VerticalContentAlignment="Center"
-                         Name="tbFlash" />
-                <Button Grid.Column="2" 
-                        Content="..." 
-                        Command="{Binding FlashFilePathOpenCommand}"
-                        Margin="0,0,5,0"/>
+                <RadioButton Grid.Column="0" 
+                             Content="EOL"
+                             GroupName="{Binding SourceModeGroupName}"
+                             IsChecked="{Binding IsEolSource}" />
+
+                <RadioButton Grid.Column="2" 
+                             Content="Tool"
+                             GroupName="{Binding SourceModeGroupName}"
+                             IsChecked="{Binding IsToolSource}" />
+
             </Grid>
 
-            <Grid Name="grdBrnHex" 
-                  Grid.Column="2" Grid.Row="2" 
-                  Visibility="{Binding FileExtension, Converter={StaticResource EOLFlashExtraDataVisibilityConverter}}"
-                  Margin="0,0,5,0">
+            <Grid Grid.ColumnSpan="3" Grid.Row="2"
+                  Visibility="{Binding IsEolSource, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="120" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition Width="120" />
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <ComboBox Name="Cmb_UdsSeq" 
-                          ItemsSource="{Binding Source={StaticResource udsSequence}}"
-                          Grid.Column="0" 
-                          SelectedItem="{Binding UdsSequence, Mode=TwoWay}">
-
-                    <i:Interaction.Triggers>
-
-                        <i:EventTrigger EventName="SelectionChanged">
-                            <i:InvokeCommandAction Command="{Binding Path=DataContext.UdsSequence_SelectionChangedCommand, 
-                                             Mode=OneWay, 
-                                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}" 
-                               PassEventArgsToCommand="False"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-
+                <TextBlock Grid.Column="0" Text="File to use" VerticalAlignment="Center"/>
+                <ComboBox Grid.Column="2" SelectedIndex="{Binding NumOfFlashFile}">
+                    <ComboBoxItem Content="1st file" />
+                    <ComboBoxItem Content="2nd file" />
                 </ComboBox>
-
-
-                <TextBlock Grid.Column="2"  Text="Rx:" VerticalAlignment="Center"/>
-                <controls_view:HexTextBoxView Text="{Binding RXId}" Grid.Column="4"/>
-                <TextBlock Grid.Column="6" Text="Tx:" VerticalAlignment="Center"/>
-                <controls_view:HexTextBoxView Text="{Binding TXId}" Grid.Column="8"/>
             </Grid>
+
+            <Grid Grid.Row="2" Grid.ColumnSpan="3"
+                  Visibility="{Binding IsToolSource, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="27"/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="File" VerticalAlignment="Center"/>
+
+                <Grid Name="grdFlashFile" Grid.Column="2" Grid.Row="0" Height="27">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="5" />
+                        <ColumnDefinition Width="40" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Grid.Column="0"
+                             Text="{Binding FlashFilePath}" 
+                             HorizontalAlignment="Stretch"
+                             VerticalContentAlignment="Center"
+                             Name="tbFlash" />
+                    <Button Grid.Column="2" 
+                            Content="..." 
+                            Command="{Binding FlashFilePathOpenCommand}"
+                            Margin="0,0,5,0"/>
+                </Grid>
+
+                <Grid Name="grdBrnHex" 
+                      Grid.Column="2" Grid.Row="2" 
+                      Visibility="{Binding FileExtension, Converter={StaticResource EOLFlashExtraDataVisibilityConverter}}"
+                      Margin="0,0,5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="5" />
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="5" />
+                        <ColumnDefinition Width="120" />
+                    </Grid.ColumnDefinitions>
+
+                    <ComboBox Name="Cmb_UdsSeq" 
+                              ItemsSource="{Binding Source={StaticResource udsSequence}}"
+                              Grid.Column="0" 
+                              SelectedItem="{Binding UdsSequence, Mode=TwoWay}">
+
+                        <i:Interaction.Triggers>
+
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding Path=DataContext.UdsSequence_SelectionChangedCommand, 
+                                                         Mode=OneWay, 
+                                                         RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}" 
+                                           PassEventArgsToCommand="False"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+
+                    </ComboBox>
+
+
+                    <TextBlock Grid.Column="2"  Text="Rx:" VerticalAlignment="Center"/>
+                    <controls_view:HexTextBoxView Text="{Binding RXId}" Grid.Column="4"/>
+                    <TextBlock Grid.Column="6" Text="Tx:" VerticalAlignment="Center"/>
+                    <controls_view:HexTextBoxView Text="{Binding TXId}" Grid.Column="8"/>
+                </Grid>
+            </Grid>
+
+            
 
         </Grid>
 

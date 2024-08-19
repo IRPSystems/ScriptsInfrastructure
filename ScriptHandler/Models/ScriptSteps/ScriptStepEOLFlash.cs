@@ -24,6 +24,12 @@ namespace ScriptHandler.Models.ScriptSteps
 		public string TXId { get; set; }
 		public UdsSequence UdsSequence { get; set; }
 
+
+		public int NumOfFlashFile { get; set; }
+
+		public bool IsEolSource { get; set; }
+		public bool IsToolSource { get; set; }
+
 		[JsonIgnore]
 		public FlashingHandler FlashingHandler { get; set; }
 		
@@ -127,6 +133,11 @@ namespace ScriptHandler.Models.ScriptSteps
 			RXId = (sourceNode as ScriptNodeEOLFlash).RXId;
 			TXId = (sourceNode as ScriptNodeEOLFlash).TXId;
 			UdsSequence = (sourceNode as ScriptNodeEOLFlash).UdsSequence;
+
+			NumOfFlashFile = (sourceNode as ScriptNodeEOLFlash).NumOfFlashFile;
+
+			IsEolSource = (sourceNode as ScriptNodeEOLFlash).IsEolSource;
+			IsToolSource = (sourceNode as ScriptNodeEOLFlash).IsToolSource;
 		}
 
 		public override bool IsNotSet(
