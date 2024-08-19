@@ -123,6 +123,8 @@ namespace ScriptHandler.Models.ScriptNodes
 		public ScriptNodeCompareWithTolerance()
 		{
 			Name = "Compare With Tolerance";
+
+			IsValueTolerance = true;
 		}
 
 		private string GetValueDescription(object value)
