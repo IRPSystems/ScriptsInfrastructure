@@ -311,6 +311,7 @@ namespace ScriptHandler.Models
 			else if ((sourceNode as ScriptNodeSetParameter).Parameter is NumatoGPIO_ParamData)
 			{
 				NumatoGPIODropDwonIndex = (sourceNode as ScriptNodeSetParameter).NumatoGPIODropDwonIndex;
+				Value = (sourceNode as ScriptNodeSetParameter).Value;
 			}
 			else
 				Value = (sourceNode as ScriptNodeSetParameter).Value;

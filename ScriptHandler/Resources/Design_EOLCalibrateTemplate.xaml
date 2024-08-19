@@ -122,6 +122,11 @@
                                          Value="NI6002_ParamData">
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
+
+                            <DataTrigger Binding="{Binding RefSensorParam, Converter={StaticResource TypeToNameConverter}}"
+                                         Value="MCU_ParamData">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Grid.Resources>
@@ -157,6 +162,11 @@
                             <DataTrigger Binding="{Binding RefSensorParam, Converter={StaticResource TypeToNameConverter}}"
                                          Value="NI6002_ParamData">
                                 <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+
+                            <DataTrigger Binding="{Binding RefSensorParam, Converter={StaticResource TypeToNameConverter}}"
+                                         Value="MCU_ParamData">
+                                <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>

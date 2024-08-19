@@ -49,7 +49,14 @@ namespace ScriptHandler.Models.ScriptNodes
 			get => _value;
 			set
 			{
-				_value = value;
+                if (value is string str)
+                {
+					double dVal;
+					bool res = double.TryParse(str, out dVal);
+					if(res) 
+						value = dVal;
+                }
+                _value = value;
 				OnPropertyChanged("Value");
 				OnPropertyChanged("Description");
 			}
