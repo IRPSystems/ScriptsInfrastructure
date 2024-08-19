@@ -89,7 +89,7 @@ namespace ScriptHandler.Models
 				ParamFactor,
 				out paramValue_Left,
 				out paramName_Left,
-				Parameter, amountOfReads);
+				Parameter);
 			if (!res)
 			{
 				ErrorMessage = errorMessage + ErrorMessage;
@@ -110,7 +110,7 @@ namespace ScriptHandler.Models
 				CompareValueFactor,
 				out paramValue_Right,
 				out paramName_Right,
-				CompareValue, amountOfReads);
+				CompareValue);
 			if (!res)
 			{
 				ErrorMessage = errorMessage + ErrorMessage;
@@ -173,7 +173,7 @@ namespace ScriptHandler.Models
 			double factor,
 			out double paramValue,
 			out string paramName,
-			object value, int amountOfReads)
+			object value)
 		{
 			paramValue = 0;
 			paramName = "";
@@ -248,14 +248,11 @@ namespace ScriptHandler.Models
 					IsPass = false;
 					return 0;
 				}
-			}
+				avgSum += Convert.ToDouble(parameter.Value);
+            }
 
-				if (parameter == null)
+			if (parameter == null)
 					return null;
-
-			if (!isUseAverage && !isUseFactor)
-				return parameter.Value;
-
 			
 			return (avgSum / averageOfNRead) * factor;
 		}
