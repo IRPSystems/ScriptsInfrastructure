@@ -132,8 +132,12 @@ namespace ScriptRunner.Services
 		public void StartAll(
 			ObservableCollection<GeneratedProjectData> projectsList,
 			bool isRecord,
-			GeneratedScriptData stoppedScript)
+			GeneratedScriptData stoppedScript,
+			ObservableCollection<DeviceParameterData> logParametersList = null)
 		{
+			if(logParametersList != null) 
+				_logParametersList = logParametersList;
+
 			_projectsList = projectsList;
 
 			if (_projectsList == null || _projectsList.Count == 0)
