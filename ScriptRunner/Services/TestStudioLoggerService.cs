@@ -68,7 +68,15 @@ namespace ScriptRunner.Services
 		}
 		public void Clear()
 		{
-			LogLinesList.Clear();
+			try
+			{
+				if (LogLinesList != null && LogLinesList.Count != 0)
+					LogLinesList.Clear();
+			}
+			catch(Exception ex)
+			{
+				LoggerService.Error(this, "Failed to clear the log", ex);
+			}
 		}
 
 		public void Save(string scriptName)
