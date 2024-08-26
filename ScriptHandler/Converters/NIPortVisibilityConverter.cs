@@ -5,6 +5,7 @@ using System;
 using Entities.Models;
 using System.Windows;
 using DeviceCommunicators.Models;
+using DeviceCommunicators.NI_6002;
 
 namespace ScriptHandler.Converter
 {
@@ -13,16 +14,8 @@ namespace ScriptHandler.Converter
 
 		object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (!(value is DeviceParameterData param))
+			if (!(value is NI6002_ParamData param))
 				return Visibility.Collapsed;
-
-			if (param.Name != "Digital port output" &&
-				param.Name != "Analog port output" &&
-				param.Name != "Read digital input" &&
-				param.Name != "Read Anolog input")
-			{
-				return Visibility.Collapsed;
-			}
 
 			return Visibility.Visible;
 		}

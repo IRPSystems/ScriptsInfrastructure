@@ -94,6 +94,7 @@ namespace ScriptHandler.Models.ScriptNodes
 		public int SwitchRelayChannel { get; set; }
 
 		public int Ni6002_IOPort { get; set; }
+		public int Ni6002_Line { get; set; }
 		public object Ni6002_Value { get; set; }
 
 		private DeviceParameterData _valueParameter;

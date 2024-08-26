@@ -3,7 +3,7 @@
                     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                     xmlns:converters="clr-namespace:ScriptHandler.Converter">
 
-    <converters:CompareWithTolerancePortVisiNIConverter x:Key="CompareWithTolerancePortVisiNIConverter" />
+    <converters:NIPortVisibilityConverter x:Key="CompareWithTolerancePortVisiNIConverter" />
     <converters:CompareWithTolerancePortVisiZimmerConverter x:Key="CompareWithTolerancePortVisiZimmerConverter" />
 
     <DataTemplate x:Key="Design_CompareWithToleranceTemplate">

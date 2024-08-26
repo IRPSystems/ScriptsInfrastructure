@@ -159,12 +159,29 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Value" VerticalAlignment="Center" />
-            <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Ni6002_Value}" />
+            <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Ni6002_Value}"/>
 
-            <TextBlock Grid.Row="2" Grid.Column="0" Text="Pin out" VerticalAlignment="Center" 
-                   Visibility="{Binding Parameter, Converter={StaticResource NIPortVisibilityConverter}}" Margin="0,5,0,0"/>
-            <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Ni6002_IOPort}" 
-                 Visibility="{Binding Parameter, Converter={StaticResource NIPortVisibilityConverter}}" Margin="0,5,0,0"/>
+            <Grid Grid.Row="2" Grid.ColumnSpan="3" 
+                  Visibility="{Binding Parameter, Converter={StaticResource NIPortVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="500"/>
+                </Grid.ColumnDefinitions>
+                
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="27"/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="27"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Port" VerticalAlignment="Center"  />
+                <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Ni6002_IOPort}" />
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Line" VerticalAlignment="Center"  />
+                <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Ni6002_Line}"  />
+
+            </Grid>
 
         </Grid>
     </DataTemplate>

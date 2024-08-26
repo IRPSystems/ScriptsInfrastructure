@@ -36,6 +36,7 @@ namespace ScriptHandler.Models
 
 		public int Ni6002_IOPort { get; set; }
 		public object Ni6002_Value { get; set; }
+		public int Ni6002_Line { get; set; }
 
 		public int NumatoGPIODropDwonIndex { get; set; }
 
@@ -121,6 +122,7 @@ namespace ScriptHandler.Models
 			{
 				ni.Io_port = Ni6002_IOPort;
 				ni.Value = Ni6002_Value;
+				ni.portLine = Ni6002_Line;
 			}
 			else if (Parameter is NumatoGPIO_ParamData numato)
 			{
@@ -307,6 +309,7 @@ namespace ScriptHandler.Models
 			{
 				Ni6002_Value = (sourceNode as ScriptNodeSetParameter).Ni6002_Value;
 				Ni6002_IOPort = (sourceNode as ScriptNodeSetParameter).Ni6002_IOPort;
+				Ni6002_Line = (sourceNode as ScriptNodeSetParameter).Ni6002_Line;
 			}
 			else if ((sourceNode as ScriptNodeSetParameter).Parameter is NumatoGPIO_ParamData)
 			{
