@@ -81,9 +81,18 @@
                             <ColumnDefinition Width="5" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="27" />
+                            <RowDefinition Height="5" />
+                            <RowDefinition Height="27" />
+                        </Grid.RowDefinitions>
                         
-                        <TextBlock Grid.Column="0" Text="Port" VerticalAlignment="Center" Margin="0,5,0,0"/>
-                        <TextBox Grid.Column="2" Text="{Binding Parameter.Io_port}" />
+                        <TextBlock Grid.Column="0" Grid.Row="0" Text="Port" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="2" Grid.Row="0" Text="{Binding Parameter.Io_port}" />
+
+                        <TextBlock Grid.Column="0" Grid.Row="2" Text="Line" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="2" Grid.Row="2" Text="{Binding Parameter.portLine}" />
                     </Grid>
 
                     <Grid Grid.Row="2" Name="grdParamPortZimmer" Margin="0,5,0,0"
@@ -182,8 +191,17 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Column="0" Text="Port" VerticalAlignment="Center" Margin="0,5,0,0"/>
-                        <TextBox Grid.Column="2" Text="{Binding CompareValue.Io_port}" />
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="27"/>
+                            <RowDefinition Height="5"/>
+                            <RowDefinition Height="27"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Column="0" Grid.Row="0" Text="Port" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="2" Grid.Row="0" Text="{Binding CompareValue.Io_port}" />
+
+                        <TextBlock Grid.Column="0" Grid.Row="2" Text="Line" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="2" Grid.Row="2" Text="{Binding CompareValue.portLine}" />
                     </Grid>
 
                     <Grid Grid.Row="2" Name="grdCompareValuePortZimmer" Margin="0,5,0,0"
