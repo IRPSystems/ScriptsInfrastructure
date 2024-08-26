@@ -93,9 +93,9 @@ namespace ScriptHandler.Models.ScriptNodes
 		public BitwiseNumberDisplayData SwitchRelayValue { get; set; }
 		public int SwitchRelayChannel { get; set; }
 
-		public int Ni6002_IOPort { get; set; }
-		public int Ni6002_Line { get; set; }
-		public object Ni6002_Value { get; set; }
+		//public int Ni6002_IOPort { get; set; }
+		//public int Ni6002_Line { get; set; }
+		//public object Ni6002_Value { get; set; }
 
 		private DeviceParameterData _valueParameter;
 		public DeviceParameterData ValueParameter 
@@ -152,15 +152,15 @@ namespace ScriptHandler.Models.ScriptNodes
 
 					if (_parameter is NI6002_ParamData)
 					{
-						if (deviceParameter.Name == "Digital port output" ||
-						deviceParameter.Name == "Analog port output" ||
-						deviceParameter.Name == "Read digital input" ||
-						deviceParameter.Name == "Read Anolog input")
-						{
-							stepDescription += " - Pin out " + Ni6002_IOPort;
-						}
+						//if (deviceParameter.Name == "Digital port output" ||
+						//deviceParameter.Name == "Analog port output" ||
+						//deviceParameter.Name == "Read digital input" ||
+						//deviceParameter.Name == "Read Anolog input")
+						//{
+						//	stepDescription += " - Pin out " + Ni6002_IOPort;
+						//}
 
-						stepDescription += " = " + Ni6002_Value;
+						//stepDescription += " = " + Ni6002_Value;
 					}
 					else 
 					{
