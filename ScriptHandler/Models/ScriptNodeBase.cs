@@ -1,4 +1,5 @@
 ﻿
+using CommunityToolkit.Mvvm.ComponentModel;
 using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
@@ -14,7 +15,7 @@ using System.Runtime.CompilerServices;
 
 namespace ScriptHandler.Models
 {
-	public class ScriptNodeBase: ICloneable, INotifyPropertyChanged, IScriptItem
+	public class ScriptNodeBase: ObservableObject, IScriptItem, ICloneable
 	{
 		#region Properties and Fields
 		public string Name { get; set; }
@@ -153,19 +154,7 @@ namespace ScriptHandler.Models
 
 		}
 
-		private bool _isOnPropertyChanged = false;
-		protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			if (_isOnPropertyChanged)
-				return;
-
-			_isOnPropertyChanged = true;
-
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-			NodePropertyChangeEvent?.Invoke(this, propertyName);
-
-			_isOnPropertyChanged = false;
-		}
+		
 
 		protected DeviceParameterData GetParameter(
 			DeviceTypesEnum deviceType,
