@@ -3,6 +3,7 @@
                     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                     xmlns:converter="clr-namespace:Converters;assembly=Converters"
                     xmlns:local_converter="clr-namespace:ScriptHandler.Converter"
+                    xmlns:converters="clr-namespace:Converters;assembly=Converters"
                     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
 
     <ResourceDictionary.MergedDictionaries>
@@ -17,16 +18,39 @@
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/ParamValueWithInfoTemplate.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-
+    <converters:TypeToNameConverter x:Key="TypeToNameConverter" />
     <converter:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
     <local_converter:HexUintConverter x:Key="HexUintConverter"/>
     <local_converter:SubScriptsListConverter x:Key="SubScriptsListConverter"/>
     <local_converter:NumatoGPIOVisibilityConverter x:Key="NumatoGPIOVisibilityConverter" />
+    <local_converter:NIPortVisibilityConverter x:Key="NIPortVisibilityConverter" />
 
 
 
+    <DataTemplate x:Key="NIExtrasTemplate">
 
+        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" 
+                  Visibility="{Binding Parameter, Converter={StaticResource NIPortVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="300"/>
+            </Grid.ColumnDefinitions>
 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="27"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Port" VerticalAlignment="Center"  />
+            <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Parameter.Io_port}" />
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Line" VerticalAlignment="Center"  />
+            <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Parameter.portLine}"  />
+
+        </Grid>
+    </DataTemplate>
 
     <DataTemplate x:Key="Design_DelayTemplate">
 
@@ -335,6 +359,123 @@
                      Text="{Binding IncrementValue}" />
 
         </Grid>
+
+    </DataTemplate>
+
+    <DataTemplate x:Key="Design_LoopIncrementTemplate">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="27" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="27" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="27" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="27" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Parameter" VerticalAlignment="Center"/>
+            <Border Grid.Row="0" Grid.Column="2" 
+                        BorderBrush="{DynamicResource MahApps.Brushes.Gray6}" BorderThickness="1"
+                        AllowDrop="True">
+                <TextBlock Text="{Binding Parameter}" 
+                               VerticalAlignment="Center"
+                               Name="tbParam"/>
+            </Border>
+            
+
+            <ContentControl Grid.Row="2" Grid.ColumnSpan="3"
+                           ContentTemplate="{StaticResource SwitchRelayParamValueTemplate}"
+                           Name="ccSwitchRelay"
+                           Content="{Binding}"
+                           Visibility="Collapsed"/>
+
+            <ContentControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+                           ContentTemplate="{StaticResource NIExtrasTemplate}"
+                           Name="ccNI"
+                           Content="{Binding}"
+                           Visibility="Collapsed"/>
+
+            <ContentControl Grid.Row="2" Grid.ColumnSpan="3"
+                            ContentTemplate="{StaticResource NumatoGPIOExtrasTemplate}"
+                            Name="ccNumatoGPIO"
+                            Content="{Binding}"
+                            Visibility="Collapsed"/>
+
+            <ContentControl Grid.Row="4" Grid.ColumnSpan="3"
+                            ContentTemplate="{StaticResource ErrLevelForSaftyOfficer_Template}"
+                            Name="ccSaftyOfficer"
+                            Content="{Binding}"
+                            Visibility="Collapsed"/>
+
+
+
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Value to Start" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="4" Grid.Column="2" 
+                     Text="{Binding SetFirstValue}" />
+            <TextBlock Grid.Row="6" Grid.Column="0" Text="Increments By" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="6" Grid.Column="2" 
+                     Text="{Binding IncrementValue}" />
+            <TextBlock Grid.Row="8" Grid.Column="0" Text="Amount of Loops" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="8" Grid.Column="2" 
+                     Text="{Binding LoopsAmount}" />
+            
+            <TextBlock Grid.Row="10" Grid.Column="0" Text="Interval" VerticalAlignment="Center"/>
+            
+            <TextBox Grid.Row="10" Grid.Column="2" Text="{Binding Interval}"/>
+            <ComboBox Grid.Row="10" Grid.Column="4" ItemsSource="{Binding Source={StaticResource timeUnits}}"
+                      SelectedItem="{Binding IntervalUnite}"/>
+
+        </Grid>
+
+        <DataTemplate.Triggers>
+
+            <DataTrigger Binding="{Binding Parameter, Converter={StaticResource TypeToNameConverter}}" Value="SwitchRelay_ParamData">
+
+                <Setter TargetName="ccNI" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccNumatoGPIO" Property="Visibility" Value="Collapsed"/>
+
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Parameter, Converter={StaticResource TypeToNameConverter}}" Value="NI6002_ParamData">
+
+                <Setter TargetName="ccNI" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccNumatoGPIO" Property="Visibility" Value="Collapsed"/>
+
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Parameter, Converter={StaticResource TypeToNameConverter}}" Value="Evva_ParamData">
+
+                <Setter TargetName="ccNI" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="ccNumatoGPIO" Property="Visibility" Value="Collapsed"/>
+
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Parameter, Converter={StaticResource TypeToNameConverter}}" Value="NumatoGPIO_ParamData">
+
+                <Setter TargetName="ccNI" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccNumatoGPIO" Property="Visibility" Value="Visible"/>
+
+            </DataTrigger>
+        </DataTemplate.Triggers>
 
     </DataTemplate>
 

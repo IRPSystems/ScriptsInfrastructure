@@ -44,7 +44,9 @@ namespace ScriptHandler.Services
 				return new ScriptStepSelectMotorType();
 			else if (node.GetType().Name == "ScriptNodeIncrementValue")
 				return new ScriptStepIncrementValue();
-			else if (node.GetType().Name == "ScriptNodeConverge")
+            else if (node.GetType().Name == "ScriptNodeLoopIncrement")
+                return new ScriptStepLoopIncrement();
+            else if (node.GetType().Name == "ScriptNodeConverge")
 				return new ScriptStepConverge();
 			else if (node.GetType().Name == "ScriptNodeCompareRange")
 				return new ScriptStepCompareRange();

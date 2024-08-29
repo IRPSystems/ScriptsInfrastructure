@@ -61,7 +61,9 @@ namespace ScriptHandler.Converter
 			}
 			if (value is ScriptNodeIncrementValue || value is ScriptStepIncrementValue)
 				return Brushes.White;
-			if (value is ScriptNodeConverge || value is ScriptStepConverge)
+            if (value is ScriptNodeLoopIncrement || value is ScriptStepLoopIncrement)
+                return Brushes.White;
+            if (value is ScriptNodeConverge || value is ScriptStepConverge)
 				return Brushes.White;
 			if (value is ScriptNodeEOLFlash || value is ScriptStepEOLFlash)
 				return Brushes.Black;

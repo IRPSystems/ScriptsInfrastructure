@@ -50,7 +50,9 @@ namespace ScriptHandler.Services
 			}
 			if (item is ScriptNodeIncrementValue || item is ScriptStepIncrementValue)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#0094FF");
-			if (item is ScriptNodeConverge || item is ScriptStepConverge)
+            if (item is ScriptNodeLoopIncrement || item is ScriptStepLoopIncrement)
+                return (SolidColorBrush)new BrushConverter().ConvertFrom("#2B00FF");
+            if (item is ScriptNodeConverge || item is ScriptStepConverge)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#0026FF");
 			if (item is ScriptNodeCANMessageStop || item is ScriptStepCANMessageStop)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#FF7FED");

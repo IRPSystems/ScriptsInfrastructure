@@ -35,7 +35,9 @@ namespace ScriptHandler.Selectors
 				return element.FindResource("Design_SubScriptTemplate") as DataTemplate;
 			if (item is ScriptNodeIncrementValue)
 				return element.FindResource("Design_IncrementValueTemplate") as DataTemplate;
-			if (item is ScriptNodeConverge)
+            if (item is ScriptNodeLoopIncrement)
+                return element.FindResource("Design_LoopIncrementTemplate") as DataTemplate;
+            if (item is ScriptNodeConverge)
 				return element.FindResource("Design_ConvergeTemplate") as DataTemplate;
 			if (item is ScriptNodeCompareRange)
 				return element.FindResource("Design_CompareRangeTemplate") as DataTemplate;
