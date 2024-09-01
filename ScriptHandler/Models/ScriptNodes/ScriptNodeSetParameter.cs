@@ -33,6 +33,11 @@ namespace ScriptHandler.Models.ScriptNodes
 					if(SwitchRelayValue == null)
 						SwitchRelayValue = new BitwiseNumberDisplayData(is64Bit:false, isZeroBased:false);
 				}
+				else if(_parameter is NI6002_ParamData ni)
+				{
+					Ni6002_IOPort = ni.Io_port;
+					Ni6002_Line = ni.portLine;
+				}
 				else
 					SwitchRelayValue = null;
 
@@ -93,8 +98,8 @@ namespace ScriptHandler.Models.ScriptNodes
 		public BitwiseNumberDisplayData SwitchRelayValue { get; set; }
 		public int SwitchRelayChannel { get; set; }
 
-		//public int Ni6002_IOPort { get; set; }
-		//public int Ni6002_Line { get; set; }
+		public int Ni6002_IOPort { get; set; }
+		public int Ni6002_Line { get; set; }
 		//public object Ni6002_Value { get; set; }
 
 		private DeviceParameterData _valueParameter;

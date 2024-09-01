@@ -34,9 +34,9 @@ namespace ScriptHandler.Models
 		[JsonIgnore]
 		public DeviceCommunicator Communicator { get; set; }
 
-		//public int Ni6002_IOPort { get; set; }
+		public int Ni6002_IOPort { get; set; }
 		//public object Ni6002_Value { get; set; }
-		//public int Ni6002_Line { get; set; }
+		public int Ni6002_Line { get; set; }
 
 		public int NumatoGPIODropDwonIndex { get; set; }
 
@@ -120,9 +120,9 @@ namespace ScriptHandler.Models
 
 			if(Parameter is NI6002_ParamData ni)
 			{
-				//ni.Io_port = Ni6002_IOPort;
+				ni.Io_port = Ni6002_IOPort;
 				//ni.Value = Ni6002_Value;
-				//ni.portLine = Ni6002_Line;
+				ni.portLine = Ni6002_Line;
 			}
 			else if (Parameter is NumatoGPIO_ParamData numato)
 			{
@@ -308,8 +308,8 @@ namespace ScriptHandler.Models
 			else if ((sourceNode as ScriptNodeSetParameter).Parameter is NI6002_ParamData)
 			{
 				//Ni6002_Value = (sourceNode as ScriptNodeSetParameter).Ni6002_Value;
-				//Ni6002_IOPort = (sourceNode as ScriptNodeSetParameter).Ni6002_IOPort;
-				//Ni6002_Line = (sourceNode as ScriptNodeSetParameter).Ni6002_Line;
+				Ni6002_IOPort = (sourceNode as ScriptNodeSetParameter).Ni6002_IOPort;
+				Ni6002_Line = (sourceNode as ScriptNodeSetParameter).Ni6002_Line;
 				Value = (sourceNode as ScriptNodeSetParameter).Value;
 			}
 			else if ((sourceNode as ScriptNodeSetParameter).Parameter is NumatoGPIO_ParamData)

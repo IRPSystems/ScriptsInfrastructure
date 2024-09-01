@@ -176,10 +176,10 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Port" VerticalAlignment="Center"  />
-                <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Parameter.Io_port}" />
+                <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Ni6002_IOPort}" />
 
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Line" VerticalAlignment="Center"  />
-                <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Parameter.portLine}"  />
+                <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Ni6002_Line}"  />
 
             </Grid>
 
