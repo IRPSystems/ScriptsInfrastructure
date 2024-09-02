@@ -197,9 +197,11 @@
                         <RowDefinition Height="27"/>
                     </Grid.RowDefinitions>
 
-                    <TextBox Grid.Row="0" Text="{Binding CompareValue}" 
+                    <TextBox Grid.Row="0" 
+                             Text="{Binding CompareValue}" 
                              VerticalAlignment="Center"
                              AllowDrop="True"
+                             Visibility="Collapsed"
                              Name="tbParamCompareValue">
 
                         <i:Interaction.Triggers>
@@ -214,6 +216,20 @@
                         </i:Interaction.Triggers>
 
                     </TextBox>
+
+                    <ComboBox Grid.Row="0" 
+                              Name="cbCompareValue"
+                              ItemsSource="{Binding Parameter.DropDown}"
+                              Visibility="Visible" 
+                              SelectedIndex="{Binding CompareValueDropDwonIndex}">
+
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+
+                    </ComboBox>
 
                     <Grid Grid.Row="2" Name="grdCompareValuePortNI" Margin="0,5,0,0"
                           Visibility="{Binding CompareValue, Converter={StaticResource CompareWithTolerancePortVisiNIConverter}}">
@@ -312,6 +328,16 @@
 
             </Grid>
         </Grid>
+
+        <DataTemplate.Triggers>
+
+            <DataTrigger Binding="{Binding Parameter.DropDown}" Value="{x:Null}">
+                <Setter TargetName="cbCompareValue" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="tbParamCompareValue" Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+
+        </DataTemplate.Triggers>
+
     </DataTemplate>
 
 </ResourceDictionary>
