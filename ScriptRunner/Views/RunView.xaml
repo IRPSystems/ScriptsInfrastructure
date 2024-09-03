@@ -67,12 +67,12 @@
                 </Button>
 
                 <Button Style="{StaticResource ButtonWithIconStyle}"
-                                Width="30"
-                                Margin="0,0,50,0"
-                                ToolTip="Stop"
-                                Command="{Binding StopCommand}"                      
-                                IsEnabled="{Binding IsPlayNotEnabled}">
-                    <iconPacks:PackIconMaterial Kind="Stop" />
+        Width="30"
+        Margin="0,0,50,0"
+        ToolTip="Foreward"
+        Command="{Binding ForewardCommand}"                      
+        IsEnabled="{Binding IsPlayNotEnabled}">
+                    <iconPacks:PackIconMaterial Kind="SkipForward" />
                 </Button>
 
                 <Button Width="30"
@@ -381,15 +381,6 @@
                                 IsEnabled="{Binding IsPlayEnabled}">
                             <iconPacks:Material Kind="Play" />
                         </Button>
-
-                        <!--<Button Style="{StaticResource ButtonWithIconStyle}"
-                                Width="30"
-                                Margin="0,0,5,0"
-                                ToolTip="Backward"
-                                Command="{Binding BackwardCommand}"                        
-                                IsEnabled="{Binding IsPlayNotEnabled}">
-                            <iconPacks:PackIconMaterial Kind="SkipBackward" />
-                        </Button>-->
 
                         <Button Style="{StaticResource ButtonWithIconStyle}"
                                 Width="30"
