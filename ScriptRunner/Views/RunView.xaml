@@ -67,12 +67,12 @@
                 </Button>
 
                 <Button Style="{StaticResource ButtonWithIconStyle}"
-                                Width="30"
-                                Margin="0,0,50,0"
-                                ToolTip="Stop"
-                                Command="{Binding StopCommand}"                      
-                                IsEnabled="{Binding IsPlayNotEnabled}">
-                    <iconPacks:PackIconMaterial Kind="Stop" />
+                        Width="30"
+                        Margin="0,0,50,0"
+                        ToolTip="Foreward"
+                        Command="{Binding ForewardCommand}"                      
+                        IsEnabled="{Binding IsPlayNotEnabled}">
+                    <iconPacks:PackIconMaterial Kind="SkipNext" />
                 </Button>
 
                 <Button Width="30"
@@ -232,17 +232,7 @@
 
             </ComboBox>
             <TextBlock Text="Hz"
-                           Margin="0,0,20,0"
-                           VerticalAlignment="Center"/>
-
-            <TextBlock Text="Actual rate"
-                           Margin="0,0,5,0"
-                           VerticalAlignment="Center"/>
-            <TextBlock Text="{Binding RunScript.ParamRecording.ActualRecordingRate}"
-                           Margin="0,0,5,0" Width="75"
-                           VerticalAlignment="Center"/>
-            <TextBlock Text="Hz"
-                           Margin="0,0,10,0"
+                           Margin="0,0,200,0"
                            VerticalAlignment="Center"/>
 
             <Line Y1="1" Stretch="Fill" 
@@ -363,8 +353,10 @@
                 </Grid.RowDefinitions>
 
                 <controls:HeaderView Grid.Row="0" Title="{Binding RunScript.CurrentScript.CurrentScript.Name}" FontSize="20" HeaderBackground="{DynamicResource MahApps.Brushes.Accent2}"/>
+                <controls:HeaderView x:Name="step" Grid.Row="2" Title="{Binding RunScript.CurrentScript.CurrentStep.Description}" FontSize="16" HeaderBackground="{DynamicResource MahApps.Brushes.Accent2}"/>
 
-                <Grid Grid.Row="2" >
+
+                <!--<Grid Grid.Row="2" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="5" />
@@ -381,15 +373,6 @@
                                 IsEnabled="{Binding IsPlayEnabled}">
                             <iconPacks:Material Kind="Play" />
                         </Button>
-
-                        <!--<Button Style="{StaticResource ButtonWithIconStyle}"
-                                Width="30"
-                                Margin="0,0,5,0"
-                                ToolTip="Backward"
-                                Command="{Binding BackwardCommand}"                        
-                                IsEnabled="{Binding IsPlayNotEnabled}">
-                            <iconPacks:PackIconMaterial Kind="SkipBackward" />
-                        </Button>-->
 
                         <Button Style="{StaticResource ButtonWithIconStyle}"
                                 Width="30"
@@ -418,7 +401,7 @@
                     <Line X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" 
                       VerticalAlignment="Bottom"
                       Grid.ColumnSpan="5"/>
-                </Grid>
+                </Grid>-->
 
                 <ContentControl Grid.Row="4" 
                                 ContentTemplate="{Binding RunScript.CurrentScript.CurrentStep.Template}">
