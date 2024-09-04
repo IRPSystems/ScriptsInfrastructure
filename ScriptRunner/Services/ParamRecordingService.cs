@@ -28,7 +28,6 @@ namespace ScriptRunner.Services
 		#region Properties
 
 		public int RecordingRate { get; set; }
-		public int ActualRecordingRate { get; set; }
 		public string RecordDirectory { get; set; }
 
 		#endregion Properties
@@ -142,7 +141,6 @@ namespace ScriptRunner.Services
 				if (Application.Current == null)
 					return;
 
-				ActualRecordingRate = RecordingRate;
 
 				_isFirstLineInFile = true;
 
@@ -456,7 +454,7 @@ namespace ScriptRunner.Services
 
 							TimeSpan lineHandleTime = DateTime.Now - start;
 
-							int sleepTime = 1000 / ActualRecordingRate;
+							int sleepTime = 1000 / RecordingRate;
 							sleepTime -= (int)lineHandleTime.TotalMilliseconds;
 							if (sleepTime > 0)
 							{

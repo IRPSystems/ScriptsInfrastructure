@@ -114,8 +114,11 @@ namespace ScriptHandler.Models
 
 			_stepsCounter++;
 
+			string description = Description;
+			if (!string.IsNullOrEmpty(UserTitle)) 
+				description = UserTitle;
 			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
-				Description,
+				description,
 				"",
 				isPass: IsPass,
 				errorDescription: ErrorMessage);

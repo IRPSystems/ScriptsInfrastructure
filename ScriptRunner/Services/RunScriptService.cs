@@ -150,7 +150,6 @@ namespace ScriptRunner.Services
 
 
 			ParamRecording.RecordingRate = 5;
-			ParamRecording.ActualRecordingRate = ParamRecording.RecordingRate;
 
 			RecordingRateList = new ObservableCollection<int>()
 			{

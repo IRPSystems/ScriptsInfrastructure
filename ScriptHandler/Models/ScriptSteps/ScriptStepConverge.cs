@@ -297,9 +297,11 @@ namespace ScriptHandler.Models.ScriptSteps
 			_checkValueTimer.Stop();
 
 
-
+			string description = Description;
+			if (!string.IsNullOrEmpty(UserTitle))
+				description = UserTitle;
 			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
-				Description,
+				description,
 				"",
 				isPass: IsPass,
 				errorDescription: ErrorMessage);
