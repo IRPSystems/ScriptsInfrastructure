@@ -63,11 +63,12 @@ namespace ScriptHandler.Models.ScriptSteps
 			_setValue.Execute();
 			EOLStepSummerysList.AddRange(_setValue.EOLStepSummerysList);
 
+			string description = string.Empty;
 			if (!_setValue.IsPass)
 			{
 				ErrorMessage = "Unable to set: " + SN_Param.Name;
 				IsPass = false;
-				string description = Description;
+				description = Description;
 				if (!string.IsNullOrEmpty(UserTitle))
 					description = UserTitle;
 				eolStepSummeryData = new EOLStepSummeryData(
@@ -97,7 +98,7 @@ namespace ScriptHandler.Models.ScriptSteps
 					+ _getValue.ErrorMessage;
 					IsPass = false;
 
-					string description = Description;
+					description = Description;
 					if (!string.IsNullOrEmpty(UserTitle))
 						description = UserTitle;
 					eolStepSummeryData = new EOLStepSummeryData(
@@ -141,7 +142,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			}
 			IsPass = true;
 
-			string description = Description;
+			description = Description;
 			if (!string.IsNullOrEmpty(UserTitle))
 				description = UserTitle;
 			eolStepSummeryData = new EOLStepSummeryData(
