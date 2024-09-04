@@ -140,6 +140,8 @@
                                         <Grid Grid.Row="2" Grid.Column="2" Background="Transparent" AllowDrop="False"
                                           Visibility="{Binding ElementName=tb, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <Grid.RowDefinitions>
+                                                <RowDefinition Height="27"/>
+                                                <RowDefinition Height="5"/>
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="15"/>
                                                 <RowDefinition Height="27"/>
@@ -155,12 +157,15 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <ContentControl Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4"
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="User title" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding UserTitle}" />
+
+                                            <ContentControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4"
                                                         Content="{Binding}"
                                                         ContentTemplateSelector="{StaticResource DesignerScriptNodeTemplateSelector}"/>
 
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Pass next node" VerticalAlignment="Center"/>
-                                            <Grid Grid.Row="2" Grid.Column="2" Width="500">
+                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Pass next node" VerticalAlignment="Center"/>
+                                            <Grid Grid.Row="4" Grid.Column="2" Width="500">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="5"/>
@@ -212,8 +217,8 @@
 
                                             </Grid>
 
-                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Fail next node" VerticalAlignment="Center"/>
-                                            <Grid Grid.Row="4" Grid.Column="2"
+                                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Fail next node" VerticalAlignment="Center"/>
+                                            <Grid Grid.Row="6" Grid.Column="2"
                                                     Width="500">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
