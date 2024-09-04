@@ -81,8 +81,11 @@ namespace ScriptHandler.Models
 			//if(!isNotTimeOut)
 			//	IsPass = false;
 
+			string description = Description;
+			if (!string.IsNullOrEmpty(UserTitle))
+				description = UserTitle;
 			eolStepSummeryData = new EOLStepSummeryData(
-				Description,
+				description,
 				"",
 				isPass: IsPass,
 				errorDescription: ErrorMessage);

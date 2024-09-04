@@ -23,6 +23,8 @@ namespace ScriptHandler.Models
 	{
 		#region Properties and Fields
 
+		public string UserTitle { get; set; }
+
 		public string Name { get; set; }
 		public virtual string Description { get; set; }
 
@@ -124,6 +126,7 @@ namespace ScriptHandler.Models
 			DevicesContainer devicesContainer)
 		{
 			EOLReportsSelectionData = sourceNode.EOLReportsSelectionData;
+			UserTitle = sourceNode.UserTitle;
 
 			Generate(
 				sourceNode,

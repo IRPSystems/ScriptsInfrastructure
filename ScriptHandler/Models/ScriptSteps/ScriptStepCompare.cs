@@ -96,8 +96,11 @@ namespace ScriptHandler.Models
 			_stepsCounter++;
 			string _value = IsPass ? "1" : "0";
 
-            EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
-				Description,
+			string description = Description;
+			if (!string.IsNullOrEmpty(UserTitle)) 
+				description = UserTitle;
+			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
+				description,
                 "",
                 value: _value,
 				isPass: IsPass,

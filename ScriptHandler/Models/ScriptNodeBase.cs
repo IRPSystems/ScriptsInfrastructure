@@ -4,20 +4,21 @@ using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Entities.Enums;
-using Entities.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace ScriptHandler.Models
 {
 	public class ScriptNodeBase: ObservableObject, IScriptItem, ICloneable
 	{
 		#region Properties and Fields
+
+		public string UserTitle { get; set; }
+
 		public string Name { get; set; }
 		[JsonIgnore]
 		public virtual string Description { get; set; }
