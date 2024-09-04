@@ -94,10 +94,12 @@ namespace ScriptHandler.Models
 			Compare(leftVal, (double)rightVal);
 
 			_stepsCounter++;
+			string _value = IsPass ? "1" : "0";
 
-			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
+            EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
 				Description,
-				"",
+                "",
+                value: _value,
 				isPass: IsPass,
 				errorDescription: ErrorMessage);
 			EOLStepSummerysList.Add(eolStepSummeryData);
