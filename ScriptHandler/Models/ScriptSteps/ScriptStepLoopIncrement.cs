@@ -101,16 +101,19 @@ namespace ScriptHandler.Models
             _stepsCounter++;
 
 
-            //_waitForGet.Reset();
-            //Communicator.SetParamValue(Parameter, value, GetValueCallback);
+			//_waitForGet.Reset();
+			//Communicator.SetParamValue(Parameter, value, GetValueCallback);
 
-            //bool isNotTimeOut = _waitForGet.WaitOne(2000);
-            //_waitForGet.Reset();
-            //if(!isNotTimeOut)
-            //	IsPass = false;
+			//bool isNotTimeOut = _waitForGet.WaitOne(2000);
+			//_waitForGet.Reset();
+			//if(!isNotTimeOut)
+			//	IsPass = false;
 
-            eolStepSummeryData = new EOLStepSummeryData(
-                Description,
+			string description = Description;
+			if (!string.IsNullOrEmpty(UserTitle))
+				description = UserTitle;
+			eolStepSummeryData = new EOLStepSummeryData(
+                description,
                 "",
                 isPass: IsPass,
                 errorDescription: ErrorMessage);

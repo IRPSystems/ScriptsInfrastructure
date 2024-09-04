@@ -67,8 +67,11 @@ namespace ScriptHandler.Models.ScriptSteps
 			{
 				ErrorMessage = "Unable to set: " + SN_Param.Name;
 				IsPass = false;
+				string description = Description;
+				if (!string.IsNullOrEmpty(UserTitle))
+					description = UserTitle;
 				eolStepSummeryData = new EOLStepSummeryData(
-					Description,
+					description,
 					"",
 					isPass: IsPass,
 					errorDescription: ErrorMessage);
@@ -93,8 +96,12 @@ namespace ScriptHandler.Models.ScriptSteps
 					ErrorMessage = "Wrong SN \r\n"
 					+ _getValue.ErrorMessage;
 					IsPass = false;
+
+					string description = Description;
+					if (!string.IsNullOrEmpty(UserTitle))
+						description = UserTitle;
 					eolStepSummeryData = new EOLStepSummeryData(
-						Description,
+						description,
 						"",
 						isPass: IsPass,
 						errorDescription: ErrorMessage);
@@ -134,8 +141,11 @@ namespace ScriptHandler.Models.ScriptSteps
 			}
 			IsPass = true;
 
+			string description = Description;
+			if (!string.IsNullOrEmpty(UserTitle))
+				description = UserTitle;
 			eolStepSummeryData = new EOLStepSummeryData(
-				Description,
+				description,
 				"",
 				isPass: IsPass,
 				errorDescription: ErrorMessage);
