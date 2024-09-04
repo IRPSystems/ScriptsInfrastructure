@@ -141,7 +141,7 @@
                                           Visibility="{Binding ElementName=tb, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="27"/>
-                                                <RowDefinition Height="5"/>
+                                                <RowDefinition Height="10"/>
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="15"/>
                                                 <RowDefinition Height="27"/>
