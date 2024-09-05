@@ -14,6 +14,7 @@ using Services.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
 
@@ -45,24 +46,39 @@ namespace ScriptHandler.Models
 			double leftVal = 0;
 			string leftParamName = "";
 			_stepsCounter = 1;
-			if (ValueLeft is DeviceParameterData paramLeft)
+
+
+
+            if (ValueLeft is DeviceParameterData paramLeft)
 			{
-				double sum = 0;
+				int intValue = 0;
+
+                double sum = 0;
 				for (int i = 0; i < AverageOfNRead; i++)
 				{
 					object val = GetCompareParaValue(paramLeft);
-					if (val == null || IsPass == false)
+
+                    if (val== null || IsPass == false)
 						return;
 
-					sum += Convert.ToDouble(val);
-					System.Threading.Thread.Sleep(1);
+					if (val is string strval && strval.StartsWith("0x"))
+					{
+                        string hexSubstring = strval.Substring(2);
+                        bool isSuccess = int.TryParse(hexSubstring, System.Globalization.NumberStyles.HexNumber, null, out intValue);
+						if (!isSuccess) 
+							{ return; }
+					}
+
+                    sum += Convert.ToDouble(intValue);
+
+                    System.Threading.Thread.Sleep(1);
 				}
 
 				leftVal = sum / AverageOfNRead;
 				leftParamName = paramLeft.Name;
 			}
 
-			_stepsCounter++;
+            _stepsCounter++;
 			double? rightVal = 0;
 			string rightParamName = "";
 			if (ValueRight is DeviceParameterData paramRight)
@@ -81,7 +97,8 @@ namespace ScriptHandler.Models
 				return;
 			}
 
-			ErrorMessage = leftParamName + " = " + leftVal + "; ";
+
+            ErrorMessage = leftParamName + " = " + leftVal + "; ";
 			if(!string.IsNullOrEmpty(rightParamName))
 			{
 				ErrorMessage += rightParamName + " = " + rightVal + "; ";
@@ -91,7 +108,9 @@ namespace ScriptHandler.Models
 
 			_stepsCounter++;
 
-			Compare(leftVal, (double)rightVal);
+
+
+            Compare(leftVal, (double)rightVal);
 
 			_stepsCounter++;
 			
@@ -146,6 +165,7 @@ namespace ScriptHandler.Models
 					break;
 			}
 
+
 		}
 
 		private object GetCompareParaValue(
@@ -162,13 +182,15 @@ namespace ScriptHandler.Models
 
 			EOLStepSummeryData eolStepSummeryData;
 			bool isOK = SendAndReceive(parameter, out eolStepSummeryData);
+
+
 			EOLStepSummerysList.Add(eolStepSummeryData);
 			if (!isOK)
 			{
 				IsPass = false;
 				return 0;
 			}
-
+			LoggerService.Error(this, " value "+parameter.Value.ToString());
 			return parameter.Value;
 		}
 

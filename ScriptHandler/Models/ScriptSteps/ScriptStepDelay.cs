@@ -1,7 +1,6 @@
 ﻿
 using DeviceCommunicators.General;
 using DeviceHandler.Models;
-using Newtonsoft.Json.Linq;
 using ScriptHandler.Enums;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;

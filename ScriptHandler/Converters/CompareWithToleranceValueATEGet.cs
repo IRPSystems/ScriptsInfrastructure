@@ -15,7 +15,7 @@ namespace ScriptHandler.Converter
 
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is MCU_ParamData param && param.GroupName == "ATE")
+            if (value is ATE_ParamData param )
                     return Visibility.Visible;
                 
             return Visibility.Collapsed;

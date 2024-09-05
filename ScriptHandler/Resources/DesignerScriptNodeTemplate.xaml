@@ -800,6 +800,47 @@
     </DataTemplate>
 
 
+    <DataTemplate x:Key="Design_EOLPrintTemplate">
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="500"/>
+            </Grid.ColumnDefinitions>
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="27" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="27" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="27" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="27" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Part number" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding PartNumber, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Customer part no." VerticalAlignment="Center"/>
+            <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding CustomerPartNumber, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Spec" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding Spec, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Grid.Row="6" Grid.Column="0" Text="HW Version" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding HW_Version, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Grid.Row="8" Grid.Column="0" Text="MCU Version" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="8" Grid.Column="2" Text="{Binding MCU_Version, UpdateSourceTrigger=PropertyChanged}" />
+
+        </Grid>
+
+    </DataTemplate>
+
+
 
     <DataTemplate x:Key="Design_EOLSendSNTemplate">
 
