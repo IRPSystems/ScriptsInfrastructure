@@ -102,6 +102,7 @@ namespace ScriptHandler.Models
 			IsPass = true;
 			_isStopped = false;
 
+
 			
 			ErrorMessage = "Failed to set the value.\r\n" +
 					"\tParameter: \"" + Parameter.Name + "\"\r\n" +
