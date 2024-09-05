@@ -20,7 +20,7 @@ namespace ScriptHandler.Models
 		public string MCU_Version { get; set; }
 
 
-		public string SeiralNumber { get; set; }
+		public string SerialNumber { get; set; }
 
 		#endregion Properties
 
