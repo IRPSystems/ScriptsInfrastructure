@@ -86,6 +86,8 @@ namespace ScriptHandler.Models.ScriptSteps
 			FlashingHandler.OnUploadProccesEvent -= FlashingHandler_OnUploadProccesEvent;
 			FlashingHandler.OnWriteToTerminalEvent -= FlashingHandler_OnWriteToTerminalEvent;
 			FlashingHandler.UploadEndedEvent -= FlashingHandler_UploadEndedEvent;
+
+			AddToEOLSummary();
 		}
 
 		private void FlashingHandler_UploadEndedEvent()

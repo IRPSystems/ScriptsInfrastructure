@@ -131,16 +131,7 @@ namespace ScriptHandler.Models
 					Tolerance,
 					errorHeader);
 
-			string description = Description;
-			if (!string.IsNullOrEmpty(UserTitle))
-				description = UserTitle;
-			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
-				description,
-				"",
-				isPass: IsPass,
-				errorDescription: ErrorMessage);
-			EOLStepSummerysList.Add(eolStepSummeryData);
-
+			AddToEOLSummary();
 		}
 
 		private void Compare_ValueWithTolerance(

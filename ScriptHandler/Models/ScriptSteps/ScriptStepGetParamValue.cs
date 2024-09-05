@@ -131,11 +131,11 @@ namespace ScriptHandler.Models
 
 		private string GetOnlineDescription()
 		{
-			if(!string.IsNullOrEmpty(UserTitle)) 
-				return UserTitle;
+			//if(!string.IsNullOrEmpty(UserTitle)) 
+			//	return UserTitle;
 			string description = "Get value of ";
 			if (Parameter != null)
-				description += $"\"{Parameter.Name}\"";
+				description += $"{Parameter.Name}";
 			return description;
 		}
 

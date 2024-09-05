@@ -296,16 +296,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			_executeState = ExecuteStateEnum.None;
 			_checkValueTimer.Stop();
 
-
-			string description = Description;
-			if (!string.IsNullOrEmpty(UserTitle))
-				description = UserTitle;
-			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
-				description,
-				"",
-				isPass: IsPass,
-				errorDescription: ErrorMessage);
-			EOLStepSummerysList.Add(eolStepSummeryData);
+			AddToEOLSummary();
 		}
 
 		private void checkValueTimer_ElapsedEventHandler(object sender, ElapsedEventArgs e)

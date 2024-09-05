@@ -92,6 +92,8 @@ namespace ScriptHandler.Models.ScriptSteps
             _stepsCounter++;
             if (IsPass)
                 LoggerService.Inforamtion(this, "Saved parameter");
+
+            AddToEOLSummary();
         }
 
         private void GetCallback(DeviceParameterData param, CommunicatorResultEnum result, string resultDescription)

@@ -160,9 +160,7 @@ namespace ScriptHandler.Models
 				IsPass = false;
 			}
 
-			eolStepSummeryData.IsPass = IsPass;
-			eolStepSummeryData.ErrorDescription = ErrorMessage;
-			EOLStepSummerysList.Add(eolStepSummeryData);
+			AddToEOLSummary();
 			_stepsCounter++;
 		}
 

@@ -210,15 +210,7 @@ namespace ScriptHandler.Models.ScriptSteps
                 }
             }
 
-			string description = Description;
-			if (!string.IsNullOrEmpty(UserTitle))
-				description = UserTitle;
-			eolStepSummeryData = new EOLStepSummeryData(
-				description,
-				"",
-				isPass: IsPass,
-				errorDescription: ErrorMessage);
-			EOLStepSummerysList.Add(eolStepSummeryData);
+            AddToEOLSummary();
 
 			return;
         }

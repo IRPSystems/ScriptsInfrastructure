@@ -7,6 +7,7 @@ using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
@@ -110,6 +111,25 @@ namespace ScriptHandler.Models
 		{
 			Execute();
 		}
+
+		public virtual void AddToEOLSummary()
+		{
+            string _value = IsPass ? "Pass" : "Fail";
+
+            string stepDescription = Description;
+            if (!string.IsNullOrEmpty(UserTitle))
+            {
+                stepDescription = UserTitle + " - Result";
+            }
+
+            EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
+                stepDescription,
+            Description,
+                value: _value,
+                isPass: IsPass,
+                errorDescription: ErrorMessage);
+            EOLStepSummerysList.Add(eolStepSummeryData);
+        }
 
 		public virtual bool IsNotSet(
 			DevicesContainer devicesContainer,

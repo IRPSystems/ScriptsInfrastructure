@@ -102,6 +102,8 @@ namespace ScriptHandler.Models
 			ExecuteItem(SweepItemsList[0]);
 
 			LoggerService.Inforamtion(this, "End Execute");
+
+			AddToEOLSummary();
 		}
 
 		private double GetValues(object value)

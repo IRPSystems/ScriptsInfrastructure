@@ -94,21 +94,12 @@ namespace ScriptHandler.Models
 			Compare(leftVal, (double)rightVal);
 
 			_stepsCounter++;
-			string _value = IsPass ? "1" : "0";
+			
 
-			string description = Description;
-			if (!string.IsNullOrEmpty(UserTitle)) 
-				description = UserTitle;
-			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
-				description,
-                "",
-                value: _value,
-				isPass: IsPass,
-				errorDescription: ErrorMessage);
-			EOLStepSummerysList.Add(eolStepSummeryData);
+			AddToEOLSummary();
 
-			#region Log comparation
-			string str = leftParamName + " = " + leftVal + "; ";
+            #region Log comparation
+            string str = leftParamName + " = " + leftVal + "; ";
 			if (!string.IsNullOrEmpty(rightParamName))
 			{
 				str += rightParamName + " = " + rightVal + "; ";
@@ -160,7 +151,7 @@ namespace ScriptHandler.Models
 		private object GetCompareParaValue(
 			DeviceParameterData parameter)
 		{
-			//Parameter = parameter;
+			Parameter = parameter;
 
 			if (parameter != null)
 			{
