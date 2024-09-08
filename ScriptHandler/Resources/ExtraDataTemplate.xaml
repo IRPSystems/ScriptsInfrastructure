@@ -1,0 +1,93 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local_converter="clr-namespace:ScriptHandler.Converter">
+
+    <local_converter:NIPortVisibilityConverter x:Key="NIPortVisibilityConverter" />
+    <local_converter:ChannelVisibilityZimmerConverter x:Key="ChannelVisibilityZimmerConverter" />
+    <local_converter:NumatoGPIOVisibilityConverter x:Key="NumatoGPIOVisibilityConverter" />
+    <local_converter:ATECommandVisibilityConverter x:Key="CompareWithToleranceValueATEGet" />
+
+    <DataTemplate x:Key="ExtraDataTemplate">
+        <Grid Margin="0,5,0,0">
+
+            <Grid Grid.Row="2" Name="grdParamPortNI" 
+                  Visibility="{Binding Parameter, Converter={StaticResource NIPortVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="27" />
+                    <RowDefinition Height="5" />
+                    <RowDefinition Height="27" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="Port" VerticalAlignment="Center" />
+                <TextBox Grid.Column="2" Grid.Row="0" Text="{Binding Ni6002_IOPort}" />
+
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="Line" VerticalAlignment="Center" />
+                <TextBox Grid.Column="2" Grid.Row="2" Text="{Binding Ni6002_Line}" />
+            </Grid>
+
+            <Grid Grid.Row="2" Name="grdParamMCUATE" 
+                  Visibility="{Binding Parameter, Converter={StaticResource CompareWithToleranceValueATEGet}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="Command" VerticalAlignment="Center" />
+                <ComboBox Grid.Row="0" Grid.Column="2"
+                          ItemsSource="{Binding Parameter.ATECommand}"
+                          SelectedIndex= "{Binding ParameterAteCommandDropDwonIndex}">
+
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+
+                </ComboBox>
+
+            </Grid>
+
+            <Grid Grid.Row="2" Name="grdParamPortZimmer" 
+                  Visibility="{Binding Parameter, Converter={StaticResource ChannelVisibilityZimmerConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Channel" VerticalAlignment="Center" />
+                <TextBox Grid.Column="2" Text="{Binding Zimmer_Channel}" />
+            </Grid>
+
+            <Grid Grid.Row="2" Name="grdNumatoGPIO"
+                  Visibility="{Binding Parameter, Converter={StaticResource NumatoGPIOVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Port" VerticalAlignment="Center" />
+                <ComboBox Grid.Column="2" 
+                              ItemsSource="{Binding Parameter.DropDown}"
+                              SelectedIndex="{Binding NumatoGPIODropDwonIndex}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+            </Grid>
+
+        </Grid>
+    </DataTemplate>
+    
+</ResourceDictionary>

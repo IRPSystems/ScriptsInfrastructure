@@ -264,48 +264,7 @@
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="NumatoGPIOExtrasTemplate">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="27"/>
-                <RowDefinition Height="5"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="500"/>
-            </Grid.ColumnDefinitions>
-
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="Value" VerticalAlignment="Center" />
-            <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Value}" />
-
-            <Grid Grid.Row="2" Grid.ColumnSpan="3" 
-              Visibility="{Binding Parameter, Converter={StaticResource NumatoGPIOVisibilityConverter}}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="500"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Port" VerticalAlignment="Center" Margin="0,5,0,0"/>
-                <ComboBox Grid.Row="2" Grid.Column="2" 
-                      ItemsSource="{Binding Parameter.DropDown}"
-                      SelectedIndex="{Binding NumatoGPIODropDwonIndex}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-
-            </Grid>
-
-
-
-        </Grid>
-    </DataTemplate>
+    
 
 
 

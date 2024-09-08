@@ -52,17 +52,8 @@ namespace ScriptHandler.Models
 		public double CompareValueFactor { get; set; }
 
 
-		public int Ni6002_Parameter_IOPort { get; set; }
-		public int Ni6002_Parameter_Line { get; set; }
-		public int ParameterAteCommandDropDwonIndex { get; set; }
-		public int Zimmer_Parameter_Channel { get; set; }
-
-
-
-		public int Ni6002_CompareValue_IOPort { get; set; }
-		public int Ni6002_CompareValue_Line { get; set; }
-		public int CompareValueAteCommandDropDwonIndex { get; set; }
-		public int Zimmer_CompareValue_Channel { get; set; }
+		public ExtraDataForParameter Parameter_ExtraData { get; set; }
+		public ExtraDataForParameter CompareValue_ExtraData { get; set; }
 
 
 
@@ -158,13 +149,13 @@ namespace ScriptHandler.Models
 			{
 				if (isParameter)
 				{
-					ni.Io_port = Ni6002_Parameter_IOPort;
-					ni.portLine = Ni6002_Parameter_Line;
+					ni.Io_port = Parameter_ExtraData.Ni6002_IOPort;
+					ni.portLine = Parameter_ExtraData.Ni6002_Line;
 				}
 				else
 				{
-					ni.Io_port = Ni6002_CompareValue_IOPort;
-					ni.portLine = Ni6002_CompareValue_Line;
+					ni.Io_port = CompareValue_ExtraData.Ni6002_IOPort;
+					ni.portLine = CompareValue_ExtraData.Ni6002_Line;
 				}
 			}
 
@@ -172,11 +163,11 @@ namespace ScriptHandler.Models
 			{
 				if (isParameter)
 				{
-					zimmer.Channel = Zimmer_Parameter_Channel;
+					zimmer.Channel = Parameter_ExtraData.Zimmer_Channel;
 				}
 				else
 				{
-					zimmer.Channel = Zimmer_CompareValue_Channel;
+					zimmer.Channel = CompareValue_ExtraData.Zimmer_Channel;
 				}
 				
 			}
@@ -186,11 +177,11 @@ namespace ScriptHandler.Models
 			{
 				if (isParameter)
 				{
-					ate.Value = ParameterAteCommandDropDwonIndex;
+					ate.Value = Parameter_ExtraData.AteCommandDropDwonIndex;
 				}
 				else
 				{
-					ate.Value = CompareValueAteCommandDropDwonIndex;
+					ate.Value = CompareValue_ExtraData.AteCommandDropDwonIndex;
 				}
 			}
 		}
@@ -372,20 +363,20 @@ namespace ScriptHandler.Models
 			CompareValueFactor = (sourceNode as ScriptNodeCompareWithTolerance).CompareValueFactor;
 
 
-			Ni6002_Parameter_IOPort = (sourceNode as ScriptNodeCompareWithTolerance).Ni6002_Parameter_IOPort;
-			Ni6002_Parameter_Line = (sourceNode as ScriptNodeCompareWithTolerance).Ni6002_Parameter_Line;
-			ParameterAteCommandDropDwonIndex = (sourceNode as ScriptNodeCompareWithTolerance).ParameterAteCommandDropDwonIndex;
-			Zimmer_Parameter_Channel = (sourceNode as ScriptNodeCompareWithTolerance).Zimmer_Parameter_Channel;
+			Parameter_ExtraData.Ni6002_IOPort = (sourceNode as ScriptNodeCompareWithTolerance).Parameter_ExtraData.Ni6002_IOPort;
+			Parameter_ExtraData.Ni6002_Line = (sourceNode as ScriptNodeCompareWithTolerance).Parameter_ExtraData.Ni6002_Line;
+			Parameter_ExtraData.AteCommandDropDwonIndex = (sourceNode as ScriptNodeCompareWithTolerance).Parameter_ExtraData.AteCommandDropDwonIndex;
+			Parameter_ExtraData.Zimmer_Channel = (sourceNode as ScriptNodeCompareWithTolerance).Parameter_ExtraData.Zimmer_Channel;
+			Parameter_ExtraData.NumatoGPIODropDwonIndex = (sourceNode as ScriptNodeCompareWithTolerance).Parameter_ExtraData.NumatoGPIODropDwonIndex;
+
+			CompareValue_ExtraData.Ni6002_IOPort = (sourceNode as ScriptNodeCompareWithTolerance).CompareValue_ExtraData.Ni6002_IOPort;
+			CompareValue_ExtraData.Ni6002_Line = (sourceNode as ScriptNodeCompareWithTolerance).CompareValue_ExtraData.Ni6002_Line;
+			CompareValue_ExtraData.AteCommandDropDwonIndex = (sourceNode as ScriptNodeCompareWithTolerance).CompareValue_ExtraData.AteCommandDropDwonIndex;
+			CompareValue_ExtraData.Zimmer_Channel = (sourceNode as ScriptNodeCompareWithTolerance).CompareValue_ExtraData.Zimmer_Channel;
+			CompareValue_ExtraData.NumatoGPIODropDwonIndex = (sourceNode as ScriptNodeCompareWithTolerance).CompareValue_ExtraData.NumatoGPIODropDwonIndex;
 
 
-
-			Ni6002_CompareValue_IOPort = (sourceNode as ScriptNodeCompareWithTolerance).Ni6002_CompareValue_IOPort;
-			Ni6002_CompareValue_Line = (sourceNode as ScriptNodeCompareWithTolerance).Ni6002_CompareValue_Line;
-			CompareValueAteCommandDropDwonIndex = (sourceNode as ScriptNodeCompareWithTolerance).CompareValueAteCommandDropDwonIndex;
-			Zimmer_CompareValue_Channel = (sourceNode as ScriptNodeCompareWithTolerance).Zimmer_CompareValue_Channel;
-
-		
-	}
+		}
 
 		public override void GetRealParamAfterLoad(
 			DevicesContainer devicesContainer)

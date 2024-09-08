@@ -3,9 +3,15 @@
                     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                     xmlns:converters="clr-namespace:ScriptHandler.Converter">
 
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/ExtraDataTemplate.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
     <converters:NIPortVisibilityConverter x:Key="CompareWithTolerancePortVisiNIConverter" />
     <converters:ChannelVisibilityZimmerConverter x:Key="CompareWithTolerancePortVisiZimmerConverter" />
-    <converters:CompareWithToleranceValueATEGet x:Key="CompareWithToleranceValueATEGet" />
+    <converters:ATECommandVisibilityConverter x:Key="CompareWithToleranceValueATEGet" />
+    
+    
 
 
     <DataTemplate x:Key="Design_CompareWithToleranceTemplate_Parameter">
@@ -28,61 +34,9 @@
                    Name="tbParam"/>
             </Border>
 
-            <Grid Grid.Row="2" Name="grdParamPortNI" Margin="0,5,0,0"
-                  Visibility="{Binding Parameter, Converter={StaticResource CompareWithTolerancePortVisiNIConverter}}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="27" />
-                    <RowDefinition Height="5" />
-                    <RowDefinition Height="27" />
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Column="0" Grid.Row="0" Text="Port" VerticalAlignment="Center" />
-                <TextBox Grid.Column="2" Grid.Row="0" Text="{Binding Ni6002_Parameter_IOPort}" />
-
-                <TextBlock Grid.Column="0" Grid.Row="2" Text="Line" VerticalAlignment="Center" />
-                <TextBox Grid.Column="2" Grid.Row="2" Text="{Binding Ni6002_Parameter_Line}" />
-            </Grid>
-
-            <Grid Grid.Row="2" Name="grdParamMCUATE" Margin="0,5,0,0"
-                  Visibility="{Binding Parameter, Converter={StaticResource CompareWithToleranceValueATEGet}}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0" Grid.Row="0" Text="Command" VerticalAlignment="Center" />
-                <ComboBox Grid.Row="0" Grid.Column="2"
-                          ItemsSource="{Binding Parameter.ATECommand}"
-                          SelectedIndex= "{Binding ParameterAteCommandDropDwonIndex}">
-
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-
-                </ComboBox>
-
-            </Grid>
-
-            <Grid Grid.Row="2" Name="grdParamPortZimmer" Margin="0,5,0,0"
-                  Visibility="{Binding Parameter, Converter={StaticResource CompareWithTolerancePortVisiZimmerConverter}}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0" Text="Channel" VerticalAlignment="Center" Margin="0,5,0,0"/>
-                <TextBox Grid.Column="2" Text="{Binding Zimmer_Parameter_Channel}" />
-            </Grid>
+            <ContentControl Grid.Row="2"
+                            Content="{Binding Parameter_ExtraData}"
+                            ContentTemplate="{StaticResource ExtraDataTemplate}" />
 
             <Grid Grid.Row="4" MaxWidth="220" HorizontalAlignment="Left">
                 <Grid.ColumnDefinitions>
@@ -134,7 +88,7 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="27"/>
-                <RowDefinition Height="5"/>
+                <RowDefinition Height="0"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="5"/>
                 <RowDefinition Height="27"/>
@@ -176,61 +130,9 @@
 
             </ComboBox>
 
-            <Grid Grid.Row="2" Name="grdCompareValuePortNI" Margin="0,5,0,0"
-                  Visibility="{Binding CompareValue, Converter={StaticResource CompareWithTolerancePortVisiNIConverter}}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="27"/>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="27"/>
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Column="0" Grid.Row="0" Text="Port" VerticalAlignment="Center" />
-                <TextBox Grid.Column="2" Grid.Row="0" Text="{Binding Ni6002_CompareValue_IOPort}" />
-
-                <TextBlock Grid.Column="0" Grid.Row="2" Text="Line" VerticalAlignment="Center" />
-                <TextBox Grid.Column="2" Grid.Row="2" Text="{Binding Ni6002_CompareValue_Line}" />
-            </Grid>
-
-            <Grid Grid.Row="2" Name="grdParamMCUATE" 
-                  Visibility="{Binding CompareValue, Converter={StaticResource CompareWithToleranceValueATEGet}}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0" Grid.Row="0" Text="Command" VerticalAlignment="Center" />
-                <ComboBox Grid.Row="0" Grid.Column="2"
-                          ItemsSource="{Binding CompareValue.ATECommand}"
-                          SelectedIndex= "{Binding CompareValueAteCommandDropDwonIndex}">
-
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-
-                </ComboBox>
-
-            </Grid>
-
-            <Grid Grid.Row="2" Name="grdCompareValuePortZimmer" Margin="0,5,0,0"
-                  Visibility="{Binding CompareValue, Converter={StaticResource CompareWithTolerancePortVisiZimmerConverter}}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0" Text="Channel" VerticalAlignment="Center" Margin="0,5,0,0"/>
-                <TextBox Grid.Column="2" Text="{Binding Zimmer_CompareValue_Channel}" />
-            </Grid>
+            <ContentControl Grid.Row="2"
+                            Content="{Binding CompareValue_ExtraData}"
+                            ContentTemplate="{StaticResource ExtraDataTemplate}" />
 
             <Grid Grid.Row="4" MaxWidth="220" HorizontalAlignment="Left">
                 <Grid.ColumnDefinitions>
