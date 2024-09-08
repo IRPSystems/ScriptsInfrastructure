@@ -1,4 +1,5 @@
-﻿using DeviceCommunicators.Models;
+﻿using DeviceCommunicators.MCU;
+using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Entities.Models;
 using ScriptHandler.Enums;
@@ -98,6 +99,72 @@ namespace ScriptHandler.Models.ScriptNodes
 		public bool IsUseCompareValueFactor { get; set; }
 		public double CompareValueFactor { get; set; }
 
+
+		public int Ni6002_Parameter_IOPort { get; set; }
+		public int Ni6002_Parameter_Line { get; set; }
+
+		private int _parameterAteCommandDropDwonIndex;
+		public int ParameterAteCommandDropDwonIndex
+		{
+			get => _parameterAteCommandDropDwonIndex;
+			set
+			{
+				if (!(Parameter is ATE_ParamData ate))
+					return;
+
+				_parameterAteCommandDropDwonIndex = value;
+
+				if (ate.ATECommand == null ||
+					(_parameterAteCommandDropDwonIndex < 0 || _parameterAteCommandDropDwonIndex >= ate.ATECommand.Count))
+				{
+					return;
+				}
+
+				int iVal;
+				bool res = int.TryParse(ate.ATECommand[_parameterAteCommandDropDwonIndex].Value, out iVal);
+				if (res)
+					CompareValue = iVal;
+
+				OnPropertyChanged("CompareValueDropDwonIndex");
+				OnPropertyChanged("Description");
+			}
+		}
+
+		public int Zimmer_Parameter_Channel { get; set; }
+
+
+
+		public int Ni6002_CompareValue_IOPort { get; set; }
+		public int Ni6002_CompareValue_Line { get; set; }
+
+		private int _compareValueAteCommandDropDwonIndex;
+		public int CompareValueAteCommandDropDwonIndex
+		{
+			get => _compareValueAteCommandDropDwonIndex;
+			set
+			{
+				if (!(Parameter is ATE_ParamData ate))
+					return;
+
+				_compareValueAteCommandDropDwonIndex = value;
+
+				if (ate.ATECommand == null ||
+					(_compareValueAteCommandDropDwonIndex < 0 || _compareValueAteCommandDropDwonIndex >= ate.ATECommand.Count))
+				{
+					return;
+				}
+
+				int iVal;
+				bool res = int.TryParse(ate.ATECommand[_compareValueAteCommandDropDwonIndex].Value, out iVal);
+				if (res)
+					CompareValue = iVal;
+
+				OnPropertyChanged("CompareValueDropDwonIndex");
+				OnPropertyChanged("Description");
+			}
+		}
+
+		public int Zimmer_CompareValue_Channel { get; set; }
 
 
 		public override string Description

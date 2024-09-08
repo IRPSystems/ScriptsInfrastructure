@@ -15,8 +15,11 @@ namespace ScriptHandler.Converter
 
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is ATE_ParamData param )
-                    return Visibility.Visible;
+            if (value is ATE_ParamData param &&
+                param.ATECommand != null && param.ATECommand.Count > 0)
+            {
+                return Visibility.Visible;
+            }
                 
             return Visibility.Collapsed;
         }

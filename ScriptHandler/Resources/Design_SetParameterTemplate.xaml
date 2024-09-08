@@ -16,6 +16,8 @@
     <local_converter:SaveParameterValidattionToolTipConverter x:Key="SaveParameterValidattionToolTipConverter"/>
     <local_converter:HexUintConverter x:Key="HexUintConverter"/>
     <local_converter:NIPortVisibilityConverter x:Key="NIPortVisibilityConverter" />
+    <local_converter:ChannelVisibilityZimmerConverter x:Key="ChannelVisibilityZimmerConverter" />
+    <local_converter:NumatoGPIOVisibilityConverter x:Key="NumatoGPIOVisibilityConverter" />
 
     <DataTemplate x:Key="ErrLevelForSaftyOfficer_Template">
 
@@ -186,7 +188,38 @@
         </Grid>
     </DataTemplate>
 
+    <DataTemplate x:Key="ZimmerExtrasTemplate">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="500"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Value" VerticalAlignment="Center" />
+            <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Value}"/>
+
+            <Grid Grid.Row="2" Grid.ColumnSpan="3" 
+                  Visibility="{Binding Parameter, Converter={StaticResource ChannelVisibilityZimmerConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="500"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Channel" VerticalAlignment="Center"  />
+                <TextBox Grid.Column="2" Text="{Binding ZimmerChannel}" />
+
+            </Grid>
+
+        </Grid>
+    </DataTemplate>
 
     <DataTemplate x:Key="NumatoGPIOExtrasTemplate">
         <Grid>
@@ -205,21 +238,74 @@
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Value" VerticalAlignment="Center" />
             <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Value}" />
 
-            <TextBlock Grid.Row="2" Grid.Column="0" Text="Port" VerticalAlignment="Center" Margin="0,5,0,0"/>
-            <ComboBox Grid.Row="2" Grid.Column="2" 
-                      ItemsSource="{Binding Parameter.DropDown}"
-                      SelectedIndex="{Binding NumatoGPIODropDwonIndex}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Name}" />
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
+            <Grid Grid.Row="2" Grid.ColumnSpan="3" 
+                  Visibility="{Binding Parameter, Converter={StaticResource NumatoGPIOVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="500"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Port" VerticalAlignment="Center" Margin="0,5,0,0"/>
+                <ComboBox Grid.Row="2" Grid.Column="2" 
+                          ItemsSource="{Binding Parameter.DropDown}"
+                          SelectedIndex="{Binding NumatoGPIODropDwonIndex}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+            </Grid>
+
+            
 
         </Grid>
     </DataTemplate>
-    
-    
+
+    <DataTemplate x:Key="NumatoGPIOExtrasTemplate">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="500"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Value" VerticalAlignment="Center" />
+            <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Value}" />
+
+            <Grid Grid.Row="2" Grid.ColumnSpan="3" 
+              Visibility="{Binding Parameter, Converter={StaticResource NumatoGPIOVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="500"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Port" VerticalAlignment="Center" Margin="0,5,0,0"/>
+                <ComboBox Grid.Row="2" Grid.Column="2" 
+                      ItemsSource="{Binding Parameter.DropDown}"
+                      SelectedIndex="{Binding NumatoGPIODropDwonIndex}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+            </Grid>
+
+
+
+        </Grid>
+    </DataTemplate>
 
 
 
@@ -316,6 +402,12 @@
                            Visibility="Collapsed"/>
 
             <ContentControl Grid.Row="2" Grid.ColumnSpan="3"
+                            ContentTemplate="{StaticResource ZimmerExtrasTemplate}"
+                            Name="ccZimmer"
+                            Content="{Binding}"
+                            Visibility="Collapsed"/>
+
+            <ContentControl Grid.Row="2" Grid.ColumnSpan="3"
                             ContentTemplate="{StaticResource NumatoGPIOExtrasTemplate}"
                             Name="ccNumatoGPIO"
                             Content="{Binding}"
@@ -337,6 +429,7 @@
 
                 <Setter TargetName="ccRegular" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccNI" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccZimmer" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Visible"/>
                 <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccNumatoGPIO" Property="Visibility" Value="Collapsed"/>
@@ -347,6 +440,18 @@
 
                 <Setter TargetName="ccRegular" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccNI" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="ccZimmer" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccNumatoGPIO" Property="Visibility" Value="Collapsed"/>
+
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Parameter, Converter={StaticResource TypeToNameConverter}}" Value="ZimmerPowerMeter_ParamData">
+
+                <Setter TargetName="ccRegular" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccNI" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccZimmer" Property="Visibility" Value="Visible"/>
                 <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccNumatoGPIO" Property="Visibility" Value="Collapsed"/>
@@ -357,6 +462,7 @@
 
                 <Setter TargetName="ccRegular" Property="Visibility" Value="Visible"/>
                 <Setter TargetName="ccNI" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccZimmer" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Visible"/>
                 <Setter TargetName="ccNumatoGPIO" Property="Visibility" Value="Collapsed"/>
@@ -367,6 +473,7 @@
 
                 <Setter TargetName="ccRegular" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccNI" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccZimmer" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccNumatoGPIO" Property="Visibility" Value="Visible"/>

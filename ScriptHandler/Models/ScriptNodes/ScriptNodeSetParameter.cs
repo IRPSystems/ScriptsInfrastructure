@@ -95,7 +95,35 @@ namespace ScriptHandler.Models.ScriptNodes
 
 		public int Ni6002_IOPort { get; set; }
 		public int Ni6002_Line { get; set; }
-		//public object Ni6002_Value { get; set; }
+
+		public int ZimmerChannel { get; set; }
+
+		private int _numatoGPIODropDwonIndex;
+		public int NumatoGPIODropDwonIndex
+		{
+			get => _numatoGPIODropDwonIndex;
+			set
+			{
+				if (!(Parameter is NumatoGPIO_ParamData numato))
+					return;
+
+				if (numato.DropDown == null)
+					return;
+
+				_numatoGPIODropDwonIndex = value;
+
+				if (_numatoGPIODropDwonIndex < 0 || _numatoGPIODropDwonIndex >= numato.DropDown.Count)
+					return;
+
+				int iVal;
+				bool res = int.TryParse(numato.DropDown[_numatoGPIODropDwonIndex].Value, out iVal);
+				if (res)
+					numato.Io_port = iVal;
+
+				OnPropertyChanged("NumatoGPIODropDwonIndex");
+				OnPropertyChanged("Description");
+			}
+		}
 
 		private DeviceParameterData _valueParameter;
 		public DeviceParameterData ValueParameter 
@@ -180,32 +208,7 @@ namespace ScriptHandler.Models.ScriptNodes
 
 
 
-		private int _numatoGPIODropDwonIndex;
-		public int NumatoGPIODropDwonIndex
-		{
-			get => _numatoGPIODropDwonIndex;
-			set
-			{
-				if (!(Parameter is NumatoGPIO_ParamData numato))
-					return;
-
-				if (numato.DropDown == null)
-					return;
-
-				_numatoGPIODropDwonIndex = value;
-
-				if (_numatoGPIODropDwonIndex < 0 || _numatoGPIODropDwonIndex >= numato.DropDown.Count)
-					return;
-
-				int iVal;
-				bool res = int.TryParse(numato.DropDown[_numatoGPIODropDwonIndex].Value, out iVal);
-				if (res)
-					numato.Io_port = iVal;
-
-				OnPropertyChanged("NumatoGPIODropDwonIndex");
-				OnPropertyChanged("Description");
-			}
-		}
+		
 
 		#endregion Properties and Fields
 

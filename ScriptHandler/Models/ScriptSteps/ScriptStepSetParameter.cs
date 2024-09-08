@@ -8,6 +8,7 @@ using DeviceCommunicators.NumatoGPIO;
 using DeviceCommunicators.PowerSupplayEA;
 using DeviceCommunicators.Scope_KeySight;
 using DeviceCommunicators.SwitchRelay32;
+using DeviceCommunicators.ZimmerPowerMeter;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using Newtonsoft.Json;
@@ -35,10 +36,11 @@ namespace ScriptHandler.Models
 		public DeviceCommunicator Communicator { get; set; }
 
 		public int Ni6002_IOPort { get; set; }
-		//public object Ni6002_Value { get; set; }
 		public int Ni6002_Line { get; set; }
 
 		public int NumatoGPIODropDwonIndex { get; set; }
+
+		public int ZimmerChannel { get; set; }
 
 		private DeviceParameterData _valueParameter;
 		public DeviceParameterData ValueParameter 
@@ -122,12 +124,15 @@ namespace ScriptHandler.Models
 			if(Parameter is NI6002_ParamData ni)
 			{
 				ni.Io_port = Ni6002_IOPort;
-				//ni.Value = Ni6002_Value;
 				ni.portLine = Ni6002_Line;
 			}
 			else if (Parameter is NumatoGPIO_ParamData numato)
 			{
 				numato.Io_port = NumatoGPIODropDwonIndex;
+			}
+			else if (Parameter is ZimmerPowerMeter_ParamData zimmer)
+			{
+				zimmer.Channel = ZimmerChannel;
 			}
 			else if (Parameter is Scope_KeySight_ParamData ks_Param &&
 				Parameter.Name.ToLower() == "save")
@@ -306,7 +311,6 @@ namespace ScriptHandler.Models
 			}
 			else if ((sourceNode as ScriptNodeSetParameter).Parameter is NI6002_ParamData)
 			{
-				//Ni6002_Value = (sourceNode as ScriptNodeSetParameter).Ni6002_Value;
 				Ni6002_IOPort = (sourceNode as ScriptNodeSetParameter).Ni6002_IOPort;
 				Ni6002_Line = (sourceNode as ScriptNodeSetParameter).Ni6002_Line;
 				Value = (sourceNode as ScriptNodeSetParameter).Value;
@@ -314,6 +318,11 @@ namespace ScriptHandler.Models
 			else if ((sourceNode as ScriptNodeSetParameter).Parameter is NumatoGPIO_ParamData)
 			{
 				NumatoGPIODropDwonIndex = (sourceNode as ScriptNodeSetParameter).NumatoGPIODropDwonIndex;
+				Value = (sourceNode as ScriptNodeSetParameter).Value;
+			}
+			else if ((sourceNode as ScriptNodeSetParameter).Parameter is ZimmerPowerMeter_ParamData)
+			{
+				ZimmerChannel = (sourceNode as ScriptNodeSetParameter).ZimmerChannel;
 				Value = (sourceNode as ScriptNodeSetParameter).Value;
 			}
 			else
