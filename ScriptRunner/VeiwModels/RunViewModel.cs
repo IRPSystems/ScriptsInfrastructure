@@ -18,8 +18,10 @@ using ScriptRunner.Services;
 using ScriptRunner.ViewModels;
 using Services.Services;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -35,7 +37,11 @@ namespace ScriptRunner.ViewModels
 		public RunScriptService RunScript { get; set; }
 
 
+		public ObservableCollection<string> ControllersList { get; set; }
+		public string SelectedController { get; set; }
 
+		public ObservableCollection<string> MotorsList { get; set; }
+		public string SelectedMotor { get; set; }
 
 		public bool IsPlayEnabled
 		{
@@ -108,6 +114,9 @@ namespace ScriptRunner.ViewModels
 
 			_devicesContainer = devicesContainer;
 			_flashingHandler = flashingHandler;
+
+			ReadControllerList();
+			ReadMotorList();
 
 
 			DeviceFullData deviceFullDataSource = null;
@@ -229,6 +238,45 @@ namespace ScriptRunner.ViewModels
 		#endregion Constructor
 
 		#region Methods
+
+		private void ReadControllerList()
+		{
+			string fileData = null;
+			using (StreamReader sr = new StreamReader("Data\\ControllersList.txt"))
+			{
+				fileData = sr.ReadToEnd();
+			}
+
+			if (string.IsNullOrEmpty(fileData))
+				return;
+
+			List<string> linesList = fileData.Split("\r\n").ToList();
+			linesList.RemoveAll(IsEmptyString);
+			ControllersList = new ObservableCollection<string>(linesList);
+			
+
+		}
+
+		private void ReadMotorList()
+		{
+			string fileData = null;
+			using (StreamReader sr = new StreamReader("Data\\MotorsList.txt"))
+			{
+				fileData = sr.ReadToEnd();
+			}
+
+			if (string.IsNullOrEmpty(fileData))
+				return;
+
+			List<string> linesList = fileData.Split("\r\n").ToList();
+			linesList.RemoveAll(IsEmptyString);
+			MotorsList = new ObservableCollection<string>(linesList);
+		}
+
+		private static bool IsEmptyString(string s)
+		{
+			return string.IsNullOrEmpty(s);
+		}
 
 		public void ChangeDiagramBackground()
 		{
