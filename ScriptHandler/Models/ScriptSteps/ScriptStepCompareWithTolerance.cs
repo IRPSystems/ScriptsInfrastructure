@@ -363,18 +363,8 @@ namespace ScriptHandler.Models
 			CompareValueFactor = (sourceNode as ScriptNodeCompareWithTolerance).CompareValueFactor;
 
 
-			Parameter_ExtraData.Ni6002_IOPort = (sourceNode as ScriptNodeCompareWithTolerance).Parameter_ExtraData.Ni6002_IOPort;
-			Parameter_ExtraData.Ni6002_Line = (sourceNode as ScriptNodeCompareWithTolerance).Parameter_ExtraData.Ni6002_Line;
-			Parameter_ExtraData.AteCommandDropDwonIndex = (sourceNode as ScriptNodeCompareWithTolerance).Parameter_ExtraData.AteCommandDropDwonIndex;
-			Parameter_ExtraData.Zimmer_Channel = (sourceNode as ScriptNodeCompareWithTolerance).Parameter_ExtraData.Zimmer_Channel;
-			Parameter_ExtraData.NumatoGPIODropDwonIndex = (sourceNode as ScriptNodeCompareWithTolerance).Parameter_ExtraData.NumatoGPIODropDwonIndex;
-
-			CompareValue_ExtraData.Ni6002_IOPort = (sourceNode as ScriptNodeCompareWithTolerance).CompareValue_ExtraData.Ni6002_IOPort;
-			CompareValue_ExtraData.Ni6002_Line = (sourceNode as ScriptNodeCompareWithTolerance).CompareValue_ExtraData.Ni6002_Line;
-			CompareValue_ExtraData.AteCommandDropDwonIndex = (sourceNode as ScriptNodeCompareWithTolerance).CompareValue_ExtraData.AteCommandDropDwonIndex;
-			CompareValue_ExtraData.Zimmer_Channel = (sourceNode as ScriptNodeCompareWithTolerance).CompareValue_ExtraData.Zimmer_Channel;
-			CompareValue_ExtraData.NumatoGPIODropDwonIndex = (sourceNode as ScriptNodeCompareWithTolerance).CompareValue_ExtraData.NumatoGPIODropDwonIndex;
-
+			Parameter_ExtraData = new ExtraDataForParameter((sourceNode as ScriptNodeCompareWithTolerance).Parameter_ExtraData);
+			CompareValue_ExtraData = new ExtraDataForParameter((sourceNode as ScriptNodeCompareWithTolerance).CompareValue_ExtraData);
 
 		}
 

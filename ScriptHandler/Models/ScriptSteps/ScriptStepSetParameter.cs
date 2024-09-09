@@ -2,6 +2,7 @@
 using DeviceCommunicators.Enums;
 using DeviceCommunicators.EvvaDevice;
 using DeviceCommunicators.General;
+using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceCommunicators.NI_6002;
 using DeviceCommunicators.NumatoGPIO;
@@ -30,17 +31,13 @@ namespace ScriptHandler.Models
 		#region Properties and Fields
 
 		public DeviceParameterData Parameter { get; set; }
+
 		public object Value { get; set; }
 
 		[JsonIgnore]
 		public DeviceCommunicator Communicator { get; set; }
 
-		public int Ni6002_IOPort { get; set; }
-		public int Ni6002_Line { get; set; }
-
-		public int NumatoGPIODropDwonIndex { get; set; }
-
-		public int ZimmerChannel { get; set; }
+		public ExtraDataForParameter ExtraData { get; set; }
 
 		private DeviceParameterData _valueParameter;
 		public DeviceParameterData ValueParameter 
@@ -123,16 +120,20 @@ namespace ScriptHandler.Models
 
 			if(Parameter is NI6002_ParamData ni)
 			{
-				ni.Io_port = Ni6002_IOPort;
-				ni.portLine = Ni6002_Line;
+				ni.Io_port = ExtraData.Ni6002_IOPort;
+				ni.portLine = ExtraData.Ni6002_Line;
 			}
 			else if (Parameter is NumatoGPIO_ParamData numato)
 			{
-				numato.Io_port = NumatoGPIODropDwonIndex;
+				numato.Io_port = ExtraData.NumatoGPIODropDwonIndex;
 			}
 			else if (Parameter is ZimmerPowerMeter_ParamData zimmer)
 			{
-				zimmer.Channel = ZimmerChannel;
+				zimmer.Channel = ExtraData.Zimmer_Channel;
+			}
+			else if (Parameter is ATE_ParamData ate)
+			{
+				ate.Value = ExtraData.AteCommandDropDwonIndex;
 			}
 			else if (Parameter is Scope_KeySight_ParamData ks_Param &&
 				Parameter.Name.ToLower() == "save")
@@ -311,18 +312,14 @@ namespace ScriptHandler.Models
 			}
 			else if ((sourceNode as ScriptNodeSetParameter).Parameter is NI6002_ParamData)
 			{
-				Ni6002_IOPort = (sourceNode as ScriptNodeSetParameter).Ni6002_IOPort;
-				Ni6002_Line = (sourceNode as ScriptNodeSetParameter).Ni6002_Line;
 				Value = (sourceNode as ScriptNodeSetParameter).Value;
 			}
 			else if ((sourceNode as ScriptNodeSetParameter).Parameter is NumatoGPIO_ParamData)
 			{
-				NumatoGPIODropDwonIndex = (sourceNode as ScriptNodeSetParameter).NumatoGPIODropDwonIndex;
 				Value = (sourceNode as ScriptNodeSetParameter).Value;
 			}
 			else if ((sourceNode as ScriptNodeSetParameter).Parameter is ZimmerPowerMeter_ParamData)
 			{
-				ZimmerChannel = (sourceNode as ScriptNodeSetParameter).ZimmerChannel;
 				Value = (sourceNode as ScriptNodeSetParameter).Value;
 			}
 			else
@@ -330,6 +327,7 @@ namespace ScriptHandler.Models
 
 			ValueParameter = (sourceNode as ScriptNodeSetParameter).ValueParameter;
 
+			ExtraData = new ExtraDataForParameter((sourceNode as ScriptNodeSetParameter).ExtraData);
 
 
 			if ((sourceNode as ScriptNodeSetParameter).Parameter is SwitchRelay_ParamData &&

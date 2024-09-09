@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceCommunicators.NumatoGPIO;
-using System.Reflection.Metadata;
 
 namespace ScriptHandler.Models
 {
@@ -47,6 +46,16 @@ namespace ScriptHandler.Models
 
 				_numatoGPIODropDwonIndex = value;
 			}
+		}
+
+		public ExtraDataForParameter() { }
+		public ExtraDataForParameter(ExtraDataForParameter source) 
+		{
+			Ni6002_IOPort = source.Ni6002_IOPort;
+			Ni6002_Line = source.Ni6002_Line;
+			AteCommandDropDwonIndex = source.AteCommandDropDwonIndex;
+			Zimmer_Channel = source.Zimmer_Channel;
+			NumatoGPIODropDwonIndex = source.NumatoGPIODropDwonIndex;
 		}
 	}
 }
