@@ -84,18 +84,19 @@ namespace ScriptRunner.Services
 				End(ScriptStopModeEnum.Ended, null);
 				return false;
 			}
-			else if (_runScript.SelectMotor.SelectedController == null)
-			{
-				MessageBox.Show("Please select the controller type", "Run Script");
-				End(ScriptStopModeEnum.Ended, null);
-				return false;
-			}
-			else if (_runScript.SelectMotor.SelectedMotor == null)
-			{
-				MessageBox.Show("Please select the motor type", "Run Script");
-				End(ScriptStopModeEnum.Ended, null);
-				return false;
-			}
+			// TODO: SafetyOfficer
+			//else if (_runScript.SelectMotor.SelectedController == null)
+			//{
+			//	MessageBox.Show("Please select the controller type", "Run Script");
+			//	End(ScriptStopModeEnum.Ended, null);
+			//	return false;
+			//}
+			//else if (_runScript.SelectMotor.SelectedMotor == null)
+			//{
+			//	MessageBox.Show("Please select the motor type", "Run Script");
+			//	End(ScriptStopModeEnum.Ended, null);
+			//	return false;
+			//}
 			else
 			{
 				_runScript.AbortScriptStep = new ScriptStepAbort(_runScript.AbortScriptPath, _devicesContainer);

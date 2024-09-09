@@ -32,6 +32,8 @@ namespace ScriptRunner.Services
 
 		public RunSingleScriptService CurrentScript { get; set; }
 
+		public RunSingleScriptService SafetyOffecerScript { get; set; }
+
 		public ParamRecordingService ParamRecording { get; set; }
 
 		public string AbortScriptPath { get; set; }
@@ -48,7 +50,6 @@ namespace ScriptRunner.Services
 					AbortScriptStep.Script as GeneratedScriptData,
 					null,
 					StopScriptStep,
-					SelectMotor,
 					SaftyOfficer,
 					_devicesContainer,
 					_canMessageSender);
@@ -70,7 +71,7 @@ namespace ScriptRunner.Services
 
 		public SaftyOfficerService SaftyOfficer { get; set; }
 
-		public ScriptStepSelectMotorType SelectMotor { get; set; }
+		//public ScriptStepSelectMotorType SelectMotor { get; set; }
 
 		public int ExecutedStepsPercentage { get; set; }
 
@@ -195,7 +196,6 @@ namespace ScriptRunner.Services
 				failedStepScript,
 				null,
 				StopScriptStep,
-				SelectMotor,
 				SaftyOfficer,
 				_devicesContainer,
 				_canMessageSender);
@@ -204,19 +204,20 @@ namespace ScriptRunner.Services
 
 		private void CreateSelectMotorType()
 		{
-			SelectMotor = new ScriptStepSelectMotorType();
-			SelectMotor.StopScriptStep = StopScriptStep;
-			SelectMotor.Description = "Select Motor Type";
+			// TODO: SafetyOfficer
+			//SelectMotor = new ScriptStepSelectMotorType();
+			//SelectMotor.StopScriptStep = StopScriptStep;
+			//SelectMotor.Description = "Select Motor Type";
 
-			if (_devicesContainer.TypeToDevicesFullData.ContainsKey(Entities.Enums.DeviceTypesEnum.MCU) == false)
-			{
-				return;
-			}
+			//if (_devicesContainer.TypeToDevicesFullData.ContainsKey(Entities.Enums.DeviceTypesEnum.MCU) == false)
+			//{
+			//	return;
+			//}
 
-			DeviceFullData mcu_deviceFullData = _devicesContainer.TypeToDevicesFullData[Entities.Enums.DeviceTypesEnum.MCU];
+			//DeviceFullData mcu_deviceFullData = _devicesContainer.TypeToDevicesFullData[Entities.Enums.DeviceTypesEnum.MCU];
 
-			SelectMotor.MCU_Device = mcu_deviceFullData.Device as MCU_DeviceData;
-			SelectMotor.Communicator = mcu_deviceFullData.DeviceCommunicator;
+			//SelectMotor.MCU_Device = mcu_deviceFullData.Device as MCU_DeviceData;
+			//SelectMotor.Communicator = mcu_deviceFullData.DeviceCommunicator;
 
 		}
 
@@ -265,7 +266,6 @@ namespace ScriptRunner.Services
 				currentScript,
 				null,
 				StopScriptStep,
-				SelectMotor,
 				SaftyOfficer,
 				_devicesContainer,
 				_canMessageSender);
@@ -539,7 +539,6 @@ namespace ScriptRunner.Services
 					sweepItem.SubScript as GeneratedScriptData,
 					null,
 					StopScriptStep,
-					SelectMotor,
 					SaftyOfficer,
 					_devicesContainer,
 					_canMessageSender);

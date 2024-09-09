@@ -160,6 +160,8 @@ namespace ScriptRunner.ViewModels
 				BrowseRecordFileCommand = new RelayCommand(BrowseRecordFile);
 				BrowseAbortScriptPathCommand = new RelayCommand(BrowseAbortScriptPath);
 
+				TestSafetyOfficerCommand = new RelayCommand(TestSafetyOfficer);
+
 				StopScriptStepService stopScriptStep = new StopScriptStepService();
 				RunScript = new RunScriptService(
 					logParametersList,
@@ -512,9 +514,31 @@ namespace ScriptRunner.ViewModels
 			RateAdjustmentNeededEvent?.Invoke(rate);
 		}
 
+		private void TestSafetyOfficer()
+		{
+			StopScriptStepService stopScriptStep = new StopScriptStepService();
+			GeneratedScriptData script = _openProjectForRun.GetSingleScript(
+				@"C:\Users\smadar\Documents\Scripts\Tests\SafetyOffecer.scr",
+				_devicesContainer,
+				_flashingHandler);
+
+			RunScript.SafetyOffecerScript = new RunSingleScriptService(
+				RunScript.RunTime,
+				RunScript.MainScriptLogger,
+				script,
+				null,
+				stopScriptStep,
+				null,
+				_devicesContainer,
+				null);
+			RunScript.SafetyOffecerScript.Start();
+		}
+
 		#endregion Methods
 
 		#region Commands
+
+		public RelayCommand TestSafetyOfficerCommand { get; private set; }
 
 		public RelayCommand SelectAllCommand { get; private set; }
 		public RelayCommand StartAllCommand { get; private set; }

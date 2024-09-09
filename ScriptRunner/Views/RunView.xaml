@@ -80,43 +80,15 @@
                         ToolTip="Abort"
                         Command="{Binding AbortCommand}"
                         IsEnabled="{Binding IsConnected}"
-                        Style="{StaticResource AbortButtonStyle}">
+                        Style="{StaticResource AbortButtonStyle}" />
 
-                    <!--<Button.Resources>
-                        <Style TargetType="Button">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="Button">
 
-                                        <Rectangle Stroke="{DynamicResource MahApps.Brushes.Gray1}"
-                                                 Fill="Red"
-                                                 Name="elps"/>
 
-                                        <ControlTemplate.Triggers>
+                
 
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter TargetName="elps" Property="Opacity" Value="0.5" />
-                                            </Trigger>
+                <CheckBox Content="Record" IsChecked="{Binding IsRecord}" Margin="0,0,50,0"/>
 
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="elps" Property="Fill" Value="DarkRed" />
-                                            </Trigger>
-
-                                        </ControlTemplate.Triggers>
-
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </Button.Resources>-->
-
-                </Button>
-
-                <!--<CheckBox Content="Safty Active" IsChecked="{Binding IsAbort}"
-                          Visibility="{Binding NoAbortingVisibility}"
-                          Margin="0,0,50,0"/>-->
-
-                <CheckBox Content="Record" IsChecked="{Binding IsRecord}"/>
+                <Button Content="Test Safety Officer" Command="{Binding TestSafetyOfficerCommand}" />
 
             </StackPanel>
 

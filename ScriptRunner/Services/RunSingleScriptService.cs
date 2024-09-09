@@ -71,7 +71,6 @@ namespace ScriptRunner.Services
 
 		
 
-		private ScriptStepSelectMotorType _selectMotor;
 		private SaftyOfficerService _saftyOfficer; 
 		private DevicesContainer _devicesContainer;
 		private CANMessageSenderViewModel _canMessageSender;
@@ -87,7 +86,6 @@ namespace ScriptRunner.Services
 			GeneratedScriptData currentScript,
 			ScriptStepSubScript scriptStep,
 			StopScriptStepService stopScriptStep,
-			ScriptStepSelectMotorType selectMotor,
 			SaftyOfficerService saftyOfficer,
 			DevicesContainer devicesContainer,
 			CANMessageSenderViewModel canMessageSender)
@@ -97,7 +95,6 @@ namespace ScriptRunner.Services
 			CurrentScript = currentScript;
 			_scriptStep = scriptStep;
 			_stopScriptStep = stopScriptStep;
-			_selectMotor = selectMotor;
 			_saftyOfficer = saftyOfficer;
 			_devicesContainer = devicesContainer;
 			_canMessageSender = canMessageSender;
@@ -127,6 +124,8 @@ namespace ScriptRunner.Services
 
 		public void Start()
 		{
+			if (CurrentScript == null)
+				return;
 
 			_state = ScriptInternalStateEnum.HandleSpecial;
 			CurrentScript.IsPass = null;
@@ -515,7 +514,6 @@ namespace ScriptRunner.Services
 				generatedScript,
 				subScript as ScriptStepSubScript,
 				_stopScriptStep,
-				_selectMotor,
 				_saftyOfficer,
 				_devicesContainer,
 				_canMessageSender);
@@ -553,31 +551,33 @@ namespace ScriptRunner.Services
 
 		private bool StartSaftyOfficer(ActiveErrorLevelEnum safetyOfficerErrorLevel)
 		{
-			_selectMotor.Execute();
+			//_selectMotor.Execute();
 
-			if (_devicesContainer.TypeToDevicesFullData.ContainsKey(Entities.Enums.DeviceTypesEnum.MCU) == false)
-				return false;
-
-			
-
-			if (_selectMotor.IsPass)
-			{
-				DeviceFullData deviceFullData =
-					_devicesContainer.TypeToDevicesFullData[Entities.Enums.DeviceTypesEnum.MCU];
-				if (deviceFullData == null)
-					return false;
-
-				_saftyOfficer.Start(
-					_selectMotor.SelectedMotor,
-					_selectMotor.SelectedController,
-					deviceFullData.Device as MCU_DeviceData,
-					deviceFullData.ParametersRepository,
-					safetyOfficerErrorLevel);
-			}
+			//if (_devicesContainer.TypeToDevicesFullData.ContainsKey(Entities.Enums.DeviceTypesEnum.MCU) == false)
+			//	return false;
 
 
 
-			return _selectMotor.IsPass;
+			//if (_selectMotor.IsPass)
+			//{
+			//	DeviceFullData deviceFullData =
+			//		_devicesContainer.TypeToDevicesFullData[Entities.Enums.DeviceTypesEnum.MCU];
+			//	if (deviceFullData == null)
+			//		return false;
+
+			//	_saftyOfficer.Start(
+			//		_selectMotor.SelectedMotor,
+			//		_selectMotor.SelectedController,
+			//		deviceFullData.Device as MCU_DeviceData,
+			//		deviceFullData.ParametersRepository,
+			//		safetyOfficerErrorLevel);
+			//}
+
+
+
+			//return _selectMotor.IsPass;
+
+			return true;
 		}
 
 		private void StopSaftyOfficer()
