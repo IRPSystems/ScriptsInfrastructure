@@ -2,7 +2,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
+using DeviceCommunicators.NI_6002;
 using DeviceCommunicators.NumatoGPIO;
+using DeviceCommunicators.ZimmerPowerMeter;
 
 namespace ScriptHandler.Models
 {
@@ -56,6 +58,27 @@ namespace ScriptHandler.Models
 			AteCommandDropDwonIndex = source.AteCommandDropDwonIndex;
 			Zimmer_Channel = source.Zimmer_Channel;
 			NumatoGPIODropDwonIndex = source.NumatoGPIODropDwonIndex;
+		}
+
+		public void SetToParameter(DeviceParameterData parameter)
+		{
+			if (parameter is NI6002_ParamData ni)
+			{
+				ni.Io_port = Ni6002_IOPort;
+				ni.portLine = Ni6002_Line;
+			}
+			else if (parameter is NumatoGPIO_ParamData numato)
+			{
+				numato.Io_port = NumatoGPIODropDwonIndex;
+			}
+			else if (parameter is ZimmerPowerMeter_ParamData zimmer)
+			{
+				zimmer.Channel = Zimmer_Channel;
+			}
+			else if (parameter is ATE_ParamData ate)
+			{
+				ate.Value = AteCommandDropDwonIndex;
+			}
 		}
 	}
 }

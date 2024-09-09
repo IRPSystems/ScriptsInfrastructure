@@ -141,51 +141,6 @@ namespace ScriptHandler.Models
 			AddToEOLSummary();
 		}
 
-		private void SetExtraValues(
-			DeviceParameterData parameter,
-			bool isParameter)
-		{
-			if (parameter is NI6002_ParamData ni)
-			{
-				if (isParameter)
-				{
-					ni.Io_port = Parameter_ExtraData.Ni6002_IOPort;
-					ni.portLine = Parameter_ExtraData.Ni6002_Line;
-				}
-				else
-				{
-					ni.Io_port = CompareValue_ExtraData.Ni6002_IOPort;
-					ni.portLine = CompareValue_ExtraData.Ni6002_Line;
-				}
-			}
-
-			if (Parameter is ZimmerPowerMeter_ParamData zimmer)
-			{
-				if (isParameter)
-				{
-					zimmer.Channel = Parameter_ExtraData.Zimmer_Channel;
-				}
-				else
-				{
-					zimmer.Channel = CompareValue_ExtraData.Zimmer_Channel;
-				}
-				
-			}
-
-
-			if (CompareValue is ATE_ParamData ate)
-			{
-				if (isParameter)
-				{
-					ate.Value = Parameter_ExtraData.AteCommandDropDwonIndex;
-				}
-				else
-				{
-					ate.Value = CompareValue_ExtraData.AteCommandDropDwonIndex;
-				}
-			}
-		}
-
 		private void Compare_ValueWithTolerance(
 			double paramValue_Left,
 			string paramName_Left,
@@ -246,7 +201,10 @@ namespace ScriptHandler.Models
 
 			if (value is DeviceParameterData param)
 			{
-				SetExtraValues(param, isParameter);
+				if (isParameter)
+					Parameter_ExtraData.SetToParameter(param);
+				else
+					CompareValue_ExtraData.SetToParameter(param);
 
 				object val = GetCompareParaValue(
 					isUseAverage,

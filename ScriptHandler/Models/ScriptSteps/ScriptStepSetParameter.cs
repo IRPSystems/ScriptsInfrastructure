@@ -117,25 +117,9 @@ namespace ScriptHandler.Models
 				return;
 			}
 
-
-			if(Parameter is NI6002_ParamData ni)
-			{
-				ni.Io_port = ExtraData.Ni6002_IOPort;
-				ni.portLine = ExtraData.Ni6002_Line;
-			}
-			else if (Parameter is NumatoGPIO_ParamData numato)
-			{
-				numato.Io_port = ExtraData.NumatoGPIODropDwonIndex;
-			}
-			else if (Parameter is ZimmerPowerMeter_ParamData zimmer)
-			{
-				zimmer.Channel = ExtraData.Zimmer_Channel;
-			}
-			else if (Parameter is ATE_ParamData ate)
-			{
-				ate.Value = ExtraData.AteCommandDropDwonIndex;
-			}
-			else if (Parameter is Scope_KeySight_ParamData ks_Param &&
+			ExtraData.SetToParameter(Parameter);
+			
+			if (Parameter is Scope_KeySight_ParamData ks_Param &&
 				Parameter.Name.ToLower() == "save")
 			{
 				ks_Param.data = "Evva_" + DateTime.Now.ToString("DD_MMM_YYY_HH_mm_ss");
