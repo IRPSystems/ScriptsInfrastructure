@@ -373,7 +373,9 @@ namespace ScriptRunner.ViewModels
 			SetIsPlayEnabled(false);
 			SetIsGeneralEnabled(false);
 
-			foreach(GeneratedProjectData project in RunExplorer.ProjectsList)
+			GeneratedScriptData soScript = SelectTheSOScript();
+
+			foreach (GeneratedProjectData project in RunExplorer.ProjectsList)
 			{
 				foreach(GeneratedScriptData script in project.TestsList) 
 				{ 
@@ -382,7 +384,8 @@ namespace ScriptRunner.ViewModels
 						_runProjectsList.StartSingle(
 							project,
 							RunExplorer.SelectedScript,
-							IsRecord);
+							IsRecord,
+							soScript);
 					}
 				}
 			}
@@ -446,6 +449,12 @@ namespace ScriptRunner.ViewModels
 		{ // TODO: SafetyOfficer - need to talk with the V&V and decide how to save the scripts
 			try
 			{
+				if(string.IsNullOrEmpty(SelectedController) || 
+					string.IsNullOrEmpty(SelectedMotor))
+				{
+					return null; 
+				}
+
 				if(string.IsNullOrEmpty(SOScriptsDirectory))
 				{
 					LoggerService.Error(

@@ -149,7 +149,7 @@ namespace ScriptRunner.Services
 				return;
 			}
 
-			bool isAllDataSet = IsAllDataSet();
+			bool isAllDataSet = IsAllDataSet(isSOIncluded, soScript);
 			if (isAllDataSet == false)
 			{
 				End(ScriptStopModeEnum.Ended, null);
