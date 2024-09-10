@@ -76,7 +76,9 @@ namespace ScriptRunner.Services
 			_cancellationTokenSource?.Cancel();
 		}
 
-		private bool IsAllDataSet()
+		private bool IsAllDataSet(
+			bool isSOIncluded,
+			GeneratedScriptData soScript)
 		{
 			if (string.IsNullOrEmpty(_runScript.AbortScriptPath))
 			{
@@ -84,19 +86,12 @@ namespace ScriptRunner.Services
 				End(ScriptStopModeEnum.Ended, null);
 				return false;
 			}
-			// TODO: SafetyOfficer
-			//else if (_runScript.SelectMotor.SelectedController == null)
-			//{
-			//	MessageBox.Show("Please select the controller type", "Run Script");
-			//	End(ScriptStopModeEnum.Ended, null);
-			//	return false;
-			//}
-			//else if (_runScript.SelectMotor.SelectedMotor == null)
-			//{
-			//	MessageBox.Show("Please select the motor type", "Run Script");
-			//	End(ScriptStopModeEnum.Ended, null);
-			//	return false;
-			//}
+			else if (isSOIncluded && soScript == null)
+			{
+				MessageBox.Show("Please select the controller and motor type", "Run Script");
+				End(ScriptStopModeEnum.Ended, null);
+				return false;
+			}
 			else
 			{
 				_runScript.AbortScriptStep = new ScriptStepAbort(_runScript.AbortScriptPath, _devicesContainer);
@@ -108,15 +103,19 @@ namespace ScriptRunner.Services
 				}
 			}
 
+
 			return true;
 		}
 
 		public void StartSingle(
 			GeneratedProjectData projects,
 			GeneratedScriptData scriptData,
-			bool isRecord)
+			bool isRecord,
+			GeneratedScriptData soScript)
 		{
-			bool isAllDataSet = IsAllDataSet();
+			bool isAllDataSet = IsAllDataSet(
+				scriptData.IsContainsSO, 
+				soScript);
 			if(isAllDataSet == false) 
 			{ 
 				End(ScriptStopModeEnum.Ended, null);
@@ -134,9 +133,12 @@ namespace ScriptRunner.Services
 			ObservableCollection<GeneratedProjectData> projectsList,
 			bool isRecord,
 			GeneratedScriptData stoppedScript,
+			GeneratedScriptData soScript,
 			ObservableCollection<DeviceParameterData> logParametersList = null)
 		{
-			if(logParametersList != null) 
+			bool isSOIncluded = IsSOIncluded(projectsList);
+
+			if (logParametersList != null) 
 				_logParametersList = logParametersList;
 
 			_projectsList = projectsList;
@@ -173,6 +175,20 @@ namespace ScriptRunner.Services
 
 			Run(_projectsList,
 				isRecord);
+		}
+
+		private bool IsSOIncluded(ObservableCollection<GeneratedProjectData> projectsList)
+		{
+			foreach (GeneratedProjectData project in projectsList)
+			{
+				foreach (GeneratedScriptData test in project.TestsList)
+				{
+					if(test.IsContainsSO)
+						return true;
+				}
+			}
+
+			return false;
 		}
 
 		private void GoToStoppedScript(GeneratedScriptData stoppedScript)

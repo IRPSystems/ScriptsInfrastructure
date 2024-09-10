@@ -451,6 +451,12 @@ namespace ScriptRunner.Services
 			if (CurrentScript.IsPass == false && _scriptStep.IsStopOnFail)
 				return true;
 
+			if(_scriptStep.IsInfinity)
+			{
+				_scriptStep.RunIndex++;
+				Start();
+				return false;
+			}
 
 			if (_scriptStep.ContinueUntilType == SubScriptContinueUntilTypeEnum.Repeats)
 			{

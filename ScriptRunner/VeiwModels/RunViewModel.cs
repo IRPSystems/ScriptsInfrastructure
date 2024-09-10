@@ -43,6 +43,9 @@ namespace ScriptRunner.ViewModels
 		public ObservableCollection<string> MotorsList { get; set; }
 		public string SelectedMotor { get; set; }
 
+		public string SOScriptsDirectory { get; set; }
+
+
 		public bool IsPlayEnabled
 		{
 			get => _isConnected && _isPlayEnabled && _isScriptsLoaded;
@@ -167,9 +170,8 @@ namespace ScriptRunner.ViewModels
 				ShowScriptOutputCommand = new RelayCommand(ShowScriptOutput);
 
 				BrowseRecordFileCommand = new RelayCommand(BrowseRecordFile);
+				BrowseSOScriptsDirectoryCommand = new RelayCommand(BrowseSOScriptsDirectory);
 				BrowseAbortScriptPathCommand = new RelayCommand(BrowseAbortScriptPath);
-
-				TestSafetyOfficerCommand = new RelayCommand(TestSafetyOfficer);
 
 				StopScriptStepService stopScriptStep = new StopScriptStepService();
 				RunScript = new RunScriptService(
@@ -270,6 +272,8 @@ namespace ScriptRunner.ViewModels
 
 			List<string> linesList = fileData.Split("\r\n").ToList();
 			linesList.RemoveAll(IsEmptyString);
+			for (int i = 0; i < linesList.Count; i++)
+				linesList[i] = linesList[i].Trim();
 			MotorsList = new ObservableCollection<string>(linesList);
 		}
 
@@ -432,9 +436,63 @@ namespace ScriptRunner.ViewModels
 			SetIsPlayEnabled(false);
 			SetIsGeneralEnabled(false);
 
-			_runProjectsList.StartAll(RunExplorer.ProjectsList, IsRecord, _stoppedScript);
+			GeneratedScriptData soScript = SelectTheSOScript();
+			_runProjectsList.StartAll(RunExplorer.ProjectsList, IsRecord, _stoppedScript, soScript);
 
 			
+		}
+
+		private GeneratedScriptData SelectTheSOScript()
+		{ // TODO: SafetyOfficer - need to talk with the V&V and decide how to save the scripts
+			try
+			{
+				if(string.IsNullOrEmpty(SOScriptsDirectory))
+				{
+					LoggerService.Error(
+						this,
+						$"The directory of the SO scripts was not selected",
+						"Error");
+					return null;
+				}
+
+
+				string selectedMotorController = $"{SelectedController}--{SelectedMotor}";
+
+				string projectFilePath = Path.Combine(SOScriptsDirectory, selectedMotorController + ".gprj");
+				if (File.Exists(projectFilePath) == false)
+				{
+					LoggerService.Error(
+						this,
+						$"Failed to find script for the combination of {SelectedController} - {SelectedMotor}",
+						"Error");
+					return null;
+				}
+
+				StopScriptStepService stopScriptStep = new StopScriptStepService();
+				GeneratedProjectData project = _openProjectForRun.Open(
+					projectFilePath,
+					_devicesContainer,
+					_flashingHandler,
+					stopScriptStep);
+
+				if(project.TestsList == null || project.TestsList.Count == 0)
+				{
+					LoggerService.Error(
+						this,
+						$"Failed to find script in the project for the combination of {SelectedController} - {SelectedMotor}",
+						"Error");
+					return null;
+				}
+
+
+				return project.TestsList[0];
+			}
+			catch(Exception ex) 
+			{ 
+				LoggerService.Error(this, "Failed to select the OS script", ex);
+			}
+
+			return null;
 		}
 
 		private bool _isAborted;
@@ -518,6 +576,23 @@ namespace ScriptRunner.ViewModels
 			RunScript.ParamRecording.RecordDirectory = commonOpenFile.FileName;
 		}
 
+		private void BrowseSOScriptsDirectory()
+		{
+			string initDir = _scriptUserData.LastSODirPath;
+			if (Directory.Exists(initDir) == false)
+				initDir = "";
+			CommonOpenFileDialog commonOpenFile = new CommonOpenFileDialog();
+			commonOpenFile.IsFolderPicker = true;
+			commonOpenFile.InitialDirectory = initDir;
+			CommonFileDialogResult results = commonOpenFile.ShowDialog();
+			if (results != CommonFileDialogResult.Ok)
+				return;
+
+			_scriptUserData.LastSODirPath =
+				commonOpenFile.FileName;
+			SOScriptsDirectory = commonOpenFile.FileName;
+		}
+
 		private void BrowseAbortScriptPath()
 		{
 			string initDir = _scriptUserData.LastAbortScriptPath;
@@ -562,31 +637,11 @@ namespace ScriptRunner.ViewModels
 			RateAdjustmentNeededEvent?.Invoke(rate);
 		}
 
-		private void TestSafetyOfficer()
-		{
-			StopScriptStepService stopScriptStep = new StopScriptStepService();
-			GeneratedScriptData script = _openProjectForRun.GetSingleScript(
-				@"C:\Users\smadar\Documents\Scripts\Tests\SafetyOffecer.scr",
-				_devicesContainer,
-				_flashingHandler);
-
-			RunScript.SafetyOffecerScript = new RunSingleScriptService(
-				RunScript.RunTime,
-				RunScript.MainScriptLogger,
-				script,
-				null,
-				stopScriptStep,
-				null,
-				_devicesContainer,
-				null);
-			RunScript.SafetyOffecerScript.Start();
-		}
-
 		#endregion Methods
 
 		#region Commands
 
-		public RelayCommand TestSafetyOfficerCommand { get; private set; }
+		
 
 		public RelayCommand SelectAllCommand { get; private set; }
 		public RelayCommand StartAllCommand { get; private set; }
@@ -605,6 +660,7 @@ namespace ScriptRunner.ViewModels
 
 		public RelayCommand BrowseRecordFileCommand { get; private set; }
 		public RelayCommand BrowseAbortScriptPathCommand { get; private set; }
+		public RelayCommand BrowseSOScriptsDirectoryCommand { get; private set; }
 
 
 		private RelayCommand<SelectionChangedEventArgs> _RateList_SelectionChangedCommand;
