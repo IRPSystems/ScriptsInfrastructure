@@ -202,9 +202,15 @@ namespace ScriptHandler.Models
 			if (value is DeviceParameterData param)
 			{
 				if (isParameter)
+				{
+					Parameter_ExtraData.Parameter = param;
 					Parameter_ExtraData.SetToParameter(param);
+				}
 				else
+				{
+					CompareValue_ExtraData.Parameter = param;
 					CompareValue_ExtraData.SetToParameter(param);
+				}
 
 				object val = GetCompareParaValue(
 					isUseAverage,
