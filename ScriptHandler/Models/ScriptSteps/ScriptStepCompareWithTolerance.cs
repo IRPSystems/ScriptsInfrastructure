@@ -1,5 +1,6 @@
 ﻿
 using DeviceCommunicators.General;
+using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceCommunicators.NI_6002;
 using DeviceCommunicators.ZimmerPowerMeter;
@@ -17,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Windows;
 
 namespace ScriptHandler.Models
@@ -50,6 +52,10 @@ namespace ScriptHandler.Models
 		public double CompareValueFactor { get; set; }
 
 
+		public ExtraDataForParameter Parameter_ExtraData { get; set; }
+		public ExtraDataForParameter CompareValue_ExtraData { get; set; }
+
+
 
 		#endregion Properties
 
@@ -80,9 +86,9 @@ namespace ScriptHandler.Models
 
 			double paramValue_Left = 0;
 			string paramName_Left = "";
-			int amountOfReads = 2;
 
 			bool res = GetValueAndName(
+				true,
 				IsUseParamAverage,
 				AverageOfNRead_Param,
 				IsUseParamFactor,
@@ -104,6 +110,7 @@ namespace ScriptHandler.Models
 			double paramValue_Right = 0;
 			string paramName_Right = "";
 			res = GetValueAndName(
+				false,
 				IsUseCompareValueAverage,
 				AverageOfNRead_CompareValue,
 				IsUseCompareValueFactor,
@@ -180,6 +187,7 @@ namespace ScriptHandler.Models
 
 
 		private bool GetValueAndName(
+			bool isParameter,
 			bool isUseAverage,
 			int averageOfNRead,
 			bool isUseFactor,
@@ -193,6 +201,11 @@ namespace ScriptHandler.Models
 
 			if (value is DeviceParameterData param)
 			{
+				if (isParameter)
+					Parameter_ExtraData.SetToParameter(param);
+				else
+					CompareValue_ExtraData.SetToParameter(param);
+
 				object val = GetCompareParaValue(
 					isUseAverage,
 					averageOfNRead,
@@ -308,31 +321,9 @@ namespace ScriptHandler.Models
 			CompareValueFactor = (sourceNode as ScriptNodeCompareWithTolerance).CompareValueFactor;
 
 
-			if (Parameter is NI6002_ParamData ni &&
-				(sourceNode as ScriptNodeCompareWithTolerance).Parameter is NI6002_ParamData sourceNI)
-			{
-				ni.Io_port = sourceNI.Io_port;
-			}
+			Parameter_ExtraData = new ExtraDataForParameter((sourceNode as ScriptNodeCompareWithTolerance).Parameter_ExtraData);
+			CompareValue_ExtraData = new ExtraDataForParameter((sourceNode as ScriptNodeCompareWithTolerance).CompareValue_ExtraData);
 
-			if (Parameter is ZimmerPowerMeter_ParamData zimmer &&
-				(sourceNode as ScriptNodeCompareWithTolerance).Parameter is ZimmerPowerMeter_ParamData sourceZimmer)
-			{
-				zimmer.Channel = sourceZimmer.Channel;
-			}
-
-
-
-			if (CompareValue is NI6002_ParamData niCompareValue &&
-				(sourceNode as ScriptNodeCompareWithTolerance).CompareValue is NI6002_ParamData sourceNICompareValue)
-			{
-				niCompareValue.Io_port = sourceNICompareValue.Io_port;
-			}
-
-			if (CompareValue is ZimmerPowerMeter_ParamData zimmerCompareValue &&
-				(sourceNode as ScriptNodeCompareWithTolerance).CompareValue is ZimmerPowerMeter_ParamData sourceZimmerCompareValue)
-			{
-				zimmerCompareValue.Channel = sourceZimmerCompareValue.Channel;
-			}
 		}
 
 		public override void GetRealParamAfterLoad(

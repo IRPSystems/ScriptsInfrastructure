@@ -8,7 +8,7 @@ using DeviceCommunicators.ZimmerPowerMeter;
 
 namespace ScriptHandler.Converter
 {
-	public class CompareWithTolerancePortVisiZimmerConverter : IValueConverter
+	public class ChannelVisibilityZimmerConverter : IValueConverter
 	{
 
 		object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)

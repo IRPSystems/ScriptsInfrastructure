@@ -1,10 +1,12 @@
 ﻿
+using ControlzEx.Theming;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.ViewModels;
+using Services.Services;
 using System;
 using System.Linq;
 
@@ -67,31 +69,39 @@ namespace ScriptHandler.Services
 			if (scriptData == null)
 				return;
 
-			foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
+			try
 			{
-				if (!(node is ScriptNodeSubScript subScript))
-					continue;
 
-				subScript.Parent = project;
-
-				if (string.IsNullOrEmpty(subScript.SelectedScriptName))
-					continue;
-
-
-
-				foreach (DesignScriptViewModel vm in project.ScriptsList)
+				foreach (ScriptNodeBase node in scriptData.ScriptItemsList)
 				{
-					if (!(vm.CurrentScript is ScriptData testSubScriptData))
+					if (!(node is ScriptNodeSubScript subScript))
 						continue;
 
-					if (testSubScriptData.Name == subScript.SelectedScriptName)
-					{
-						subScript.Script = testSubScriptData;
-					}
-				}
+					subScript.Parent = project;
 
-				HandleSubScriptInScript(
-					subScript.Script as ScriptData, project);
+					if (string.IsNullOrEmpty(subScript.SelectedScriptName))
+						continue;
+
+
+
+					foreach (DesignScriptViewModel vm in project.ScriptsList)
+					{
+						if (!(vm.CurrentScript is ScriptData testSubScriptData))
+							continue;
+
+						if (testSubScriptData.Name == subScript.SelectedScriptName)
+						{
+							subScript.Script = testSubScriptData;
+						}
+					}
+
+					HandleSubScriptInScript(
+						subScript.Script as ScriptData, project);
+				}
+			}
+			catch (Exception ex)
+			{
+				LoggerService.Error(this, "Failed HandleSubScriptInScript", ex);
 			}
 		}
 

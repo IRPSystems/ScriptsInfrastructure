@@ -1,4 +1,5 @@
-﻿using DeviceCommunicators.Models;
+﻿using DeviceCommunicators.MCU;
+using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Entities.Models;
 using ScriptHandler.Enums;
@@ -17,6 +18,7 @@ namespace ScriptHandler.Models.ScriptNodes
 			set
 			{
 				_parameter = value;
+				Parameter_ExtraData.Parameter = value;
 				OnPropertyChanged(nameof(Parameter));
 			}
 		}
@@ -28,6 +30,8 @@ namespace ScriptHandler.Models.ScriptNodes
 			set
 			{
 				_compareValue = value;
+				if(_compareValue is DeviceParameterData)
+					CompareValue_ExtraData.Parameter = _compareValue as DeviceParameterData;
 				OnPropertyChanged(nameof(CompareValue));
 			}
 		}
@@ -99,6 +103,8 @@ namespace ScriptHandler.Models.ScriptNodes
 		public double CompareValueFactor { get; set; }
 
 
+		public ExtraDataForParameter Parameter_ExtraData { get; set; }
+		public ExtraDataForParameter CompareValue_ExtraData { get; set; }
 
 		public override string Description
 		{
@@ -123,6 +129,9 @@ namespace ScriptHandler.Models.ScriptNodes
 		public ScriptNodeCompareWithTolerance()
 		{
 			Name = "Compare With Tolerance";
+
+			Parameter_ExtraData = new ExtraDataForParameter();
+			CompareValue_ExtraData = new ExtraDataForParameter();
 
 			IsValueTolerance = true;
 		}
