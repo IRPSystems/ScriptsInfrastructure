@@ -160,7 +160,6 @@ namespace ScriptRunner.Services
 			_handleContinuousSteps = new HandleContinuousStepsService();
 
 
-			CreateSelectMotorType();
 
 			CreateStepFailed();
 		}
@@ -202,30 +201,14 @@ namespace ScriptRunner.Services
 			_stepFailedScript.ScriptEndedEvent += ErrorNotificationScriptEndedEventHandler;
 		}
 
-		private void CreateSelectMotorType()
-		{
-			// TODO: SafetyOfficer
-			//SelectMotor = new ScriptStepSelectMotorType();
-			//SelectMotor.StopScriptStep = StopScriptStep;
-			//SelectMotor.Description = "Select Motor Type";
-
-			//if (_devicesContainer.TypeToDevicesFullData.ContainsKey(Entities.Enums.DeviceTypesEnum.MCU) == false)
-			//{
-			//	return;
-			//}
-
-			//DeviceFullData mcu_deviceFullData = _devicesContainer.TypeToDevicesFullData[Entities.Enums.DeviceTypesEnum.MCU];
-
-			//SelectMotor.MCU_Device = mcu_deviceFullData.Device as MCU_DeviceData;
-			//SelectMotor.Communicator = mcu_deviceFullData.DeviceCommunicator;
-
-		}
+		
 
 
 		public void Run(
 			ObservableCollection<DeviceParameterData> logParametersList,
 			GeneratedScriptData currentScript,
 			string recordingPath,
+			GeneratedScriptData soScript,
 			bool isRecord)
 		{
 			Application.Current.Dispatcher.Invoke(() =>

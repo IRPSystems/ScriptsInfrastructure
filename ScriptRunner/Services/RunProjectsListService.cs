@@ -126,7 +126,7 @@ namespace ScriptRunner.Services
 			InitRecordingListForProject(projects);
 
 			scriptData.State = SciptStateEnum.Running;
-			_runScript.Run(_logParametersList, scriptData, null, isRecord);
+			_runScript.Run(_logParametersList, scriptData, null, soScript, isRecord);
 		}
 
 		public void StartAll(
