@@ -88,8 +88,6 @@
 
                 <CheckBox Content="Record" IsChecked="{Binding IsRecord}" Margin="0,0,50,0"/>
 
-                <Button Content="Test Safety Officer" Command="{Binding TestSafetyOfficerCommand}" />
-
             </StackPanel>
 
             <Border Name="bd"
@@ -105,11 +103,11 @@
 
                         <Style.Triggers>
 
-                            <DataTrigger Binding="{Binding RunScript.SaftyOfficer.IsRunning}" Value="True">
+                            <DataTrigger Binding="{Binding RunScript.IsSoRunning}" Value="True">
                                 <Setter Property="Background" Value="Red"/>
                             </DataTrigger>
 
-                            <DataTrigger Binding="{Binding RunScript.SaftyOfficer.IsRunning}" Value="False">
+                            <DataTrigger Binding="{Binding RunScript.IsSoRunning}" Value="False">
                                 <Setter Property="Background" Value="Transparent"/>
                             </DataTrigger>
 
@@ -128,12 +126,12 @@
 
                             <Style.Triggers>
 
-                                <DataTrigger Binding="{Binding RunScript.SaftyOfficer.IsRunning}" Value="True">
+                                <DataTrigger Binding="{Binding RunScript.IsSoRunning}" Value="True">
                                     <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Gray10}"/>
                                     <Setter Property="Text" Value="Safety ON"/>
                                 </DataTrigger>
 
-                                <DataTrigger Binding="{Binding RunScript.SaftyOfficer.IsRunning}" Value="False">
+                                <DataTrigger Binding="{Binding RunScript.IsSoRunning}" Value="False">
                                     <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Gray1}"/> 
                                     <Setter Property="Text" Value="Safety OFF"/>
                                 </DataTrigger>

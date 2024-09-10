@@ -117,7 +117,8 @@ namespace ScriptHandler.Models
 				return;
 			}
 
-			ExtraData.SetToParameter(Parameter);
+			if(ExtraData != null) 
+				ExtraData.SetToParameter(Parameter);
 			
 			if (Parameter is Scope_KeySight_ParamData ks_Param &&
 				Parameter.Name.ToLower() == "save")

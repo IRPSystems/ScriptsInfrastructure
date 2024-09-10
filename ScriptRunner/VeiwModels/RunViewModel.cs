@@ -204,11 +204,12 @@ namespace ScriptRunner.ViewModels
 							_scriptUserData.LastRecordPath;
 					}
 
-					//if (!string.IsNullOrEmpty(_ScriptUserData.LastAbortScriptPath))
-					//{
-					//	RunScript.AbortScriptPath =
-					//		_ScriptUserData.LastAbortScriptPath;
-					//}
+					if (!string.IsNullOrEmpty(_scriptUserData.LastSODirPath))
+					{
+						SOScriptsDirectory =
+							_scriptUserData.LastSODirPath;
+					}
+
 				}
 				else
 				{
