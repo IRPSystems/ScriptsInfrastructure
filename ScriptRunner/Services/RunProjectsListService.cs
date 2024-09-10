@@ -12,6 +12,7 @@ using System.Windows;
 using ScriptHandler.Enums;
 using DeviceCommunicators.Models;
 using CommunityToolkit.Mvvm.Messaging;
+using ScriptHandler.Interfaces;
 
 namespace ScriptRunner.Services
 {
@@ -174,6 +175,7 @@ namespace ScriptRunner.Services
 
 
 			Run(_projectsList,
+				soScript,
 				isRecord);
 		}
 
@@ -216,6 +218,7 @@ namespace ScriptRunner.Services
 
 		public void Run(
 			ObservableCollection<GeneratedProjectData> projectsList,
+			GeneratedScriptData soScript,
 			bool isRecord)
 		{
 			ObservableCollection<DeviceParameterData> logParametersList = null;
@@ -282,6 +285,7 @@ namespace ScriptRunner.Services
 									logParametersList,
 									testData,
 									projectsList[_projectIndex].RecordingPath,
+									soScript,
 									isRecord);
 							
 								_state = RunProjectsState.WaitForTest;
