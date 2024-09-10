@@ -419,7 +419,8 @@ namespace ScriptRunner.ViewModels
 			}
 
 			if (RunScript.CurrentScript == null || RunScript.CurrentScript.CurrentScript == null ||
-				(RunScript.CurrentScript != null && RunScript.CurrentScript.CurrentScript.State != SciptStateEnum.Running))
+				(RunScript.CurrentScript != null && RunScript.CurrentScript.CurrentScript.State != SciptStateEnum.Running &&
+					RunScript.CurrentScript.CurrentScript.Name != "Failed Step Notification"))
 			{
 				SetIsPlayEnabled(false);
 			}
