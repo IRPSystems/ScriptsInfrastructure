@@ -1,5 +1,7 @@
 ﻿
 using DeviceCommunicators.General;
+using DeviceCommunicators.Models;
+using DeviceCommunicators.TSCPrinter;
 using DeviceHandler.Models;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
@@ -18,16 +20,14 @@ namespace ScriptHandler.Models
 		public string Spec { get; set; }
 		public string HW_Version { get; set; }
 		public string MCU_Version { get; set; }
-
-
 		public string SerialNumber { get; set; }
+        public PrinterTSC_ParamData ParamData { get; set; }
+        #endregion Properties
 
-		#endregion Properties
 
+        #region Constructor
 
-		#region Constructor
-
-		public ScriptStepEOLPrint()
+        public ScriptStepEOLPrint()
 		{
 			if (Application.Current != null)
 			{
@@ -74,6 +74,17 @@ namespace ScriptHandler.Models
 			MCU_Version = (sourceNode as ScriptNodeEOLPrint).MCU_Version;
 		}
 
-		#endregion Methods
-	}
+        public override void GetRealParamAfterLoad(DevicesContainer devicesContainer)
+        {
+            base.GetRealParamAfterLoad(devicesContainer);
+
+            DeviceParameterData parameterData = new PrinterTSC_ParamData() { Name = "Print" };
+            ParamData = GetRealParam(
+                    parameterData as DeviceParameterData,
+                    devicesContainer) as PrinterTSC_ParamData;
+
+        }
+
+        #endregion Methods
+    }
 }
