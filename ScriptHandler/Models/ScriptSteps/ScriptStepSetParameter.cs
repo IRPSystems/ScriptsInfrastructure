@@ -138,13 +138,12 @@ namespace ScriptHandler.Models
 			Communicator.SetParamValue(Parameter, Convert.ToDouble(Value), GetCallback);
 
 			int timeOut = 1000;
-			if(Communicator is PowerSupplayEA_Communicator &&
-				Parameter.Name.ToLower().Contains("on/off"))
+			if (Parameter.CommunicationTimeout > 0)
 			{
-				timeOut = 3000;
+				timeOut = Parameter.CommunicationTimeout;
 			}
 
-			
+
 			bool isNotTimeout = _waitGetCallback.WaitOne(timeOut);
 			if (!isNotTimeout)
 			{				
