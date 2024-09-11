@@ -8,6 +8,7 @@ using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Entities.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
@@ -23,13 +24,36 @@ using System.Windows;
 
 namespace ScriptHandler.Models
 {
-	public class ScriptStepCompareWithTolerance : ScriptStepGetParamValue
+	public class ScriptStepCompareWithTolerance : ScriptStepBase
 	{
 		#region Properties
 
-		
+		private DeviceParameterData _parameter;
+		public DeviceParameterData Parameter
+		{
+			get => _parameter;
+			set
+			{
+				_parameter = value;
+				Parameter_ExtraData.Parameter = value;
+				OnPropertyChanged(nameof(Parameter));
+			}
+		}
 
-		public object CompareValue{ get; set; }
+		private object _compareValue;
+		public object CompareValue
+		{
+			get => _compareValue;
+			set
+			{
+				_compareValue = value;
+				if (_compareValue is DeviceParameterData)
+					CompareValue_ExtraData.Parameter = _compareValue as DeviceParameterData;
+				OnPropertyChanged(nameof(CompareValue));
+			}
+		}
+
+		
 
 		public double Tolerance { get; set; }
 
@@ -55,7 +79,13 @@ namespace ScriptHandler.Models
 		public ExtraDataForParameter Parameter_ExtraData { get; set; }
 		public ExtraDataForParameter CompareValue_ExtraData { get; set; }
 
+		[JsonIgnore]
+		public DevicesContainer DevicesContainer { get; set; }
 
+		[JsonIgnore]
+		public DeviceCommunicator Communicator { get; set; }
+
+		private ScriptStepGetParamValue _getParamValue;
 
 		#endregion Properties
 
@@ -70,6 +100,8 @@ namespace ScriptHandler.Models
 					Template = Application.Current.MainWindow.FindResource("DelayTemplate") as DataTemplate;
 				});
 			}
+
+			_getParamValue = new ScriptStepGetParamValue();
 		}
 
 		#endregion Constructor
@@ -202,9 +234,15 @@ namespace ScriptHandler.Models
 			if (value is DeviceParameterData param)
 			{
 				if (isParameter)
+				{
+					Parameter_ExtraData.Parameter = param;
 					Parameter_ExtraData.SetToParameter(param);
+				}
 				else
+				{
+					CompareValue_ExtraData.Parameter = param;
 					CompareValue_ExtraData.SetToParameter(param);
+				}
 
 				object val = GetCompareParaValue(
 					isUseAverage,
@@ -265,7 +303,11 @@ namespace ScriptHandler.Models
 			for (int i = 0; i < averageOfNRead; i++)
 			{
 				EOLStepSummeryData eolStepSummeryData;
-				bool isOK = SendAndReceive(parameter, out eolStepSummeryData);
+
+				_getParamValue.Parameter = parameter;
+				_getParamValue.Communicator = Communicator;
+
+				bool isOK = _getParamValue.SendAndReceive(parameter, out eolStepSummeryData);
 				EOLStepSummerysList.Add(eolStepSummeryData);
 				if (!isOK)
 				{
@@ -323,6 +365,8 @@ namespace ScriptHandler.Models
 
 			Parameter_ExtraData = new ExtraDataForParameter((sourceNode as ScriptNodeCompareWithTolerance).Parameter_ExtraData);
 			CompareValue_ExtraData = new ExtraDataForParameter((sourceNode as ScriptNodeCompareWithTolerance).CompareValue_ExtraData);
+
+			DevicesContainer = devicesContainer;
 
 		}
 
