@@ -344,8 +344,6 @@ namespace ScriptRunner.Services
 				if (_currentStep == null)
 					return;
 
-				
-
 				_currentStep.StepState = SciptStateEnum.Ended;
 				if (_currentStep.IsPass)
 				{
@@ -447,7 +445,10 @@ namespace ScriptRunner.Services
 
 				if(this is RunSingleScriptService_SO so)
 				{
-					_isAborted = so.IsAborted;
+					if (_isStopped)
+						_isAborted = false;
+					else
+						_isAborted = so.IsAborted;
 				}
 
 				ScriptEndedEvent?.Invoke(_isAborted);
@@ -618,16 +619,11 @@ namespace ScriptRunner.Services
 
 		public void StopScript()
 		{
-			if (_subScript != null)
-				_subScript.StopScript();
-
 			_isStopped = true;
 			StopStep();
 
-			if (this is RunSingleScriptService_SO so) 
-			{ 
-				so.IsAborted = false;
-			}
+			if (_subScript != null)
+				_subScript.StopScript();
 		}
 
 
