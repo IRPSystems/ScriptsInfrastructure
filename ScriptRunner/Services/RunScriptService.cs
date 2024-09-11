@@ -86,7 +86,7 @@ namespace ScriptRunner.Services
 		public bool IsAborted;
 
 		private RunSingleScriptService _abortScript;
-		private RunSingleScriptService _soScript;
+		private RunSingleScriptService_SO _soScript;
 
 		public StopScriptStepService StopScriptStep;
 
@@ -190,7 +190,7 @@ namespace ScriptRunner.Services
 		private void CreateSOScript(GeneratedScriptData soScript)
 		{			
 
-			_soScript = new RunSingleScriptService(
+			_soScript = new RunSingleScriptService_SO(
 				RunTime,
 				MainScriptLogger,
 				soScript,
@@ -328,7 +328,7 @@ namespace ScriptRunner.Services
 		{
 			_handleContinuousSteps.EndAll();
 
-			_soScript.Abort();
+			_soScript.StopScript();
 
 			ScriptStopModeEnum stopMode = ScriptStopModeEnum.Ended;
 			if (_isStopped)
@@ -467,7 +467,7 @@ namespace ScriptRunner.Services
 		private void CurrentScript_StopSafetyOfficerEvent()
 		{
 			IsSoRunning = false;
-			_soScript.Abort();
+			_soScript.StopScript();
 		}
 
 		private void _soScript_AbortEvent(string obj)
@@ -475,9 +475,15 @@ namespace ScriptRunner.Services
 			IsSoRunning = false;
 		}
 
-		private void _soScript_ScriptEndedEvent(bool obj)
+		private void _soScript_ScriptEndedEvent(bool isAborted)
 		{
 			IsSoRunning = false;
+
+			if(isAborted)
+			{
+				string message = $"Safety Officer\r\n\r\n {_soScript.ScriptErrorMessage}";
+				AbortScript(message);
+			}
 		}
 
 		#endregion Safety Officer

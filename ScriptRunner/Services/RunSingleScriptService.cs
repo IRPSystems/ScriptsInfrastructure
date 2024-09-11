@@ -51,6 +51,7 @@ namespace ScriptRunner.Services
 
 		private bool _isPaused;
 		private bool _isAborted;
+		private bool _isStopped;
 
 		private ScriptInternalStateEnum _state;
 
@@ -343,6 +344,8 @@ namespace ScriptRunner.Services
 				if (_currentStep == null)
 					return;
 
+				
+
 				_currentStep.StepState = SciptStateEnum.Ended;
 				if (_currentStep.IsPass)
 				{
@@ -371,11 +374,21 @@ namespace ScriptRunner.Services
 					SetCurrentStep(_currentStep.FailNext as ScriptStepBase);
 
 					CurrentScript.FailRunSteps++;
+
+					if (this is RunSingleScriptService_SO so)
+					{
+						so.IsAborted = true;
+					}
 				}
 
 				if (_isAborted)
 				{
 					CurrentScript.IsPass = false;
+					SetCurrentStep(null);
+				}
+
+				if (_isStopped)
+				{
 					SetCurrentStep(null);
 				}
 			}
@@ -432,7 +445,10 @@ namespace ScriptRunner.Services
 					_scriptStep.Dispose();
 				}
 
-				
+				if(this is RunSingleScriptService_SO so)
+				{
+					_isAborted = so.IsAborted;
+				}
 
 				ScriptEndedEvent?.Invoke(_isAborted);
 			}
@@ -512,14 +528,28 @@ namespace ScriptRunner.Services
 			if (!(subScript.Script is GeneratedScriptData generatedScript))
 				return;
 
-			_subScript = new RunSingleScriptService(
-				_runTime,
-				_mainScriptLogger,
-				generatedScript,
-				subScript as ScriptStepSubScript,
-				_stopScriptStep,
-				_devicesContainer,
-				_canMessageSender);
+			if (this is RunSingleScriptService_SO)
+			{
+				_subScript = new RunSingleScriptService_SO(
+					_runTime,
+					_mainScriptLogger,
+					generatedScript,
+					subScript as ScriptStepSubScript,
+					_stopScriptStep,
+					_devicesContainer,
+					_canMessageSender);
+			}
+			else
+			{
+				_subScript = new RunSingleScriptService(
+					_runTime,
+					_mainScriptLogger,
+					generatedScript,
+					subScript as ScriptStepSubScript,
+					_stopScriptStep,
+					_devicesContainer,
+					_canMessageSender);
+			}
 			_subScript.ScriptEndedEvent += SubScriptEndedEventHandler;
 			_subScript.CurrentStepChangedEvent += CurrentStepChangedEventHandler;
 			_subScript.ContinuousStepEvent += SubScript_ContinuousStepEvent;
@@ -561,7 +591,7 @@ namespace ScriptRunner.Services
 
 		private void StopSaftyOfficer()
 		{
-			StartSafetyOfficerEvent?.Invoke();
+			StopSafetyOfficerEvent?.Invoke();
 		}
 
 		private void CurrentStepChangedEventHandler(ScriptStepBase step)
@@ -584,6 +614,20 @@ namespace ScriptRunner.Services
 
 			if(_subScript != null)
 				_subScript.Abort();
+		}
+
+		public void StopScript()
+		{
+			if (_subScript != null)
+				_subScript.StopScript();
+
+			_isStopped = true;
+			StopStep();
+
+			if (this is RunSingleScriptService_SO so) 
+			{ 
+				so.IsAborted = false;
+			}
 		}
 
 
