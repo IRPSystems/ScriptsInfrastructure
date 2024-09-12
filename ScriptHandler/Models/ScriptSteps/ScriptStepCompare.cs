@@ -58,8 +58,10 @@ namespace ScriptHandler.Models
 				{
 					object val = GetCompareParaValue(paramLeft);
 
-                    if (val== null || IsPass == false)
+					if (val == null || IsPass == false)
+					{
 						return;
+					}
 
 					if (val is string strval && strval.StartsWith("0x"))
 					{
