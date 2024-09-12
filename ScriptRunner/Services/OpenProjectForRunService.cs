@@ -480,6 +480,15 @@ namespace ScriptRunner.Services
 					}
 				}
 
+				if(scriptStep is ScriptStepEOLPrint print)
+				{
+                    if (devicesContainer.TypeToDevicesFullData.ContainsKey(DeviceTypesEnum.Printer_TSC))
+                    {
+                        DeviceFullData deviceFullData = devicesContainer.TypeToDevicesFullData[DeviceTypesEnum.Printer_TSC];
+                        print.TscComunicator = deviceFullData.DeviceCommunicator;
+                    }
+                }
+
 				if (scriptStep is ScriptStepDynamicControl dynamicControl)
 				{
 					foreach (DynamicControlColumnData columnData in dynamicControl.ColumnDatasList)
