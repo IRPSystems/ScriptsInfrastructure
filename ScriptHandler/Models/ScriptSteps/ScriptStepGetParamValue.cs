@@ -107,8 +107,13 @@ namespace ScriptHandler.Models
 
 			Communicator.GetParamValue(parameter, GetValueCallback);
 
+			int timeOut = 1000;
+			if (Parameter.CommunicationTimeout > 0)
+			{
+				timeOut = Parameter.CommunicationTimeout;
+			}
 
-            bool isNotTimeout = _waitForGet.WaitOne(2000);
+			bool isNotTimeout = _waitForGet.WaitOne(timeOut);
 			_waitForGet.Reset();
 
 			if (!isNotTimeout)

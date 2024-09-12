@@ -51,6 +51,7 @@ namespace ScriptRunner.Services
 
 		private bool _isPaused;
 		private bool _isAborted;
+		private bool _isStopped;
 
 		private ScriptInternalStateEnum _state;
 
@@ -71,8 +72,6 @@ namespace ScriptRunner.Services
 
 		
 
-		private ScriptStepSelectMotorType _selectMotor;
-		private SaftyOfficerService _saftyOfficer; 
 		private DevicesContainer _devicesContainer;
 		private CANMessageSenderViewModel _canMessageSender;
 
@@ -87,8 +86,6 @@ namespace ScriptRunner.Services
 			GeneratedScriptData currentScript,
 			ScriptStepSubScript scriptStep,
 			StopScriptStepService stopScriptStep,
-			ScriptStepSelectMotorType selectMotor,
-			SaftyOfficerService saftyOfficer,
 			DevicesContainer devicesContainer,
 			CANMessageSenderViewModel canMessageSender)
 		{
@@ -97,8 +94,6 @@ namespace ScriptRunner.Services
 			CurrentScript = currentScript;
 			_scriptStep = scriptStep;
 			_stopScriptStep = stopScriptStep;
-			_selectMotor = selectMotor;
-			_saftyOfficer = saftyOfficer;
 			_devicesContainer = devicesContainer;
 			_canMessageSender = canMessageSender;
 
@@ -127,6 +122,8 @@ namespace ScriptRunner.Services
 
 		public void Start()
 		{
+			if (CurrentScript == null)
+				return;
 
 			_state = ScriptInternalStateEnum.HandleSpecial;
 			CurrentScript.IsPass = null;
@@ -249,10 +246,11 @@ namespace ScriptRunner.Services
 										else if (_currentStep is ScriptStepStartStopSaftyOfficer startStopSaftyOfficer)
 										{
 											if (startStopSaftyOfficer.IsStart)
-												_currentStep.IsPass = StartSaftyOfficer(
-													startStopSaftyOfficer.SafetyOfficerErrorLevel);
+												StartSaftyOfficer();
 											else
 												StopSaftyOfficer();
+
+											_currentStep.IsPass = true;
 										}
 										else if (_state == ScriptInternalStateEnum.Resume)
 											_currentStep.Resume();
@@ -374,11 +372,21 @@ namespace ScriptRunner.Services
 					SetCurrentStep(_currentStep.FailNext as ScriptStepBase);
 
 					CurrentScript.FailRunSteps++;
+
+					if (this is RunSingleScriptService_SO so)
+					{
+						so.IsAborted = true;
+					}
 				}
 
 				if (_isAborted)
 				{
 					CurrentScript.IsPass = false;
+					SetCurrentStep(null);
+				}
+
+				if (_isStopped)
+				{
 					SetCurrentStep(null);
 				}
 			}
@@ -435,7 +443,13 @@ namespace ScriptRunner.Services
 					_scriptStep.Dispose();
 				}
 
-				
+				if(this is RunSingleScriptService_SO so)
+				{
+					if (_isStopped)
+						_isAborted = false;
+					else
+						_isAborted = so.IsAborted;
+				}
 
 				ScriptEndedEvent?.Invoke(_isAborted);
 			}
@@ -452,6 +466,12 @@ namespace ScriptRunner.Services
 			if (CurrentScript.IsPass == false && _scriptStep.IsStopOnFail)
 				return true;
 
+			if(_scriptStep.IsInfinity)
+			{
+				_scriptStep.RunIndex++;
+				Start();
+				return false;
+			}
 
 			if (_scriptStep.ContinueUntilType == SubScriptContinueUntilTypeEnum.Repeats)
 			{
@@ -509,21 +529,35 @@ namespace ScriptRunner.Services
 			if (!(subScript.Script is GeneratedScriptData generatedScript))
 				return;
 
-			_subScript = new RunSingleScriptService(
-				_runTime,
-				_mainScriptLogger,
-				generatedScript,
-				subScript as ScriptStepSubScript,
-				_stopScriptStep,
-				_selectMotor,
-				_saftyOfficer,
-				_devicesContainer,
-				_canMessageSender);
+			if (this is RunSingleScriptService_SO)
+			{
+				_subScript = new RunSingleScriptService_SO(
+					_runTime,
+					_mainScriptLogger,
+					generatedScript,
+					subScript as ScriptStepSubScript,
+					_stopScriptStep,
+					_devicesContainer,
+					_canMessageSender);
+			}
+			else
+			{
+				_subScript = new RunSingleScriptService(
+					_runTime,
+					_mainScriptLogger,
+					generatedScript,
+					subScript as ScriptStepSubScript,
+					_stopScriptStep,
+					_devicesContainer,
+					_canMessageSender);
+			}
 			_subScript.ScriptEndedEvent += SubScriptEndedEventHandler;
 			_subScript.CurrentStepChangedEvent += CurrentStepChangedEventHandler;
 			_subScript.ContinuousStepEvent += SubScript_ContinuousStepEvent;
 			_subScript.StopContinuousStepEvent += SubScript_StopContinuousStepEvent;
 			_subScript.AbortEvent += SubScript_AbortEvent;
+			_subScript.StartSafetyOfficerEvent += SubScript_StartSafetyOfficerEvent;
+			_subScript.StopSafetyOfficerEvent += SubScript_StopSafetyOfficerEvent;
 
 
 		}
@@ -551,38 +585,14 @@ namespace ScriptRunner.Services
 		}
 
 
-		private bool StartSaftyOfficer(ActiveErrorLevelEnum safetyOfficerErrorLevel)
+		private void StartSaftyOfficer()
 		{
-			_selectMotor.Execute();
-
-			if (_devicesContainer.TypeToDevicesFullData.ContainsKey(Entities.Enums.DeviceTypesEnum.MCU) == false)
-				return false;
-
-			
-
-			if (_selectMotor.IsPass)
-			{
-				DeviceFullData deviceFullData =
-					_devicesContainer.TypeToDevicesFullData[Entities.Enums.DeviceTypesEnum.MCU];
-				if (deviceFullData == null)
-					return false;
-
-				_saftyOfficer.Start(
-					_selectMotor.SelectedMotor,
-					_selectMotor.SelectedController,
-					deviceFullData.Device as MCU_DeviceData,
-					deviceFullData.ParametersRepository,
-					safetyOfficerErrorLevel);
-			}
-
-
-
-			return _selectMotor.IsPass;
+			StartSafetyOfficerEvent?.Invoke();
 		}
 
 		private void StopSaftyOfficer()
 		{
-			_saftyOfficer.Stop();
+			StopSafetyOfficerEvent?.Invoke();
 		}
 
 		private void CurrentStepChangedEventHandler(ScriptStepBase step)
@@ -605,6 +615,15 @@ namespace ScriptRunner.Services
 
 			if(_subScript != null)
 				_subScript.Abort();
+		}
+
+		public void StopScript()
+		{
+			_isStopped = true;
+			StopStep();
+
+			if (_subScript != null)
+				_subScript.StopScript();
 		}
 
 
@@ -670,6 +689,16 @@ namespace ScriptRunner.Services
 			AbortEvent?.Invoke(abortDescription);
 		}
 
+		private void SubScript_StartSafetyOfficerEvent()
+		{
+			StartSafetyOfficerEvent?.Invoke();
+		}
+
+		private void SubScript_StopSafetyOfficerEvent()
+		{
+			StopSafetyOfficerEvent?.Invoke();
+		}
+
 		#endregion Methods
 
 		#region Events
@@ -681,6 +710,9 @@ namespace ScriptRunner.Services
 		public event Action<string> StopContinuousStepEvent;
 
 		public event Action<string> AbortEvent;
+
+		public event Action StartSafetyOfficerEvent;
+		public event Action StopSafetyOfficerEvent;
 
 		#endregion Events
 	}

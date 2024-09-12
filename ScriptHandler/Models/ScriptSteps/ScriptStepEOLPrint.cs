@@ -2,7 +2,6 @@
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
 using DeviceCommunicators.TSCPrinter;
-using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
@@ -23,9 +22,6 @@ namespace ScriptHandler.Models
 		public string MCU_Version { get; set; }
 		public string SerialNumber { get; set; }
         public PrinterTSC_ParamData ParamData { get; set; }
-        public DeviceCommunicator TscComunicator { get; set; }
-        private ScriptStepSetParameter _setValue;
-
         #endregion Properties
 
 
@@ -40,9 +36,7 @@ namespace ScriptHandler.Models
 					Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
 				});
 			}
-			TscComunicator = new PrinterTSC_Communicator();
-
-        }
+		}
 
 		#endregion Constructor
 
@@ -51,25 +45,9 @@ namespace ScriptHandler.Models
 
 		public override void Execute()
 		{
-            EOLStepSummeryData eolStepSummeryData;
-
-            _setValue = new ScriptStepSetParameter();
-            _setValue.Parameter = ParamData;
-            _setValue.Communicator = TscComunicator;
-            _setValue.Execute();
-            EOLStepSummerysList.AddRange(_setValue.EOLStepSummerysList);
-
-            if (!_setValue.IsPass)
-            {
-                ErrorMessage = "Unable to print";
-                IsPass = false;
-            }
-			else
-			{
-                IsPass = true;
-            }
-			AddToEOLSummary();
-        }
+			
+			IsPass = true;
+		}
 
 		
 
@@ -99,8 +77,8 @@ namespace ScriptHandler.Models
         public override void GetRealParamAfterLoad(DevicesContainer devicesContainer)
         {
             base.GetRealParamAfterLoad(devicesContainer);
-			 
-			DeviceParameterData parameterData = new PrinterTSC_ParamData() { Name = "Print" , DeviceType = Entities.Enums.DeviceTypesEnum.Printer_TSC};
+
+            DeviceParameterData parameterData = new PrinterTSC_ParamData() { Name = "Print" };
             ParamData = GetRealParam(
                     parameterData as DeviceParameterData,
                     devicesContainer) as PrinterTSC_ParamData;

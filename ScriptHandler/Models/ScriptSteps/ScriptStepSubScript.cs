@@ -64,6 +64,8 @@ namespace ScriptHandler.Models
 		public bool IsStopOnFail { get; set; }
 		public bool IsStopOnPass { get; set; }
 
+		public bool IsInfinity { get; set; }
+
 
 		[JsonIgnore]
 		public DateTime StartTime { get; set; }
@@ -143,6 +145,7 @@ namespace ScriptHandler.Models
 			TimeoutUnite = (sourceNode as ScriptNodeSubScript).TimeoutUnite;
 			IsStopOnFail = (sourceNode as ScriptNodeSubScript).IsStopOnFail;
 			IsStopOnPass = (sourceNode as ScriptNodeSubScript).IsStopOnPass;
+			IsInfinity = (sourceNode as ScriptNodeSubScript).IsInfinity;
 		}
 
 		public override void GetRealParamAfterLoad(

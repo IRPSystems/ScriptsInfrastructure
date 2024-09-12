@@ -277,6 +277,8 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="20" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
                 <RadioButton Grid.Column="0" 
@@ -287,6 +289,10 @@
                              Content="Stop on pass" 
                              IsChecked="{Binding IsStopOnPass}" 
                              GroupName="{Binding Description}" />
+
+                <CheckBox Grid.Column="4" 
+                          Content="Inifinitlly"
+                          IsChecked="{Binding IsInfinity}"/>
 
             </Grid>
 

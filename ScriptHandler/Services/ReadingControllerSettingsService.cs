@@ -11,6 +11,7 @@ namespace ScriptHandler.Services
 {
 	public class ReadingControllerSettingsService : ObservableObject
 	{
+		// TODO: SafetyOffecer
 		public enum ColumnTypesEnum
 		{
 			Device,
