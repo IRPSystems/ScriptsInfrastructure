@@ -42,7 +42,23 @@ namespace ScriptHandler.Models
 		[JsonIgnore]
 		public DataTemplate Template { get; set; }
 
-		public virtual string ErrorMessage { get; set; }
+		private string _errorMessage;
+		public virtual string ErrorMessage 
+		{
+			get
+			{
+				string msg = string.Empty;
+				if(string.IsNullOrEmpty(UserTitle) == false &&
+					(_errorMessage != null && _errorMessage.Contains(UserTitle) == false))
+				{
+					msg = $"{UserTitle}\r\n";
+				}
+
+				msg += _errorMessage;
+				return msg;
+			}
+			set { _errorMessage = value; } 
+		}
 
 		private StopScriptStepService _stopScriptStep;
 		public StopScriptStepService StopScriptStep
