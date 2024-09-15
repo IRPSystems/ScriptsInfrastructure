@@ -514,7 +514,7 @@ namespace ScriptRunner.Services
                     if (devicesContainer.TypeToDevicesFullData.ContainsKey(DeviceTypesEnum.Printer_TSC))
                     {
                         DeviceFullData deviceFullData = devicesContainer.TypeToDevicesFullData[DeviceTypesEnum.Printer_TSC];
-                        print.TscComunicator = deviceFullData.DeviceCommunicator;
+                        print.TscCommunicator = deviceFullData.DeviceCommunicator;
                     }
                 }
 

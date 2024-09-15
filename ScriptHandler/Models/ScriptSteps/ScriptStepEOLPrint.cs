@@ -22,6 +22,8 @@ namespace ScriptHandler.Models
 		public string MCU_Version { get; set; }
 		public string SerialNumber { get; set; }
         public PrinterTSC_ParamData ParamData { get; set; }
+		public DeviceCommunicator TscCommunicator { get; set; }
+        private ScriptStepSetParameter _setValue;
         #endregion Properties
 
 
@@ -45,9 +47,25 @@ namespace ScriptHandler.Models
 
 		public override void Execute()
 		{
-			
-			IsPass = true;
-		}
+            EOLStepSummeryData eolStepSummeryData;
+
+            _setValue = new ScriptStepSetParameter();
+            _setValue.Parameter = ParamData;
+            _setValue.Communicator = TscCommunicator;
+            _setValue.Execute();
+            EOLStepSummerysList.AddRange(_setValue.EOLStepSummerysList);
+
+            string description = string.Empty;
+            if (!_setValue.IsPass)
+            {
+				IsPass = false;
+            }
+			else
+			{
+				IsPass = true;
+            }
+			AddToEOLSummary();
+        }
 
 		
 
@@ -78,7 +96,7 @@ namespace ScriptHandler.Models
         {
             base.GetRealParamAfterLoad(devicesContainer);
 
-            DeviceParameterData parameterData = new PrinterTSC_ParamData() { Name = "Print" };
+            DeviceParameterData parameterData = new PrinterTSC_ParamData() { Name = "Print" , DeviceType = Entities.Enums.DeviceTypesEnum.Printer_TSC};
             ParamData = GetRealParam(
                     parameterData as DeviceParameterData,
                     devicesContainer) as PrinterTSC_ParamData;
