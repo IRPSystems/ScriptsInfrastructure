@@ -18,8 +18,10 @@ using ScriptRunner.Services;
 using ScriptRunner.ViewModels;
 using Services.Services;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -35,6 +37,13 @@ namespace ScriptRunner.ViewModels
 		public RunScriptService RunScript { get; set; }
 
 
+		public ObservableCollection<string> ControllersList { get; set; }
+		public string SelectedController { get; set; }
+
+		public ObservableCollection<string> MotorsList { get; set; }
+		public string SelectedMotor { get; set; }
+
+		public string SOScriptsDirectory { get; set; }
 
 
 		public bool IsPlayEnabled
@@ -109,6 +118,9 @@ namespace ScriptRunner.ViewModels
 			_devicesContainer = devicesContainer;
 			_flashingHandler = flashingHandler;
 
+			ReadControllerList();
+			ReadMotorList();
+
 
 			DeviceFullData deviceFullDataSource = null;
 			if (devicesContainer.TypeToDevicesFullData.ContainsKey(DeviceTypesEnum.MCU) == true)
@@ -158,6 +170,7 @@ namespace ScriptRunner.ViewModels
 				ShowScriptOutputCommand = new RelayCommand(ShowScriptOutput);
 
 				BrowseRecordFileCommand = new RelayCommand(BrowseRecordFile);
+				BrowseSOScriptsDirectoryCommand = new RelayCommand(BrowseSOScriptsDirectory);
 				BrowseAbortScriptPathCommand = new RelayCommand(BrowseAbortScriptPath);
 
 				StopScriptStepService stopScriptStep = new StopScriptStepService();
@@ -191,11 +204,12 @@ namespace ScriptRunner.ViewModels
 							_scriptUserData.LastRecordPath;
 					}
 
-					//if (!string.IsNullOrEmpty(_ScriptUserData.LastAbortScriptPath))
-					//{
-					//	RunScript.AbortScriptPath =
-					//		_ScriptUserData.LastAbortScriptPath;
-					//}
+					if (!string.IsNullOrEmpty(_scriptUserData.LastSODirPath))
+					{
+						SOScriptsDirectory =
+							_scriptUserData.LastSODirPath;
+					}
+
 				}
 				else
 				{
@@ -227,6 +241,47 @@ namespace ScriptRunner.ViewModels
 		#endregion Constructor
 
 		#region Methods
+
+		private void ReadControllerList()
+		{
+			string fileData = null;
+			using (StreamReader sr = new StreamReader("Data\\ControllersList.txt"))
+			{
+				fileData = sr.ReadToEnd();
+			}
+
+			if (string.IsNullOrEmpty(fileData))
+				return;
+
+			List<string> linesList = fileData.Split("\r\n").ToList();
+			linesList.RemoveAll(IsEmptyString);
+			ControllersList = new ObservableCollection<string>(linesList);
+			
+
+		}
+
+		private void ReadMotorList()
+		{
+			string fileData = null;
+			using (StreamReader sr = new StreamReader("Data\\MotorsList.txt"))
+			{
+				fileData = sr.ReadToEnd();
+			}
+
+			if (string.IsNullOrEmpty(fileData))
+				return;
+
+			List<string> linesList = fileData.Split("\r\n").ToList();
+			linesList.RemoveAll(IsEmptyString);
+			for (int i = 0; i < linesList.Count; i++)
+				linesList[i] = linesList[i].Trim();
+			MotorsList = new ObservableCollection<string>(linesList);
+		}
+
+		private static bool IsEmptyString(string s)
+		{
+			return string.IsNullOrEmpty(s);
+		}
 
 		public void ChangeDiagramBackground()
 		{
@@ -319,7 +374,9 @@ namespace ScriptRunner.ViewModels
 			SetIsPlayEnabled(false);
 			SetIsGeneralEnabled(false);
 
-			foreach(GeneratedProjectData project in RunExplorer.ProjectsList)
+			GeneratedScriptData soScript = SelectTheSOScript();
+
+			foreach (GeneratedProjectData project in RunExplorer.ProjectsList)
 			{
 				foreach(GeneratedScriptData script in project.TestsList) 
 				{ 
@@ -328,7 +385,8 @@ namespace ScriptRunner.ViewModels
 						_runProjectsList.StartSingle(
 							project,
 							RunExplorer.SelectedScript,
-							IsRecord);
+							IsRecord,
+							soScript);
 					}
 				}
 			}
@@ -382,9 +440,69 @@ namespace ScriptRunner.ViewModels
 			SetIsPlayEnabled(false);
 			SetIsGeneralEnabled(false);
 
-			_runProjectsList.StartAll(RunExplorer.ProjectsList, IsRecord, _stoppedScript);
+			GeneratedScriptData soScript = SelectTheSOScript();
+			_runProjectsList.StartAll(RunExplorer.ProjectsList, IsRecord, _stoppedScript, soScript);
 
 			
+		}
+
+		private GeneratedScriptData SelectTheSOScript()
+		{ // TODO: SafetyOfficer - need to talk with the V&V and decide how to save the scripts
+			try
+			{
+				if(string.IsNullOrEmpty(SelectedController) || 
+					string.IsNullOrEmpty(SelectedMotor))
+				{
+					return null; 
+				}
+
+				if(string.IsNullOrEmpty(SOScriptsDirectory))
+				{
+					LoggerService.Error(
+						this,
+						$"The directory of the SO scripts was not selected",
+						"Error");
+					return null;
+				}
+
+
+				string selectedMotorController = $"{SelectedController}--{SelectedMotor}";
+
+				string projectFilePath = Path.Combine(SOScriptsDirectory, selectedMotorController + ".gprj");
+				if (File.Exists(projectFilePath) == false)
+				{
+					LoggerService.Error(
+						this,
+						$"Failed to find script for the combination of {SelectedController} - {SelectedMotor}",
+						"Error");
+					return null;
+				}
+
+				StopScriptStepService stopScriptStep = new StopScriptStepService();
+				GeneratedProjectData project = _openProjectForRun.Open(
+					projectFilePath,
+					_devicesContainer,
+					_flashingHandler,
+					stopScriptStep);
+
+				if(project.TestsList == null || project.TestsList.Count == 0)
+				{
+					LoggerService.Error(
+						this,
+						$"Failed to find script in the project for the combination of {SelectedController} - {SelectedMotor}",
+						"Error");
+					return null;
+				}
+
+
+				return project.TestsList[0];
+			}
+			catch(Exception ex) 
+			{ 
+				LoggerService.Error(this, "Failed to select the OS script", ex);
+			}
+
+			return null;
 		}
 
 		private bool _isAborted;
@@ -469,6 +587,23 @@ namespace ScriptRunner.ViewModels
 			RunScript.ParamRecording.RecordDirectory = commonOpenFile.FileName;
 		}
 
+		private void BrowseSOScriptsDirectory()
+		{
+			string initDir = _scriptUserData.LastSODirPath;
+			if (Directory.Exists(initDir) == false)
+				initDir = "";
+			CommonOpenFileDialog commonOpenFile = new CommonOpenFileDialog();
+			commonOpenFile.IsFolderPicker = true;
+			commonOpenFile.InitialDirectory = initDir;
+			CommonFileDialogResult results = commonOpenFile.ShowDialog();
+			if (results != CommonFileDialogResult.Ok)
+				return;
+
+			_scriptUserData.LastSODirPath =
+				commonOpenFile.FileName;
+			SOScriptsDirectory = commonOpenFile.FileName;
+		}
+
 		private void BrowseAbortScriptPath()
 		{
 			string initDir = _scriptUserData.LastAbortScriptPath;
@@ -517,6 +652,8 @@ namespace ScriptRunner.ViewModels
 
 		#region Commands
 
+		
+
 		public RelayCommand SelectAllCommand { get; private set; }
 		public RelayCommand StartAllCommand { get; private set; }
 		public RelayCommand AbortCommand { get; private set; }
@@ -534,6 +671,7 @@ namespace ScriptRunner.ViewModels
 
 		public RelayCommand BrowseRecordFileCommand { get; private set; }
 		public RelayCommand BrowseAbortScriptPathCommand { get; private set; }
+		public RelayCommand BrowseSOScriptsDirectoryCommand { get; private set; }
 
 
 		private RelayCommand<SelectionChangedEventArgs> _RateList_SelectionChangedCommand;

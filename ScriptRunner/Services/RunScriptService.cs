@@ -32,6 +32,8 @@ namespace ScriptRunner.Services
 
 		public RunSingleScriptService CurrentScript { get; set; }
 
+		public RunSingleScriptService SafetyOffecerScript { get; set; }
+
 		public ParamRecordingService ParamRecording { get; set; }
 
 		public string AbortScriptPath { get; set; }
@@ -48,8 +50,6 @@ namespace ScriptRunner.Services
 					AbortScriptStep.Script as GeneratedScriptData,
 					null,
 					StopScriptStep,
-					SelectMotor,
-					SaftyOfficer,
 					_devicesContainer,
 					_canMessageSender);
 					_abortScript.ScriptEndedEvent += AbortScriptEndedEventHandler;
@@ -60,17 +60,10 @@ namespace ScriptRunner.Services
 
 
 
-		
-
-
-		//public MotorSettingsData SelectedMotor { get; set; }
-		//public ControllerSettingsData SelectedController { get; set; }
+		public bool IsSoRunning { get; set; }
 
 		public RunTimeData RunTime { get; set; }
 
-		public SaftyOfficerService SaftyOfficer { get; set; }
-
-		public ScriptStepSelectMotorType SelectMotor { get; set; }
 
 		public int ExecutedStepsPercentage { get; set; }
 
@@ -93,9 +86,7 @@ namespace ScriptRunner.Services
 		public bool IsAborted;
 
 		private RunSingleScriptService _abortScript;
-
-		
-
+		private RunSingleScriptService_SO _soScript;
 
 		public StopScriptStepService StopScriptStep;
 
@@ -145,9 +136,6 @@ namespace ScriptRunner.Services
 			ParamRecording = new ParamRecordingService(
 				devicesContainer);
 
-			SaftyOfficer = new SaftyOfficerService();
-			SaftyOfficer.AbortScriptEvent += AbortScript;
-
 
 			ParamRecording.RecordingRate = 5;
 
@@ -159,7 +147,6 @@ namespace ScriptRunner.Services
 			_handleContinuousSteps = new HandleContinuousStepsService();
 
 
-			CreateSelectMotorType();
 
 			CreateStepFailed();
 		}
@@ -195,36 +182,31 @@ namespace ScriptRunner.Services
 				failedStepScript,
 				null,
 				StopScriptStep,
-				SelectMotor,
-				SaftyOfficer,
 				_devicesContainer,
 				_canMessageSender);
 			_stepFailedScript.ScriptEndedEvent += ErrorNotificationScriptEndedEventHandler;
 		}
 
-		private void CreateSelectMotorType()
-		{
-			SelectMotor = new ScriptStepSelectMotorType();
-			SelectMotor.StopScriptStep = StopScriptStep;
-			SelectMotor.Description = "Select Motor Type";
+		private void CreateSOScript(GeneratedScriptData soScript)
+		{			
 
-			if (_devicesContainer.TypeToDevicesFullData.ContainsKey(Entities.Enums.DeviceTypesEnum.MCU) == false)
-			{
-				return;
-			}
-
-			DeviceFullData mcu_deviceFullData = _devicesContainer.TypeToDevicesFullData[Entities.Enums.DeviceTypesEnum.MCU];
-
-			SelectMotor.MCU_Device = mcu_deviceFullData.Device as MCU_DeviceData;
-			SelectMotor.Communicator = mcu_deviceFullData.DeviceCommunicator;
-
+			_soScript = new RunSingleScriptService_SO(
+				RunTime,
+				MainScriptLogger,
+				soScript,
+				null,
+				StopScriptStep,
+				_devicesContainer,
+				_canMessageSender);
+			_soScript.AbortEvent += _soScript_AbortEvent;
+			_soScript.ScriptEndedEvent += _soScript_ScriptEndedEvent;
 		}
-
 
 		public void Run(
 			ObservableCollection<DeviceParameterData> logParametersList,
 			GeneratedScriptData currentScript,
 			string recordingPath,
+			GeneratedScriptData soScript,
 			bool isRecord)
 		{
 			Application.Current.Dispatcher.Invoke(() =>
@@ -257,7 +239,7 @@ namespace ScriptRunner.Services
 				LogTypeEnum.ScriptData);
 
 			ClearScriptStepsState(currentScript);
-
+			CreateSOScript(soScript);
 
 			CurrentScript = new RunSingleScriptService(
 				RunTime,
@@ -265,8 +247,6 @@ namespace ScriptRunner.Services
 				currentScript,
 				null,
 				StopScriptStep,
-				SelectMotor,
-				SaftyOfficer,
 				_devicesContainer,
 				_canMessageSender);
 			CurrentScript.ScriptEndedEvent += ScriptEndedEventHandler;
@@ -274,6 +254,8 @@ namespace ScriptRunner.Services
 			CurrentScript.ContinuousStepEvent += Script_ContinuousStepEvent;
 			CurrentScript.StopContinuousStepEvent += Script_StopContinuousStepEvent;
 			CurrentScript.AbortEvent += CurrentScript_AbortEvent;
+			CurrentScript.StartSafetyOfficerEvent += CurrentScript_StartSafetyOfficerEvent;
+			CurrentScript.StopSafetyOfficerEvent += CurrentScript_StopSafetyOfficerEvent;
 
 
 			InitiateSweepItem(CurrentScript.CurrentScript);
@@ -346,6 +328,7 @@ namespace ScriptRunner.Services
 		{
 			_handleContinuousSteps.EndAll();
 
+			_soScript.StopScript();
 
 			ScriptStopModeEnum stopMode = ScriptStopModeEnum.Ended;
 			if (_isStopped)
@@ -362,13 +345,14 @@ namespace ScriptRunner.Services
 			if (ParamRecording.IsRecording)
 				ParamRecording.StopRecording();
 
-			SaftyOfficer.Stop();
 
 			if(CurrentScript.CurrentScript != null)
 				MainScriptLogger.Save(_testName);
 
 			if(CurrentScript.CurrentScript.Name != "Failed Step Notification")
 				CurrentScript = null;
+
+			
 
 			ScriptEndedEvent?.Invoke(stopMode);
 		}
@@ -472,7 +456,37 @@ namespace ScriptRunner.Services
 			AbortScript(abortDescription);
 		}
 
+		#region Safety Officer
 
+		private void CurrentScript_StartSafetyOfficerEvent()
+		{
+			IsSoRunning = true;
+			_soScript.Start();
+		}
+
+		private void CurrentScript_StopSafetyOfficerEvent()
+		{
+			IsSoRunning = false;
+			_soScript.StopScript();
+		}
+
+		private void _soScript_AbortEvent(string obj)
+		{
+			IsSoRunning = false;
+		}
+
+		private void _soScript_ScriptEndedEvent(bool isAborted)
+		{
+			IsSoRunning = false;
+
+			if(isAborted)
+			{
+				string message = $"Safety Officer\r\n\r\n {_soScript.ScriptErrorMessage}";
+				AbortScript(message);
+			}
+		}
+
+		#endregion Safety Officer
 
 		#region Continuous Step
 
@@ -539,8 +553,6 @@ namespace ScriptRunner.Services
 					sweepItem.SubScript as GeneratedScriptData,
 					null,
 					StopScriptStep,
-					SelectMotor,
-					SaftyOfficer,
 					_devicesContainer,
 					_canMessageSender);
 

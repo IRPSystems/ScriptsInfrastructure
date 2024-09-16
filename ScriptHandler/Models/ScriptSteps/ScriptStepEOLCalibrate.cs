@@ -51,7 +51,7 @@ namespace ScriptHandler.Models.ScriptSteps
 		private double avgRefSensorRead;
         private double prevGain;
         private double newGain;
-		private double deviation;
+		//private double deviation;
         
 
         private bool _isStopped;

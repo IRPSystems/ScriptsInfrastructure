@@ -57,6 +57,8 @@ namespace ScriptHandler.Models.ScriptNodes
 		public bool IsStopOnFail { get; set; }
 		public bool IsStopOnPass { get; set; }
 
+		public bool IsInfinity { get; set; }
+
 
 
 		public override string Description

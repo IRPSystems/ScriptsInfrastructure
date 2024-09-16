@@ -1,4 +1,5 @@
 ﻿
+using DeviceCommunicators.EvvaDevice;
 using DeviceCommunicators.General;
 using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
@@ -123,6 +124,8 @@ namespace ScriptRunner.Services
 					ref totlsRunSteps);
 				testData.TotalRunSteps = totlsRunSteps;
 
+				IsScriptContainsSO(testData);
+
 				GetRealScriptParameters(
 					scriptData,
 					devicesContainer);
@@ -173,6 +176,32 @@ namespace ScriptRunner.Services
 			LoggerService.Inforamtion(this, "Loaded a list of scripts");
 
 			return currentProject;
+		}
+
+		private void IsScriptContainsSO(
+			GeneratedScriptData scriptData)
+		{
+			foreach (IScriptItem item in scriptData.ScriptItemsList)
+			{
+				if (item is ISubScript subScript)
+				{
+					IsScriptContainsSO(
+						subScript.Script as GeneratedScriptData);
+
+					if (((GeneratedScriptData)subScript.Script).IsContainsSO)
+					{
+						scriptData.IsContainsSO = true;
+						return;
+					}
+					continue;
+				}
+
+				if (item is ScriptStepStartStopSaftyOfficer)
+				{
+					scriptData.IsContainsSO = true;
+					return;
+				}
+			}
 		}
 
 		private void GetTotlsRunSteps(
@@ -479,6 +508,15 @@ namespace ScriptRunner.Services
 						calibrate.RefSensorCommunicator = deviceFullData.DeviceCommunicator;
 					}
 				}
+
+				if(scriptStep is ScriptStepEOLPrint print)
+				{
+                    if (devicesContainer.TypeToDevicesFullData.ContainsKey(DeviceTypesEnum.Printer_TSC))
+                    {
+                        DeviceFullData deviceFullData = devicesContainer.TypeToDevicesFullData[DeviceTypesEnum.Printer_TSC];
+                        print.TscCommunicator = deviceFullData.DeviceCommunicator;
+                    }
+                }
 
 				if (scriptStep is ScriptStepDynamicControl dynamicControl)
 				{

@@ -80,43 +80,13 @@
                         ToolTip="Abort"
                         Command="{Binding AbortCommand}"
                         IsEnabled="{Binding IsConnected}"
-                        Style="{StaticResource AbortButtonStyle}">
+                        Style="{StaticResource AbortButtonStyle}" />
 
-                    <!--<Button.Resources>
-                        <Style TargetType="Button">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="Button">
 
-                                        <Rectangle Stroke="{DynamicResource MahApps.Brushes.Gray1}"
-                                                 Fill="Red"
-                                                 Name="elps"/>
 
-                                        <ControlTemplate.Triggers>
+                
 
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter TargetName="elps" Property="Opacity" Value="0.5" />
-                                            </Trigger>
-
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="elps" Property="Fill" Value="DarkRed" />
-                                            </Trigger>
-
-                                        </ControlTemplate.Triggers>
-
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </Button.Resources>-->
-
-                </Button>
-
-                <!--<CheckBox Content="Safty Active" IsChecked="{Binding IsAbort}"
-                          Visibility="{Binding NoAbortingVisibility}"
-                          Margin="0,0,50,0"/>-->
-
-                <CheckBox Content="Record" IsChecked="{Binding IsRecord}"/>
+                <CheckBox Content="Record" IsChecked="{Binding IsRecord}" Margin="0,0,50,0"/>
 
             </StackPanel>
 
@@ -133,11 +103,11 @@
 
                         <Style.Triggers>
 
-                            <DataTrigger Binding="{Binding RunScript.SaftyOfficer.IsRunning}" Value="True">
+                            <DataTrigger Binding="{Binding RunScript.IsSoRunning}" Value="True">
                                 <Setter Property="Background" Value="Red"/>
                             </DataTrigger>
 
-                            <DataTrigger Binding="{Binding RunScript.SaftyOfficer.IsRunning}" Value="False">
+                            <DataTrigger Binding="{Binding RunScript.IsSoRunning}" Value="False">
                                 <Setter Property="Background" Value="Transparent"/>
                             </DataTrigger>
 
@@ -156,12 +126,12 @@
 
                             <Style.Triggers>
 
-                                <DataTrigger Binding="{Binding RunScript.SaftyOfficer.IsRunning}" Value="True">
+                                <DataTrigger Binding="{Binding RunScript.IsSoRunning}" Value="True">
                                     <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Gray10}"/>
                                     <Setter Property="Text" Value="Safety ON"/>
                                 </DataTrigger>
 
-                                <DataTrigger Binding="{Binding RunScript.SaftyOfficer.IsRunning}" Value="False">
+                                <DataTrigger Binding="{Binding RunScript.IsSoRunning}" Value="False">
                                     <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Gray1}"/> 
                                     <Setter Property="Text" Value="Safety OFF"/>
                                 </DataTrigger>
@@ -250,11 +220,32 @@
                      Width="250"
                        Margin="0,1,5,1"/>
             <Button Content="..."
-                    Command="{Binding DataContext.BrowseRecordFileCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                    Command="{Binding BrowseRecordFileCommand}"
                     FontSize="16"
                     Margin="0,1,10,1"/>
 
-            
+
+
+            <Line Y1="1" Stretch="Fill" 
+                  Stroke="{DynamicResource MahApps.Brushes.Accent}" 
+                  Margin="0,0,10,0"/>
+
+
+            <TextBlock Text="SafetyOfficer scripts directory" 
+                       VerticalAlignment="Center"
+                       Margin="0,0,5,0"/>
+            <TextBox Text="{Binding SOScriptsDirectory}" 
+                     ToolTip="{Binding SOScriptsDirectory}"
+                     HorizontalAlignment="Stretch"
+                     VerticalContentAlignment="Center"
+                     Width="250"
+                     Margin="0,1,5,1"/>
+            <Button Content="..."
+                    Command="{Binding BrowseSOScriptsDirectoryCommand}"
+                    FontSize="16"
+                    Margin="0,1,10,1"/>
+
+
 
         </StackPanel>
 
@@ -264,45 +255,27 @@
               StrokeThickness="2"
               Stroke="{DynamicResource MahApps.Brushes.Accent}" />
 
-        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="5,0,0,0" 
-                    DataContext="{Binding RunScript}">
+        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="5,0,0,0" >
 
             <TextBlock Text="Select a Motor" 
                        VerticalAlignment="Center" 
                        Margin="0,0,5,0"/>
-            <ComboBox ItemsSource="{Binding SelectMotor.MotorTypesList}" 
-                      SelectedItem="{Binding SelectMotor.SelectedMotor}"   
+            <ComboBox ItemsSource="{Binding MotorsList}" 
+                      SelectedItem="{Binding SelectedMotor}"   
                       Width="150"
-                      Margin="0,1,15,1">
+                      Margin="0,1,15,1"/>
 
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Customer}" Margin="0,0,5,0"/>
-                            <TextBlock Text="-" Margin="0,0,5,0"/>
-                            <TextBlock Text="{Binding Name}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
 
-            </ComboBox>
 
             <TextBlock Text="Select a Controller" 
                        VerticalAlignment="Center"                        
                        Margin="0,0,5,0"/>
             <ComboBox Grid.Row="2" Grid.Column="2"
-                      ItemsSource="{Binding SelectMotor.ControllerTypesList}" 
-                      SelectedItem="{Binding SelectMotor.SelectedController}"
+                      ItemsSource="{Binding ControllersList}" 
+                      SelectedItem="{Binding SelectedController}"
                       Width="150"
-                      Margin="0,1,10,1">
+                      Margin="0,1,10,1"/>
 
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Name}" />
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-
-            </ComboBox>
 
 
             <Line Y1="1" Stretch="Fill" 
@@ -313,14 +286,14 @@
             <TextBlock Text="Abort script" 
                        VerticalAlignment="Center"
                        Margin="0,0,5,0"/>
-            <TextBox Text="{Binding AbortScriptPath}" 
-                     ToolTip="{Binding AbortScriptPath}"
+            <TextBox Text="{Binding RunScript.AbortScriptPath}" 
+                     ToolTip="{Binding RunScript.AbortScriptPath}"
                      HorizontalAlignment="Stretch"
                      VerticalContentAlignment="Center"
                      Width="250"
                        Margin="0,1,5,1"/>
             <Button Content="..."
-                    Command="{Binding DataContext.BrowseAbortScriptPathCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                    Command="{Binding BrowseAbortScriptPathCommand}"
                     FontSize="16"
                     Margin="0,1,10,1"/>
 
