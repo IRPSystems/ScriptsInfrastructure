@@ -6,7 +6,8 @@ namespace ScriptHandler.Models
 {
 	public class EOLReportsSelectionData: ObservableObject
 	{
-		public bool IsSaveToExcel { get; set; }
-		public bool IsSaveToPdf { get; set; }
-	}
+		public bool IsSaveToReport { get; set; }
+		public bool IsSaveToPdfExecTable { get; set; }
+        public bool IsSaveToPdfDynTable { get; set; }
+    }
 }
