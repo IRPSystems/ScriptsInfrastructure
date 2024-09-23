@@ -7,24 +7,25 @@ namespace ScriptHandler.Models
 	{
 		public string StepDescription { get; set; }
 		public string Description { get; set; }
-		public string Value { get; set; }
-		public bool IsPass { get; set; }
-		public string ErrorDescription { get; set; }
+		public double? TestValue { get; set; }
+        public double? ComparisonValue { get; set; }
+        public string Method { get; set; }
+		public string Units { get; set; }
+        public double? MinVal { get; set; }
+        public double? MaxVal { get; set; }
+        public double? Tolerance { get; set; }
+        public string Reference { get; set; }
+        public bool IsPass { get; set; }
+        public string ErrorDescription { get; set; }
 
 		public EOLStepSummeryData() { }
 
 		public EOLStepSummeryData(
 			string stepDescription, 
-			string description, 
-			string value = "", 
-			bool isPass = true, 
-			string errorDescription = "")
+			string description)
 		{
 			StepDescription = stepDescription;
 			Description = description;
-			Value = value;
-			IsPass = isPass;
-			ErrorDescription = errorDescription;
 		}
 	}							  
 }								  

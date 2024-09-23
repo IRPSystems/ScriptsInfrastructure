@@ -161,8 +161,7 @@ namespace ScriptHandler.Models
 
 			_stepsCounter++;
 
-
-			Compare_ValueWithTolerance(
+            Compare_ValueWithTolerance(
 					paramValue_Left,
 					paramName_Left,
 					paramValue_Right,
@@ -170,8 +169,47 @@ namespace ScriptHandler.Models
 					Tolerance,
 					errorHeader);
 
-			AddToEOLSummary();
-		}
+			string reference = "Fixed Value";
+            if (CompareValue is DeviceParameterData param)
+			{
+				reference = param.DeviceType.ToString();
+            }
+
+                string stepDescription = Description;
+            if (!string.IsNullOrEmpty(UserTitle))
+            {
+                stepDescription = UserTitle + " - Result";
+            }
+
+			double minVal;
+			double maxVal;
+
+			if(IsPercentageTolerance)
+			{
+                minVal = paramValue_Right - (paramValue_Right * Tolerance / 100);
+                maxVal = paramValue_Right - (paramValue_Right * Tolerance / 100);
+            }
+			else
+			{
+				minVal = paramValue_Right - Tolerance;
+				maxVal = paramValue_Right + Tolerance;
+			}
+
+
+            EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
+				stepDescription,
+				Description);
+
+            eolStepSummeryData.TestValue = paramValue_Left;
+            eolStepSummeryData.ComparisonValue = paramValue_Right;
+            eolStepSummeryData.MinVal = minVal;
+            eolStepSummeryData.MaxVal = maxVal;
+            eolStepSummeryData.Method = ComparationTypesEnum.Tolerance.ToString();
+			eolStepSummeryData.Reference = reference;
+            eolStepSummeryData.IsPass = IsPass;
+            eolStepSummeryData.ErrorDescription = ErrorMessage;
+            EOLStepSummerysList.Add(eolStepSummeryData);
+        }
 
 		private void Compare_ValueWithTolerance(
 			double paramValue_Left,

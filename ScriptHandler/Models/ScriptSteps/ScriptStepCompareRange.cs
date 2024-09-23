@@ -107,9 +107,13 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			_stepsCounter++;
 
+			string comparisonMethod;
+
 			if (IsBetween2Values)
 			{
-				Compare_Between2Values(
+				comparisonMethod = ComparationTypesEnum.BetweenRange.ToString();
+
+                Compare_Between2Values(
 					paramValue,
 					paramName,
 					paramValue_Left,
@@ -120,7 +124,8 @@ namespace ScriptHandler.Models.ScriptSteps
 			}
 			else
 			{
-				Compare_ValueWithTolerance(
+                comparisonMethod = ComparationTypesEnum.Tolerance.ToString();
+                Compare_ValueWithTolerance(
 					paramValue,
 					paramName,
 					paramValue_Left,
@@ -130,8 +135,27 @@ namespace ScriptHandler.Models.ScriptSteps
 					errorHeader);
 			}
 
-			AddToEOLSummary();
-		}
+
+
+            string stepDescription = Description;
+            if (!string.IsNullOrEmpty(UserTitle))
+            {
+                stepDescription = UserTitle + " - Result";
+            }
+
+            EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
+				stepDescription,
+				Description);
+
+            eolStepSummeryData.TestValue = paramValue;
+            eolStepSummeryData.ComparisonValue = paramValue_Right;
+            eolStepSummeryData.MinVal = paramValue_Left;
+            eolStepSummeryData.MaxVal = paramValue_Right;
+            eolStepSummeryData.Method = comparisonMethod;
+            eolStepSummeryData.IsPass = IsPass;
+            eolStepSummeryData.ErrorDescription = ErrorMessage;
+            EOLStepSummerysList.Add(eolStepSummeryData);
+        }
 
 		private void Compare_Between2Values(
 			double paramValue,

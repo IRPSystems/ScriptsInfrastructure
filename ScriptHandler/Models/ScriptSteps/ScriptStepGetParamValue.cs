@@ -90,7 +90,7 @@ namespace ScriptHandler.Models
 
 					//if(parameter.IsAbsolute)
 					//	parameter.Value = Math.Abs((double)parameter.Value);
-					eolStepSummery.Value = parameter.Value.ToString();
+					eolStepSummery.TestValue = (double)parameter.Value;
 					eolStepSummery.IsPass = true;
 					IsPass = true;
 					return true;
@@ -128,8 +128,9 @@ namespace ScriptHandler.Models
 			if(IsPass && parameter.Value is double dValue && parameter.IsAbsolute)
 				parameter.Value = Math.Abs(dValue);
 
-			eolStepSummery.Value = parameter.Value.ToString();
+			eolStepSummery.TestValue = (double)parameter.Value;
 			eolStepSummery.IsPass = true;
+			eolStepSummery.ErrorDescription = ErrorMessage;
 
 			return _isReceived;
         }

@@ -120,15 +120,21 @@
                                                   BorderThickness="1"
                                                   Padding="0">
                                                 <MenuItem Header="Reports">
-                                                    <MenuItem Header="Save To Excel"
+                                                    <MenuItem Header="Save To Report"
                                                               IsCheckable="True" 
-                                                              IsChecked="{Binding EOLReportsSelectionData.IsSaveToExcel, 
+                                                              IsChecked="{Binding EOLReportsSelectionData.IsSaveToReport, 
                                                                                   Mode=TwoWay, 
                                                                                   UpdateSourceTrigger=PropertyChanged}"/>
 
-                                                    <MenuItem Header="Save To PDF"
+                                                    <MenuItem Header="Save To PDF Main Table"
                                                               IsCheckable="True" 
-                                                              IsChecked="{Binding EOLReportsSelectionData.IsSaveToPdf, 
+                                                              IsChecked="{Binding EOLReportsSelectionData.IsSaveToPdfExecTable, 
+                                                                                  Mode=TwoWay, 
+                                                                                  UpdateSourceTrigger=PropertyChanged}"/>
+
+                                                    <MenuItem Header="Save To PDF Dynamic Table"
+                                                              IsCheckable="True" 
+                                                              IsChecked="{Binding EOLReportsSelectionData.IsSaveToPdfDynTable, 
                                                                                   Mode=TwoWay, 
                                                                                   UpdateSourceTrigger=PropertyChanged}"/>
 
