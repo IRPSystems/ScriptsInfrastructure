@@ -67,7 +67,7 @@ namespace ScriptHandler.Models
             }
 
 
-            EOLStepSummeryData eolStepSummeryData;
+            //EOLStepSummeryData eolStepSummeryData;
             //bool isOK = SendAndReceive(out eolStepSummeryData);
             ////EOLStepSummerysList.Add(eolStepSummeryData);
             //if (!isOK)

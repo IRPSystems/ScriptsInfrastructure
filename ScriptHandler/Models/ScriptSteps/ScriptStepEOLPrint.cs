@@ -47,7 +47,7 @@ namespace ScriptHandler.Models
 
 		public override void Execute()
 		{
-            EOLStepSummeryData eolStepSummeryData;
+            //EOLStepSummeryData eolStepSummeryData;
 
             _setValue = new ScriptStepSetParameter();
             _setValue.Parameter = ParamData;
