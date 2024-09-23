@@ -71,12 +71,12 @@ namespace ScriptHandler.Models.ScriptSteps
 				description = Description;
 				if (!string.IsNullOrEmpty(UserTitle))
 					description = UserTitle;
-				eolStepSummeryData = new EOLStepSummeryData(
-					description,
-					"",
-					isPass: IsPass,
-					errorDescription: ErrorMessage);
-				EOLStepSummerysList.Add(eolStepSummeryData);
+                eolStepSummeryData = new EOLStepSummeryData(
+                    description,
+                    "");
+                eolStepSummeryData.IsPass = IsPass;
+                eolStepSummeryData.ErrorDescription = ErrorMessage;
+                EOLStepSummerysList.Add(eolStepSummeryData);
 				return;
 			}
 
@@ -103,9 +103,9 @@ namespace ScriptHandler.Models.ScriptSteps
 						description = UserTitle;
 					eolStepSummeryData = new EOLStepSummeryData(
 						description,
-						"",
-						isPass: IsPass,
-						errorDescription: ErrorMessage);
+						"");
+					eolStepSummeryData.IsPass = IsPass;
+					eolStepSummeryData.ErrorDescription = ErrorMessage;
 					EOLStepSummerysList.Add(eolStepSummeryData);
 					return;
 				}
@@ -114,12 +114,12 @@ namespace ScriptHandler.Models.ScriptSteps
 			{
 				ErrorMessage = "Failed to get the SN parameter";
 				IsPass = false;
-				eolStepSummeryData = new EOLStepSummeryData(
-					Description,
-					"",
-					isPass: IsPass,
-					errorDescription: ErrorMessage);
-				EOLStepSummerysList.Add(eolStepSummeryData);
+                eolStepSummeryData = new EOLStepSummeryData(
+                    description,
+                    "");
+                eolStepSummeryData.IsPass = IsPass;
+                eolStepSummeryData.ErrorDescription = ErrorMessage;
+                EOLStepSummerysList.Add(eolStepSummeryData);
 				return;
 			}
 

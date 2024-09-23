@@ -17,5 +17,9 @@ namespace ScriptHandler.Enums
 		Smaller,
 		[Description("<=")]
 		SmallerEqual,
-	}
+        [Description("")]
+        BetweenRange,
+        [Description("")]
+        Tolerance,
+    }
 }

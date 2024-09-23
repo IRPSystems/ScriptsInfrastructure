@@ -6,6 +6,7 @@ using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Entities.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
@@ -83,9 +84,12 @@ namespace ScriptHandler.Models
             _stepsCounter++;
 			double? rightVal = 0;
 			string rightParamName = "";
+			string compareReference = "Fixed Value";
 			if (ValueRight is DeviceParameterData paramRight)
 			{
-				object val = GetCompareParaValue(paramRight);
+                compareReference = paramRight.DeviceType.ToString();
+
+                object val = GetCompareParaValue(paramRight);
 				if (val == null || IsPass == false)
 					return;
 
@@ -115,9 +119,24 @@ namespace ScriptHandler.Models
             Compare(leftVal, (double)rightVal);
 
 			_stepsCounter++;
-			
 
-			AddToEOLSummary();
+            string stepDescription = Description;
+            if (!string.IsNullOrEmpty(UserTitle))
+            {
+                stepDescription = UserTitle + " - Result";
+            }
+
+            EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
+				stepDescription,
+				Description);
+
+			eolStepSummeryData.TestValue = leftVal;
+			eolStepSummeryData.ComparisonValue = rightVal;
+			eolStepSummeryData.Reference = compareReference;
+            eolStepSummeryData.Method = Comparation.ToString();
+			eolStepSummeryData.IsPass = IsPass;
+			eolStepSummeryData.ErrorDescription = ErrorMessage;
+            EOLStepSummerysList.Add(eolStepSummeryData);
 
             #region Log comparation
             string str = leftParamName + " = " + leftVal + "; ";

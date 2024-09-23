@@ -140,10 +140,9 @@ namespace ScriptHandler.Models
 
             EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
                 stepDescription,
-            Description,
-                value: _value,
-                isPass: IsPass,
-                errorDescription: ErrorMessage);
+				Description);
+			eolStepSummeryData.IsPass = IsPass;
+            eolStepSummeryData.ErrorDescription = ErrorMessage;
             EOLStepSummerysList.Add(eolStepSummeryData);
         }
 
