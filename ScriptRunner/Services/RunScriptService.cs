@@ -36,6 +36,8 @@ namespace ScriptRunner.Services
 
 		public ParamRecordingService ParamRecording { get; set; }
 
+		public string ScriptName {  get; set; }
+
 		public string AbortScriptPath { get; set; }
 		public ScriptStepAbort AbortScriptStep 
 		{
@@ -219,8 +221,8 @@ namespace ScriptRunner.Services
 				step.StepState = SciptStateEnum.None;
 
 
-			if (isRecord)
-				ParamRecording.StartRecording(currentScript.Name, recordingPath, logParametersList);
+			//if (isRecord)
+			//	ParamRecording.StartRecording(currentScript.Name, recordingPath, logParametersList);
 
 			
 
