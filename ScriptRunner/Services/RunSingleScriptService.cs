@@ -347,9 +347,15 @@ namespace ScriptRunner.Services
 				_currentStep.StepState = SciptStateEnum.Ended;
 				if (_currentStep.IsPass)
 				{
+					string data = "Step \"" + _currentStep.Description + "\" passed";
+					if(_currentStep.EOLStepSummerysList != null && _currentStep.EOLStepSummerysList.Count > 0)
+					{
+						data += GetStepLogData(
+							_currentStep.EOLStepSummerysList[_currentStep.EOLStepSummerysList.Count - 1]);
+					}
 					_mainScriptLogger.AddLine(
 						_runTime.RunTime,
-						"Step \"" + _currentStep.Description + "\" passed",
+						data,
 						LogTypeEnum.Pass);
 
 					if(CurrentScript.Name != "Failed Step Notification")
@@ -392,6 +398,25 @@ namespace ScriptRunner.Services
 			}
 
 			OnPropertyChanged(nameof(_currentStep));
+		}
+
+		private string GetStepLogData(EOLStepSummeryData stepSummeryData)
+		{
+			if (stepSummeryData == null)
+				return null;
+
+			string str = null;
+
+			if (stepSummeryData.TestValue != null)
+				str += $"TestValue={stepSummeryData.TestValue} -- ";
+			if (stepSummeryData.ComparisonValue != null)
+				str += $"ComparisonValue={stepSummeryData.ComparisonValue} -- ";
+			if (stepSummeryData.Method != null)
+				str += $"Method={stepSummeryData.Method}";
+
+			str = $"\r\n{str}";
+
+			return str;
 		}
 
 		private void ScriptEnd()
