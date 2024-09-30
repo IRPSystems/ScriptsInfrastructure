@@ -74,11 +74,16 @@ namespace ScriptRunner.Services
 			try
 			{
 				if (LogLinesList != null && LogLinesList.Count != 0)
-					LogLinesList.Clear();
+				{
+					Application.Current?.Dispatcher.Invoke(() =>
+					{
+						LogLinesList.Clear();
+					});
+				}
 			}
 			catch(Exception ex)
 			{
-				LoggerService.Error(this, "Failed to clear the log", ex);
+				LoggerService.Error(this, "Failed to clear the log", "Error", ex);
 			}
 		}
 

@@ -23,7 +23,8 @@
 
                             <Border BorderThickness="2" >
 
-                                <TextBlock Text="{Binding Data}" VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding Data}" VerticalAlignment="Center" 
+                                           Margin="10"/>
 
                                 <Border.Resources>
                                     <Style TargetType="Border">
