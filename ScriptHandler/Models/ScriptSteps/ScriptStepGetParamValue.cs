@@ -52,87 +52,98 @@ namespace ScriptHandler.Models
 			DeviceParameterData parameter,
 			out EOLStepSummeryData eolStepSummery)
 		{
-			eolStepSummery = null;
-
-			if (parameter == null)
+			try
 			{
-				LoggerService.Error(this, "The parameter is not set");
-				return false;
-			}
+				eolStepSummery = null;
 
-			if (Communicator == null)
-			{
-				LoggerService.Error(this, "The communicator is not set");
-				return false;
-			}
-
-			eolStepSummery = new EOLStepSummeryData(
-				GetOnlineDescription(),
-				$"Get the value of parameter {parameter.Name}");
-
-			_waitForGet = new ManualResetEvent(false);
-
-			_isReceived = true;
-
-            ErrorMessage = "Failed to get the parameter value.\r\n" +
-				"\tParameter: " + parameter + "\r\n\r\n";
-
-			if(parameter is ICalculatedParamete calculated)
-			{
-				calculated.DevicesList = DevicesContainer.DevicesFullDataList;
-
-				ErrorMessage = "Failed to get the calculated parameter value.\r\n" +
-					"\tParameter: " + parameter + "\r\n\r\n";
-
-				calculated.Calculate();
-				if(parameter.Value != null) 
+				if (parameter == null)
 				{
-
-					//if(parameter.IsAbsolute)
-					//	parameter.Value = Math.Abs((double)parameter.Value);
-					eolStepSummery.TestValue = (double)parameter.Value;
-					eolStepSummery.IsPass = true;
-					IsPass = true;
-					return true;
-				}
-				else
-				{
-					eolStepSummery.IsPass = false;
-					eolStepSummery.ErrorDescription = ErrorMessage;
-					IsPass = false;
+					LoggerService.Error(this, "The parameter is not set");
 					return false;
 				}
-			}
+
+				if (Communicator == null)
+				{
+					LoggerService.Error(this, "The communicator is not set");
+					return false;
+				}
+
+				eolStepSummery = new EOLStepSummeryData(
+					GetOnlineDescription(),
+					$"Get the value of parameter {parameter.Name}");
+
+				_waitForGet = new ManualResetEvent(false);
+
+				_isReceived = true;
+
+				ErrorMessage = "Failed to get the parameter value.\r\n" +
+					"\tParameter: " + parameter + "\r\n\r\n";
+
+				if (parameter is ICalculatedParamete calculated)
+				{
+					calculated.DevicesList = DevicesContainer.DevicesFullDataList;
+
+					ErrorMessage = "Failed to get the calculated parameter value.\r\n" +
+						"\tParameter: " + parameter + "\r\n\r\n";
+
+					calculated.Calculate();
+					if (parameter.Value != null)
+					{
+
+						//if(parameter.IsAbsolute)
+						//	parameter.Value = Math.Abs((double)parameter.Value);
+						eolStepSummery.TestValue = (double)parameter.Value;
+						eolStepSummery.IsPass = true;
+						IsPass = true;
+						return true;
+					}
+					else
+					{
+						eolStepSummery.IsPass = false;
+						eolStepSummery.ErrorDescription = ErrorMessage;
+						IsPass = false;
+						return false;
+					}
+				}
 
 
-			Communicator.GetParamValue(parameter, GetValueCallback);
+				Communicator.GetParamValue(parameter, GetValueCallback);
 
-			int timeOut = 1000;
-			if (Parameter.CommunicationTimeout > 0)
-			{
-				timeOut = Parameter.CommunicationTimeout;
-			}
+				int timeOut = 1000;
+				if (parameter.CommunicationTimeout > 0)
+				{
+					timeOut = parameter.CommunicationTimeout;
+				}
 
-			bool isNotTimeout = _waitForGet.WaitOne(timeOut);
-			_waitForGet.Reset();
+				bool isNotTimeout = _waitForGet.WaitOne(timeOut);
+				_waitForGet.Reset();
 
-			if (!isNotTimeout)
-			{
-				IsPass = false;
-				ErrorMessage += "Communication timeout.";
-				eolStepSummery.IsPass = false;
+				if (!isNotTimeout)
+				{
+					IsPass = false;
+					ErrorMessage += "Communication timeout.";
+					eolStepSummery.IsPass = false;
+					eolStepSummery.ErrorDescription = ErrorMessage;
+					return IsPass;
+				}
+
+				if (IsPass && parameter.Value is double dValue && parameter.IsAbsolute)
+					parameter.Value = Math.Abs(dValue);
+
+				eolStepSummery.TestValue = (double)parameter.Value;
+				eolStepSummery.IsPass = true;
 				eolStepSummery.ErrorDescription = ErrorMessage;
-				return IsPass;
+
+				return _isReceived;
 			}
-
-			if(IsPass && parameter.Value is double dValue && parameter.IsAbsolute)
-				parameter.Value = Math.Abs(dValue);
-
-			eolStepSummery.TestValue = (double)parameter.Value;
-			eolStepSummery.IsPass = true;
-			eolStepSummery.ErrorDescription = ErrorMessage;
-
-			return _isReceived;
+			catch (Exception ex)
+			{
+				LoggerService.Error(this, "Failed to get", ex);
+				eolStepSummery = null;
+				IsPass = false;
+				ErrorMessage = $"Exception during failed\r\n{ex.Message}";
+				return false;
+			}
         }
 
 		private string GetOnlineDescription()

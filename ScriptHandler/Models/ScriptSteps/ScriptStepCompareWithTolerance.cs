@@ -35,7 +35,8 @@ namespace ScriptHandler.Models
 			set
 			{
 				_parameter = value;
-				Parameter_ExtraData.Parameter = value;
+				if(Parameter_ExtraData != null) 
+					Parameter_ExtraData.Parameter = value;
 				OnPropertyChanged(nameof(Parameter));
 			}
 		}
@@ -47,7 +48,7 @@ namespace ScriptHandler.Models
 			set
 			{
 				_compareValue = value;
-				if (_compareValue is DeviceParameterData)
+				if (_compareValue is DeviceParameterData && CompareValue_ExtraData != null)
 					CompareValue_ExtraData.Parameter = _compareValue as DeviceParameterData;
 				OnPropertyChanged(nameof(CompareValue));
 			}
@@ -325,7 +326,7 @@ namespace ScriptHandler.Models
 		{
 			//Parameter = parameter;
 
-			if (parameter != null)
+			if (parameter != null && DevicesContainer != null)
 			{
 				DeviceFullData deviceFullData =
 					DevicesContainer.DevicesFullDataList.ToList().Find((d) => d.Device.DeviceType == parameter.DeviceType);
