@@ -561,7 +561,7 @@ namespace ScriptRunner.Services
 				Application.Current.Dispatcher.Invoke(() =>
 				{
 					sweepItemForRun.CurrentScriptDiagram = 
-						new ScriptHandler.ViewModels.ScriptDiagramViewModel(Visibility.Visible);
+						new ScriptHandler.ViewModels.ScriptDiagramViewModel();
 					sweepItemForRun.CurrentScriptDiagram.DrawScript(sweepItem.SubScript);
 				});
 			}

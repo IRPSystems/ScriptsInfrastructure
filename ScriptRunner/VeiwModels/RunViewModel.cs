@@ -292,7 +292,7 @@ namespace ScriptRunner.ViewModels
 		public void CreateScriptLoggerWindow()
 		{
 			_scriptLogViewModel =
-				new ScriptLogDiagramViewModel(RunScript, Visibility.Visible);
+				new ScriptLogDiagramViewModel(RunScript);
 			CreateScriptLogDiagramViewEvent?.Invoke(_scriptLogViewModel);
 
 		}

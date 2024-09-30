@@ -20,9 +20,7 @@ namespace ScriptRunner.ViewModels
 		#region Constructor
 
 		public ScriptLogDiagramViewModel(
-			RunScriptService runScript, 
-			Visibility isShowErrorsVisibility):
-			base(isShowErrorsVisibility)
+			RunScriptService runScript)
 		{
 			_runScript = runScript;
 			_runScript.ScriptStartedEvent += ScriptStarted;

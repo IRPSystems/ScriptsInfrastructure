@@ -148,7 +148,7 @@ namespace ScriptHandler.ViewModels
 
 			_scriptValidation = new ScriptValidationService();
 
-			ScriptDiagram = new ScriptDiagramViewModel(Visibility.Collapsed);
+			ScriptDiagram = new ScriptDiagramViewModel();
 
 			ScriptDiagram.ChangeBackground(
 				Application.Current.MainWindow.FindResource("MahApps.Brushes.Control.Background") as SolidColorBrush);
