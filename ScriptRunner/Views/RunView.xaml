@@ -153,6 +153,8 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="50"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Column="0" Text="Run time" VerticalAlignment="Center"
@@ -167,8 +169,17 @@
                     Grid.Column="4"
                     Width="30"
                     Margin="0,1,5,1"
-                    ToolTip="Show script run diagram"
-                    Command="{Binding ShowScriptOutputCommand}">
+                    ToolTip="Show script logger"
+                    Command="{Binding ShowScriptLoggerCommand}">
+                    <iconPacks:PackIconMaterial Kind="FormatListBulleted" />
+                </Button>
+                
+                <Button Style="{StaticResource ButtonWithIconStyle}"
+                        Grid.Column="6"
+                        Width="30"
+                        Margin="0,1,5,1"
+                        ToolTip="Show script run diagram"
+                        Command="{Binding ShowScriptOutputCommand}">
                     <iconPacks:Material Kind="FormatListText" />
                 </Button>
             </Grid>

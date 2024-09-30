@@ -56,10 +56,13 @@ namespace ScriptRunner.Services
 				LogType = logType,
 			};
 
-			Application.Current.Dispatcher.Invoke(() =>
+			if (Application.Current != null)
 			{
-				LogLinesList.Add(lineData);
-			});
+				Application.Current.Dispatcher.Invoke(() =>
+				{
+					LogLinesList.Add(lineData);
+				});
+			}
 		}
 
 

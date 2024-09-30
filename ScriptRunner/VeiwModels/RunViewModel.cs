@@ -166,7 +166,7 @@ namespace ScriptRunner.ViewModels
 				StopCommand = new RelayCommand(Stop);
 				PauseCommand = new RelayCommand(Pause);
 
-
+				ShowScriptLoggerCommand = new RelayCommand(ShowScriptLogger);
 				ShowScriptOutputCommand = new RelayCommand(ShowScriptOutput);
 
 				BrowseRecordFileCommand = new RelayCommand(BrowseRecordFile);
@@ -562,6 +562,11 @@ namespace ScriptRunner.ViewModels
 			});
 		}
 
+		private void ShowScriptLogger()
+		{
+			ShowScriptLoggerViewEvent?.Invoke();
+		}
+
 		private void ShowScriptOutput()
 		{
 			ShowScriptLogDiagramViewEvent?.Invoke();
@@ -665,8 +670,8 @@ namespace ScriptRunner.ViewModels
 		public RelayCommand StopCommand { get; private set; }
 
 
+		public RelayCommand ShowScriptLoggerCommand { get; private set; }
 		public RelayCommand ShowScriptOutputCommand { get; private set; }
-
 
 
 		public RelayCommand BrowseRecordFileCommand { get; private set; }
@@ -689,6 +694,7 @@ namespace ScriptRunner.ViewModels
 		#region Events
 
 		public event Action<ScriptLogDiagramViewModel> CreateScriptLogDiagramViewEvent;
+		public event Action ShowScriptLoggerViewEvent;
 		public event Action ShowScriptLogDiagramViewEvent;
 		public event Action<int> RateAdjustmentNeededEvent;
 
