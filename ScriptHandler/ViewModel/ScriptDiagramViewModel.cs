@@ -29,6 +29,10 @@ namespace ScriptHandler.ViewModels
 			get => Connectors as ObservableCollection<ConnectorViewModelEx>;
 		}
 
+
+		public bool IsShowErrors { get; set; }
+		public Visibility IsShowErrorsVisibility { get; set; }
+
 		#endregion Properties
 
 		#region Fields
@@ -48,8 +52,9 @@ namespace ScriptHandler.ViewModels
 
 		#region Constructor
 
-		public ScriptDiagramViewModel()
+		public ScriptDiagramViewModel(Visibility isShowErrorsVisibility)
 		{
+			IsShowErrorsVisibility = isShowErrorsVisibility;
 
 			Constraints = Constraints & ~GraphConstraints.PageEditing;
 

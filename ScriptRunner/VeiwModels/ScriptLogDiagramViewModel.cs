@@ -2,6 +2,7 @@
 using ScriptHandler.Services;
 using ScriptHandler.ViewModels;
 using ScriptRunner.Services;
+using System.Windows;
 
 namespace ScriptRunner.ViewModels
 {
@@ -18,7 +19,10 @@ namespace ScriptRunner.ViewModels
 
 		#region Constructor
 
-		public ScriptLogDiagramViewModel(RunScriptService runScript)
+		public ScriptLogDiagramViewModel(
+			RunScriptService runScript, 
+			Visibility isShowErrorsVisibility):
+			base(isShowErrorsVisibility)
 		{
 			_runScript = runScript;
 			_runScript.ScriptStartedEvent += ScriptStarted;

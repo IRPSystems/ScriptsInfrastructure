@@ -8,7 +8,21 @@
              d:DesignHeight="450" d:DesignWidth="800" >
 
     <Grid>
-        <ContentControl Content="{Binding DataContext, RelativeSource={RelativeSource Mode=Self}}" 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <CheckBox Grid.Row="0" 
+                  Content="Show errors" 
+                  IsChecked="{Binding IsShowErrors}" 
+                  FontSize="14"
+                  Visibility="{Binding IsShowErrorsVisibility}"
+                  Margin="5,0,0,0"/>
+
+
+        <ContentControl Grid.Row="1"
+                        Content="{Binding DataContext, RelativeSource={RelativeSource Mode=Self}}" 
                         HorizontalAlignment="Center"/>
     </Grid>
 </UserControl>
