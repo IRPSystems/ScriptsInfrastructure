@@ -56,10 +56,13 @@ namespace ScriptRunner.Services
 				LogType = logType,
 			};
 
-			Application.Current.Dispatcher.Invoke(() =>
+			if (Application.Current != null)
 			{
-				LogLinesList.Add(lineData);
-			});
+				Application.Current.Dispatcher.Invoke(() =>
+				{
+					LogLinesList.Add(lineData);
+				});
+			}
 		}
 
 
@@ -71,7 +74,16 @@ namespace ScriptRunner.Services
 			try
 			{
 				if (LogLinesList != null && LogLinesList.Count != 0)
-					LogLinesList.Clear();
+				{
+					if (Application.Current != null)
+					{
+						Application.Current.Dispatcher.Invoke(() =>
+						{
+							LogLinesList.Clear();
+						});
+					}
+				}
+					
 			}
 			catch(Exception ex)
 			{
