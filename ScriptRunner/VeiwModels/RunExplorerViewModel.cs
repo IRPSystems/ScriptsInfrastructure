@@ -72,6 +72,12 @@ namespace ScriptRunner.ViewModels
 
 		private void ReloadProject(GeneratedProjectData e)
 		{
+			Dictionary<string, bool> nameToIsDoRun = new Dictionary<string, bool>();
+			foreach(GeneratedScriptData test in e.TestsList)
+			{
+				nameToIsDoRun.Add(test.Name, test.IsDoRun);
+			}
+
 			GeneratedProjectData reloadedProject = 
 				_openProjectForRun.Open(e.ProjectPath, _devicesContainer, _flashingHandler, _runScript.StopScriptStep);
 
@@ -83,6 +89,12 @@ namespace ScriptRunner.ViewModels
 					ProjectsList[i] = reloadedProject;
 					break;
 				}
+			}
+
+			foreach (GeneratedScriptData test in reloadedProject.TestsList)
+			{
+				if(nameToIsDoRun.ContainsKey(test.Name))
+				test.IsDoRun = nameToIsDoRun[test.Name];
 			}
 
 			OnPropertyChanged(nameof(ProjectsList));

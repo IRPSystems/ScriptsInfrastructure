@@ -105,13 +105,13 @@
                                                FontWeight="DemiBold"/>
 
                                         <Button Grid.Column="8" 
-                                            Style="{StaticResource ButtonWithIconStyle}"
-                                            Width="30"                        
-                                            ToolTip="Reload project"
-                                            Command="{Binding DataContext.ReloadProjectCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"
-                                            CommandParameter="{Binding}"
-                                            IsEnabled="{Binding IsGeneralEnabled}"
-                                            HorizontalAlignment="Right">
+                                                Style="{StaticResource ButtonWithIconStyle}"
+                                                Width="30"                        
+                                                ToolTip="Reload project"
+                                                Command="{Binding DataContext.ReloadProjectCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"
+                                                CommandParameter="{Binding}"
+                                                IsEnabled="{Binding IsGeneralEnabled}"
+                                                HorizontalAlignment="Right">
                                             <iconPacks:PackIconMaterial Kind="Reload" />
                                         </Button>
 
