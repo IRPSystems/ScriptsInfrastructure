@@ -14,6 +14,7 @@
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_SweepTemplate.xaml" />
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_EOLCalibrateTemplate.xaml" />
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_EOLFlashTemplate.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_CompareBitTemplate.xaml" />
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/EnumsDictionary.xaml" />
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/ParamValueWithInfoTemplate.xaml" />
     </ResourceDictionary.MergedDictionaries>

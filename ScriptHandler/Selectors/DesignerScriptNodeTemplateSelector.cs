@@ -57,6 +57,8 @@ namespace ScriptHandler.Selectors
 				return element.FindResource("Design_EOLSendSNTemplate") as DataTemplate;
 			if (item is ScriptNodeEOLPrint)
 				return element.FindResource("Design_EOLPrintTemplate") as DataTemplate;
+			if (item is ScriptNodeCompareBit)
+				return element.FindResource("Design_CompareBitTemplate") as DataTemplate;
 
 			return null;
 		}
