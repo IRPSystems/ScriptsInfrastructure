@@ -130,7 +130,27 @@ namespace ScriptHandler.Models
 				if (IsPass && parameter.Value is double dValue && parameter.IsAbsolute)
 					parameter.Value = Math.Abs(dValue);
 
-				eolStepSummery.TestValue = (double)parameter.Value;
+				if (parameter.Value != null)
+				{
+					double? value = null;
+					if (parameter.Value is string str)
+					{
+						double d;
+						bool res = double.TryParse(str, out d);
+						if (res)
+							value = d;
+					}
+					else
+					{
+						double d;
+						bool res = double.TryParse(parameter.Value.ToString(), out d);
+						if (res)
+							value = d;
+					}
+					if (value != null) 
+						eolStepSummery.TestValue = value;
+				}
+
 				eolStepSummery.IsPass = true;
 				eolStepSummery.ErrorDescription = ErrorMessage;
 

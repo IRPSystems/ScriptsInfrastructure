@@ -221,8 +221,7 @@ namespace ScriptRunner.Services
 				step.StepState = SciptStateEnum.None;
 
 
-			//if (isRecord)
-			//	ParamRecording.StartRecording(currentScript.Name, recordingPath, logParametersList);
+			ParamRecording.StartRecording(currentScript.Name, recordingPath, logParametersList);
 
 			
 

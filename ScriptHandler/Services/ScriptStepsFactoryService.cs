@@ -72,6 +72,8 @@ namespace ScriptHandler.Services
 				return new ScriptStepScopeSave();
 			else if (node.GetType().Name == "ScriptNodeEOLPrint")
 				return new ScriptStepEOLPrint();
+			else if (node.GetType().Name == "ScriptNodeCompareBit")
+				return new ScriptStepCompareBit();
 
 			return null;
 

@@ -74,6 +74,8 @@ namespace ScriptHandler.Converter
 				return Brushes.Black;
 			if (value is ScriptNodeEOLPrint || value is ScriptStepEOLPrint)
 				return Brushes.White;
+			if (value is ScriptNodeCompareBit || value is ScriptStepCompareBit)
+				return Brushes.White;
 
 			return Brushes.White;
 
