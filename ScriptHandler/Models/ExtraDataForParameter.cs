@@ -17,6 +17,7 @@ namespace ScriptHandler.Models
 
 		public int Ni6002_IOPort { get; set; }
 		public int Ni6002_Line { get; set; }
+		public double NIDAQShuntResistor { get; set; }
 
 
 		private int _ateCommandDropDwonIndex;
@@ -55,6 +56,7 @@ namespace ScriptHandler.Models
 		{
 			Ni6002_IOPort = source.Ni6002_IOPort;
 			Ni6002_Line = source.Ni6002_Line;
+			NIDAQShuntResistor = source.NIDAQShuntResistor;
 			AteCommandDropDwonIndex = source.AteCommandDropDwonIndex;
 			Zimmer_Channel = source.Zimmer_Channel;
 			NumatoGPIODropDwonIndex = source.NumatoGPIODropDwonIndex;
@@ -66,6 +68,7 @@ namespace ScriptHandler.Models
 			{
 				ni.Io_port = Ni6002_IOPort;
 				ni.portLine = Ni6002_Line;
+				ni.shunt_resistor = NIDAQShuntResistor;
 			}
 			else if (parameter is NumatoGPIO_ParamData numato)
 			{

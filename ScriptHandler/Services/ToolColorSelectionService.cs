@@ -32,9 +32,10 @@ namespace ScriptHandler.Services
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#FF006E");
 			if (item is ScriptNodeSweep || item is ScriptStepSweep)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#0000FF");
-			if (item is ScriptNodeCompareRange || item is ScriptStepCompareRange ||
-				item is ScriptNodeCompareWithTolerance || item is ScriptStepCompareWithTolerance)
+			if (item is ScriptNodeCompareRange || item is ScriptStepCompareRange)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#FF00DC");
+			if(item is ScriptNodeCompareWithTolerance || item is ScriptStepCompareWithTolerance)
+				return (SolidColorBrush)new BrushConverter().ConvertFrom("#FFDC42");
 			if (item is ScriptNodeCompare || item is ScriptStepCompare)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#A5FF7F");
 			if (item is ScriptNodeNotification || item is ScriptStepNotification)
