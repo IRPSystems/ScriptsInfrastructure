@@ -75,11 +75,15 @@ namespace ScriptRunner.Services
 			{
 				if (LogLinesList != null && LogLinesList.Count != 0)
 				{
-					Application.Current?.Dispatcher.Invoke(() =>
+					if (Application.Current != null)
 					{
-						LogLinesList.Clear();
-					});
+						Application.Current.Dispatcher.Invoke(() =>
+						{
+							LogLinesList.Clear();
+						});
+					}
 				}
+					
 			}
 			catch(Exception ex)
 			{
