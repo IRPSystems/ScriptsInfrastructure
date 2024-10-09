@@ -27,8 +27,10 @@ namespace ScriptHandler.Models
 
         public TimeUnitsEnum IntervalUnite;
 
+		public ExtraDataForParameter ExtraData { get; set; }
 
-        public ScriptStepLoopIncrement()
+
+		public ScriptStepLoopIncrement()
         {
             Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
             _setParameter = new ScriptStepSetParameter();
@@ -53,10 +55,13 @@ namespace ScriptHandler.Models
             _delayparameter.Interval= Interval;
             _delayparameter.IntervalUnite= IntervalUnite;
 
-            ErrorMessage = "";
+            ErrorMessage = ""; 
+            
+            if (ExtraData != null)
+				ExtraData.SetToParameter(Parameter);
 
 
-            value = Convert.ToDouble(SetFirstValue);
+			value = Convert.ToDouble(SetFirstValue);
             _setParameter.Value = value;
             _setParameter.Execute();
             EOLStepSummerysList.AddRange(_setParameter.EOLStepSummerysList);
@@ -148,6 +153,8 @@ namespace ScriptHandler.Models
             LoopsAmount = (sourceNode as ScriptNodeLoopIncrement).LoopsAmount;
             Interval = (sourceNode as ScriptNodeLoopIncrement).Interval;
             IntervalUnite = (sourceNode as ScriptNodeLoopIncrement).IntervalUnite;
-        }
+
+			ExtraData = new ExtraDataForParameter((sourceNode as ScriptNodeLoopIncrement).ExtraData);
+		}
     }
 }

@@ -17,6 +17,7 @@
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_CompareBitTemplate.xaml" />
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/EnumsDictionary.xaml" />
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/ParamValueWithInfoTemplate.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/ExtraDataTemplate.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <converters:TypeToNameConverter x:Key="TypeToNameConverter" />
@@ -28,30 +29,7 @@
 
 
 
-    <DataTemplate x:Key="NIExtrasTemplate">
-
-        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" 
-                  Visibility="{Binding Parameter, Converter={StaticResource NIPortVisibilityConverter}}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="300"/>
-            </Grid.ColumnDefinitions>
-
-            <Grid.RowDefinitions>
-                <RowDefinition Height="27"/>
-                <RowDefinition Height="5"/>
-                <RowDefinition Height="27"/>
-            </Grid.RowDefinitions>
-
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="Port" VerticalAlignment="Center"  />
-            <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Parameter.Io_port}" />
-
-            <TextBlock Grid.Row="2" Grid.Column="0" Text="Line" VerticalAlignment="Center"  />
-            <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Parameter.portLine}"  />
-
-        </Grid>
-    </DataTemplate>
+    
 
     <DataTemplate x:Key="Design_DelayTemplate">
 
@@ -410,15 +388,9 @@
                            Content="{Binding}"
                            Visibility="Collapsed"/>
 
-            <ContentControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
-                           ContentTemplate="{StaticResource NIExtrasTemplate}"
-                           Name="ccNI"
-                           Content="{Binding}"
-                           Visibility="Collapsed"/>
-
-            <ContentControl Grid.Row="2" Grid.ColumnSpan="3"
-                            ContentTemplate="{StaticResource NumatoGPIOExtrasTemplate}"
-                            Name="ccNumatoGPIO"
+            <ContentControl Grid.Row="2" Grid.Column="2"  Grid.ColumnSpan="3"
+                            ContentTemplate="{StaticResource ExtraDataTemplate}"
+                            Name="ccExtras"
                             Content="{Binding}"
                             Visibility="Collapsed"/>
 
@@ -452,34 +424,30 @@
 
             <DataTrigger Binding="{Binding Parameter, Converter={StaticResource TypeToNameConverter}}" Value="SwitchRelay_ParamData">
 
-                <Setter TargetName="ccNI" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Visible"/>
                 <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>
-                <Setter TargetName="ccNumatoGPIO" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccExtras" Property="Visibility" Value="Collapsed"/>
 
             </DataTrigger>
             <DataTrigger Binding="{Binding Parameter, Converter={StaticResource TypeToNameConverter}}" Value="NI6002_ParamData">
 
-                <Setter TargetName="ccNI" Property="Visibility" Value="Visible"/>
                 <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>
-                <Setter TargetName="ccNumatoGPIO" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccExtras" Property="Visibility" Value="Visible"/>
 
             </DataTrigger>
             <DataTrigger Binding="{Binding Parameter, Converter={StaticResource TypeToNameConverter}}" Value="Evva_ParamData">
 
-                <Setter TargetName="ccNI" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Visible"/>
-                <Setter TargetName="ccNumatoGPIO" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccExtras" Property="Visibility" Value="Collapsed"/>
 
             </DataTrigger>
             <DataTrigger Binding="{Binding Parameter, Converter={StaticResource TypeToNameConverter}}" Value="NumatoGPIO_ParamData">
 
-                <Setter TargetName="ccNI" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>
-                <Setter TargetName="ccNumatoGPIO" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="ccExtras" Property="Visibility" Value="Visible"/>
 
             </DataTrigger>
         </DataTemplate.Triggers>

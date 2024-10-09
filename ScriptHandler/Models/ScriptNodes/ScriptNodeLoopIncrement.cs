@@ -16,7 +16,8 @@ namespace ScriptHandler.Models.ScriptNodes
             set
             {
                 _parameter = value;
-                OnPropertyChanged("Parameter");
+				ExtraData.Parameter = _parameter;
+				OnPropertyChanged("Parameter");
             }
         }
 
@@ -26,11 +27,14 @@ namespace ScriptHandler.Models.ScriptNodes
         public int Interval { get; set; }
         public TimeUnitsEnum IntervalUnite { get; set; }
 
+		public ExtraDataForParameter ExtraData { get; set; }
 
-        public ScriptNodeLoopIncrement()
+
+		public ScriptNodeLoopIncrement()
         {
             Name = "Loop Increment";
-        }
+			ExtraData = new ExtraDataForParameter();
+		}
 
 
 
