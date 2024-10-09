@@ -333,7 +333,8 @@ namespace ScriptHandler.Models
 				Communicator = deviceFullData.DeviceCommunicator;
 			}
 
-			if(!isUseAverage)
+
+			if (!isUseAverage)
 				averageOfNRead = 1;
 			if(!isUseFactor) 
 				factor = 1;
@@ -423,6 +424,8 @@ namespace ScriptHandler.Models
 					CompareValue as DeviceParameterData,
 					devicesContainer);
 			}
+
+			DevicesContainer = devicesContainer;
 		}
 
 		#endregion Methods
