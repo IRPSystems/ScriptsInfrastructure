@@ -29,6 +29,8 @@ namespace ScriptHandler.Models
 			get => _ateCommandDropDwonIndex;
 			set
 			{
+				_ateCommandDropDwonIndex = value;
+
 				if (!(Parameter is ATE_ParamData ate))
 					return;
 
@@ -53,6 +55,8 @@ namespace ScriptHandler.Models
 			get => _numatoGPIODropDwonIndex;
 			set
 			{
+				_numatoGPIODropDwonIndex = value;
+
 				if (!(Parameter is NumatoGPIO_ParamData numato))
 					return;
 
