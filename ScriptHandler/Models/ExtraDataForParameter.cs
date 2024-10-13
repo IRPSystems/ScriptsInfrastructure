@@ -5,6 +5,8 @@ using DeviceCommunicators.Models;
 using DeviceCommunicators.NI_6002;
 using DeviceCommunicators.NumatoGPIO;
 using DeviceCommunicators.ZimmerPowerMeter;
+using Entities.Models;
+using Syncfusion.Windows.Shared;
 
 namespace ScriptHandler.Models
 {
@@ -18,6 +20,7 @@ namespace ScriptHandler.Models
 		public int Ni6002_IOPort { get; set; }
 		public int Ni6002_Line { get; set; }
 		public double NIDAQShuntResistor { get; set; }
+		public int AteCommand { get; set; }
 
 
 		private int _ateCommandDropDwonIndex;
@@ -26,14 +29,25 @@ namespace ScriptHandler.Models
 			get => _ateCommandDropDwonIndex;
 			set
 			{
+				_ateCommandDropDwonIndex = value;
+
 				if (!(Parameter is ATE_ParamData ate))
 					return;
 
-				_ateCommandDropDwonIndex = value;
+				if (value < 0 || value >= ate.ATECommand.Count)
+					AteCommand = -1;
+
+				DropDownParamData dd = ate.ATECommand[value];
+
+				int intVal;
+				bool ret = int.TryParse(dd.Value, out intVal);
+				AteCommand = intVal;
 			}
 		}
 
 		public int Zimmer_Channel { get; set; }
+		
+		public int NumatoGPIOPort { get; set; }
 
 		private int _numatoGPIODropDwonIndex;
 		public int NumatoGPIODropDwonIndex
@@ -41,13 +55,22 @@ namespace ScriptHandler.Models
 			get => _numatoGPIODropDwonIndex;
 			set
 			{
+				_numatoGPIODropDwonIndex = value;
+
 				if (!(Parameter is NumatoGPIO_ParamData numato))
 					return;
 
 				if (numato.DropDown == null)
 					return;
 
-				_numatoGPIODropDwonIndex = value;
+				if (value < 0 || value >= numato.DropDown.Count)
+					NumatoGPIOPort = -1;
+
+				DropDownParamData dd = numato.DropDown[value];
+
+				int intVal;
+				bool ret = int.TryParse(dd.Value, out intVal);
+				NumatoGPIOPort = intVal;
 			}
 		}
 
@@ -57,9 +80,9 @@ namespace ScriptHandler.Models
 			Ni6002_IOPort = source.Ni6002_IOPort;
 			Ni6002_Line = source.Ni6002_Line;
 			NIDAQShuntResistor = source.NIDAQShuntResistor;
-			AteCommandDropDwonIndex = source.AteCommandDropDwonIndex;
+			AteCommand = source.AteCommand;
 			Zimmer_Channel = source.Zimmer_Channel;
-			NumatoGPIODropDwonIndex = source.NumatoGPIODropDwonIndex;
+			NumatoGPIOPort = source.NumatoGPIOPort;
 		}
 
 		public void SetToParameter(DeviceParameterData parameter)
@@ -72,7 +95,7 @@ namespace ScriptHandler.Models
 			}
 			else if (parameter is NumatoGPIO_ParamData numato)
 			{
-				numato.Io_port = NumatoGPIODropDwonIndex;
+				numato.Io_port = NumatoGPIOPort;
 			}
 			else if (parameter is ZimmerPowerMeter_ParamData zimmer)
 			{
@@ -80,7 +103,7 @@ namespace ScriptHandler.Models
 			}
 			else if (parameter is ATE_ParamData ate)
 			{
-				ate.Value = AteCommandDropDwonIndex;
+				ate.Value = AteCommand;
 			}
 		}
 	}
