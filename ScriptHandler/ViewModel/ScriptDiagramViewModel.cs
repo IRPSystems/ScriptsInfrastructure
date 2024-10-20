@@ -663,6 +663,9 @@ namespace ScriptHandler.ViewModels
 				if (subScript.Script == null || subScript.Script.ScriptItemsList == null || subScript.Script.ScriptItemsList.Count == 0)
 					continue;
 
+				if ((i + 1) >= NodesList.Count)
+					continue;
+
 
 				AddScriptToFirstStepConnector(
 					NodesList[i],
