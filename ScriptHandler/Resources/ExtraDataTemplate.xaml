@@ -47,7 +47,7 @@
                 <TextBlock Grid.Column="0" Grid.Row="0" Text="Command" VerticalAlignment="Center" />
                 <ComboBox Grid.Row="0" Grid.Column="2"
                           ItemsSource="{Binding Parameter.ATECommand}"
-                          SelectedIndex= "{Binding ParameterAteCommandDropDwonIndex}">
+                          SelectedIndex= "{Binding AteCommandDropDwonIndex}">
 
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
