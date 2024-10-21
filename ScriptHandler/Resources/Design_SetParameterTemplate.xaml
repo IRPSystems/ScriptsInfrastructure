@@ -441,7 +441,7 @@
                 <Setter TargetName="ccRegular" Property="Visibility" Value="Visible"/>
                 <Setter TargetName="ccExtras" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
-                <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Visible"/>
+                <!--<Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Visible"/>-->
 
             </DataTrigger>
 
