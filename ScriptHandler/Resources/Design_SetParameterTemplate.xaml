@@ -379,11 +379,11 @@
                            Content="{Binding}"
                            Visibility="Collapsed"/>            
 
-            <ContentControl Grid.Row="4" Grid.ColumnSpan="3"
+            <!--<ContentControl Grid.Row="4" Grid.ColumnSpan="3"
                             ContentTemplate="{StaticResource ErrLevelForSaftyOfficer_Template}"
                             Name="ccSaftyOfficer"
                             Content="{Binding}"
-                            Visibility="Collapsed"/>
+                            Visibility="Collapsed"/>-->
 
 
 
@@ -396,7 +396,7 @@
                 <Setter TargetName="ccRegular" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccExtras" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Visible"/>
-                <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>
+                <!--<Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>-->
 
             </DataTrigger>
 
@@ -405,7 +405,7 @@
                 <Setter TargetName="ccRegular" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="ccExtras" Property="Visibility" Value="Visible"/>
                 <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
-                <Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>
+                <!--<Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>-->
 
             </DataTrigger>
 
