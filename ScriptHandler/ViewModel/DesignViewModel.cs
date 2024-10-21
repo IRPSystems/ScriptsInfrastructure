@@ -91,7 +91,8 @@ namespace ScriptHandler.ViewModels
 			_flashingHandler = flashingHandler;
 
 			GenerateToolTip = "Generate button";
-			GenerateErrorsListView = new ErrorsListView();
+			if(Application.Current != null)
+				GenerateErrorsListView = new ErrorsListView();
 
 
 			SaveCommand = new RelayCommand(Save);
@@ -108,12 +109,14 @@ namespace ScriptHandler.ViewModels
 
 			Explorer = new ExplorerViewModel(scriptUserData, devicesContainer);
 
-			DockingScript = new DockingScriptViewModel(
-				DesignTools,
-				DesignParameters,
-				Explorer);
-			Explorer.DockingScript = DockingScript;
-
+			if (Application.Current != null)
+			{
+				DockingScript = new DockingScriptViewModel(
+					DesignTools,
+					DesignParameters,
+					Explorer);
+				Explorer.DockingScript = DockingScript;
+			}
 			
 
 			WeakReferenceMessenger.Default.Register<SCRIPT_SELECTION_CHANGED>(
@@ -397,7 +400,8 @@ namespace ScriptHandler.ViewModels
 				if (invalidScriptData.ErrorsList.Count > 0)
 				{
 					GenerateState = GenerateStateEnum.Fail;
-					GenerateErrorsListView.ErrorsList = invalidScriptData.ErrorsList;
+					if(GenerateErrorsListView != null)
+						GenerateErrorsListView.ErrorsList = invalidScriptData.ErrorsList;
 					GenerateToolTip = GenerateErrorsListView;
 					GenerateMenuVisibility = Visibility.Visible;
 				}
