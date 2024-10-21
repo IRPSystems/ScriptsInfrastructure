@@ -33,7 +33,8 @@ namespace ScriptHandler.Models
 		{
 			try
 			{
-				Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
+				if (Application.Current != null)
+					Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
 				_waitForGet = new ManualResetEvent(false);
 				_isReceived = false;
 			}

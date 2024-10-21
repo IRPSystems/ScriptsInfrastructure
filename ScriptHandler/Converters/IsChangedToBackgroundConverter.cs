@@ -12,7 +12,7 @@ namespace ScriptHandler.Converter
 
 		object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (!(value is bool isChanged))
+			if (!(value is bool isChanged) || Application.Current == null)
 				return value;
 
 			if (isChanged)

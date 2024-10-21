@@ -52,7 +52,8 @@ namespace ScriptHandler.Models
 
 		public ScriptStepSelectMotorType()
 		{
-			Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
+			if (Application.Current != null)
+				Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
 
 			UpdateMotorList(
 				@"Data\Motor Security Command Parameters.xlsx");

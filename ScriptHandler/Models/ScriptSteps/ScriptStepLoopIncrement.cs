@@ -32,7 +32,8 @@ namespace ScriptHandler.Models
 
 		public ScriptStepLoopIncrement()
         {
-            Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
+			if (Application.Current != null)
+				Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
             _setParameter = new ScriptStepSetParameter();
             _delayparameter = new ScriptStepDelay();
             _totalNumOfSteps = 3;

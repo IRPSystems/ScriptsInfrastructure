@@ -285,8 +285,11 @@ namespace ScriptRunner.ViewModels
 
 		public void ChangeDiagramBackground()
 		{
-			_scriptLogViewModel.ChangeBackground(
-				Application.Current.MainWindow.FindResource("MahApps.Brushes.Control.Background") as SolidColorBrush);
+			if (Application.Current != null)
+			{
+				_scriptLogViewModel.ChangeBackground(
+					Application.Current.MainWindow.FindResource("MahApps.Brushes.Control.Background") as SolidColorBrush);
+			}
 		}
 
 		public void CreateScriptLoggerWindow()

@@ -26,7 +26,8 @@ namespace ScriptHandler.Models
 
 		public ScriptStepCompareBit()
 		{
-			Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
+			if (Application.Current != null)
+				Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
 		}
 
 		public override void Execute()

@@ -211,10 +211,13 @@ namespace ScriptRunner.Services
 			GeneratedScriptData soScript,
 			bool isRecord)
 		{
-			Application.Current.Dispatcher.Invoke(() =>
+			if (Application.Current != null)
 			{
-				Mouse.OverrideCursor = Cursors.Wait;
-			});
+				Application.Current.Dispatcher.Invoke(() =>
+				{
+					Mouse.OverrideCursor = Cursors.Wait;
+				});
+			}
 
 			IsAborted = false;
 			foreach (ScriptStepBase step in currentScript.ScriptItemsList)
@@ -266,10 +269,13 @@ namespace ScriptRunner.Services
 				LoggerService.Inforamtion(this, "Exist Run do to IsAborted = true");
 				ScriptEndedEvent?.Invoke(ScriptStopModeEnum.Aborted);
 
-				Application.Current.Dispatcher.Invoke(() =>
+				if (Application.Current != null)
 				{
-					Mouse.OverrideCursor = null;
-				});
+					Application.Current.Dispatcher.Invoke(() =>
+					{
+						Mouse.OverrideCursor = null;
+					});
+				}
 
 				return;
 			}
@@ -278,12 +284,14 @@ namespace ScriptRunner.Services
 			_numOfSteps = GetNumberOfScriptSteps(CurrentScript.CurrentScript);
 			CurrentScript.Start();
 
-
-			Application.Current.Dispatcher.Invoke(() =>
+			if (Application.Current != null)
 			{
-				ScriptStartedEvent?.Invoke();
-				Mouse.OverrideCursor = null;
-			});
+				Application.Current.Dispatcher.Invoke(() =>
+				{
+					ScriptStartedEvent?.Invoke();
+					Mouse.OverrideCursor = null;
+				});
+			}
 
 		}
 
@@ -557,12 +565,15 @@ namespace ScriptRunner.Services
 					_devicesContainer,
 					_canMessageSender);
 
-				Application.Current.Dispatcher.Invoke(() =>
+				if (Application.Current != null)
 				{
-					sweepItemForRun.CurrentScriptDiagram = 
-						new ScriptHandler.ViewModels.ScriptDiagramViewModel();
-					sweepItemForRun.CurrentScriptDiagram.DrawScript(sweepItem.SubScript);
-				});
+					Application.Current.Dispatcher.Invoke(() =>
+					{
+						sweepItemForRun.CurrentScriptDiagram =
+							new ScriptHandler.ViewModels.ScriptDiagramViewModel();
+						sweepItemForRun.CurrentScriptDiagram.DrawScript(sweepItem.SubScript);
+					});
+				}
 			}
 		}
 

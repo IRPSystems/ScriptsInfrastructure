@@ -150,9 +150,11 @@ namespace ScriptHandler.ViewModels
 
 			ScriptDiagram = new ScriptDiagramViewModel();
 
-			ScriptDiagram.ChangeBackground(
-				Application.Current.MainWindow.FindResource("MahApps.Brushes.Control.Background") as SolidColorBrush);
-
+			if (Application.Current != null)
+			{
+				ScriptDiagram.ChangeBackground(
+					Application.Current.MainWindow.FindResource("MahApps.Brushes.Control.Background") as SolidColorBrush);
+			}
 
 			LoggerService.Inforamtion(this, "Finished init of Design");
 
@@ -175,8 +177,11 @@ namespace ScriptHandler.ViewModels
 
 		public void RefreshDiagram()
 		{
-			ScriptDiagram.ChangeBackground(
-				Application.Current.MainWindow.FindResource("MahApps.Brushes.Control.Background") as SolidColorBrush);
+			if (Application.Current != null)
+			{
+				ScriptDiagram.ChangeBackground(
+					Application.Current.MainWindow.FindResource("MahApps.Brushes.Control.Background") as SolidColorBrush);
+			}
 			GetScriptDiagram();
 		}
 

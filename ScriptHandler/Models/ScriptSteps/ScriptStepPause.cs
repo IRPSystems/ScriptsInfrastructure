@@ -8,7 +8,8 @@ namespace ScriptHandler.Models
 
 		public ScriptStepPause()
 		{
-			Template = Application.Current.MainWindow.FindResource("PausedTemplate") as DataTemplate;
+			if (Application.Current != null)
+				Template = Application.Current.MainWindow.FindResource("PausedTemplate") as DataTemplate;
 		}
 	}
 }

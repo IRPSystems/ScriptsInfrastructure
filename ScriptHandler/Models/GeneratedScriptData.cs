@@ -45,7 +45,8 @@ namespace ScriptHandler.Models
         public GeneratedScriptData()
         {
 			Background = Brushes.Transparent;
-			Foreground = Application.Current.MainWindow.Foreground;
+			if (Application.Current != null)
+				Foreground = Application.Current.MainWindow.Foreground;
             State = SciptStateEnum.None;
 
             IsSelected = false;

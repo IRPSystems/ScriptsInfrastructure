@@ -50,7 +50,8 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		public ScriptStepEOLFlash()
 		{
-			Template = Application.Current.MainWindow.FindResource("EOLFlashTemplate") as DataTemplate;
+			if (Application.Current != null)
+				Template = Application.Current.MainWindow.FindResource("EOLFlashTemplate") as DataTemplate;
 		}
 
 		#endregion Constructor
@@ -69,19 +70,25 @@ namespace ScriptHandler.Models.ScriptSteps
 			RemainingTime = "";
 			ProgressMessage = "";
 
-			Application.Current.Dispatcher.Invoke(() =>
+			if (Application.Current != null)
 			{
-				Mouse.OverrideCursor = Cursors.AppStarting;
-			});
+				Application.Current.Dispatcher.Invoke(() =>
+				{
+					Mouse.OverrideCursor = Cursors.AppStarting;
+				});
+			}
 			
 
 			IsPass = FlashingHandler.Flash(FilePath, RXId, TXId, UdsSequence.ToString());
 			ErrorMessage = FlashingHandler.ErrorMessage;
 
-			Application.Current.Dispatcher.Invoke(() =>
+			if (Application.Current != null)
 			{
-				Mouse.OverrideCursor = null;
-			});
+				Application.Current.Dispatcher.Invoke(() =>
+				{
+					Mouse.OverrideCursor = null;
+				});
+			}
 
 			FlashingHandler.OnUploadProccesEvent -= FlashingHandler_OnUploadProccesEvent;
 			FlashingHandler.OnWriteToTerminalEvent -= FlashingHandler_OnWriteToTerminalEvent;

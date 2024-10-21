@@ -38,7 +38,8 @@ namespace ScriptHandler.Models
 
 		public ScriptStepSetSaveParameter()
 		{
-			Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
+			if (Application.Current != null)
+				Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
 			
 			_isStopped = false;
 

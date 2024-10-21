@@ -19,7 +19,8 @@ namespace ScriptHandler.Models
 
 		public ScriptStepNotification()
 		{
-			Template = Application.Current.MainWindow.FindResource("NotificationTemplate") as DataTemplate;
+			if (Application.Current != null)
+				Template = Application.Current.MainWindow.FindResource("NotificationTemplate") as DataTemplate;
 		}
 
 		public override void Execute()

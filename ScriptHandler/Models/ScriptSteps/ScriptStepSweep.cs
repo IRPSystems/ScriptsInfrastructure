@@ -75,7 +75,8 @@ namespace ScriptHandler.Models
 
 		public ScriptStepSweep()
 		{
-			Template = Application.Current.MainWindow.FindResource("SweepTemplate") as DataTemplate;
+			if (Application.Current != null)
+				Template = Application.Current.MainWindow.FindResource("SweepTemplate") as DataTemplate;
 
 			_getParameter = new ScriptStepGetParamValue();
 		}

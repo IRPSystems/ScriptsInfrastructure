@@ -17,7 +17,8 @@ namespace ScriptHandler.Models
 
 		public ScriptStepStartStopSaftyOfficer()
 		{
-			Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
+			if (Application.Current != null)
+				Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
 			Description = "Start/Stop Safty Officer";
 		}
 

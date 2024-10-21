@@ -72,11 +72,12 @@ namespace ScriptHandler.Services
 
 
 			ScriptWidth = _width + _offsetHorizontal + 10;
-
-			ChangeBackground(
-				Application.Current.MainWindow.FindResource("MahApps.Brushes.Control.Background") as
-					System.Windows.Media.SolidColorBrush);
-
+			if (Application.Current != null)
+			{
+				ChangeBackground(
+					Application.Current.MainWindow.FindResource("MahApps.Brushes.Control.Background") as
+						System.Windows.Media.SolidColorBrush);
+			}
 		}
 
 		#endregion Constructor
@@ -202,13 +203,15 @@ namespace ScriptHandler.Services
 			{
 				node.UnitWidth = subScriptDiagram.ScriptWidth;
 				node.UnitHeight = subScriptDiagram.ScriptHeight;
-				node.ContentTemplate = Application.Current.MainWindow.Resources["ScriptLogDiagramTemplate_SingleScript"] as DataTemplate;
+				if (Application.Current != null)
+					node.ContentTemplate = Application.Current.MainWindow.Resources["ScriptLogDiagramTemplate_SingleScript"] as DataTemplate;
 			}
 			else
 			{
 				node.UnitWidth = subScriptDiagram.ScriptWidth + (_offsetHorizontal * 2);
 				node.UnitHeight = subScriptDiagram.ScriptHeight + _height + _diffVertical;
-				node.ContentTemplate = Application.Current.MainWindow.Resources["ScriptLogDiagramTemplate_SingleScript_SubScript"] as DataTemplate;
+				if (Application.Current != null)
+					node.ContentTemplate = Application.Current.MainWindow.Resources["ScriptLogDiagramTemplate_SingleScript_SubScript"] as DataTemplate;
 			}
 
 			if(itemIndex == -1)
@@ -303,16 +306,22 @@ namespace ScriptHandler.Services
 
 
 			System.Windows.Style connectorGeometryStyle = null;
-			if (isPass)
-				connectorGeometryStyle = Application.Current.MainWindow.Resources["ConnectorGeometryStyle_Pass"] as System.Windows.Style;
-			else
-				connectorGeometryStyle = Application.Current.MainWindow.Resources["ConnectorGeometryStyle_Fail"] as System.Windows.Style;
+			if (Application.Current != null)
+			{
+				if (isPass)
+					connectorGeometryStyle = Application.Current.MainWindow.Resources["ConnectorGeometryStyle_Pass"] as System.Windows.Style;
+				else
+					connectorGeometryStyle = Application.Current.MainWindow.Resources["ConnectorGeometryStyle_Fail"] as System.Windows.Style;
+			}
 
 			System.Windows.Style targetDecoratorStyle = null;
-			if (isPass)
-				targetDecoratorStyle = Application.Current.MainWindow.Resources["TargetDecoratorStyle_Pass"] as System.Windows.Style;
-			else
-				targetDecoratorStyle = Application.Current.MainWindow.Resources["TargetDecoratorStyle_Fail"] as System.Windows.Style;
+			if (Application.Current != null)
+			{
+				if (isPass)
+					targetDecoratorStyle = Application.Current.MainWindow.Resources["TargetDecoratorStyle_Pass"] as System.Windows.Style;
+				else
+					targetDecoratorStyle = Application.Current.MainWindow.Resources["TargetDecoratorStyle_Fail"] as System.Windows.Style;
+			}
 
 			double startY = 0.75;
 			double endY = 0.25;
@@ -675,17 +684,20 @@ namespace ScriptHandler.Services
 				UnitWidth = _width,
 			};
 
-			if (item is ISubScript)
+			if (Application.Current != null)
 			{
-				node.ContentTemplate = Application.Current.MainWindow.Resources["ScriptLogDiagramTemplate_Step_SubScript"] as DataTemplate;
-			}
-			else if (item is ScriptStepCANMessage)
-			{
-				node.ContentTemplate = Application.Current.MainWindow.Resources["ScriptLogDiagramTemplate_Step_CANMessage"] as DataTemplate;
-			}
-			else
-			{
-				node.ContentTemplate = Application.Current.MainWindow.Resources["ScriptLogDiagramTemplate_Step"] as DataTemplate;
+				if (item is ISubScript)
+				{
+					node.ContentTemplate = Application.Current.MainWindow.Resources["ScriptLogDiagramTemplate_Step_SubScript"] as DataTemplate;
+				}
+				else if (item is ScriptStepCANMessage)
+				{
+					node.ContentTemplate = Application.Current.MainWindow.Resources["ScriptLogDiagramTemplate_Step_CANMessage"] as DataTemplate;
+				}
+				else
+				{
+					node.ContentTemplate = Application.Current.MainWindow.Resources["ScriptLogDiagramTemplate_Step"] as DataTemplate;
+				}
 			}
 
 

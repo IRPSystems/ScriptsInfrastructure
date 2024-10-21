@@ -13,7 +13,10 @@ namespace ScriptHandler.Converter
 
 		object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if(value == null)
+			if (Application.Current == null)
+				return Brushes.Transparent;
+
+			if (value == null)
 				return Application.Current.MainWindow.FindResource("MahApps.Brushes.Gray6") as SolidColorBrush;
 
 			if (!(value is MCU_ParamData mcuParam))

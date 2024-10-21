@@ -42,10 +42,16 @@ namespace ScriptRunner.Models
 				{
 
 					case LogTypeEnum.ScriptData: return Brushes.White;
-					case LogTypeEnum.StepData: return Application.Current.MainWindow.Foreground;
+					case LogTypeEnum.StepData:
+						if (Application.Current != null)
+							return Application.Current.MainWindow.Foreground;
+						else break;
 					case LogTypeEnum.Pass: return Brushes.White; 
 					case LogTypeEnum.Fail: return Brushes.White;
-					case LogTypeEnum.None: return Application.Current.MainWindow.Foreground;
+					case LogTypeEnum.None:
+						if (Application.Current != null)
+							return Application.Current.MainWindow.Foreground;
+						else break;
 				}
 
 				return Brushes.Transparent;

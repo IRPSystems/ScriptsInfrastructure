@@ -80,7 +80,8 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		public ScriptStepConverge()
 		{
-			Template = Application.Current.MainWindow.FindResource("ConvergeTemplate") as DataTemplate;
+			if (Application.Current != null)
+				Template = Application.Current.MainWindow.FindResource("ConvergeTemplate") as DataTemplate;
 			_checkValueTimer = new System.Timers.Timer(500);
 			_checkValueTimer.Elapsed += checkValueTimer_ElapsedEventHandler;
 			_executeState = ExecuteStateEnum.None;

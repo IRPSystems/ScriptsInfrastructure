@@ -11,6 +11,9 @@ namespace ScriptHandler.Converter
 	{
 		public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
+			if (Application.Current == null)
+				return Brushes.Transparent;
+
 			if (!(values[0] is SciptStateEnum stepState))
 				return Application.Current.MainWindow.FindResource("MahApps.Brushes.Gray1") as SolidColorBrush;
 

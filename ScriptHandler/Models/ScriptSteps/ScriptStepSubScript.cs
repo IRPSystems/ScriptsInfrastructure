@@ -88,7 +88,8 @@ namespace ScriptHandler.Models
 
 		public ScriptStepSubScript()
 		{
-			Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
+			if (Application.Current != null)
+				Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
 
 			_timerRunTime = new System.Timers.Timer(300);
 			_timerRunTime.Elapsed += RunTimeElapsedEventHandler;

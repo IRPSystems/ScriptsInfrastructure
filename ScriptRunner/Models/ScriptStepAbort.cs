@@ -24,7 +24,8 @@ namespace ScriptRunner.Models
 			string scriptFile,
 			DevicesContainer devicesContainer)
 		{
-			Template = Application.Current.MainWindow.FindResource("AbortAutoRunTemplate") as DataTemplate;
+			if (Application.Current != null)
+				Template = Application.Current.MainWindow.FindResource("AbortAutoRunTemplate") as DataTemplate;
 
 			Description = "Abort script";
 
@@ -84,7 +85,8 @@ namespace ScriptRunner.Models
 				if (!(item is ScriptStepBase step))
 					continue;
 
-				step.Template = Application.Current.MainWindow.FindResource("AbortAutoRunTemplate") as DataTemplate;
+				if (Application.Current != null)
+					step.Template = Application.Current.MainWindow.FindResource("AbortAutoRunTemplate") as DataTemplate;
 			}
 			
 		}

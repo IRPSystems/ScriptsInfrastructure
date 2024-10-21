@@ -112,7 +112,8 @@ namespace ScriptHandler.Models
 
 		public ScriptStepCANMessage()
 		{
-			Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
+			if (Application.Current != null)
+				Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
 
 			_sendIntervalTimer = new System.Timers.Timer();
 			_sendIntervalTimer.Elapsed += ElapsedEventHandler;

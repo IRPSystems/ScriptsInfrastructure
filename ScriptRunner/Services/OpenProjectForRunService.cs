@@ -162,7 +162,8 @@ namespace ScriptRunner.Services
 				else
 				{
 					scriptData.Background = Brushes.Transparent;
-					scriptData.Foreground = Application.Current.MainWindow.Foreground;
+					if (Application.Current != null)
+						scriptData.Foreground = Application.Current.MainWindow.Foreground;
 					scriptData.ErrorsList = null;
 				}
 			}

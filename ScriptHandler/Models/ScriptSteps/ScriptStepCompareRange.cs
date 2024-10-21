@@ -42,7 +42,8 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		public ScriptStepCompareRange()
 		{
-			Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
+			if (Application.Current != null)
+				Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
 			_totalNumOfSteps = 6;
 		}
 

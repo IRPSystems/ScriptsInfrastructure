@@ -61,9 +61,12 @@ namespace ScriptHandler.ViewModels
 
 			_exportDiagram = new ExportDiagramService();
 
-			ChangeBackground(
+			if (Application.Current != null)
+			{
+				ChangeBackground(
 				Application.Current.MainWindow.FindResource("MahApps.Brushes.Control.Background") as
 					System.Windows.Media.SolidColorBrush);
+			}
 
 			_maxLeft = 0;
 
@@ -245,17 +248,22 @@ namespace ScriptHandler.ViewModels
 				x = 1;
 
 			System.Windows.Style connectorGeometryStyle = null;
-			if (isPass)
-				connectorGeometryStyle = Application.Current.MainWindow.Resources["ConnectorGeometryStyle_Pass"] as System.Windows.Style;
-			else
-				connectorGeometryStyle = Application.Current.MainWindow.Resources["ConnectorGeometryStyle_Fail"] as System.Windows.Style;
+			if (Application.Current != null)
+			{
+				if (isPass)
+					connectorGeometryStyle = Application.Current.MainWindow.Resources["ConnectorGeometryStyle_Pass"] as System.Windows.Style;
+				else
+					connectorGeometryStyle = Application.Current.MainWindow.Resources["ConnectorGeometryStyle_Fail"] as System.Windows.Style;
+			}
 
 			System.Windows.Style targetDecoratorStyle = null;
-			if (isPass)
-				targetDecoratorStyle = Application.Current.MainWindow.Resources["TargetDecoratorStyle_Pass"] as System.Windows.Style;
-			else
-				targetDecoratorStyle = Application.Current.MainWindow.Resources["TargetDecoratorStyle_Fail"] as System.Windows.Style;
-
+			if (Application.Current != null)
+			{
+				if (isPass)
+					targetDecoratorStyle = Application.Current.MainWindow.Resources["TargetDecoratorStyle_Pass"] as System.Windows.Style;
+				else
+					targetDecoratorStyle = Application.Current.MainWindow.Resources["TargetDecoratorStyle_Fail"] as System.Windows.Style;
+			}
 
 			AddSingleConnector(
 				sourceNode,
@@ -347,10 +355,14 @@ namespace ScriptHandler.ViewModels
 			NodeViewModel scriptNode,
 			NodeViewModel stepFirstStep)
 		{
-			System.Windows.Style connectorGeometryStyle =
-				Application.Current.MainWindow.Resources["ConnectorGeometryStyle_ScriptToFirstStep"] as System.Windows.Style;
-			System.Windows.Style targetDecoratorStyle =
-				Application.Current.MainWindow.Resources["TargetDecoratorStyle_ScriptToFirstStep"] as System.Windows.Style;
+			System.Windows.Style connectorGeometryStyle = null;
+			if (Application.Current != null)
+			{
+				connectorGeometryStyle =
+					Application.Current.MainWindow.Resources["ConnectorGeometryStyle_ScriptToFirstStep"] as System.Windows.Style;
+				System.Windows.Style targetDecoratorStyle =
+					Application.Current.MainWindow.Resources["TargetDecoratorStyle_ScriptToFirstStep"] as System.Windows.Style;
+			}
 
 			AddSingleConnector(
 				scriptNode,
@@ -512,8 +524,11 @@ namespace ScriptHandler.ViewModels
 				UnitHeight = _height,
 				UnitWidth = _width,
 				EndPoint = 15 + _height + _diff,
-				ContentTemplate = Application.Current.MainWindow.Resources["ScriptLogDiagramTemplate_Script"] as DataTemplate,
+				
 			};
+
+			if(Application.Current != null) 
+				node.ContentTemplate = Application.Current.MainWindow.Resources["ScriptLogDiagramTemplate_Script"] as DataTemplate;
 
 
 			NodesList.Add(node);
@@ -538,17 +553,20 @@ namespace ScriptHandler.ViewModels
 				UnitWidth = _width,
 			};
 
-			if (item is ISubScript)
+			if (Application.Current != null)
 			{
-				node.ContentTemplate = Application.Current.MainWindow.Resources["ScriptLogDiagramTemplate_Step_SubScript"] as DataTemplate;
-			}
-			else if (item is ScriptStepCANMessage)
-			{
-				node.ContentTemplate = Application.Current.MainWindow.Resources["ScriptLogDiagramTemplate_Step_CANMessage"] as DataTemplate;
-			}
-			else
-			{
-				node.ContentTemplate = Application.Current.MainWindow.Resources["ScriptLogDiagramTemplate_Step"] as DataTemplate;
+				if (item is ISubScript)
+				{
+					node.ContentTemplate = Application.Current.MainWindow.Resources["ScriptLogDiagramTemplate_Step_SubScript"] as DataTemplate;
+				}
+				else if (item is ScriptStepCANMessage)
+				{
+					node.ContentTemplate = Application.Current.MainWindow.Resources["ScriptLogDiagramTemplate_Step_CANMessage"] as DataTemplate;
+				}
+				else
+				{
+					node.ContentTemplate = Application.Current.MainWindow.Resources["ScriptLogDiagramTemplate_Step"] as DataTemplate;
+				}
 			}
 
 			NodesList.Add(node);
