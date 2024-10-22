@@ -298,6 +298,10 @@ namespace ScriptRunner.Services
 				flashingHandler,
 				ref usedCommunicatorsList);
 
+			GetRealScriptParameters(
+				scriptData,
+				devicesContainer);
+
 			return script;
 		}
 
