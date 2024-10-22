@@ -299,7 +299,7 @@ namespace ScriptRunner.Services
 				ref usedCommunicatorsList);
 
 			GetRealScriptParameters(
-				scriptData,
+                script,
 				devicesContainer);
 
 			return script;

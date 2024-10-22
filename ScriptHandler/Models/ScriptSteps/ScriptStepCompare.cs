@@ -69,11 +69,12 @@ namespace ScriptHandler.Models
 					{
                         string hexSubstring = strval.Substring(2);
                         bool isSuccess = int.TryParse(hexSubstring, System.Globalization.NumberStyles.HexNumber, null, out intValue);
+						val = intValue;
 						if (!isSuccess) 
 							{ return; }
 					}
 
-                    sum += Convert.ToDouble(intValue);
+                    sum += Convert.ToDouble(val);
 
                     System.Threading.Thread.Sleep(1);
 				}
@@ -267,6 +268,7 @@ namespace ScriptHandler.Models
 					ValueRight as DeviceParameterData,
 					devicesContainer);
 			}
+			DevicesContainer = devicesContainer;
 		}
 	}
 }
