@@ -153,11 +153,15 @@ namespace ScriptHandler.ViewModels
 
 		public void RefreshTheme(bool isLightTheme)
 		{
-			App.ChangeDarkLight(isLightTheme);
+			if(Application.Current != null) 
+				App.ChangeDarkLight(isLightTheme);
 		}
 
 		public void RefreshDiagram()
 		{
+			if (DockingScript == null)
+				return;
+
 			foreach (DesignScriptViewModel vm in DockingScript.DesignScriptsList)
 				vm.RefreshDiagram();
 		}
