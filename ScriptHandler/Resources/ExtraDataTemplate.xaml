@@ -11,7 +11,31 @@
         <Grid Margin="0,5,0,0">
 
             <Grid Grid.Row="2" Name="grdParamPortNI" 
-                  Visibility="{Binding Parameter, Converter={StaticResource NIPortVisibilityConverter}}">
+                  Visibility="{Binding Parameter, Converter={StaticResource NIPortVisibilityConverter}, ConverterParameter='NI'}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="27" />
+                    <RowDefinition Height="5" />
+                    <RowDefinition Height="27" />
+                    <RowDefinition Height="5" />
+                    <RowDefinition Height="27" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="Port" VerticalAlignment="Center" />
+                <TextBox Grid.Column="2" Grid.Row="0" Text="{Binding Ni6002_IOPort}" />
+
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="Line" VerticalAlignment="Center" />
+                <TextBox Grid.Column="2" Grid.Row="2" Text="{Binding Ni6002_Line}" />
+
+            </Grid>
+
+            <Grid Grid.Row="2" Name="grdParamPortNIShunt" 
+                  Visibility="{Binding Parameter, Converter={StaticResource NIPortVisibilityConverter},ConverterParameter='Analog Input Current'}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="5" />
@@ -34,6 +58,43 @@
 
                 <TextBlock Grid.Column="0" Grid.Row="4" Text="Shunt resistor" VerticalAlignment="Center" />
                 <TextBox Grid.Column="2" Grid.Row="4" Text="{Binding NIDAQShuntResistor}" />
+            </Grid>
+
+            <Grid Grid.Row="2" Name="grdParamPortNITherm" 
+                  Visibility="{Binding Parameter, Converter={StaticResource NIPortVisibilityConverter},ConverterParameter='Analog Input Thermistor'}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="27" />
+                    <RowDefinition Height="5" />
+                    <RowDefinition Height="27" />
+                    <RowDefinition Height="5" />
+                    <RowDefinition Height="27" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="Port" VerticalAlignment="Center" />
+                <TextBox Grid.Column="2" Grid.Row="0" Text="{Binding Ni6002_IOPort}" />
+
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="Line" VerticalAlignment="Center" />
+                <TextBox Grid.Column="2" Grid.Row="2" Text="{Binding Ni6002_Line}" />
+
+                <TextBlock Grid.Column="0" Grid.Row="4" Text="Thermistor" VerticalAlignment="Center" />
+                <ComboBox Grid.Row="4" Grid.Column="2"
+                          ItemsSource="{Binding Parameter.ThermistorTypeList}"
+                          SelectedIndex= "{Binding NIThermistorIndex}">
+
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+
+                </ComboBox>
+
             </Grid>
 
             <Grid Grid.Row="2" Name="grdParamMCUATE" 

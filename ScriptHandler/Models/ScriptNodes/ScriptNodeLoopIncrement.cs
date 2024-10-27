@@ -16,8 +16,8 @@ namespace ScriptHandler.Models.ScriptNodes
             set
             {
                 _parameter = value;
-				ExtraData.Parameter = _parameter;
-				OnPropertyChanged("Parameter");
+                ExtraData.Parameter = _parameter;
+                OnPropertyChanged("Parameter");
             }
         }
 
