@@ -92,59 +92,71 @@ namespace ScriptHandler.Models
 		{
 			return Task.Run(() =>
 			{
-				//List<(TimeSpan, double, double, double)> list = new List<(TimeSpan, double, double, double)>();
-				while (!_cancellationToken.IsCancellationRequested && _linesCounter <= ExecuteLinesList.Count)
+				try
 				{
-					DateTime startSend = DateTime.Now;
-					DynamicControlFileLine line = ExecuteLinesList[_linesCounter - 1];
-					line.LineState = Enums.SciptStateEnum.Running;
-					OnPropertyChanged(nameof(line.LineState));
-					DynamicControlFileLine lineNext = null;
-					if (_linesCounter < ExecuteLinesList.Count)
-						lineNext = ExecuteLinesList[_linesCounter];
-					_linesCounter++;
-
-					CurrentLine = line;
-
-					for (int i = 0; i < line.ValuesList.Count && i < ColumnDatasList.Count; i++)
+					//List<(TimeSpan, double, double, double)> list = new List<(TimeSpan, double, double, double)>();
+					while (!_cancellationToken.IsCancellationRequested && _linesCounter <= ExecuteLinesList.Count)
 					{
-						_setParam.Parameter = ColumnDatasList[i].Parameter;
-						_setParam.Communicator = ColumnDatasList[i].Communicator;
-						_setParam.Value = line.ValuesList[i].Value;
-						line.ValuesList[i].IsCurrent = true;
-						_setParam.Execute();
-						//line.ValuesList[i].IsCurrent = false;
+						DateTime startSend = DateTime.Now;
+						DynamicControlFileLine line = ExecuteLinesList[_linesCounter - 1];
+						line.LineState = Enums.SciptStateEnum.Running;
+						OnPropertyChanged(nameof(line.LineState));
+						DynamicControlFileLine lineNext = null;
+						if (_linesCounter < ExecuteLinesList.Count)
+							lineNext = ExecuteLinesList[_linesCounter];
+						_linesCounter++;
+
+						CurrentLine = line;
+
+						for (int i = 0; i < line.ValuesList.Count && i < ColumnDatasList.Count; i++)
+						{
+							_setParam.Parameter = ColumnDatasList[i].Parameter;
+							_setParam.Communicator = ColumnDatasList[i].Communicator;
+							_setParam.Value = line.ValuesList[i].Value;
+							line.ValuesList[i].IsCurrent = true;
+							_setParam.Execute();
+							//line.ValuesList[i].IsCurrent = false;
+							if (_setParam.IsPass == false)
+								break;
+						}
+
 						if (_setParam.IsPass == false)
+						{
+							ErrorMessage += _setParam.ErrorMessage;
 							break;
+						}
+
+						if (lineNext != null)
+						{
+							TimeSpan sendDiff = DateTime.Now - startSend;
+							TimeSpan lineDiff = lineNext.Time - line.Time;
+							double timeToWait = lineDiff.TotalMilliseconds - sendDiff.TotalMilliseconds;
+							line.LineTime.Interval = (int)timeToWait;
+							Task.Run(() => { line.LineTime.Execute(); });
+							if ((int)timeToWait > 0)
+								Task.Delay((int)timeToWait).Wait(_cancellationToken);
+						}
+
+
+						PercentageOfLines = (int)(((double)_linesCounter / (double)ExecuteLinesList.Count) * 100.0);
+
+						line.LineState = Enums.SciptStateEnum.Ended;
+						OnPropertyChanged(nameof(line.LineState));
+						OnPropertyChanged(nameof(PercentageOfLines));
 					}
 
-					if (_setParam.IsPass == false)
-					{
-						ErrorMessage += _setParam.ErrorMessage;
-						break;
-					}
-
-					if (lineNext != null)
-					{
-						TimeSpan sendDiff = DateTime.Now - startSend;
-						TimeSpan lineDiff = lineNext.Time - line.Time;
-						double timeToWait = lineDiff.TotalMilliseconds - sendDiff.TotalMilliseconds;
-						line.LineTime.Interval = (int)timeToWait;
-						Task.Run(() => { line.LineTime.Execute(); });
-						if ((int)timeToWait > 0)
-							Task.Delay((int)timeToWait).Wait(_cancellationToken);
-					}
-
-
-					PercentageOfLines = (int)(((double)_linesCounter / (double)ExecuteLinesList.Count) * 100.0);
-
-					line.LineState = Enums.SciptStateEnum.Ended;
-					OnPropertyChanged(nameof(line.LineState));
-					OnPropertyChanged(nameof(PercentageOfLines));
+					if (_linesCounter >= ExecuteLinesList.Count)
+						IsPass = true;
 				}
+				catch(OperationCanceledException)
+				{
 
-				if(_linesCounter >= ExecuteLinesList.Count)
-					IsPass = true;
+				}
+				catch (Exception ex)
+				{
+					IsPass = false;
+					LoggerService.Error(this, "Failed to execute", ex);
+				}
 			});
 		}
 
