@@ -391,7 +391,7 @@
             <ContentControl Grid.Row="2" Grid.Column="2"  Grid.ColumnSpan="3"
                             ContentTemplate="{StaticResource ExtraDataTemplate}"
                             Name="ccExtras"
-                            Content="{Binding}"
+                            Content="{Binding ExtraData}"
                             Visibility="Collapsed"/>
 
             <ContentControl Grid.Row="4" Grid.ColumnSpan="3"
@@ -399,6 +399,8 @@
                             Name="ccSaftyOfficer"
                             Content="{Binding}"
                             Visibility="Collapsed"/>
+            
+
 
 
 

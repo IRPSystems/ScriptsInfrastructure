@@ -12,15 +12,24 @@ namespace ScriptHandler.Converter
 	public class NIPortVisibilityConverter : IValueConverter
 	{
 
-		object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		object IValueConverter.Convert(object value, Type targetType, object ConverterParameter, CultureInfo culture)
 		{
 			if (!(value is NI6002_ParamData param))
 				return Visibility.Collapsed;
 
-			return Visibility.Visible;
-		}
+			string Type = ConverterParameter as string;
+			string paramname = param.Name;
 
-		object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            if (paramname.Equals(Type, StringComparison.OrdinalIgnoreCase))
+                return Visibility.Visible;
+			if (!paramname.Equals("Analog Input Thermistor") && !paramname.Equals("Analog Input Current") && Type.Equals("NI"))
+				return Visibility.Visible;
+
+                return Visibility.Collapsed;
+
+        }
+
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			return string.Empty;
 		}
