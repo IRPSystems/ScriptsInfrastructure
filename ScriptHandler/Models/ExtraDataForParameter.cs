@@ -1,5 +1,6 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
+using DeviceCommunicators.Enums;
 using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceCommunicators.NI_6002;
@@ -21,6 +22,7 @@ namespace ScriptHandler.Models
 		public int Ni6002_Line { get; set; }
 		public double NIDAQShuntResistor { get; set; }
 		public int AteCommand { get; set; }
+		public eThermistorType NIThermistorIndex { get; set; }
 
 
 		private int _ateCommandDropDwonIndex;
@@ -34,10 +36,13 @@ namespace ScriptHandler.Models
 				if (!(Parameter is ATE_ParamData ate))
 					return;
 
-				if (value < 0 || value >= ate.ATECommand.Count)
-					AteCommand = -1;
+				if (ate.ATECommand == null || (value < 0 || value >= ate.ATECommand.Count))
+				{
+                    AteCommand = -1;
+					return;
+                }
 
-				DropDownParamData dd = ate.ATECommand[value];
+                DropDownParamData dd = ate.ATECommand[value];
 
 				int intVal;
 				bool ret = int.TryParse(dd.Value, out intVal);
@@ -83,7 +88,8 @@ namespace ScriptHandler.Models
 			AteCommand = source.AteCommand;
 			Zimmer_Channel = source.Zimmer_Channel;
 			NumatoGPIOPort = source.NumatoGPIOPort;
-		}
+            NIThermistorIndex = source.NIThermistorIndex;
+        }
 
 		public void SetToParameter(DeviceParameterData parameter)
 		{
@@ -92,6 +98,7 @@ namespace ScriptHandler.Models
 				ni.Io_port = Ni6002_IOPort;
 				ni.portLine = Ni6002_Line;
 				ni.shunt_resistor = NIDAQShuntResistor;
+				ni.ThermistorType = NIThermistorIndex;
 			}
 			else if (parameter is NumatoGPIO_ParamData numato)
 			{

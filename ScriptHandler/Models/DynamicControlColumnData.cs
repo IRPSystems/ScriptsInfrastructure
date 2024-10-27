@@ -1,6 +1,7 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
 using DeviceCommunicators.General;
+using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using Entities.Models;
 using System.Diagnostics.Contracts;
@@ -21,10 +22,20 @@ namespace ScriptHandler.Models
 				_parameter = value;
 				if(Parameter != null) 
 				{
-					ParameterNameAndDevice =
-						Parameter.Name +
-						" ;; " +
-						Parameter.DeviceType;
+					if (Parameter is MCU_ParamData mcuParam)
+					{
+						ParameterNameAndDevice =
+							mcuParam.Cmd +
+							" ;; " +
+							Parameter.DeviceType;
+					}
+					else
+					{
+						ParameterNameAndDevice =
+							Parameter.Name +
+							" ;; " +
+							Parameter.DeviceType;
+					}
 				}
 			}
 		}
