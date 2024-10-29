@@ -7,6 +7,7 @@ using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
 using System.Collections.Generic;
+using System.Windows;
 
 namespace ScriptHandler.Models
 {
@@ -17,7 +18,10 @@ namespace ScriptHandler.Models
 
 		public uint CANID { get; set; }
 
-
+		public ScriptStepCANMessageStop()
+		{
+			Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
+		}
 
 		public override void Execute()
 		{
