@@ -699,7 +699,6 @@
                 <ColumnDefinition Width="500"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" Text="Message to stop" VerticalAlignment="Center"/>
 
 
             <TextBlock Grid.Column="0" Grid.Row="2" Text="Message ID" VerticalAlignment="Center"/>
