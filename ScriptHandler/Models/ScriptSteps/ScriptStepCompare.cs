@@ -72,9 +72,13 @@ namespace ScriptHandler.Models
 						val = intValue;
 						if (!isSuccess) 
 							{ return; }
+
+						val = intValue;
 					}
 
                     sum += Convert.ToDouble(val);
+
+					
 
                     System.Threading.Thread.Sleep(1);
 				}
