@@ -70,9 +70,13 @@ namespace ScriptHandler.Models
                         bool isSuccess = int.TryParse(hexSubstring, System.Globalization.NumberStyles.HexNumber, null, out intValue);
 						if (!isSuccess) 
 							{ return; }
+
+						val = intValue;
 					}
 
-                    sum += Convert.ToDouble(intValue);
+                    sum += Convert.ToDouble(val);
+
+					
 
                     System.Threading.Thread.Sleep(1);
 				}

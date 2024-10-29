@@ -135,7 +135,7 @@ namespace ScriptHandler.Models
 					return dVal;
 				}
 			}
-			else
+			else if(value != null) 
 			{				
 				double.TryParse(value.ToString(), out dVal);
 			}
