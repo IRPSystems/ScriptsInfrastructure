@@ -61,7 +61,8 @@ namespace ScriptHandler.ViewModels
 
 				
 
-				if (type.Name == "ScriptNodeScopeSave")
+				if (type.Name == "ScriptNodeScopeSave" ||
+					type.Name == "ScriptNodeStopContinuous")
 					continue;
 
 				var c = Activator.CreateInstance(type);

@@ -83,7 +83,7 @@ namespace ScriptHandler.Models.ScriptNodes
 
 		public ScriptNodeStopContinuous()
 		{
-			Name = "Stop CAN Message";
+			Name = "Stop Continuous";
 
 			DeleteStepToStopCommand = new RelayCommand(DeleteStepToStop);
 		}

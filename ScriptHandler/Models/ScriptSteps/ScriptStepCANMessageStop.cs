@@ -43,10 +43,7 @@ namespace ScriptHandler.Models
 			GenerateProjectService generateService,
 			DevicesContainer devicesContainer)
 		{
-			if ((sourceNode as ScriptNodeStopContinuous).StepToStop is ScriptNodeCANMessage canMessage)
-			{
-				CANID = canMessage.CANID;
-			}
+			CANID = (sourceNode as ScriptNodeCANMessageStop).CANID;
 		}
 	}
 }
