@@ -8,6 +8,7 @@ using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
 using System.Collections.Generic;
+using System.Windows;
 
 namespace ScriptHandler.Models
 {
@@ -28,6 +29,11 @@ namespace ScriptHandler.Models
 
 		[JsonIgnore]
 		public GeneratedTestData ParentProject { get; set; }
+
+		public ScriptStepCANMessageUpdate()
+		{
+			Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
+		}
 
 		public override void Execute()
 		{
