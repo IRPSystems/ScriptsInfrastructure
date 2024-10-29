@@ -690,4 +690,30 @@
 
     </DataTemplate>
 
+    <DataTemplate x:Key="Design_StopCANMessagTemplate">
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="500"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Text="Message to stop" VerticalAlignment="Center"/>
+
+
+            <TextBlock Grid.Column="0" Grid.Row="2" Text="Message ID" VerticalAlignment="Center"/>
+            <StackPanel Grid.Row="2" Grid.Column="2"  
+                        Orientation="Horizontal">
+                <TextBlock Text="0x" VerticalAlignment="Center" />
+
+                <TextBox Grid.Row="2" Grid.Column="2" 
+                         Text="{Binding CANID, Converter={StaticResource HexUintConverter}}" 
+                         Width="75"/>
+            </StackPanel>
+
+        </Grid>
+
+    </DataTemplate>
+
 </ResourceDictionary>

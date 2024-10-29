@@ -45,6 +45,8 @@ namespace ScriptHandler.Selectors
 				return element.FindResource("Design_CompareWithToleranceTemplate") as DataTemplate;
 			if (item is ScriptNodeStopContinuous)
 				return element.FindResource("Design_StopContinuousTemplate") as DataTemplate;
+			if (item is ScriptNodeCANMessage)
+				return element.FindResource("Design_StopCANMessagTemplate") as DataTemplate;
 			if (item is ScriptNodeCANMessageUpdate)
 				return element.FindResource("Design_CANMessageUpdateTemplate") as DataTemplate;
 			if (item is ScriptNodeCANMessage)
