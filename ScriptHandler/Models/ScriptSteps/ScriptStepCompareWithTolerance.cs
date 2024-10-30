@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection.Metadata;
+using System.Threading;
 using System.Windows;
 
 namespace ScriptHandler.Models
@@ -340,6 +341,7 @@ namespace ScriptHandler.Models
 				factor = 1;
 
 			double avgSum = 0;
+			bool NegativeReads = false;
 			for (int i = 0; i < averageOfNRead; i++)
 			{
 				EOLStepSummeryData eolStepSummeryData;
@@ -348,6 +350,7 @@ namespace ScriptHandler.Models
 				_getParamValue.Communicator = Communicator;
 
 				bool isOK = _getParamValue.SendAndReceive(parameter, out eolStepSummeryData);
+				Thread.Sleep(50);
 				EOLStepSummerysList.Add(eolStepSummeryData);
 				if (!isOK)
 				{
@@ -356,13 +359,24 @@ namespace ScriptHandler.Models
 					IsPass = false;
 					return 0;
 				}
-				avgSum += Convert.ToDouble(parameter.Value);
+				if((double)parameter.Value < 0)
+				{
+					NegativeReads = true;
+				}
+				avgSum += Math.Abs(Convert.ToDouble(parameter.Value));
+
             }
 
 			if (parameter == null)
 					return null;
-			
-			return (avgSum / averageOfNRead) * factor;
+			avgSum = (avgSum / averageOfNRead) * factor;
+            
+			if(NegativeReads)
+			{
+				avgSum = -avgSum;
+			}
+
+            return avgSum;
 		}
 
 
