@@ -43,8 +43,8 @@ namespace ScriptHandler.Selectors
 				return element.FindResource("Design_CompareRangeTemplate") as DataTemplate;
 			if (item is ScriptNodeCompareWithTolerance)
 				return element.FindResource("Design_CompareWithToleranceTemplate") as DataTemplate;
-			if (item is ScriptNodeStopContinuous)
-				return element.FindResource("Design_StopContinuousTemplate") as DataTemplate;
+			if (item is ScriptNodeCANMessageStop)
+				return element.FindResource("Design_StopCANMessagTemplate") as DataTemplate;
 			if (item is ScriptNodeCANMessageUpdate)
 				return element.FindResource("Design_CANMessageUpdateTemplate") as DataTemplate;
 			if (item is ScriptNodeCANMessage)
@@ -59,6 +59,8 @@ namespace ScriptHandler.Selectors
 				return element.FindResource("Design_EOLPrintTemplate") as DataTemplate;
 			if (item is ScriptNodeCompareBit)
 				return element.FindResource("Design_CompareBitTemplate") as DataTemplate;
+			if (item is ScriptNodeStopContinuous)
+				return element.FindResource("Design_StopContinuousTemplate") as DataTemplate;
 
 			return null;
 		}
