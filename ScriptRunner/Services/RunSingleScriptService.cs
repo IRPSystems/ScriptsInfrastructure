@@ -210,13 +210,7 @@ namespace ScriptRunner.Services
 										_state = ScriptInternalStateEnum.EndStep;
 										break;
 									}
-									else if (_currentStep is IScriptStepContinuous)
-									{
-										ContinuousStepEvent?.Invoke(_currentStep as IScriptStepContinuous);
-										_currentStep.IsPass = true;
-										_state = ScriptInternalStateEnum.EndStep;
-										break;
-									}
+									
 
 									_state = ScriptInternalStateEnum.Execute;
 									break;
@@ -578,8 +572,6 @@ namespace ScriptRunner.Services
 			}
 			_subScript.ScriptEndedEvent += SubScriptEndedEventHandler;
 			_subScript.CurrentStepChangedEvent += CurrentStepChangedEventHandler;
-			_subScript.ContinuousStepEvent += SubScript_ContinuousStepEvent;
-			_subScript.StopContinuousStepEvent += SubScript_StopContinuousStepEvent;
 			_subScript.AbortEvent += SubScript_AbortEvent;
 			_subScript.StartSafetyOfficerEvent += SubScript_StartSafetyOfficerEvent;
 			_subScript.StopSafetyOfficerEvent += SubScript_StopSafetyOfficerEvent;
@@ -699,15 +691,7 @@ namespace ScriptRunner.Services
 		}
 
 
-		private void SubScript_ContinuousStepEvent(IScriptStepContinuous scriptStepContinuous)
-		{
-			ContinuousStepEvent?.Invoke(scriptStepContinuous);
-		}
-
-		private void SubScript_StopContinuousStepEvent(string stepToStopDescription)
-		{
-			StopContinuousStepEvent?.Invoke(stepToStopDescription);
-		}
+		
 
 		private void SubScript_AbortEvent(string abortDescription)
 		{
@@ -731,8 +715,6 @@ namespace ScriptRunner.Services
 		public event Action<bool> ScriptEndedEvent;
 		public event Action<ScriptStepBase> CurrentStepChangedEvent;
 
-		public event Action<IScriptStepContinuous> ContinuousStepEvent;
-		public event Action<string> StopContinuousStepEvent;
 
 		public event Action<string> AbortEvent;
 

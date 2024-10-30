@@ -1,7 +1,5 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
-using DeviceCommunicators.MCU;
-using Entities.Models;
 using ScriptHandler.Enums;
 using ScriptHandler.Models;
 using ScriptHandler.Services;
@@ -15,7 +13,6 @@ using System.IO;
 using System.Windows;
 using DeviceHandler.Models;
 using DeviceCommunicators.Models;
-using DeviceHandler.Models.DeviceFullDataModels;
 using System.Windows.Input;
 using ScriptRunner.ViewModels;
 
@@ -100,8 +97,7 @@ namespace ScriptRunner.Services
 
 		private DevicesContainer _devicesContainer;
 
-		private HandleContinuousStepsService _handleContinuousSteps;
-
+		
 		private CANMessageSenderViewModel _canMessageSender;
 
 		private string _testName;
@@ -146,8 +142,7 @@ namespace ScriptRunner.Services
 				1, 5, 10, 20
 			};
 
-			_handleContinuousSteps = new HandleContinuousStepsService();
-
+			
 
 
 			CreateStepFailed();
@@ -255,8 +250,6 @@ namespace ScriptRunner.Services
 				_canMessageSender);
 			CurrentScript.ScriptEndedEvent += ScriptEndedEventHandler;
 			CurrentScript.CurrentStepChangedEvent += CurrentStepChangedEventHandler;
-			CurrentScript.ContinuousStepEvent += Script_ContinuousStepEvent;
-			CurrentScript.StopContinuousStepEvent += Script_StopContinuousStepEvent;
 			CurrentScript.AbortEvent += CurrentScript_AbortEvent;
 			CurrentScript.StartSafetyOfficerEvent += CurrentScript_StartSafetyOfficerEvent;
 			CurrentScript.StopSafetyOfficerEvent += CurrentScript_StopSafetyOfficerEvent;
@@ -335,8 +328,7 @@ namespace ScriptRunner.Services
 
 		private void ScriptEnded()
 		{
-			_handleContinuousSteps.EndAll();
-
+			
 			_soScript.StopScript();
 
 			ScriptStopModeEnum stopMode = ScriptStopModeEnum.Ended;
@@ -496,31 +488,6 @@ namespace ScriptRunner.Services
 		}
 
 		#endregion Safety Officer
-
-		#region Continuous Step
-
-		private void Script_ContinuousStepEvent(IScriptStepContinuous scriptStepContinuous)
-		{
-			scriptStepContinuous.ContinuousErrorEvent += Script_ContinuousErrorEvent;
-			_handleContinuousSteps.StartContinuous(scriptStepContinuous);
-		}
-
-		private void Script_ContinuousErrorEvent(string errorMessage)
-		{
-			try
-			{
-				CurrentScript.CurrentScript.IsPass = false;
-				AbortScript(errorMessage);
-			}
-			catch { }
-		}
-
-		private void Script_StopContinuousStepEvent(string continuousDescription)
-		{
-			_handleContinuousSteps.StopContinuous(continuousDescription);
-		}
-
-		#endregion Continuous Step
 
 		#region Sweep
 
