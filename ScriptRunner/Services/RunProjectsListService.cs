@@ -453,10 +453,29 @@ namespace ScriptRunner.Services
 				_cancellationTokenSource.Cancel();
 				_cancellationTokenSource = null;
 			}
+
+			_runScript.CurrentScript.CurrentScript = null;
 		}
 
 		public void UserAbort()
 		{
+			if (_runScript.CurrentScript.CurrentScript == AbortScript)
+				return;
+
+			if (_runScript.CurrentScript.CurrentScript == null)
+			{
+				ErrorMessageEvent?.Invoke(null);
+				_errorMessage = "User Abort";
+				StartSingle(
+					null,
+					AbortScript,
+					false,
+					null);
+
+				_state = RunProjectsState.None;
+				return;
+			}
+
 			_runScript.IsAborted = false;
 			_runScript.AbortScript("User Abort");
 			_errorMessage = "User Abort";
