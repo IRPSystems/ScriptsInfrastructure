@@ -91,6 +91,7 @@ namespace ScriptHandler.Models.ScriptSteps
 		public override void Execute()
 		{
             _eState = eState.Init;
+            _isStopped = false;
 
             if (RefSensorParam is ZimmerPowerMeter_ParamData powerMeter)
                 powerMeter.Channel = RefSensorChannel;
@@ -178,27 +179,11 @@ namespace ScriptHandler.Models.ScriptSteps
 						EOLStepSummerysList.AddRange(_setValue.EOLStepSummerysList);
 
 						if (!_setValue.IsPass)
-                        {
-                            ErrorMessage = "Unable to set: " + GainParam.Name;
-                            _eState = eState.StopOrFail;
-                            break;
-                        }
-                        _eState = eState.ReadSensorsPostCalib;
-                        break;
-
-
-                    case eState.ReadSensorsPostCalib:
-
-                        Thread.Sleep(100);
-
-                        _stepsCounter++;
-
-                        if (!GetReadsMcuAndRefSensor())
-                        {
-                            IsPass = false;
-                            _eState = eState.StopOrFail;
-                            break;
-                        }
+						{
+							ErrorMessage = "Unable to set: " + GainParam.Name;
+							_eState = eState.StopOrFail;
+							break;
+						}
                         IsPass = true;
                         _eState = eState.EndSession;
                         break;
@@ -274,6 +259,7 @@ namespace ScriptHandler.Models.ScriptSteps
 				}
 				EOLStepSummeryData eolStepSummeryData;
 				scriptStepGetParamValue.SendAndReceive(out eolStepSummeryData);
+                Thread.Sleep(50);
 				EOLStepSummerysList.Add(eolStepSummeryData);
 				if (!scriptStepGetParamValue.IsPass)
 				{
@@ -283,7 +269,7 @@ namespace ScriptHandler.Models.ScriptSteps
 				}
 				if (deviceParameterData.Value != null)
 				{
-					avgRead += Convert.ToDouble(deviceParameterData.Value);
+					avgRead += Math.Abs(Convert.ToDouble(deviceParameterData.Value));
 				}
 			}
 
