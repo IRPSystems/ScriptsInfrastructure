@@ -32,11 +32,13 @@ namespace ScriptRunner.Services
 		#region Properties
 
 		public GeneratedScriptData AbortScript { get; set; }
-		
+
 
 		#endregion Properties
 
 		#region Fields
+
+		private string _errorMessage;
 
 
 		private CancellationTokenSource _cancellationTokenSource;
@@ -132,7 +134,8 @@ namespace ScriptRunner.Services
 			bool isRecord,
 			GeneratedScriptData soScript)
 		{
-			
+            if (scriptData != AbortScript)
+				_errorMessage = null;
 
 			bool isAllDataSet = IsAllDataSet(
 				scriptData.IsContainsSO, 
@@ -157,6 +160,8 @@ namespace ScriptRunner.Services
 			GeneratedScriptData soScript,
 			ObservableCollection<DeviceParameterData> logParametersList = null)
 		{
+			_errorMessage = null;
+
 			bool isSOIncluded = IsSOIncluded(projectsList);
 
 			if (logParametersList != null) 
@@ -386,7 +391,9 @@ namespace ScriptRunner.Services
 		{
 			if(_runScript.CurrentScript.CurrentScript == AbortScript)
 			{
-				ErrorMessageEvent?.Invoke(_runScript.ErrorMessage);
+				if (_errorMessage != "User Abort")
+					_errorMessage = _runScript.ErrorMessage;
+				ErrorMessageEvent?.Invoke(_errorMessage);
 				End(stopMode, AbortScript);
 				return;
 			}
@@ -409,6 +416,7 @@ namespace ScriptRunner.Services
 				{
 					_runScript.IsAborted = false;
 					_runScript.AbortScript("User Abort");
+					_errorMessage = "User Abort";
 				}
 				return;
 			}
@@ -445,6 +453,13 @@ namespace ScriptRunner.Services
 				_cancellationTokenSource.Cancel();
 				_cancellationTokenSource = null;
 			}
+		}
+
+		public void UserAbort()
+		{
+			_runScript.IsAborted = false;
+			_runScript.AbortScript("User Abort");
+			_errorMessage = "User Abort";
 		}
 
 		#endregion Methods

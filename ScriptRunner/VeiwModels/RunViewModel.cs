@@ -462,6 +462,7 @@ namespace ScriptRunner.ViewModels
 		private void StartAll()
 		{
 			_isAborted = false;
+			ErrorMessage = null;
 
 			SetIsPlayEnabled(false);
 			SetIsGeneralEnabled(false);
@@ -563,14 +564,13 @@ namespace ScriptRunner.ViewModels
 			//}
 
 			if (RunScript.CurrentScript == null || RunScript.CurrentScript.CurrentScript == null ||
-				(RunScript.CurrentScript != null && RunScript.CurrentScript.CurrentScript.State != SciptStateEnum.Running/* &&
-					RunScript.CurrentScript.CurrentScript.Name != "Failed Step Notification"*/))
+				(RunScript.CurrentScript != null && RunScript.CurrentScript.CurrentScript.State != SciptStateEnum.Running))
 			{
 				SetIsPlayEnabled(false);
 			}
 
 			RunProjectsList.IsAbortClicked = true;
-			RunScript.AbortScript("User abort");
+			RunProjectsList.UserAbort();
 		}
 
 		
