@@ -448,7 +448,8 @@ namespace ScriptRunner.Services
 					project.State = SciptStateEnum.Ended;
 			}
 
-			if(stopMode == ScriptStopModeEnum.Aborted)
+			if(stopMode == ScriptStopModeEnum.Aborted &&
+				scriptData != AbortScript)
 			{
 				_state = RunProjectsState.RunAbortScript;
 				_projectsList = null;
