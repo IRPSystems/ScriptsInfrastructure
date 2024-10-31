@@ -162,7 +162,9 @@ namespace ScriptHandler.Models.ScriptSteps
                             ErrorMessage = "Calculated gain has exceeded maximum limit\r\n" +
                                             "Max gain limit: " + GainMaxLimit + "\r\n" +
                                             "Min gain limit: " + GainMinLimit + "\r\n" +
-                                            "Calculated gain: " + newGain + "\r\n";
+                                            "Calculated gain: " + newGain + "\r\n" +
+											"Avg MCU Read: " + avgMcuRead + "\r\n" + 
+											"Avg Ref Read: " + avgRefSensorRead;
                             _eState = eState.StopOrFail;
                             break;
                         }

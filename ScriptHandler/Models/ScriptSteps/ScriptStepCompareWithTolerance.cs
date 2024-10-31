@@ -348,9 +348,8 @@ namespace ScriptHandler.Models
 
 				_getParamValue.Parameter = parameter;
 				_getParamValue.Communicator = Communicator;
-
 				bool isOK = _getParamValue.SendAndReceive(parameter, out eolStepSummeryData);
-				Thread.Sleep(50);
+				Thread.Sleep(100);
 				EOLStepSummerysList.Add(eolStepSummeryData);
 				if (!isOK)
 				{
