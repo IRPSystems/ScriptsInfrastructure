@@ -412,7 +412,8 @@ namespace ScriptRunner.ViewModels
 							project,
 							RunExplorer.SelectedScript,
 							IsRecord,
-							soScript);
+							soScript,
+							false);
 					}
 				}
 			}
@@ -535,10 +536,7 @@ namespace ScriptRunner.ViewModels
 		private bool _isAborted;
 		private void Abort()
 		{
-			string str = "Abort clicked";
-			LoggerService.Inforamtion(this, str);
-			if (_isAborted || RunScript.IsAborted)
-				return;
+			LoggerService.Inforamtion(this, "Abort clicked");
 
 			_isAborted = true;
 			LoggerService.Inforamtion(this, "User clicked abort");

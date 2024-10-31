@@ -132,8 +132,11 @@ namespace ScriptRunner.Services
 			GeneratedProjectData projects,
 			GeneratedScriptData scriptData,
 			bool isRecord,
-			GeneratedScriptData soScript)
+			GeneratedScriptData soScript,
+			bool isAbort)
 		{
+			
+
             if (scriptData != AbortScript)
 				_errorMessage = null;
 
@@ -150,7 +153,11 @@ namespace ScriptRunner.Services
 			InitRecordingListForProject(projects);
 
 			scriptData.State = SciptStateEnum.Running;
-			_runScript.Run(_logParametersList, scriptData, null, soScript, isRecord);
+
+			_runScript.Run(_logParametersList, scriptData, null, soScript, isRecord, isAbort);
+
+
+
 		}
 
 		public void StartAll(
@@ -311,7 +318,8 @@ namespace ScriptRunner.Services
 									testData,
 									projectsList[_projectIndex].RecordingPath,
 									soScript,
-									isRecord);
+									isRecord,
+									false);
 							
 								_state = RunProjectsState.WaitForTest;
 
@@ -347,7 +355,8 @@ namespace ScriptRunner.Services
 									null,
 									AbortScript,
 									false,
-									null);
+									null,
+									true);
 
 								_state = RunProjectsState.None;
 								break;
@@ -414,7 +423,6 @@ namespace ScriptRunner.Services
 				End(stopMode, scriptData);
 				if(IsAbortClicked && stopMode != ScriptStopModeEnum.Aborted)
 				{
-					_runScript.IsAborted = false;
 					_runScript.AbortScript("User Abort");
 					_errorMessage = "User Abort";
 				}
@@ -454,15 +462,22 @@ namespace ScriptRunner.Services
 				_cancellationTokenSource = null;
 			}
 
-			_runScript.CurrentScript.CurrentScript = null;
+			if(_runScript.CurrentScript != null) 
+				_runScript.CurrentScript.CurrentScript = null;
 		}
 
 		public void UserAbort()
 		{
-			if (_runScript.CurrentScript.CurrentScript == AbortScript)
+			if (AbortScript == null)
+			{
+				End(ScriptStopModeEnum.Ended, null);
+				return;
+			}
+
+			if (_runScript.CurrentScript != null && _runScript.CurrentScript.CurrentScript == AbortScript)
 				return;
 
-			if (_runScript.CurrentScript.CurrentScript == null)
+			if (_runScript.CurrentScript == null || _runScript.CurrentScript.CurrentScript == null)
 			{
 				ErrorMessageEvent?.Invoke(null);
 				_errorMessage = "User Abort";
@@ -470,13 +485,13 @@ namespace ScriptRunner.Services
 					null,
 					AbortScript,
 					false,
-					null);
+					null,
+					true);
 
 				_state = RunProjectsState.None;
 				return;
 			}
 
-			_runScript.IsAborted = false;
 			_runScript.AbortScript("User Abort");
 			_errorMessage = "User Abort";
 		}

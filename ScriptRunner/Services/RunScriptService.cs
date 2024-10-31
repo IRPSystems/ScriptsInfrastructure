@@ -55,9 +55,6 @@ namespace ScriptRunner.Services
 		#region Fields
 
 
-		
-		public bool IsAborted;
-
 		private RunSingleScriptService_SO _soScript;
 
 		public StopScriptStepService StopScriptStep;
@@ -143,7 +140,8 @@ namespace ScriptRunner.Services
 			GeneratedScriptData currentScript,
 			string recordingPath,
 			GeneratedScriptData soScript,
-			bool isRecord)
+			bool isRecord,
+			bool isAbort)
 		{
 			if (Application.Current != null)
 			{
@@ -153,16 +151,15 @@ namespace ScriptRunner.Services
 				});
 			}
 
-			IsAborted = false;
 			foreach (ScriptStepBase step in currentScript.ScriptItemsList)
 				step.StepState = SciptStateEnum.None;
 
 
 			ParamRecording.StartRecording(currentScript.Name, recordingPath, logParametersList);
 
-			
 
-			System.Threading.Thread.Sleep(1000);
+			if (!isAbort)
+				System.Threading.Thread.Sleep(1000);
 
 
 			_testName = currentScript.Name;
@@ -291,10 +288,6 @@ namespace ScriptRunner.Services
 
 		public void AbortScript(string message)
 		{
-			if (IsAborted)
-				return;
-
-			IsAborted = true;
 			ErrorMessage = message;
 
 			if (ParamRecording != null)
