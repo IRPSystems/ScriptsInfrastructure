@@ -16,7 +16,7 @@ namespace ScriptHandler.Interfaces
 
 		public void Abort();
 
-		public void PausStep();
+		//public void PausStep();
 
 		public void NextStep();
 

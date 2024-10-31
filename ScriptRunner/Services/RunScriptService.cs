@@ -35,26 +35,6 @@ namespace ScriptRunner.Services
 
 		public string ScriptName {  get; set; }
 
-		public string AbortScriptPath { get; set; }
-		public ScriptStepAbort AbortScriptStep 
-		{
-			get => _abortScriptStep;
-			set
-			{
-				_abortScriptStep = value;
-
-				_abortScript = new RunSingleScriptService(
-					RunTime,
-					MainScriptLogger,
-					AbortScriptStep.Script as GeneratedScriptData,
-					null,
-					StopScriptStep,
-					_devicesContainer,
-					_canMessageSender);
-					_abortScript.ScriptEndedEvent += AbortScriptEndedEventHandler;
-			}
-		}
-
 		public ObservableCollection<int> RecordingRateList { get; set; }
 
 
@@ -68,33 +48,18 @@ namespace ScriptRunner.Services
 
 		public TestStudioLoggerService MainScriptLogger { get; set; }
 
+		public string ErrorMessage { get; set; }
+
 		#endregion Properties
 
 		#region Fields
 
 
-		private ScriptStepAbort _abortScriptStep;
-
-
-		
-
-		
-
-		
-		private bool _isStopped;
-		public bool IsAborted;
-
-		private RunSingleScriptService _abortScript;
 		private RunSingleScriptService_SO _soScript;
 
 		public StopScriptStepService StopScriptStep;
 
 		
-
-
-		private ScriptStepNotification _stepFailed;
-		private RunSingleScriptService _stepFailedScript;
-
 		private DevicesContainer _devicesContainer;
 
 		
@@ -142,10 +107,6 @@ namespace ScriptRunner.Services
 				1, 5, 10, 20
 			};
 
-			
-
-
-			CreateStepFailed();
 		}
 
 		#endregion Constructor
@@ -158,32 +119,7 @@ namespace ScriptRunner.Services
 				CurrentScript.StopStep();
 		}
 
-		private void CreateStepFailed()
-		{
-			_stepFailed = new ScriptStepNotification()
-			{
-				NotificationLevel = NotificationLevelEnum.Error,
-			};
-
-			GeneratedScriptData failedStepScript = new GeneratedScriptData()
-			{
-				Name = "Failed Step Notification",
-				ScriptItemsList = new ObservableCollection<IScriptItem>(),
-			};
-
-			failedStepScript.ScriptItemsList.Add(_stepFailed);
-
-			_stepFailedScript = new RunSingleScriptService(
-				RunTime,
-				MainScriptLogger,
-				failedStepScript,
-				null,
-				StopScriptStep,
-				_devicesContainer,
-				_canMessageSender);
-			_stepFailedScript.ScriptEndedEvent += ErrorNotificationScriptEndedEventHandler;
-		}
-
+		
 		private void CreateSOScript(GeneratedScriptData soScript)
 		{			
 
@@ -204,7 +140,8 @@ namespace ScriptRunner.Services
 			GeneratedScriptData currentScript,
 			string recordingPath,
 			GeneratedScriptData soScript,
-			bool isRecord)
+			bool isRecord,
+			bool isAbort)
 		{
 			if (Application.Current != null)
 			{
@@ -214,18 +151,16 @@ namespace ScriptRunner.Services
 				});
 			}
 
-			IsAborted = false;
 			foreach (ScriptStepBase step in currentScript.ScriptItemsList)
 				step.StepState = SciptStateEnum.None;
 
 
 			ParamRecording.StartRecording(currentScript.Name, recordingPath, logParametersList);
 
-			
 
-			System.Threading.Thread.Sleep(1000);
+			if (!isAbort)
+				System.Threading.Thread.Sleep(1000);
 
-			_isStopped = false;
 
 			_testName = currentScript.Name;
 
@@ -256,22 +191,6 @@ namespace ScriptRunner.Services
 
 
 			InitiateSweepItem(CurrentScript.CurrentScript);
-
-			if (IsAborted)
-			{
-				LoggerService.Inforamtion(this, "Exist Run do to IsAborted = true");
-				ScriptEndedEvent?.Invoke(ScriptStopModeEnum.Aborted);
-
-				if (Application.Current != null)
-				{
-					Application.Current.Dispatcher.Invoke(() =>
-					{
-						Mouse.OverrideCursor = null;
-					});
-				}
-
-				return;
-			}
 
 			_stepsCounter = 0;
 			_numOfSteps = GetNumberOfScriptSteps(CurrentScript.CurrentScript);
@@ -332,11 +251,6 @@ namespace ScriptRunner.Services
 			_soScript.StopScript();
 
 			ScriptStopModeEnum stopMode = ScriptStopModeEnum.Ended;
-			if (_isStopped)
-			{
-				CurrentScript.CurrentScript.State = SciptStateEnum.Stopped;
-				stopMode = ScriptStopModeEnum.Stopped;
-			}
 
 			if(CurrentScript.CurrentScript.IsPass == false)
 			{
@@ -350,9 +264,6 @@ namespace ScriptRunner.Services
 			if(CurrentScript.CurrentScript != null)
 				MainScriptLogger.Save(_testName);
 
-			if(CurrentScript.CurrentScript.Name != "Failed Step Notification")
-				CurrentScript = null;
-
 			
 
 			ScriptEndedEvent?.Invoke(stopMode);
@@ -360,31 +271,13 @@ namespace ScriptRunner.Services
 
 		private void ScriptEndedEventHandler(bool isAborted)
 		{
-			if (isAborted && _abortScript != null)
+			
+			if (CurrentScript.CurrentScript.IsPass == false)
 			{
-				CurrentScript = _abortScript;
-				_abortScript.Start();
-				return;
-			}
-
-			if(CurrentScript.CurrentScript.IsPass == false && _abortScript != null)
-			{
-				_stepFailed.Notification = CurrentScript.ScriptErrorMessage;
-				CurrentScript = _abortScript;
-				_abortScript.Start();
-				return;
+				ErrorMessage = CurrentScript.ScriptErrorMessage;
 			}
 
 			ScriptEnded();
-		}
-
-		private void AbortScriptEndedEventHandler(bool isAborted)
-		{
-			if (_abortScript != null && _abortScript.CurrentScript.IsPass == false)
-				_stepFailed.Notification += "\r\n\r\nFailed to execute the abort script";
-
-			CurrentScript = _stepFailedScript;
-			CurrentScript.Start();
 		}
 
 		private void ErrorNotificationScriptEndedEventHandler(bool isAborted)
@@ -395,42 +288,12 @@ namespace ScriptRunner.Services
 
 		public void AbortScript(string message)
 		{
-			if (IsAborted)
-				return;
-
-			IsAborted = true;
-			_stepFailed.Notification = message;
+			ErrorMessage = message;
 
 			if (ParamRecording != null)
 				ParamRecording.StopRecording();
 
-			if (CurrentScript == null)
-			{
-				if (_abortScript != null)
-				{
-					CurrentScript = _abortScript;
-					_abortScript.Start();
-				}
-
-				return;
-			}
-
 			CurrentScript.Abort();			
-		}
-
-
-		public void User_Stop()
-		{
-			LoggerService.Inforamtion(this, "Stop clicked");
-			_isStopped = true;
-		}
-
-		public void User_Pause()
-		{
-			if(CurrentScript == null) 
-				return;
-
-			CurrentScript.PausStep();
 		}
 
 		public void User_Next()

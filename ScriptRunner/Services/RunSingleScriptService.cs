@@ -210,12 +210,11 @@ namespace ScriptRunner.Services
 										_state = ScriptInternalStateEnum.EndStep;
 										break;
 									}
-									
+
 
 									_state = ScriptInternalStateEnum.Execute;
 									break;
 
-								case ScriptInternalStateEnum.Resume:
 								case ScriptInternalStateEnum.Execute:
 									if (_currentStep == null)
 										continue;
@@ -246,12 +245,10 @@ namespace ScriptRunner.Services
 
 											_currentStep.IsPass = true;
 										}
-										else if (_state == ScriptInternalStateEnum.Resume)
-											_currentStep.Resume();
 										else
 											_currentStep.Execute();
 
-										
+
 									}
 									catch (Exception ex)
 									{
@@ -277,19 +274,17 @@ namespace ScriptRunner.Services
 								case ScriptInternalStateEnum.WaitForUser:
 
 									LoggerService.Debug(this, "WaitForUser - " + _currentStep.Description + " - " + _currentStep.StepState);
-									if (CurrentScript.Name != "Failed Step Notification")
+
+									_userDecision = new ManualResetEvent(false);
+									int eventThatSignaledIndex =
+										WaitHandle.WaitAny(
+											new WaitHandle[] { _userDecision, _cancellationToken.WaitHandle });
+
+									_userDecision.Reset();
+
+									if (_state == ScriptInternalStateEnum.Resume)
 									{
-										_userDecision = new ManualResetEvent(false);
-										int eventThatSignaledIndex =
-											WaitHandle.WaitAny(
-												new WaitHandle[] { _userDecision, _cancellationToken.WaitHandle });
-
-										_userDecision.Reset();
-
-										if (_state == ScriptInternalStateEnum.Resume)
-										{
-											break;
-										}
+										break;
 									}
 
 									_state = ScriptInternalStateEnum.EndStep;
@@ -303,7 +298,7 @@ namespace ScriptRunner.Services
 
 									StepEnd();
 
-									if (_currentStep == null || CurrentScript.Name == "Failed Step Notification")
+									if (_currentStep == null)
 										_state = ScriptInternalStateEnum.EndScript;
 									else
 										_state = ScriptInternalStateEnum.HandleSpecial;
@@ -352,8 +347,7 @@ namespace ScriptRunner.Services
 						data,
 						LogTypeEnum.Pass);
 
-					if(CurrentScript.Name != "Failed Step Notification")
-						SetCurrentStep(_currentStep.PassNext as ScriptStepBase);
+					SetCurrentStep(_currentStep.PassNext as ScriptStepBase);
 
 					CurrentScript.PassRunSteps++;
 				}
@@ -428,7 +422,7 @@ namespace ScriptRunner.Services
 
 				CurrentScript.State = SciptStateEnum.Ended;
 				
-				if (CurrentScript.IsPass == null && CurrentScript.Name != "Failed Step Notification")
+				if (CurrentScript.IsPass == null)
 					CurrentScript.IsPass = true;
 
 				
@@ -447,22 +441,21 @@ namespace ScriptRunner.Services
 
 
 
-			if (CurrentScript.Name != "Failed Step Notification")
-			{
-				_currentStep = null;
-				OnPropertyChanged(nameof(CurrentStep));
-			}
+			
+			_currentStep = null;
+			OnPropertyChanged(nameof(CurrentStep));
+			
 
 			bool isEnd = Repeat();
 			if (isEnd)
 			{
-				if (_scriptStep != null && CurrentScript.Name != "Failed Step Notification")
+				if (_scriptStep != null)
 				{
 					_scriptStep.IsPass = CurrentScript.IsPass == true;
 					_scriptStep.Dispose();
 				}
 
-				if(this is RunSingleScriptService_SO so)
+				if (this is RunSingleScriptService_SO so)
 				{
 					if (_isStopped)
 						_isAborted = false;
@@ -500,7 +493,6 @@ namespace ScriptRunner.Services
 			}
 			else if (_scriptStep.ContinueUntilType == SubScriptContinueUntilTypeEnum.Timeout)
 			{
-				//TimeSpan diff = DateTime.Now - _scriptStep.StartTime;
 				if (_scriptStep.TimeInSubScript >= _scriptStep.TimeoutSpan)
 					return true;
 			}
@@ -509,33 +501,6 @@ namespace ScriptRunner.Services
 			return false;
 		}
 
-
-
-		//private void StartSweep(ScriptStepSweep sweep)
-		//{
-		//	sweep.SetDataCollections();
-		//	sweep.SetCommunicators();
-
-
-		//	for (int i = 0; i < sweep.SweepItemsList.Count; i++)
-		//	{
-		//		SweepItemData sweepItem = sweep.SweepItemsList[i];
-		//		SweepItemForRunData sweepItemForRun = sweep.ForRunList[i];
-
-		//		if (sweepItem.SubScript == null)
-		//			continue;
-
-		//		sweepItemForRun.SubScriptRunner = new RunSingleScriptService(
-		//			_runTime,
-		//			_mainScriptLogger,
-		//			sweepItem.SubScript as GeneratedScriptData,
-		//			null,
-		//			_stopScriptStep,
-		//			_selectMotor,
-		//			_saftyOfficer,
-		//			_devicesContainer);
-		//	}
-		//}
 
 
 		#region Sub script
@@ -641,22 +606,6 @@ namespace ScriptRunner.Services
 
 			if (_subScript != null)
 				_subScript.StopScript();
-		}
-
-
-		public void PausStep()
-		{
-			if(_subScript != null) 
-			{ 
-				_subScript.PausStep();
-				return;
-			}
-
-			_isPaused = true;
-			StopStep();
-			_pausedStep = _currentStep;
-			SetCurrentStep(_pause);
-			_userDecision.Set();
 		}
 
 		public void NextStep()

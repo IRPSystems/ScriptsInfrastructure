@@ -67,6 +67,23 @@ namespace ScriptRunner.ViewModels
 
 		public RunExplorerViewModel RunExplorer { get; set; }
 
+		public RunProjectsListService RunProjectsList { get; set; }
+		public string ErrorMessage { get; set; }
+
+		public string AbortScriptPath 
+		{
+			get => _abortScriptPath;
+			set
+			{  
+				_abortScriptPath = value;
+
+				RunProjectsList.AbortScript = _openProjectForRun.GetSingleScript(
+					AbortScriptPath,
+					_devicesContainer,
+					_flashingHandler);
+			}
+		}
+
 		#endregion Properties
 
 		#region Fields
@@ -75,8 +92,7 @@ namespace ScriptRunner.ViewModels
 
 		private System.Timers.Timer _runTimeTimer;
 
-	//	private List<string> _parametersLogList;
-
+		private string _abortScriptPath;
 
 
 		private bool _isConnected;
@@ -94,7 +110,7 @@ namespace ScriptRunner.ViewModels
 		private DateTime _scriptStartTime;
 
 		private OpenProjectForRunService _openProjectForRun;
-		private RunProjectsListService _runProjectsList;
+		
 
 		private GeneratedScriptData _stoppedScript;
 
@@ -163,8 +179,8 @@ namespace ScriptRunner.ViewModels
 
 				StartCommand = new RelayCommand(Start);
 				ForewardCommand = new RelayCommand(Foreward);
-				StopCommand = new RelayCommand(Stop);
-				PauseCommand = new RelayCommand(Pause);
+				//StopCommand = new RelayCommand(Stop);
+				//PauseCommand = new RelayCommand(Pause);
 
 				ShowScriptLoggerCommand = new RelayCommand(ShowScriptLogger);
 				ShowScriptOutputCommand = new RelayCommand(ShowScriptOutput);
@@ -189,8 +205,10 @@ namespace ScriptRunner.ViewModels
 				//NoAbortingVisibility = Visibility.Collapsed;
 
 				_openProjectForRun = new OpenProjectForRunService();
-				_runProjectsList = new RunProjectsListService(logParametersList, RunScript, _devicesContainer);
-				_runProjectsList.RunEndedEvent += RunProjectsListEnded;
+				RunProjectsList = new RunProjectsListService(logParametersList, RunScript, _devicesContainer);
+				RunProjectsList.RunEndedEvent += RunProjectsListEnded;
+				RunProjectsList.ErrorMessageEvent += RunProjectsList_ErrorMessageEvent;
+				ErrorMessage = null;
 
 				RunExplorer = new RunExplorerViewModel(_devicesContainer, _flashingHandler, RunScript, _scriptUserData);
 				RunExplorer.TestDoubleClickedEvent += TestsDoubleClickEventHandler;
@@ -237,6 +255,7 @@ namespace ScriptRunner.ViewModels
 
 			LoggerService.Inforamtion(this, "Run initiated");
 		}
+
 
 		#endregion Constructor
 
@@ -352,6 +371,10 @@ namespace ScriptRunner.ViewModels
 			SetIsGeneralEnabled(true);
 		}
 
+		private void RunProjectsList_ErrorMessageEvent(string errorMessage)
+		{
+			ErrorMessage = errorMessage;
+		}
 
 		private void ScriptStartedEventHandler()
 		{
@@ -385,11 +408,12 @@ namespace ScriptRunner.ViewModels
 				{ 
 					if(script == RunExplorer.SelectedScript)
 					{
-						_runProjectsList.StartSingle(
+						RunProjectsList.StartSingle(
 							project,
 							RunExplorer.SelectedScript,
 							IsRecord,
-							soScript);
+							soScript,
+							false);
 					}
 				}
 			}
@@ -404,16 +428,16 @@ namespace ScriptRunner.ViewModels
 			RunScript.User_Next();
 		}
 
-		private void Stop()
-		{
-			OnPropertyChanged(nameof(IsPlayNotEnabled));
-			RunScript.User_Stop();
-		}
+		//private void Stop()
+		//{
+		//	OnPropertyChanged(nameof(IsPlayNotEnabled));
+		//	RunScript.User_Stop();
+		//}
 
-		private void Pause()
-		{
-			RunScript.User_Pause();
-		}
+		//private void Pause()
+		//{
+		//	RunScript.User_Pause();
+		//}
 
 		
 		
@@ -439,12 +463,13 @@ namespace ScriptRunner.ViewModels
 		private void StartAll()
 		{
 			_isAborted = false;
+			ErrorMessage = null;
 
 			SetIsPlayEnabled(false);
 			SetIsGeneralEnabled(false);
 
 			GeneratedScriptData soScript = SelectTheSOScript();
-			_runProjectsList.StartAll(RunExplorer.ProjectsList, IsRecord, _stoppedScript, soScript);
+			RunProjectsList.StartAll(RunExplorer.ProjectsList, IsRecord, _stoppedScript, soScript);
 
 			
 		}
@@ -511,43 +536,39 @@ namespace ScriptRunner.ViewModels
 		private bool _isAborted;
 		private void Abort()
 		{
-			string str = "Abort clicked";
-			LoggerService.Inforamtion(this, str);
-			if (_isAborted || RunScript.IsAborted)
-				return;
+			LoggerService.Inforamtion(this, "Abort clicked");
 
 			_isAborted = true;
 			LoggerService.Inforamtion(this, "User clicked abort");
 			_isGeneralPlayEnabled = true;
 			OnPropertyChanged(nameof(IsPlayNotEnabled));
 
-			if (RunScript.AbortScriptStep == null)
-			{
-				if (string.IsNullOrEmpty(RunScript.AbortScriptPath))
-				{
-					LoggerService.Error(this, "No abort script is defined", "Run Script");
-					return;
-				}
+			//if (RunScript.AbortScriptStep == null)
+			//{
+			//	if (string.IsNullOrEmpty(RunScript.AbortScriptPath))
+			//	{
+			//		LoggerService.Error(this, "No abort script is defined", "Run Script");
+			//		return;
+			//	}
 
-				RunScript.AbortScriptStep = new ScriptStepAbort(RunScript.AbortScriptPath, _devicesContainer);
-				if (RunScript.AbortScriptStep == null)
-				{
-					LoggerService.Error(this, "The abort script is invalid", "Run Script");
-					return;
-				}
+			//	RunScript.AbortScriptStep = new ScriptStepAbort(RunScript.AbortScriptPath, _devicesContainer);
+			//	if (RunScript.AbortScriptStep == null)
+			//	{
+			//		LoggerService.Error(this, "The abort script is invalid", "Run Script");
+			//		return;
+			//	}
 
 
-			}
+			//}
 
 			if (RunScript.CurrentScript == null || RunScript.CurrentScript.CurrentScript == null ||
-				(RunScript.CurrentScript != null && RunScript.CurrentScript.CurrentScript.State != SciptStateEnum.Running &&
-					RunScript.CurrentScript.CurrentScript.Name != "Failed Step Notification"))
+				(RunScript.CurrentScript != null && RunScript.CurrentScript.CurrentScript.State != SciptStateEnum.Running))
 			{
 				SetIsPlayEnabled(false);
 			}
 
-			_runProjectsList.IsAbortClicked = true;
-			RunScript.AbortScript("User abort");
+			RunProjectsList.IsAbortClicked = true;
+			RunProjectsList.UserAbort();
 		}
 
 		
@@ -628,7 +649,7 @@ namespace ScriptRunner.ViewModels
 
 			_scriptUserData.LastAbortScriptPath =
 				Path.GetDirectoryName(openFileDialog.FileName);
-			RunScript.AbortScriptPath = openFileDialog.FileName;
+			AbortScriptPath = openFileDialog.FileName;
 		}
 
 
@@ -669,8 +690,8 @@ namespace ScriptRunner.ViewModels
 
 		public RelayCommand StartCommand { get; private set; }
 		public RelayCommand ForewardCommand { get; private set; }
-		public RelayCommand PauseCommand { get; private set; }
-		public RelayCommand StopCommand { get; private set; }
+		//public RelayCommand PauseCommand { get; private set; }
+		//public RelayCommand StopCommand { get; private set; }
 
 
 		public RelayCommand ShowScriptLoggerCommand { get; private set; }

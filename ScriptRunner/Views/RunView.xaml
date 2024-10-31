@@ -7,6 +7,7 @@
              xmlns:controls="clr-namespace:Controls.Views;assembly=Controls"
              xmlns:script_handler_converters="clr-namespace:ScriptHandler.Converter;assembly=ScriptHandler"
              xmlns:converters="clr-namespace:Converters;assembly=Converters"
+             xmlns:local_converters="clr-namespace:ScriptRunner.Converter"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:views="clr-namespace:ScriptRunner.Views"
              mc:Ignorable="d" 
@@ -23,6 +24,8 @@
 
             <script_handler_converters:ContentConverter x:Key="ContentConverter" />
             <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
+            <local_converters:ErrorMessageVisibilityConverter x:Key="ErrorMessageVisibilityConverter" />
+            <local_converters:StepVisibilityConverter x:Key="StepVisibilityConverter" />
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -297,8 +300,8 @@
             <TextBlock Text="Abort script" 
                        VerticalAlignment="Center"
                        Margin="0,0,5,0"/>
-            <TextBox Text="{Binding RunScript.AbortScriptPath}" 
-                     ToolTip="{Binding RunScript.AbortScriptPath}"
+            <TextBox Text="{Binding AbortScriptPath}" 
+                     ToolTip="{Binding AbortScriptPath}"
                      HorizontalAlignment="Stretch"
                      VerticalContentAlignment="Center"
                      Width="250"
@@ -340,55 +343,9 @@
                 <controls:HeaderView x:Name="step" Grid.Row="2" Title="{Binding RunScript.CurrentScript.CurrentStep.Description}" FontSize="16" HeaderBackground="{DynamicResource MahApps.Brushes.Accent2}"/>
 
 
-                <!--<Grid Grid.Row="2" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="5" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0,2">
-
-                        <Button Style="{StaticResource ButtonWithIconStyle}"
-                                Width="30"
-                                Margin="0,0,5,0"
-                                ToolTip="Start"
-                                Command="{Binding StartCommand}"
-                                IsEnabled="{Binding IsPlayEnabled}">
-                            <iconPacks:Material Kind="Play" />
-                        </Button>
-
-                        <Button Style="{StaticResource ButtonWithIconStyle}"
-                                Width="30"
-                                Margin="0,0,5,0"
-                                ToolTip="Foreward"
-                                Command="{Binding ForewardCommand}"                      
-                                IsEnabled="{Binding IsPlayNotEnabled}">
-                            <iconPacks:PackIconMaterial Kind="SkipForward" />
-                        </Button>
-                        
-                        <Button Style="{StaticResource ButtonWithIconStyle}"
-                                Width="30"
-                                Margin="0,0,5,0"
-                                ToolTip="Pause"
-                                Command="{Binding PauseCommand}"                      
-                                IsEnabled="{Binding IsPlayNotEnabled}">
-                            <iconPacks:PackIconMaterial Kind="Pause" />
-                        </Button>
-
-                        
-
-                    </StackPanel>
-
-                    <controls:HeaderView x:Name="step" Grid.Column="2" Title="{Binding RunScript.CurrentScript.CurrentStep.Description}" FontSize="16" HeaderBackground="{DynamicResource MahApps.Brushes.Accent2}"/>
-
-                    <Line X1="1" Stretch="Fill" Stroke="{DynamicResource MahApps.Brushes.Accent2}" 
-                      VerticalAlignment="Bottom"
-                      Grid.ColumnSpan="5"/>
-                </Grid>-->
-
                 <ContentControl Grid.Row="4" 
-                                ContentTemplate="{Binding RunScript.CurrentScript.CurrentStep.Template}">
+                                ContentTemplate="{Binding RunScript.CurrentScript.CurrentStep.Template}"
+                                Visibility="{Binding ErrorMessage, Converter={StaticResource StepVisibilityConverter}}">
 
                     <ContentControl.Content>
                         <MultiBinding Converter="{StaticResource ContentConverter}">
@@ -398,6 +355,27 @@
                     </ContentControl.Content>
                     
                 </ContentControl>
+
+                <Grid Grid.Row="4" Background="Red"
+                      Visibility="{Binding ErrorMessage, Converter={StaticResource ErrorMessageVisibilityConverter}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="50"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBox Grid.Row="0" 
+                             Text="{Binding ErrorMessage}"
+                             FontSize="30"
+                             TextWrapping="Wrap"
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Center"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             Background="Transparent"
+                             Foreground="White"
+                             IsReadOnly="True"
+                             BorderThickness="0"/>
+                </Grid>
 
             </Grid>
 

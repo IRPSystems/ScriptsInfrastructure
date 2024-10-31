@@ -18,9 +18,28 @@ namespace ScriptRunner.Services
 {
 	public class RunProjectsListService
 	{
-		private enum RunProjectsState { None, RunProject, RunTest, RunProjectEnded, RunTestEnded, WaitForTest}
+		private enum RunProjectsState 
+		{ 
+			None, 
+			RunProject, 
+			RunTest, 
+			RunProjectEnded, 
+			RunTestEnded, 
+			WaitForTest,
+			RunAbortScript
+		}
+
+		#region Properties
+
+		public GeneratedScriptData AbortScript { get; set; }
+
+
+		#endregion Properties
 
 		#region Fields
+
+		private string _errorMessage;
+
 
 		private CancellationTokenSource _cancellationTokenSource;
 		private CancellationToken _cancellationToken;
@@ -39,6 +58,7 @@ namespace ScriptRunner.Services
 		private bool _isChangingLogParamList;
 
 		public bool IsAbortClicked;
+
 
 		#endregion Fields
 
@@ -81,7 +101,7 @@ namespace ScriptRunner.Services
 			bool isSOIncluded,
 			GeneratedScriptData soScript)
 		{
-			if (string.IsNullOrEmpty(_runScript.AbortScriptPath))
+			if (AbortScript == null)
 			{
 				MessageBox.Show("Please select the abort script", "Run Script");
 				End(ScriptStopModeEnum.Ended, null);
@@ -95,13 +115,13 @@ namespace ScriptRunner.Services
 			}
 			else
 			{
-				_runScript.AbortScriptStep = new ScriptStepAbort(_runScript.AbortScriptPath, _devicesContainer);
-				if (_runScript.AbortScriptStep.Script == null)
-				{
-					MessageBox.Show("The abort script is invalid", "Run Script");
-					End(ScriptStopModeEnum.Ended, null);
-					return false;
-				}
+				//_runScript.AbortScriptStep = new ScriptStepAbort(AbortScriptPath, _devicesContainer);
+				//if (_runScript.AbortScriptStep.Script == null)
+				//{
+				//	MessageBox.Show("The abort script is invalid", "Run Script");
+				//	End(ScriptStopModeEnum.Ended, null);
+				//	return false;
+				//}
 			}
 
 
@@ -112,8 +132,14 @@ namespace ScriptRunner.Services
 			GeneratedProjectData projects,
 			GeneratedScriptData scriptData,
 			bool isRecord,
-			GeneratedScriptData soScript)
+			GeneratedScriptData soScript,
+			bool isAbort)
 		{
+			
+
+            if (scriptData != AbortScript)
+				_errorMessage = null;
+
 			bool isAllDataSet = IsAllDataSet(
 				scriptData.IsContainsSO, 
 				soScript);
@@ -127,7 +153,11 @@ namespace ScriptRunner.Services
 			InitRecordingListForProject(projects);
 
 			scriptData.State = SciptStateEnum.Running;
-			_runScript.Run(_logParametersList, scriptData, null, soScript, isRecord);
+
+			_runScript.Run(_logParametersList, scriptData, null, soScript, isRecord, isAbort);
+
+
+
 		}
 
 		public void StartAll(
@@ -137,6 +167,8 @@ namespace ScriptRunner.Services
 			GeneratedScriptData soScript,
 			ObservableCollection<DeviceParameterData> logParametersList = null)
 		{
+			_errorMessage = null;
+
 			bool isSOIncluded = IsSOIncluded(projectsList);
 
 			if (logParametersList != null) 
@@ -286,7 +318,8 @@ namespace ScriptRunner.Services
 									testData,
 									projectsList[_projectIndex].RecordingPath,
 									soScript,
-									isRecord);
+									isRecord,
+									false);
 							
 								_state = RunProjectsState.WaitForTest;
 
@@ -316,6 +349,17 @@ namespace ScriptRunner.Services
 
 								_state = RunProjectsState.RunProject;
 								break;
+
+							case RunProjectsState.RunAbortScript:
+								StartSingle(
+									null,
+									AbortScript,
+									false,
+									null,
+									true);
+
+								_state = RunProjectsState.None;
+								break;
 						}
 
 						System.Threading.Thread.Sleep(1);
@@ -340,7 +384,7 @@ namespace ScriptRunner.Services
 			_isChangingLogParamList = true;
 			ObservableCollection<DeviceParameterData> logParametersList = _logParametersList;
 
-			if (currentProject.RecordingParametersList != null &&
+			if (currentProject != null && currentProject.RecordingParametersList != null &&
 									currentProject.RecordingParametersList.Count > 0)
 			{
 				logParametersList = currentProject.RecordingParametersList;
@@ -354,6 +398,15 @@ namespace ScriptRunner.Services
 
 		private void ScriptEndedEventHandler(ScriptStopModeEnum stopMode)
 		{
+			if(_runScript.CurrentScript.CurrentScript == AbortScript)
+			{
+				if (_errorMessage != "User Abort")
+					_errorMessage = _runScript.ErrorMessage;
+				ErrorMessageEvent?.Invoke(_errorMessage);
+				End(stopMode, AbortScript);
+				return;
+			}
+
 			GeneratedScriptData scriptData = null;
 			if (_projectsList != null && _projectsList.Count > 0 &&
 				_projectIndex >= 0 && _projectIndex < _projectsList.Count &&
@@ -370,8 +423,8 @@ namespace ScriptRunner.Services
 				End(stopMode, scriptData);
 				if(IsAbortClicked && stopMode != ScriptStopModeEnum.Aborted)
 				{
-					_runScript.IsAborted = false;
 					_runScript.AbortScript("User Abort");
+					_errorMessage = "User Abort";
 				}
 				return;
 			}
@@ -395,12 +448,52 @@ namespace ScriptRunner.Services
 					project.State = SciptStateEnum.Ended;
 			}
 
+			if(stopMode == ScriptStopModeEnum.Aborted)
+			{
+				_state = RunProjectsState.RunAbortScript;
+				_projectsList = null;
+				return;
+			}
+
 			RunEndedEvent?.Invoke(stopMode, scriptData);
 			if (_cancellationTokenSource != null)
 			{
 				_cancellationTokenSource.Cancel();
 				_cancellationTokenSource = null;
 			}
+
+			if(_runScript.CurrentScript != null) 
+				_runScript.CurrentScript.CurrentScript = null;
+		}
+
+		public void UserAbort()
+		{
+			if (AbortScript == null)
+			{
+				End(ScriptStopModeEnum.Ended, null);
+				return;
+			}
+
+			if (_runScript.CurrentScript != null && _runScript.CurrentScript.CurrentScript == AbortScript)
+				return;
+
+			if (_runScript.CurrentScript == null || _runScript.CurrentScript.CurrentScript == null)
+			{
+				ErrorMessageEvent?.Invoke(null);
+				_errorMessage = "User Abort";
+				StartSingle(
+					null,
+					AbortScript,
+					false,
+					null,
+					true);
+
+				_state = RunProjectsState.None;
+				return;
+			}
+
+			_runScript.AbortScript("User Abort");
+			_errorMessage = "User Abort";
 		}
 
 		#endregion Methods
@@ -408,6 +501,7 @@ namespace ScriptRunner.Services
 		#region Events
 
 		public event Action<ScriptStopModeEnum, GeneratedScriptData> RunEndedEvent;
+		public event Action<string> ErrorMessageEvent;
 
 		#endregion Events
 	}

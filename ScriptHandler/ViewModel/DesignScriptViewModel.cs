@@ -594,7 +594,11 @@ namespace ScriptHandler.ViewModels
 				IEnumerator enumerator = _selectedItems.GetEnumerator();
 				enumerator.MoveNext();
 
-				MoveNode(enumerator.Current as ScriptNodeBase);
+				int index = ScriptNodeList.IndexOf(enumerator.Current as ScriptNodeBase);
+				if ((index - 1) < 0)
+					return;
+
+				MoveNode(ScriptNodeList[index - 1] as ScriptNodeBase);
 
 				IsChanged = true;
 			}
@@ -617,7 +621,13 @@ namespace ScriptHandler.ViewModels
 				IEnumerator enumerator = _selectedItems.GetEnumerator();
 				enumerator.MoveNext();
 
-				MoveNode(enumerator.Current as ScriptNodeBase);
+				ScriptNodeBase droppedOn = null;
+
+				int index = ScriptNodeList.IndexOf(enumerator.Current as ScriptNodeBase);
+				if ((index + 1 + _selectedItems.Count) < ScriptNodeList.Count)
+					droppedOn = ScriptNodeList[index + 1 + _selectedItems.Count] as ScriptNodeBase;
+
+				MoveNode(droppedOn);
 
 				IsChanged = true;
 			}
