@@ -93,6 +93,8 @@ namespace ScriptHandler.Models
 				return;
 			}
 
+			_waitGetCallback = new AutoResetEvent(false);
+
 			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData();
 			eolStepSummeryData.Description = GetOnlineDescription();
 
@@ -232,6 +234,7 @@ namespace ScriptHandler.Models
 			if(_waitGetCallback != null)
 				_waitGetCallback.Set();
 		}
+
 
 		private void GetCallback(DeviceParameterData param, CommunicatorResultEnum result, string resultDescription)
 		{
