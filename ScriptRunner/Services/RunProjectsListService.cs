@@ -48,7 +48,7 @@ namespace ScriptRunner.Services
 		private int _projectIndex;
 		private int _testIndex;
 
-		private RunScriptService _runScript;
+		public RunScriptService RunScript;
 		private DevicesContainer _devicesContainer;
 
 		private ObservableCollection<GeneratedProjectData> _projectsList;
@@ -70,10 +70,10 @@ namespace ScriptRunner.Services
 			DevicesContainer devicesContainer)
 		{
 			_logParametersList = logParametersList;
-			_runScript = runScript;
+			RunScript = runScript;
 			_devicesContainer = devicesContainer;
 
-			_runScript.ScriptEndedEvent += ScriptEndedEventHandler;
+			RunScript.ScriptEndedEvent += ScriptEndedEventHandler;
 
 			_isChangingLogParamList = false;
 			WeakReferenceMessenger.Default.Register<RECORD_LIST_CHANGEDMessage>(
@@ -154,7 +154,7 @@ namespace ScriptRunner.Services
 
 			scriptData.State = SciptStateEnum.Running;
 
-			_runScript.Run(_logParametersList, scriptData, null, soScript, isRecord, isAbort);
+			RunScript.Run(_logParametersList, scriptData, null, soScript, isRecord, isAbort);
 
 
 
@@ -313,7 +313,7 @@ namespace ScriptRunner.Services
 									projectsList[_projectIndex].TestsList[_testIndex];
 								testData.State = SciptStateEnum.Running;
 								
-								_runScript.Run(
+								RunScript.Run(
 									logParametersList,
 									testData,
 									projectsList[_projectIndex].RecordingPath,
@@ -398,10 +398,10 @@ namespace ScriptRunner.Services
 
 		private void ScriptEndedEventHandler(ScriptStopModeEnum stopMode)
 		{
-			if(_runScript.CurrentScript.CurrentScript == AbortScript)
+			if(RunScript.CurrentScript.CurrentScript == AbortScript)
 			{
 				if (_errorMessage != "User Abort")
-					_errorMessage = _runScript.ErrorMessage;
+					_errorMessage = RunScript.ErrorMessage;
 				ErrorMessageEvent?.Invoke(_errorMessage);
 				End(stopMode, AbortScript);
 				return;
@@ -423,7 +423,7 @@ namespace ScriptRunner.Services
 				End(stopMode, scriptData);
 				if(IsAbortClicked && stopMode != ScriptStopModeEnum.Aborted)
 				{
-					_runScript.AbortScript("User Abort");
+					RunScript.AbortScript("User Abort");
 					_errorMessage = "User Abort";
 				}
 				return;
@@ -463,8 +463,8 @@ namespace ScriptRunner.Services
 				_cancellationTokenSource = null;
 			}
 
-			if(_runScript.CurrentScript != null) 
-				_runScript.CurrentScript.CurrentScript = null;
+			if(RunScript.CurrentScript != null) 
+				RunScript.CurrentScript.CurrentScript = null;
 		}
 
 		public void UserAbort()
@@ -475,10 +475,10 @@ namespace ScriptRunner.Services
 				return;
 			}
 
-			if (_runScript.CurrentScript != null && _runScript.CurrentScript.CurrentScript == AbortScript)
+			if (RunScript.CurrentScript != null && RunScript.CurrentScript.CurrentScript == AbortScript)
 				return;
 
-			if (_runScript.CurrentScript == null || _runScript.CurrentScript.CurrentScript == null)
+			if (RunScript.CurrentScript == null || RunScript.CurrentScript.CurrentScript == null)
 			{
 				ErrorMessageEvent?.Invoke(null);
 				_errorMessage = "User Abort";
@@ -493,7 +493,7 @@ namespace ScriptRunner.Services
 				return;
 			}
 
-			_runScript.AbortScript("User Abort");
+			RunScript.AbortScript("User Abort");
 			_errorMessage = "User Abort";
 		}
 
