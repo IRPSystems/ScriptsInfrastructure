@@ -18,7 +18,8 @@
             </ResourceDictionary.MergedDictionaries>
 
             <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
-            
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
 
             <Style x:Key="ProjectsListStyle" TargetType="ListView" >
                 <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />                
@@ -280,15 +281,16 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="1"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="1,0,0,0">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="1,0,0,0"
+                    Visibility="{Binding IsShowButtons, Converter={StaticResource BooleanToVisibilityConverter}}">
 
             <Button Style="{StaticResource ButtonWithIconStyle}"
-                    Width="30"
+                    Width="30" Height="30"
                     Margin="0,0,1,0"
                     ToolTip="Open project"
                     Command="{Binding OpenProjectCommand}"
@@ -297,7 +299,7 @@
             </Button>
 
             <Button Style="{StaticResource ButtonWithIconStyle}"
-                    Width="30"
+                    Width="30" Height="30"
                     Margin="0,0,5,0"
                     ToolTip="Delete project"
                     Command="{Binding DeleteProjectCommand}">
@@ -305,7 +307,7 @@
             </Button>
 
             <Button Style="{StaticResource ButtonWithIconStyle}"
-                    Width="30"
+                    Width="30" Height="30"
                     Margin="0,0,1,0"
                     ToolTip="Save projects list"
                     Command="{Binding SaveProjectsListCommand}">
@@ -313,7 +315,7 @@
             </Button>
 
             <Button Style="{StaticResource ButtonWithIconStyle}"
-                    Width="30"
+                    Width="30" Height="30"
                     Margin="0,0,5,0"
                     ToolTip="Load projects list"
                     Command="{Binding LoadProjectsListCommand}">
