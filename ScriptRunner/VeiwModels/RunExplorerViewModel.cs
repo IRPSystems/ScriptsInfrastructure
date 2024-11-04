@@ -66,6 +66,12 @@ namespace ScriptRunner.ViewModels
 			_openProjectForRun = new OpenProjectForRunService();
 		}
 
+		public RunExplorerViewModel(
+			ObservableCollection<GeneratedProjectData> projectsList)
+		{
+			ProjectsList = projectsList;
+		}
+
 		#endregion Constructor
 
 		#region Methods
