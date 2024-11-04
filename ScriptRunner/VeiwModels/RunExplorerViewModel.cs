@@ -24,6 +24,8 @@ namespace ScriptRunner.ViewModels
 
 		public GeneratedScriptData SelectedScript { get; set; }
 
+		public bool IsShowButtons { get; set; }
+
 		#endregion Properties
 
 		#region Fields
@@ -52,6 +54,8 @@ namespace ScriptRunner.ViewModels
 			_runScript = runScript;
 			_scriptUserData = scriptUserData;
 
+			IsShowButtons = true;
+
 			ReloadProjectCommand = new RelayCommand<GeneratedProjectData>(ReloadProject);
 			SelectRecordingPathCommand = new RelayCommand<GeneratedProjectData>(SelectRecordingPath);
 			ScriptUpCommand = new RelayCommand<GeneratedProjectData>(ScriptUp);
@@ -64,6 +68,14 @@ namespace ScriptRunner.ViewModels
 
 			ProjectsList = new ObservableCollection<GeneratedProjectData>();
 			_openProjectForRun = new OpenProjectForRunService();
+		}
+
+		public RunExplorerViewModel(
+			ObservableCollection<GeneratedProjectData> projectsList)
+		{
+			ProjectsList = projectsList;
+
+			IsShowButtons = false;
 		}
 
 		#endregion Constructor

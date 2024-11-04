@@ -133,6 +133,9 @@ namespace ScriptRunner.Services
 			ObservableCollection<DeviceParameterData> logParametersList,
 			bool isAddDiviceToHeader = false)
 		{
+			if (logParametersList == null)
+				return;
+
 			LogParametersList = logParametersList;
 			_scriptName = scriptName;
 
