@@ -1,10 +1,12 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Xaml.Behaviors.Media;
 using Newtonsoft.Json;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Media;
 
 namespace ScriptHandler.Models
@@ -19,6 +21,8 @@ namespace ScriptHandler.Models
         public bool? IsPass { get; set; }
         [JsonIgnore]
 		public SciptStateEnum State { get; set; }
+
+		public ScriptSenderEnum ScriptSender { get; set; }
 
         [JsonIgnore]
         public bool IsDoRun { get; set; }
