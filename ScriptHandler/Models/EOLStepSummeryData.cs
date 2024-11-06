@@ -9,6 +9,7 @@ namespace ScriptHandler.Models
 		public string Description { get; set; }
 		public double? TestValue { get; set; }
         public double? ComparisonValue { get; set; }
+        public double? MeasuredTolerance { get; set; }
         public string Method { get; set; }
 		public string Units { get; set; }
         public double? MinVal { get; set; }
