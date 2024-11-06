@@ -401,8 +401,10 @@ namespace ScriptRunner.Services
 				str += $"ComparisonValue={stepSummeryData.ComparisonValue} -- ";
 			if (stepSummeryData.Method != null)
 				str += $"Method={stepSummeryData.Method}";
+            if (stepSummeryData.MeasuredTolerance != null)
+                str += $"MeasuredTolerance={stepSummeryData.MeasuredTolerance}";
 
-			str = $"\r\n{str}";
+            str = $"\r\n{str}";
 
 			return str;
 		}

@@ -59,6 +59,8 @@ namespace ScriptHandler.Models
 
 		public double Tolerance { get; set; }
 
+		private double MeasuredTolerance;
+
 		public ComparationTypesEnum Comparation { get; set; }
 
 		public bool IsValueTolerance { get; set; }
@@ -202,6 +204,7 @@ namespace ScriptHandler.Models
 				stepDescription,
 				Description);
 
+			eolStepSummeryData.MeasuredTolerance = MeasuredTolerance;
             eolStepSummeryData.TestValue = paramValue_Left;
             eolStepSummeryData.ComparisonValue = paramValue_Right;
             eolStepSummeryData.MinVal = minVal;
@@ -229,9 +232,10 @@ namespace ScriptHandler.Models
 
 			if (IsPercentageTolerance)
 			{
-				double deviationPrecentage = Math.Abs((paramValue_Left - paramValue_Right) * 100 * 2) /
+                MeasuredTolerance = Math.Abs((paramValue_Left - paramValue_Right) * 100 * 2) /
 								 ((paramValue_Left + paramValue_Right));
-				if (deviationPrecentage < tolerance)
+				
+				if (MeasuredTolerance < tolerance)
 				{
 					IsPass = true;
 				}
