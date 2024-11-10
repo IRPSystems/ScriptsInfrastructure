@@ -75,7 +75,6 @@ namespace ScriptRunner.Services
 		#region Constructor
 
 		public RunScriptService(
-			ObservableCollection<DeviceParameterData> logParametersList,
 			DevicesContainer devicesContainer,
 			StopScriptStepService stopScriptStep,
 			CANMessageSenderViewModel canMessageSender)
@@ -283,7 +282,7 @@ namespace ScriptRunner.Services
 			
 			if (CurrentScript.CurrentScript.IsPass == false)
 			{
-				ErrorMessage = CurrentScript.ScriptErrorMessage;
+				ErrorMessage += CurrentScript.ScriptErrorMessage + "\r\n\r\n";
 			}
 
 			ScriptEnded();
