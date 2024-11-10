@@ -459,10 +459,7 @@ namespace ScriptRunner.Services
 
 				if (this is RunSingleScriptService_SO so)
 				{
-					if (_isStopped)
-						_isAborted = false;
-					else
-						_isAborted = so.IsAborted;
+					_isAborted = so.IsAborted;
 				}
 
 				ScriptEndedEvent?.Invoke(_isAborted);
@@ -552,7 +549,7 @@ namespace ScriptRunner.Services
 
 			if(_subScript != null && _subScript.CurrentScript.IsPass == false)
 			{
-				ScriptErrorMessage = _subScript.ScriptErrorMessage + "\r\n\r\n";
+				ScriptErrorMessage += _subScript.ScriptErrorMessage + "\r\n\r\n";
 			}
 
 			_subScript = null;
@@ -646,6 +643,7 @@ namespace ScriptRunner.Services
 
 		private void SubScript_AbortEvent(string abortDescription)
 		{
+			ScriptErrorMessage += "\r\n" + abortDescription;
 			AbortEvent?.Invoke(abortDescription);
 		}
 

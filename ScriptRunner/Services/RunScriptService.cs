@@ -283,7 +283,7 @@ namespace ScriptRunner.Services
 			
 			if (CurrentScript.CurrentScript.IsPass == false)
 			{
-				ErrorMessage = CurrentScript.ScriptErrorMessage;
+				ErrorMessage += CurrentScript.ScriptErrorMessage + "\r\n\r\n";
 			}
 
 			ScriptEnded();
