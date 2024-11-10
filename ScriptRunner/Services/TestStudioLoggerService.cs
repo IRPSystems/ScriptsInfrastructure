@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Windows;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace ScriptRunner.Services
 {
@@ -42,6 +43,7 @@ namespace ScriptRunner.Services
 		public void AddLine(LogLineData lineData)
         {
 			LogLinesList.Add(lineData);
+			LoggerService.Inforamtion(this, $"***[{lineData.Time}] [{lineData.Data}] [{lineData.LogType}]");
 		}
 
 		public void AddLine( 
@@ -63,6 +65,8 @@ namespace ScriptRunner.Services
 					LogLinesList.Add(lineData);
 				});
 			}
+
+			LoggerService.Inforamtion(this, $"***[{lineData.Time}] [{lineData.Data}] [{lineData.LogType}]");
 		}
 
 
