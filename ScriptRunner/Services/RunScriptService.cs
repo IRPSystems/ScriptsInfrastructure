@@ -163,11 +163,20 @@ namespace ScriptRunner.Services
 
 
 			_testName = currentScript.Name;
-
-
-
-			MainScriptLogger.Clear();
-			MainScriptLogger.AddLine(
+			
+			if(currentScript.ScriptSender == ScriptSenderEnum.Abort)
+			{
+                
+                MainScriptLogger.AddLine(
+					RunTime.RunTime,
+					"Abort Script Started \"" + currentScript.Name + "\"",
+					LogTypeEnum.ScriptData);
+            }
+			else
+			{
+                //MainScriptLogger.Clear();
+            }
+            MainScriptLogger.AddLine(
 				RunTime.RunTime,
 				"Start Test \"" + currentScript.Name + "\"",
 				LogTypeEnum.ScriptData);

@@ -351,6 +351,7 @@ namespace ScriptRunner.Services
 								break;
 
 							case RunProjectsState.RunAbortScript:
+								AbortScript.ScriptSender = ScriptSenderEnum.Abort;
 								StartSingle(
 									null,
 									AbortScript,
