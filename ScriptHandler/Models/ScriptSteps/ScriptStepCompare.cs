@@ -1,5 +1,6 @@
 ﻿
 using DeviceCommunicators.General;
+using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
@@ -75,8 +76,25 @@ namespace ScriptHandler.Models
 
 						val = intValue;
 					}
-
-                    sum += Convert.ToDouble(val);
+					if(val is string)
+					{
+						if(paramLeft is MCU_ParamData mCU_ParamData)
+						{
+                            foreach (DropDownParamData dropDown in mCU_ParamData.DropDown)
+                            {
+								if(dropDown.Name == (string)val)
+								{
+									sum = Convert.ToDouble(dropDown.Value);
+									break;
+								}
+                            }
+                        }
+					}
+					else
+					{
+                        sum += Convert.ToDouble(val);
+                    }
+                   
 
 					
 
