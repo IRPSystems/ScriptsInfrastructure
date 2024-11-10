@@ -116,6 +116,8 @@ namespace ScriptRunner.ViewModels
 
 		private FlashingHandler _flashingHandler;
 
+		private ObservableCollection<DeviceParameterData> _logParametersList;
+
 		#endregion Fields
 
 		#region Constructor
@@ -127,6 +129,7 @@ namespace ScriptRunner.ViewModels
 			ScriptUserData ScriptUserData,
 			CANMessageSenderViewModel canMessageSender)
 		{
+			_logParametersList = logParametersList;
 			
 			IsRecord = true;
 			
@@ -191,7 +194,6 @@ namespace ScriptRunner.ViewModels
 
 				StopScriptStepService stopScriptStep = new StopScriptStepService();
 				RunScript = new RunScriptService(
-					logParametersList,
 					devicesContainer,
 					stopScriptStep,
 					canMessageSender);
@@ -205,7 +207,7 @@ namespace ScriptRunner.ViewModels
 				//NoAbortingVisibility = Visibility.Collapsed;
 
 				_openProjectForRun = new OpenProjectForRunService();
-				RunProjectsList = new RunProjectsListService(logParametersList, RunScript, _devicesContainer);
+				RunProjectsList = new RunProjectsListService(RunScript, _devicesContainer);
 				RunProjectsList.RunEndedEvent += RunProjectsListEnded;
 				RunProjectsList.ErrorMessageEvent += RunProjectsList_ErrorMessageEvent;
 				ErrorMessage = null;
@@ -469,7 +471,12 @@ namespace ScriptRunner.ViewModels
 			SetIsGeneralEnabled(false);
 
 			GeneratedScriptData soScript = SelectTheSOScript();
-			RunProjectsList.StartAll(RunExplorer.ProjectsList, IsRecord, _stoppedScript, soScript);
+			RunProjectsList.StartAll(
+				RunExplorer.ProjectsList, 
+				IsRecord, 
+				_stoppedScript, 
+				soScript,
+				_logParametersList);
 
 			
 		}

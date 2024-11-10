@@ -75,7 +75,6 @@ namespace ScriptRunner.Services
 		#region Constructor
 
 		public RunScriptService(
-			ObservableCollection<DeviceParameterData> logParametersList,
 			DevicesContainer devicesContainer,
 			StopScriptStepService stopScriptStep,
 			CANMessageSenderViewModel canMessageSender)

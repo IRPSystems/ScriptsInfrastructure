@@ -65,11 +65,9 @@ namespace ScriptRunner.Services
 		#region Constructor
 
 		public RunProjectsListService(
-			ObservableCollection<DeviceParameterData> logParametersList,
 			RunScriptService runScript,
 			DevicesContainer devicesContainer)
 		{
-			_logParametersList = logParametersList;
 			RunScript = runScript;
 			_devicesContainer = devicesContainer;
 
@@ -165,7 +163,7 @@ namespace ScriptRunner.Services
 			bool isRecord,
 			GeneratedScriptData stoppedScript,
 			GeneratedScriptData soScript,
-			ObservableCollection<DeviceParameterData> logParametersList = null)
+			ObservableCollection<DeviceParameterData> logParametersList)
 		{
 			_errorMessage = null;
 
