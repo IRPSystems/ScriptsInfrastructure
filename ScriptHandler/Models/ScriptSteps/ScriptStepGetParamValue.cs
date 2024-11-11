@@ -110,7 +110,7 @@ namespace ScriptHandler.Models
 
 				Communicator.GetParamValue(parameter, GetValueCallback);
 
-				int timeOut = 2000;
+				int timeOut = 1000;
 				if (parameter.CommunicationTimeout > 0)
 				{
 					timeOut = parameter.CommunicationTimeout;
