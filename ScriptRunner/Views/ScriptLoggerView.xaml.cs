@@ -18,11 +18,11 @@ using System.Windows.Shapes;
 namespace ScriptRunner.Views
 {
 	/// <summary>
-	/// Interaction logic for LoggerView.xaml
+	/// Interaction logic for ScriptLoggerView.xaml
 	/// </summary>
-	public partial class LoggerView : UserControl
+	public partial class ScriptLoggerView : UserControl
 	{
-		public LoggerView()
+		public ScriptLoggerView()
 		{
 			InitializeComponent();
 		}
