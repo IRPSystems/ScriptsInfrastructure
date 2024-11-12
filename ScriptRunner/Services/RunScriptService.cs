@@ -162,6 +162,7 @@ namespace ScriptRunner.Services
 				System.Threading.Thread.Sleep(1000);
 
 			MainScriptLogger.Clear();
+			MainScriptLogger.Start();
 
 
 			_testName = currentScript.Name;
@@ -275,7 +276,7 @@ namespace ScriptRunner.Services
 			if(CurrentScript.CurrentScript != null)
 				MainScriptLogger.Save(_testName);
 
-			
+			MainScriptLogger.Stop();
 
 			ScriptEndedEvent?.Invoke(stopMode);
 		}

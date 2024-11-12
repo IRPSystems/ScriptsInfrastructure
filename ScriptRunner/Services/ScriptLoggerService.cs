@@ -115,6 +115,16 @@ namespace ScriptRunner.Services
 			LogLineList.Clear();
 		}
 
+		public void Start()
+		{
+			LogLineList.Start();
+		}
+
+		public void Stop()
+		{
+			LogLineList.Stop();
+		}
+
 		public void Save(string scriptName)
 		{
 			try
