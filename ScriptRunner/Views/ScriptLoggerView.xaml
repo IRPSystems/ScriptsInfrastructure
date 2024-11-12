@@ -15,18 +15,19 @@
 
             <DataGrid.Columns>
 
-                <DataGridTextColumn Header="Time" Binding="{Binding Time}" />
+                <DataGridTextColumn Header="Time" Binding="{Binding Time, StringFormat='{}{0:hh\\:mm\\:ss\\.fffff}'}" />
 
                 <DataGridTemplateColumn Header="Data">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
 
-                            <Border BorderThickness="2" >
+                            <Border BorderThickness="2" BorderBrush="{Binding Background}">
 
-                                <TextBlock Text="{Binding Data}" VerticalAlignment="Center" 
+                                <TextBlock Text="{Binding Data}" 
+                                           VerticalAlignment="Center" 
                                            Margin="10"/>
 
-                                <Border.Resources>
+                                <!--<Border.Resources>
                                     <Style TargetType="Border">
                                         <Style.Triggers>
 
@@ -52,7 +53,7 @@
 
                                         </Style.Triggers>
                                     </Style>
-                                </Border.Resources>
+                                </Border.Resources>-->
 
                             </Border>
 

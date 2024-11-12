@@ -1,15 +1,15 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
 using CsvHelper;
+using Entities.Models;
 using ScriptRunner.Enums;
-using ScriptRunner.Models;
 using Services.Services;
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Windows;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+using System.Windows.Media;
 
 namespace ScriptRunner.Services
 {
@@ -40,10 +40,15 @@ namespace ScriptRunner.Services
 		#region Methods
 
 
-		public void AddLine(LogLineData lineData)
+		public void AddLine(
+			LogLineData lineData, 
+			LogTypeEnum logType)
         {
 			LogLinesList.Add(lineData);
-			LoggerService.Inforamtion(this, $"***[{lineData.Time}] [{lineData.Data}] [{lineData.LogType}]");
+
+			SetLineCollors(lineData, logType);
+
+			LoggerService.Inforamtion(this, $"***[{lineData.Time}] [{lineData.Data}] [{logType}]");
 		}
 
 		public void AddLine( 
@@ -55,18 +60,52 @@ namespace ScriptRunner.Services
 			{
 				Time = time,
 				Data = data,
-				LogType = logType,
 			};
+
+			
 
 			if (Application.Current != null)
 			{
 				Application.Current.Dispatcher.Invoke(() =>
 				{
+					SetLineCollors(lineData, logType);
 					LogLinesList.Add(lineData);
 				});
 			}
 
-			LoggerService.Inforamtion(this, $"***[{lineData.Time}] [{lineData.Data}] [{lineData.LogType}]");
+			LoggerService.Inforamtion(this, $"***[{lineData.Time}] [{lineData.Data}] [{logType}]");
+		}
+
+		private void SetLineCollors(
+			LogLineData lineData,
+			LogTypeEnum logType)
+		{
+			switch (logType)
+			{
+
+				case LogTypeEnum.ScriptData: lineData.Background = Brushes.Magenta; break;
+				case LogTypeEnum.StepData: lineData.Background = Brushes.Transparent; break;
+				case LogTypeEnum.Pass: lineData.Background = Brushes.Green; break;
+				case LogTypeEnum.Fail: lineData.Background = Brushes.Red; break;
+				case LogTypeEnum.None: lineData.Background = Brushes.Transparent; break;
+			}
+
+
+			switch (logType)
+			{
+
+				case LogTypeEnum.ScriptData: lineData.Foreground = Brushes.White; break;
+				case LogTypeEnum.StepData:
+					if (Application.Current != null)
+						lineData.Foreground = Application.Current.MainWindow.Foreground;
+					break;
+				case LogTypeEnum.Pass: lineData.Foreground = Brushes.White; break;
+				case LogTypeEnum.Fail: lineData.Foreground = Brushes.White; break;
+				case LogTypeEnum.None:
+					if (Application.Current != null)
+						lineData.Foreground = Application.Current.MainWindow.Foreground;
+					break;
+			}
 		}
 
 
@@ -127,7 +166,7 @@ namespace ScriptRunner.Services
 							string time = line.Time.ToString(@"hh\:mm\:ss\.fffff");
 							csvWriter.WriteField(time);
 							csvWriter.WriteField(line.Data);
-							csvWriter.WriteField(line.LogType);
+							//csvWriter.WriteField(line.LogType);
 							csvWriter.NextRecord();
 						}
 					}
