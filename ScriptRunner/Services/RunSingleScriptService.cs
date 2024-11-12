@@ -62,7 +62,7 @@ namespace ScriptRunner.Services
 
 		private RunScriptService.RunTimeData _runTime;
 
-		private TestStudioLoggerService _mainScriptLogger;
+		private ScriptLoggerService _mainScriptLogger;
 
 		private RunSingleScriptService _subScript;
 
@@ -82,7 +82,7 @@ namespace ScriptRunner.Services
 
 		public RunSingleScriptService(
 			RunScriptService.RunTimeData runTime,
-			TestStudioLoggerService mainScriptLogger,
+			ScriptLoggerService mainScriptLogger,
 			GeneratedScriptData currentScript,
 			ScriptStepSubScript scriptStep,
 			StopScriptStepService stopScriptStep,

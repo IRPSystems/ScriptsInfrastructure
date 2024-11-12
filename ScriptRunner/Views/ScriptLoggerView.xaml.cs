@@ -29,7 +29,7 @@ namespace ScriptRunner.Views
 
 		private void UserControl_Loaded(object sender, RoutedEventArgs e)
 		{
-			if (DataContext is TestStudioLoggerService logger)
+			if (DataContext is ScriptLoggerService logger)
 			{
 				logger.LogLinesList.CollectionChanged += LogLinesList_CollectionChanged;
 			}

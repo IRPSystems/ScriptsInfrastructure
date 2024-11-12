@@ -14,7 +14,7 @@ namespace ScriptRunner.Services
 
 		public RunSingleScriptService_SO(
 			RunScriptService.RunTimeData runTime,
-			TestStudioLoggerService mainScriptLogger,
+			ScriptLoggerService mainScriptLogger,
 			GeneratedScriptData currentScript,
 			ScriptStepSubScript scriptStep,
 			StopScriptStepService stopScriptStep,

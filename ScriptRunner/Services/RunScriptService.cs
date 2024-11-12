@@ -46,7 +46,7 @@ namespace ScriptRunner.Services
 
 		public int ExecutedStepsPercentage { get; set; }
 
-		public TestStudioLoggerService MainScriptLogger { get; set; }
+		public ScriptLoggerService MainScriptLogger { get; set; }
 
 		public string ErrorMessage { get; set; }
 
@@ -93,7 +93,7 @@ namespace ScriptRunner.Services
 			if (!Directory.Exists(path))
 				Directory.CreateDirectory(path);
 
-			MainScriptLogger = new TestStudioLoggerService();
+			MainScriptLogger = new ScriptLoggerService();
 
 			ParamRecording = new ParamRecordingService(
 				devicesContainer);

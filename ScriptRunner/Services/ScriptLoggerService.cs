@@ -13,7 +13,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace ScriptRunner.Services
 {
-    public class TestStudioLoggerService: ObservableObject, IDisposable
+    public class ScriptLoggerService: ObservableObject, IDisposable
     {
 		#region Properties
 
@@ -29,7 +29,7 @@ namespace ScriptRunner.Services
 
 		#region Constructor
 
-		public TestStudioLoggerService()
+		public ScriptLoggerService()
         {
 			
 			LogLinesList = new ObservableCollection<LogLineData>();
