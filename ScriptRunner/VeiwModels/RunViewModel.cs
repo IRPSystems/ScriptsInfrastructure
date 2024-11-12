@@ -127,7 +127,8 @@ namespace ScriptRunner.ViewModels
 			DevicesContainer devicesContainer,
 			FlashingHandler flashingHandler,
 			ScriptUserData ScriptUserData,
-			CANMessageSenderViewModel canMessageSender)
+			CANMessageSenderViewModel canMessageSender,
+			LogLineListService logLineList)
 		{
 			_logParametersList = logParametersList;
 			
@@ -196,7 +197,8 @@ namespace ScriptRunner.ViewModels
 				RunScript = new RunScriptService(
 					devicesContainer,
 					stopScriptStep,
-					canMessageSender);
+					canMessageSender,
+					logLineList);
 				RunScript.ScriptEndedEvent += ScriptEndedEventHandler;
 				RunScript.ScriptStartedEvent += ScriptStartedEventHandler;
 

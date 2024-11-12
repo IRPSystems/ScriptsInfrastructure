@@ -13,11 +13,13 @@ using System.Windows.Media;
 
 namespace ScriptRunner.Services
 {
-    public class ScriptLoggerService: ObservableObject, IDisposable
+    public class ScriptLoggerService: ObservableObject
     {
 		#region Properties
 
-		public ObservableCollection<LogLineData> LogLinesList { get; set; }
+		//public ObservableCollection<LogLineData> LogLinesList { get; set; }
+
+		public LogLineListService LogLineList { get; set; }
 
 		#endregion Properties
 
@@ -29,10 +31,9 @@ namespace ScriptRunner.Services
 
 		#region Constructor
 
-		public ScriptLoggerService()
+		public ScriptLoggerService(LogLineListService logLineList)
         {
-			
-			LogLinesList = new ObservableCollection<LogLineData>();
+			LogLineList = logLineList;
 		}
 
 		#endregion Constructor
@@ -44,7 +45,7 @@ namespace ScriptRunner.Services
 			LogLineData lineData, 
 			LogTypeEnum logType)
         {
-			LogLinesList.Add(lineData);
+			LogLineList.AddLine(lineData);
 
 			SetLineCollors(lineData, logType);
 
@@ -69,7 +70,7 @@ namespace ScriptRunner.Services
 				Application.Current.Dispatcher.Invoke(() =>
 				{
 					SetLineCollors(lineData, logType);
-					LogLinesList.Add(lineData);
+					LogLineList.AddLine(lineData);
 				});
 			}
 
@@ -109,29 +110,9 @@ namespace ScriptRunner.Services
 		}
 
 
-		public void Dispose()
-		{
-		}
 		public void Clear()
 		{
-			try
-			{
-				if (LogLinesList != null && LogLinesList.Count != 0)
-				{
-					if (Application.Current != null)
-					{
-						Application.Current.Dispatcher.Invoke(() =>
-						{
-							LogLinesList.Clear();
-						});
-					}
-				}
-					
-			}
-			catch(Exception ex)
-			{
-				LoggerService.Error(this, "Failed to clear the log", "Error", ex);
-			}
+			LogLineList.Clear();
 		}
 
 		public void Save(string scriptName)
@@ -159,7 +140,7 @@ namespace ScriptRunner.Services
 						csvWriter.NextRecord();
 
 
-						foreach (LogLineData line in LogLinesList)
+						foreach (LogLineData line in LogLineList.LogLineDatasList)
 						{
 							if(line == null)
 								continue;

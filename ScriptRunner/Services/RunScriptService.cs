@@ -77,7 +77,8 @@ namespace ScriptRunner.Services
 		public RunScriptService(
 			DevicesContainer devicesContainer,
 			StopScriptStepService stopScriptStep,
-			CANMessageSenderViewModel canMessageSender)
+			CANMessageSenderViewModel canMessageSender,
+			LogLineListService logLineList)
 		{
 			_devicesContainer = devicesContainer;
 			StopScriptStep = stopScriptStep;
@@ -93,7 +94,7 @@ namespace ScriptRunner.Services
 			if (!Directory.Exists(path))
 				Directory.CreateDirectory(path);
 
-			MainScriptLogger = new ScriptLoggerService();
+			MainScriptLogger = new ScriptLoggerService(logLineList);
 
 			ParamRecording = new ParamRecordingService(
 				devicesContainer);
@@ -159,6 +160,8 @@ namespace ScriptRunner.Services
 
 			if (!isAbort)
 				System.Threading.Thread.Sleep(1000);
+
+			MainScriptLogger.Clear();
 
 
 			_testName = currentScript.Name;

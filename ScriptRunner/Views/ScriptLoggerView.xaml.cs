@@ -31,12 +31,15 @@ namespace ScriptRunner.Views
 		{
 			if (DataContext is ScriptLoggerService logger)
 			{
-				logger.LogLinesList.CollectionChanged += LogLinesList_CollectionChanged;
+				logger.LogLineList.LogLineDatasList.CollectionChanged += LogLinesList_CollectionChanged;
 			}
 		}
 
 		private void LogLinesList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
+			if (dataGrid.Items.Count == 0)
+				return;
+
 			dataGrid.ScrollIntoView(dataGrid.Items[dataGrid.Items.Count - 1]);
 			
 		}

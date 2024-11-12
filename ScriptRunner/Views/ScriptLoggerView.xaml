@@ -8,55 +8,46 @@
              d:DesignHeight="450" d:DesignWidth="800"
              Loaded="UserControl_Loaded">
     <Grid>
-        <DataGrid ItemsSource="{Binding LogLinesList}"
+        <DataGrid ItemsSource="{Binding LogLineList.LogLineDatasList}"
                   AutoGenerateColumns="False"
                   FontSize="14"
                   Name="dataGrid">
 
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow" BasedOn="{StaticResource MahApps.Styles.DataGridRow}" >
+                    <Setter Property="Background" Value="{Binding Background}" />
+                    <Setter Property="BorderThickness" Value="2" />
+                    <Setter Property="Margin" Value="1" />
+                </Style>
+            </DataGrid.RowStyle>
+
             <DataGrid.Columns>
 
-                <DataGridTextColumn Header="Time" Binding="{Binding Time, StringFormat='{}{0:hh\\:mm\\:ss\\.fffff}'}" />
-
-                <DataGridTemplateColumn Header="Data">
+                <DataGridTemplateColumn Header="Time" MinWidth="100">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
 
-                            <Border BorderThickness="2" BorderBrush="{Binding Background}">
+                            <TextBlock Text="{Binding Time, StringFormat='{}{0:hh\\:mm\\:ss\\.fffff}'}" 
+                                       VerticalAlignment="Center" 
+                                       Margin="10, 0"
+                                       Foreground="{Binding Foreground}"/>
 
-                                <TextBlock Text="{Binding Data}" 
-                                           VerticalAlignment="Center" 
-                                           Margin="10"/>
+                            
 
-                                <!--<Border.Resources>
-                                    <Style TargetType="Border">
-                                        <Style.Triggers>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
-                                            <DataTrigger Binding="{Binding LogType}" Value="ScriptData">
-                                                <Setter Property="BorderBrush" Value="Purple" />
-                                            </DataTrigger>
+                <DataGridTemplateColumn Header="Data" MinWidth="300">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
 
-                                            <DataTrigger Binding="{Binding LogType}" Value="StepData">
-                                                <Setter Property="BorderBrush" Value="#0094FF" />
-                                            </DataTrigger>
+                            <TextBlock Text="{Binding Data}" 
+                                       VerticalAlignment="Center" 
+                                       Margin="10, 0"
+                                       Foreground="{Binding Foreground}"/>
 
-                                            <DataTrigger Binding="{Binding LogType}" Value="Pass">
-                                                <Setter Property="BorderBrush" Value="Green" />
-                                            </DataTrigger>
-
-                                            <DataTrigger Binding="{Binding LogType}" Value="Fail">
-                                                <Setter Property="BorderBrush" Value="Red" />
-                                            </DataTrigger>
-
-                                            <DataTrigger Binding="{Binding LogType}" Value="None">
-                                                <Setter Property="BorderBrush" Value="Gray" />
-                                            </DataTrigger>
-
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Resources>-->
-
-                            </Border>
-
+                            
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
