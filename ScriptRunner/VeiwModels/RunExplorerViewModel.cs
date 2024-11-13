@@ -39,6 +39,8 @@ namespace ScriptRunner.ViewModels
 
 		private FlashingHandler _flashingHandler;
 
+		private bool _isAllSelected;
+
 		#endregion Fields
 
 		#region Constructor
@@ -55,7 +57,9 @@ namespace ScriptRunner.ViewModels
 			_scriptUserData = scriptUserData;
 
 			IsShowButtons = true;
+			_isAllSelected = true;
 
+			SelectAllCommand = new RelayCommand(SelectAll);
 			ReloadProjectCommand = new RelayCommand<GeneratedProjectData>(ReloadProject);
 			SelectRecordingPathCommand = new RelayCommand<GeneratedProjectData>(SelectRecordingPath);
 			ScriptUpCommand = new RelayCommand<GeneratedProjectData>(ScriptUp);
@@ -297,10 +301,29 @@ namespace ScriptRunner.ViewModels
 			project.RecordingPath = commonOpenFile.FileName;
 		}
 
+		private void SelectAll()
+		{
+			if (ProjectsList == null || ProjectsList.Count == 0)
+				return;
+
+			_isAllSelected = !_isAllSelected;
+
+			foreach (GeneratedProjectData project in ProjectsList)
+			{
+				project.IsDoRun = _isAllSelected;
+
+				foreach (GeneratedScriptData scriptData in project.TestsList)
+				{
+					scriptData.IsDoRun = _isAllSelected;
+				}
+			}
+		}
+
 		#endregion Methods
 
 		#region Commands
 
+		public RelayCommand SelectAllCommand { get; private set; }
 		public RelayCommand<GeneratedProjectData> ScriptUpCommand { get; private set; }
 		public RelayCommand<GeneratedProjectData> ScriptDownCommand { get; private set; }
 

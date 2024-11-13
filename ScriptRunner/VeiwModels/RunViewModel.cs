@@ -88,8 +88,6 @@ namespace ScriptRunner.ViewModels
 
 		#region Fields
 
-		private bool _isAllSelected;
-
 		private System.Timers.Timer _runTimeTimer;
 
 		private string _abortScriptPath;
@@ -174,9 +172,6 @@ namespace ScriptRunner.ViewModels
 				_isGeneralEnabled = true;
 				_isScriptsLoaded = false;
 
-				_isAllSelected = true;
-
-				SelectAllCommand = new RelayCommand(SelectAll);
 				StartAllCommand = new RelayCommand(StartAll);
 				AbortCommand = new RelayCommand(Abort);
 
@@ -443,26 +438,6 @@ namespace ScriptRunner.ViewModels
 		//	RunScript.User_Pause();
 		//}
 
-		
-		
-
-		private void SelectAll()
-		{
-			if (RunExplorer.ProjectsList == null || RunExplorer.ProjectsList.Count == 0)
-				return;
-
-			_isAllSelected = !_isAllSelected;
-
-			foreach (GeneratedProjectData project in RunExplorer.ProjectsList)
-			{
-				project.IsDoRun = _isAllSelected;
-
-				foreach (GeneratedScriptData scriptData in project.TestsList)
-				{
-					scriptData.IsDoRun = _isAllSelected;
-				}
-			}
-		}
 
 		private void StartAll()
 		{
@@ -692,7 +667,6 @@ namespace ScriptRunner.ViewModels
 
 		
 
-		public RelayCommand SelectAllCommand { get; private set; }
 		public RelayCommand StartAllCommand { get; private set; }
 		public RelayCommand AbortCommand { get; private set; }
 

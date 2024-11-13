@@ -49,16 +49,7 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0,2">
-
                 
-                <Button Style="{StaticResource ButtonWithIconStyle}"
-                        Width="30"
-                        Margin="0,0,5,0"
-                        ToolTip="Select all scripts"
-                        Command="{Binding SelectAllCommand}"
-                        IsEnabled="{Binding IsGeneralEnabled}">
-                    <iconPacks:Material Kind="CheckAll" />
-                </Button>
 
                 <Button Style="{StaticResource ButtonWithIconStyle}"
                         Width="30"
