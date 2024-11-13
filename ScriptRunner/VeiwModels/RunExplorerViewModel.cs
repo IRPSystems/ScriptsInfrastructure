@@ -78,8 +78,10 @@ namespace ScriptRunner.ViewModels
 			ObservableCollection<GeneratedProjectData> projectsList)
 		{
 			ProjectsList = projectsList;
+			SelectAllCommand = new RelayCommand(SelectAll);
 
 			IsShowButtons = false;
+			_isAllSelected = true;
 		}
 
 		#endregion Constructor
