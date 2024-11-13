@@ -287,14 +287,15 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="1,0,0,0"
-                    Visibility="{Binding IsShowButtons, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    >
 
             <Button Style="{StaticResource ButtonWithIconStyle}"
                     Width="30" Height="30"
                     Margin="0,0,1,0"
                     ToolTip="Open project"
                     Command="{Binding OpenProjectCommand}"
-                    IsEnabled="{Binding IsGeneralEnabled}">
+                    IsEnabled="{Binding IsGeneralEnabled}"
+                    Visibility="{Binding IsShowButtons, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <iconPacks:Material Kind="Plus" />
             </Button>
 
@@ -302,7 +303,8 @@
                     Width="30" Height="30"
                     Margin="0,0,5,0"
                     ToolTip="Delete project"
-                    Command="{Binding DeleteProjectCommand}">
+                    Command="{Binding DeleteProjectCommand}"
+                    Visibility="{Binding IsShowButtons, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <iconPacks:PackIconMaterial Kind="Delete" />
             </Button>
 
@@ -310,7 +312,8 @@
                     Width="30" Height="30"
                     Margin="0,0,1,0"
                     ToolTip="Save projects list"
-                    Command="{Binding SaveProjectsListCommand}">
+                    Command="{Binding SaveProjectsListCommand}"
+                    Visibility="{Binding IsShowButtons, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <iconPacks:Material Kind="ContentSave" />
             </Button>
 
@@ -318,7 +321,8 @@
                     Width="30" Height="30"
                     Margin="0,0,5,0"
                     ToolTip="Load projects list"
-                    Command="{Binding LoadProjectsListCommand}">
+                    Command="{Binding LoadProjectsListCommand}"
+                    Visibility="{Binding IsShowButtons, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <iconPacks:PackIconMaterial Kind="FolderOpen" />
             </Button>
 
@@ -326,8 +330,7 @@
                     Width="30"
                     Margin="0,0,5,0"
                     ToolTip="Select all scripts"
-                    Command="{Binding SelectAllCommand}"
-                    IsEnabled="{Binding IsGeneralEnabled}">
+                    Command="{Binding SelectAllCommand}">
                 <iconPacks:Material Kind="CheckAll" />
             </Button>
 
