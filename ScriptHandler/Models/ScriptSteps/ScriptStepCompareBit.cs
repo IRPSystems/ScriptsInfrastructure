@@ -67,7 +67,7 @@ namespace ScriptHandler.Models
 					}
 				}
 
-				uint bit = (uint)((value >> BitIndex) & 1);
+				uint bit = (uint)((value >> (BitIndex - 1)) & 1);
 				if (bit == 0)
 				{
 					IsPass = false;
