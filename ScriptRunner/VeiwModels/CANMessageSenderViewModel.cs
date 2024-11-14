@@ -48,6 +48,8 @@ namespace ScriptRunner.ViewModels
 
 		public string CANMessagesScriptPath { get; set; }
 
+		public bool IsStartEnabled { get; set; }
+
 
 		#endregion Properties
 
@@ -69,7 +71,7 @@ namespace ScriptRunner.ViewModels
 			_devicesContainer = devicesContainer;
 			_scriptUserData = scriptUserData;
 
-			
+			IsStartEnabled = true;
 
 			BrowseCANMessagesScriptPathCommand = new RelayCommand(BrowseCANMessagesScriptPath);
 			StartCANMessageSenderCommand = new RelayCommand(StartCANMessageSender);
@@ -120,7 +122,7 @@ namespace ScriptRunner.ViewModels
 		{
 			try
 			{
-
+				IsStartEnabled = false;
 				string jsonString = System.IO.File.ReadAllText(CANMessagesScriptPath);
 
 				JsonSerializerSettings settings = new JsonSerializerSettings();
@@ -270,6 +272,9 @@ namespace ScriptRunner.ViewModels
 
 				data.Message.StopContinuous();
 			}
+
+			CANMessagesList.Clear();
+			IsStartEnabled = true;
 		}
 
 		private bool IsCANMessageExist(uint id)
