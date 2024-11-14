@@ -161,24 +161,25 @@ namespace ScriptRunner.Services
 			if (!isAbort)
 				System.Threading.Thread.Sleep(1000);
 
-			MainScriptLogger.Clear();
+			if (currentScript.ScriptSender == ScriptSenderEnum.Abort)
+			{
+
+				MainScriptLogger.AddLine(
+					RunTime.RunTime,
+					"Abort Script Started \"" + currentScript.Name + "\"",
+					LogTypeEnum.ScriptData);
+			}
+			else
+			{
+				MainScriptLogger.Clear();
+			}
+
 			MainScriptLogger.Start();
 
 
 			_testName = currentScript.Name;
 			
-			if(currentScript.ScriptSender == ScriptSenderEnum.Abort)
-			{
-                
-                MainScriptLogger.AddLine(
-					RunTime.RunTime,
-					"Abort Script Started \"" + currentScript.Name + "\"",
-					LogTypeEnum.ScriptData);
-            }
-			else
-			{
-                //MainScriptLogger.Clear();
-            }
+			
             MainScriptLogger.AddLine(
 				RunTime.RunTime,
 				"Start Test \"" + currentScript.Name + "\"",
