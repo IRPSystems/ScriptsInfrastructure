@@ -146,7 +146,8 @@ namespace ScriptHandler.Models.ScriptSteps
 
             EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
 				stepDescription,
-				Description);
+				Description,
+				this);
 
             eolStepSummeryData.TestValue = paramValue;
             eolStepSummeryData.ComparisonValue = paramValue_Right;

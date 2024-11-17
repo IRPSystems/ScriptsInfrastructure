@@ -202,7 +202,8 @@ namespace ScriptHandler.Models
 
             EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
 				stepDescription,
-				Description);
+				Description,
+				this);
 
 			eolStepSummeryData.MeasuredTolerance = MeasuredTolerance;
             eolStepSummeryData.TestValue = paramValue_Left;

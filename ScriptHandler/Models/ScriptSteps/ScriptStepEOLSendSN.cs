@@ -73,7 +73,8 @@ namespace ScriptHandler.Models.ScriptSteps
 					description = UserTitle;
                 eolStepSummeryData = new EOLStepSummeryData(
                     description,
-                    "");
+                    "",
+					this);
                 eolStepSummeryData.IsPass = IsPass;
                 eolStepSummeryData.ErrorDescription = ErrorMessage;
                 EOLStepSummerysList.Add(eolStepSummeryData);
@@ -103,7 +104,8 @@ namespace ScriptHandler.Models.ScriptSteps
 						description = UserTitle;
 					eolStepSummeryData = new EOLStepSummeryData(
 						description,
-						"");
+						"",
+						this);
 					eolStepSummeryData.IsPass = IsPass;
 					eolStepSummeryData.ErrorDescription = ErrorMessage;
 					EOLStepSummerysList.Add(eolStepSummeryData);
@@ -116,7 +118,8 @@ namespace ScriptHandler.Models.ScriptSteps
 				IsPass = false;
                 eolStepSummeryData = new EOLStepSummeryData(
                     description,
-                    "");
+                    "",
+					this);
                 eolStepSummeryData.IsPass = IsPass;
                 eolStepSummeryData.ErrorDescription = ErrorMessage;
                 EOLStepSummerysList.Add(eolStepSummeryData);

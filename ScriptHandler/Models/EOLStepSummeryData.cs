@@ -19,14 +19,18 @@ namespace ScriptHandler.Models
         public bool IsPass { get; set; }
         public string ErrorDescription { get; set; }
 
+		public ScriptStepBase Step { get; set; }
+
 		public EOLStepSummeryData() { }
 
 		public EOLStepSummeryData(
 			string stepDescription, 
-			string description)
+			string description,
+			ScriptStepBase step)
 		{
 			StepDescription = stepDescription;
 			Description = description;
+			Step = step;
 		}
 	}							  
 }								  

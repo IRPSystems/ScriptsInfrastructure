@@ -71,7 +71,8 @@ namespace ScriptHandler.Models
 
 				eolStepSummery = new EOLStepSummeryData(
 					GetOnlineDescription(),
-					$"Get the value of parameter {parameter.Name}");
+					$"Get the value of parameter {parameter.Name}",
+					this);
 
 				_waitForGet = new ManualResetEvent(false);
 
