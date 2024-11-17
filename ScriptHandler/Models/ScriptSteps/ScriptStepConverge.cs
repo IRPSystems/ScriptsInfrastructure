@@ -172,12 +172,16 @@ namespace ScriptHandler.Models.ScriptSteps
 					_targetValueGetter.Communicator = TargetValueCommunicator;
 					_targetValueGetter.Parameter = param;
 
+					string description = Description;
+					if (!string.IsNullOrEmpty(UserTitle))
+						description = UserTitle;
+
 					string tempErrMessage = _errorMessageHeader + "\"" + param + "\"\r\n\r\n";
 					EOLStepSummeryData eolStepSummeryData;
 					bool isOK = _targetValueGetter.SendAndReceive(
 						param, 
 						out eolStepSummeryData,
-						Description);
+						description);
 					LoggerService.Inforamtion(this, "Ended SendAndReceive");
 					EOLStepSummerysList.Add(eolStepSummeryData);
 					if (!isOK)
@@ -307,8 +311,12 @@ namespace ScriptHandler.Models.ScriptSteps
 		{
 			_checkValueTimer.Stop();
 
+			string description = Description;
+			if (!string.IsNullOrEmpty(UserTitle))
+				description = UserTitle;
+
 			EOLStepSummeryData eolStepSummeryData;
-			bool isOK = SendAndReceive(out eolStepSummeryData);
+			bool isOK = SendAndReceive(out eolStepSummeryData, description);
 			EOLStepSummerysList.Add(eolStepSummeryData);
 			if (!isOK)
 			{

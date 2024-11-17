@@ -154,7 +154,7 @@ namespace ScriptHandler.Models
 				stepDescription,
 				this);
 
-			eolStepSummeryData.TestValue = leftVal;
+			//eolStepSummeryData.TestValue = leftVal;
 			eolStepSummeryData.ComparisonValue = rightVal;
 			eolStepSummeryData.Reference = compareReference;
             eolStepSummeryData.Method = Comparation.ToString();
