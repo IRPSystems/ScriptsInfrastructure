@@ -5,7 +5,7 @@ namespace ScriptHandler.Models
 {
 	public class EOLStepSummeryData: ObservableObject
 	{
-		public string StepDescription { get; set; }
+		public string ParentStepDescription { get; set; }
 		public string Description { get; set; }
 		public double? TestValue { get; set; }
         public double? ComparisonValue { get; set; }
@@ -19,14 +19,20 @@ namespace ScriptHandler.Models
         public bool IsPass { get; set; }
         public string ErrorDescription { get; set; }
 
+		public ScriptStepBase Step { get; set; }
+		public string SubScriptName { get; set; }
+		public string TestName { get; set; }
+
 		public EOLStepSummeryData() { }
 
 		public EOLStepSummeryData(
-			string stepDescription, 
-			string description)
+			string parentStepDescription, 
+			string description,
+			ScriptStepBase step)
 		{
-			StepDescription = stepDescription;
+			ParentStepDescription = parentStepDescription;
 			Description = description;
+			Step = step;
 		}
 	}							  
 }								  

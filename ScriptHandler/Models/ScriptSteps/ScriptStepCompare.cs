@@ -146,15 +146,15 @@ namespace ScriptHandler.Models
 
             string stepDescription = Description;
             if (!string.IsNullOrEmpty(UserTitle))
-            {
-                stepDescription = UserTitle + " - Result";
-            }
+                stepDescription = UserTitle;
+            
 
             EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
+				"",
 				stepDescription,
-				Description);
+				this);
 
-			eolStepSummeryData.TestValue = leftVal;
+			//eolStepSummeryData.TestValue = leftVal;
 			eolStepSummeryData.ComparisonValue = rightVal;
 			eolStepSummeryData.Reference = compareReference;
             eolStepSummeryData.Method = Comparation.ToString();
@@ -225,8 +225,15 @@ namespace ScriptHandler.Models
 				Communicator = deviceFullData.DeviceCommunicator;
 			}
 
+			string description = Description;
+			if(string.IsNullOrEmpty(UserTitle) == false)
+				description = UserTitle;
+
 			EOLStepSummeryData eolStepSummeryData;
-			bool isOK = SendAndReceive(parameter, out eolStepSummeryData);
+			bool isOK = SendAndReceive(
+				parameter, 
+				out eolStepSummeryData,
+				description);
 
 
 			EOLStepSummerysList.Add(eolStepSummeryData);

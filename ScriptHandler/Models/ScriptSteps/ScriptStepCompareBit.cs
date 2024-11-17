@@ -38,12 +38,18 @@ namespace ScriptHandler.Models
 
 				ErrorMessage = Description;
 
+				string description = Description;
+				if(string.IsNullOrEmpty(UserTitle) == false ) 
+					description = UserTitle;
+
 				EOLStepSummeryData eolStepSummeryData;
-				bool isOK = SendAndReceive(Parameter, out eolStepSummeryData);
+				bool isOK = SendAndReceive(Parameter, out eolStepSummeryData, description);
 				if (!isOK)
 				{
 					return;
 				}
+
+				EOLStepSummerysList.Add(eolStepSummeryData);
 
 				int value = 0;
 				if (Parameter.Value is string str)
@@ -67,6 +73,8 @@ namespace ScriptHandler.Models
 					}
 				}
 
+				
+
 				uint bit = (uint)((value >> BitIndex) & 1);
 				if (bit == 0)
 				{
@@ -79,6 +87,13 @@ namespace ScriptHandler.Models
 					return;
 				}
 
+				eolStepSummeryData = new EOLStepSummeryData(
+					"",
+					description,
+					this);
+				eolStepSummeryData.IsPass = IsPass;
+				eolStepSummeryData.ErrorDescription = ErrorMessage;
+				EOLStepSummerysList.Add(eolStepSummeryData);
 				IsPass = true;
 			}
 			catch(Exception ex)

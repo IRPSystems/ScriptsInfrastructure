@@ -103,6 +103,10 @@ namespace ScriptHandler.Models.ScriptSteps
                 LoggerService.Error(this, "Execute: Daq Port" + niParamData.Io_port.ToString());
             }
 
+			string description = Description;
+			if (!string.IsNullOrEmpty(UserTitle))
+				description = UserTitle;
+
 			EOLStepSummeryData eolStepSummeryData = null;
 			while (_eState != eState.EndSession && _eState != eState.StopOrFail)
             {
@@ -118,7 +122,7 @@ namespace ScriptHandler.Models.ScriptSteps
 						
 						_getValue.Parameter = GainParam;
                         _getValue.Communicator = MCU_Communicator;
-                        _getValue.SendAndReceive(out eolStepSummeryData);
+                        _getValue.SendAndReceive(out eolStepSummeryData, description);
 						EOLStepSummerysList.Add(eolStepSummeryData);
 						if (!_getValue.IsPass)
                         {
@@ -259,8 +263,13 @@ namespace ScriptHandler.Models.ScriptSteps
 				{
 					break;
 				}
+
+				string description = Description;
+				if (!string.IsNullOrEmpty(UserTitle))
+					description = UserTitle;
+
 				EOLStepSummeryData eolStepSummeryData;
-				scriptStepGetParamValue.SendAndReceive(out eolStepSummeryData);
+				scriptStepGetParamValue.SendAndReceive(out eolStepSummeryData, description);
                 Thread.Sleep(50);
 				EOLStepSummerysList.Add(eolStepSummeryData);
 				if (!scriptStepGetParamValue.IsPass)

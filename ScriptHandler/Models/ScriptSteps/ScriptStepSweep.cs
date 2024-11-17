@@ -119,7 +119,7 @@ namespace ScriptHandler.Models
 					_getParameter.Parameter = param;
 					_getParameter.Communicator = deviceFullData.DeviceCommunicator;
 					EOLStepSummeryData stepSummeryData;
-					IsPass = _getParameter.SendAndReceive(out stepSummeryData);
+					IsPass = _getParameter.SendAndReceive(out stepSummeryData, Description);
 					if (IsPass == false)
 					{
 						IsPass = false;

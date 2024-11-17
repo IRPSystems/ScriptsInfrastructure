@@ -215,7 +215,7 @@ namespace ScriptHandler.Models
 			}
 
 			EOLStepSummeryData eolStepSummeryData;
-			bool res = GetParamValue.SendAndReceive(out eolStepSummeryData);
+			bool res = GetParamValue.SendAndReceive(out eolStepSummeryData, Description);
 			EOLStepSummerysList.Add(eolStepSummeryData);
 			if (res == false || GetParamValue.IsPass == false)
 			{

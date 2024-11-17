@@ -134,13 +134,13 @@ namespace ScriptHandler.Models
 
             string stepDescription = Description;
             if (!string.IsNullOrEmpty(UserTitle))
-            {
-                stepDescription = UserTitle + " - Result";
-            }
+                stepDescription = UserTitle;
+            
 
             EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
-                stepDescription,
-				Description);
+                "",
+				stepDescription,
+				this);
 			eolStepSummeryData.IsPass = IsPass;
             eolStepSummeryData.ErrorDescription = ErrorMessage;
             EOLStepSummerysList.Add(eolStepSummeryData);

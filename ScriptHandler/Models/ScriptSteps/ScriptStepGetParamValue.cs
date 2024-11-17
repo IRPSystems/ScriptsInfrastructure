@@ -41,17 +41,21 @@ namespace ScriptHandler.Models
 			catch { }
         }
 
-		public bool SendAndReceive(out EOLStepSummeryData eolStepSummery)
+		public bool SendAndReceive(
+			out EOLStepSummeryData eolStepSummery,
+			string parentStepDescription = null)
 		{
 			return SendAndReceive(
 				Parameter,
-				out eolStepSummery);
+				out eolStepSummery,
+				parentStepDescription);
 		}
 
 
 		public bool SendAndReceive(
 			DeviceParameterData parameter,
-			out EOLStepSummeryData eolStepSummery)
+			out EOLStepSummeryData eolStepSummery,
+			string parentStepDescription = null)
 		{
 			try
 			{
@@ -70,8 +74,9 @@ namespace ScriptHandler.Models
 				}
 
 				eolStepSummery = new EOLStepSummeryData(
+					parentStepDescription,
 					GetOnlineDescription(),
-					$"Get the value of parameter {parameter.Name}");
+					this);
 
 				_waitForGet = new ManualResetEvent(false);
 
