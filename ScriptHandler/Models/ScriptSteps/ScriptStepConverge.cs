@@ -174,7 +174,10 @@ namespace ScriptHandler.Models.ScriptSteps
 
 					string tempErrMessage = _errorMessageHeader + "\"" + param + "\"\r\n\r\n";
 					EOLStepSummeryData eolStepSummeryData;
-					bool isOK = _targetValueGetter.SendAndReceive(param, out eolStepSummeryData);
+					bool isOK = _targetValueGetter.SendAndReceive(
+						param, 
+						out eolStepSummeryData,
+						Description);
 					LoggerService.Inforamtion(this, "Ended SendAndReceive");
 					EOLStepSummerysList.Add(eolStepSummeryData);
 					if (!isOK)

@@ -63,17 +63,17 @@ namespace ScriptHandler.Models.ScriptSteps
 			_setValue.Execute();
 			EOLStepSummerysList.AddRange(_setValue.EOLStepSummerysList);
 
-			string description = string.Empty;
+			string description = Description;
+			if (!string.IsNullOrEmpty(UserTitle))
+				description = UserTitle;
+
 			if (!_setValue.IsPass)
 			{
 				ErrorMessage = "Unable to set: " + SN_Param.Name;
-				IsPass = false;
-				description = Description;
-				if (!string.IsNullOrEmpty(UserTitle))
-					description = UserTitle;
+				IsPass = false;				
                 eolStepSummeryData = new EOLStepSummeryData(
-                    description,
                     "",
+					description,
 					this);
                 eolStepSummeryData.IsPass = IsPass;
                 eolStepSummeryData.ErrorDescription = ErrorMessage;
@@ -88,7 +88,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			_getValue = new ScriptStepGetParamValue();
 			_getValue.Parameter = SN_Param;
 			_getValue.Communicator = Communicator;			
-			_getValue.SendAndReceive(out eolStepSummeryData);
+			_getValue.SendAndReceive(out eolStepSummeryData, Description);
 			EOLStepSummerysList.Add(eolStepSummeryData);
 			if (_getValue.IsPass)
 			{				
@@ -98,13 +98,9 @@ namespace ScriptHandler.Models.ScriptSteps
 					ErrorMessage = "Wrong SN \r\n"
 					+ _getValue.ErrorMessage;
 					IsPass = false;
-
-					description = Description;
-					if (!string.IsNullOrEmpty(UserTitle))
-						description = UserTitle;
 					eolStepSummeryData = new EOLStepSummeryData(
-						description,
 						"",
+						description,
 						this);
 					eolStepSummeryData.IsPass = IsPass;
 					eolStepSummeryData.ErrorDescription = ErrorMessage;
@@ -117,10 +113,10 @@ namespace ScriptHandler.Models.ScriptSteps
 				ErrorMessage = "Failed to get the SN parameter";
 				IsPass = false;
                 eolStepSummeryData = new EOLStepSummeryData(
-                    description,
-                    "",
-					this);
-                eolStepSummeryData.IsPass = IsPass;
+						"",
+						description,
+						this);
+				eolStepSummeryData.IsPass = IsPass;
                 eolStepSummeryData.ErrorDescription = ErrorMessage;
                 EOLStepSummerysList.Add(eolStepSummeryData);
 				return;

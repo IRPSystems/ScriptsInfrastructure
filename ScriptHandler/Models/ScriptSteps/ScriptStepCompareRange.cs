@@ -140,13 +140,11 @@ namespace ScriptHandler.Models.ScriptSteps
 
             string stepDescription = Description;
             if (!string.IsNullOrEmpty(UserTitle))
-            {
-                stepDescription = UserTitle + " - Result";
-            }
-
+                stepDescription = UserTitle;
+           
             EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
+				"",
 				stepDescription,
-				Description,
 				this);
 
             eolStepSummeryData.TestValue = paramValue;

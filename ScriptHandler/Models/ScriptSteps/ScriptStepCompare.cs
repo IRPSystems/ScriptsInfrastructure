@@ -146,13 +146,12 @@ namespace ScriptHandler.Models
 
             string stepDescription = Description;
             if (!string.IsNullOrEmpty(UserTitle))
-            {
-                stepDescription = UserTitle + " - Result";
-            }
+                stepDescription = UserTitle;
+            
 
             EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
+				"",
 				stepDescription,
-				Description,
 				this);
 
 			eolStepSummeryData.TestValue = leftVal;
@@ -227,7 +226,10 @@ namespace ScriptHandler.Models
 			}
 
 			EOLStepSummeryData eolStepSummeryData;
-			bool isOK = SendAndReceive(parameter, out eolStepSummeryData);
+			bool isOK = SendAndReceive(
+				parameter, 
+				out eolStepSummeryData,
+				Description);
 
 
 			EOLStepSummerysList.Add(eolStepSummeryData);

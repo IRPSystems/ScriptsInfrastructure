@@ -118,7 +118,7 @@ namespace ScriptHandler.Models.ScriptSteps
 						
 						_getValue.Parameter = GainParam;
                         _getValue.Communicator = MCU_Communicator;
-                        _getValue.SendAndReceive(out eolStepSummeryData);
+                        _getValue.SendAndReceive(out eolStepSummeryData, Description);
 						EOLStepSummerysList.Add(eolStepSummeryData);
 						if (!_getValue.IsPass)
                         {
@@ -260,7 +260,7 @@ namespace ScriptHandler.Models.ScriptSteps
 					break;
 				}
 				EOLStepSummeryData eolStepSummeryData;
-				scriptStepGetParamValue.SendAndReceive(out eolStepSummeryData);
+				scriptStepGetParamValue.SendAndReceive(out eolStepSummeryData, Description);
                 Thread.Sleep(50);
 				EOLStepSummerysList.Add(eolStepSummeryData);
 				if (!scriptStepGetParamValue.IsPass)

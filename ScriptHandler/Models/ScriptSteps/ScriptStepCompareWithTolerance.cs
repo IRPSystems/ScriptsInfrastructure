@@ -181,9 +181,8 @@ namespace ScriptHandler.Models
 
                 string stepDescription = Description;
             if (!string.IsNullOrEmpty(UserTitle))
-            {
-                stepDescription = UserTitle + " - Result";
-            }
+                stepDescription = UserTitle;
+            
 
 			double minVal;
 			double maxVal;
@@ -201,8 +200,8 @@ namespace ScriptHandler.Models
 
 
             EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
+				"",
 				stepDescription,
-				Description,
 				this);
 
 			eolStepSummeryData.MeasuredTolerance = MeasuredTolerance;
@@ -353,7 +352,10 @@ namespace ScriptHandler.Models
 
 				_getParamValue.Parameter = parameter;
 				_getParamValue.Communicator = Communicator;
-				bool isOK = _getParamValue.SendAndReceive(parameter, out eolStepSummeryData);
+				bool isOK = _getParamValue.SendAndReceive(
+					parameter, 
+					out eolStepSummeryData,
+					Description);
 				Thread.Sleep(100);
 				EOLStepSummerysList.Add(eolStepSummeryData);
 				if (!isOK)

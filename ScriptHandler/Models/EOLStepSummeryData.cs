@@ -5,7 +5,7 @@ namespace ScriptHandler.Models
 {
 	public class EOLStepSummeryData: ObservableObject
 	{
-		public string StepDescription { get; set; }
+		public string ParentStepDescription { get; set; }
 		public string Description { get; set; }
 		public double? TestValue { get; set; }
         public double? ComparisonValue { get; set; }
@@ -24,11 +24,11 @@ namespace ScriptHandler.Models
 		public EOLStepSummeryData() { }
 
 		public EOLStepSummeryData(
-			string stepDescription, 
+			string parentStepDescription, 
 			string description,
 			ScriptStepBase step)
 		{
-			StepDescription = stepDescription;
+			ParentStepDescription = parentStepDescription;
 			Description = description;
 			Step = step;
 		}
