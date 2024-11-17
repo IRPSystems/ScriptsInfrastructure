@@ -225,11 +225,15 @@ namespace ScriptHandler.Models
 				Communicator = deviceFullData.DeviceCommunicator;
 			}
 
+			string description = Description;
+			if(string.IsNullOrEmpty(UserTitle) == false)
+				description = UserTitle;
+
 			EOLStepSummeryData eolStepSummeryData;
 			bool isOK = SendAndReceive(
 				parameter, 
 				out eolStepSummeryData,
-				Description);
+				description);
 
 
 			EOLStepSummerysList.Add(eolStepSummeryData);

@@ -20,6 +20,8 @@ namespace ScriptHandler.Models
         public string ErrorDescription { get; set; }
 
 		public ScriptStepBase Step { get; set; }
+		public string SubScriptName { get; set; }
+		public string TestName { get; set; }
 
 		public EOLStepSummeryData() { }
 
