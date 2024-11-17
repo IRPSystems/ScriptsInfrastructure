@@ -171,7 +171,7 @@ namespace ScriptRunner.Services
 			}
 			else
 			{
-				MainScriptLogger.Clear();
+				//MainScriptLogger.Clear();
 			}
 
 			MainScriptLogger.Start();
