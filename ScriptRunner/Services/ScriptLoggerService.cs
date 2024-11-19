@@ -1,5 +1,6 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CsvHelper;
 using Entities.Models;
 using ScriptRunner.Enums;
@@ -34,6 +35,8 @@ namespace ScriptRunner.Services
 		public ScriptLoggerService(LogLineListService logLineList)
         {
 			LogLineList = logLineList;
+
+			ClearCommand = new RelayCommand(Clear);
 		}
 
 		#endregion Constructor
@@ -171,5 +174,11 @@ namespace ScriptRunner.Services
 		}
 
 		#endregion Methods
+
+		#region Commands
+
+		public RelayCommand ClearCommand { get; private set; }
+
+		#endregion Commands
 	}
 }
