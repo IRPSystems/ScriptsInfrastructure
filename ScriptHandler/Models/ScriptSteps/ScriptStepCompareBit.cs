@@ -22,7 +22,7 @@ namespace ScriptHandler.Models
 		
 		public int BitIndex { get; set; }
 
-
+		public int ComparedValue { get; set; }
 
 		public ScriptStepCompareBit()
 		{
@@ -74,14 +74,14 @@ namespace ScriptHandler.Models
 				}
 
 				uint bit = (uint)((value >> (BitIndex - 1)) & 1);
-				if (bit == 0)
+				if (bit != ComparedValue)
 				{
 					IsPass = false;
 
 					string bitName = BitIndex.ToString();
 					if (Parameter is IParamWithDropDown dropDown)
 						bitName = $"\"{dropDown.DropDown[BitIndex].Name}\"";
-					ErrorMessage += $"Bit {bitName} is not set";
+					ErrorMessage += $"Bit {bitName} is not " + ComparedValue;
 					return;
 				}
 
@@ -121,6 +121,7 @@ namespace ScriptHandler.Models
 		{
 			Parameter = (sourceNode as ScriptNodeCompareBit).Parameter;
 			BitIndex = (sourceNode as ScriptNodeCompareBit).BitIndex;
+			ComparedValue = (sourceNode as ScriptNodeCompareBit).ComparedValue;
 		}
 
 		public override void GetRealParamAfterLoad(

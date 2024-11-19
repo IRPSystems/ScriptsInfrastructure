@@ -5,6 +5,7 @@ using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Entities.Models;
 using ScriptHandler.Interfaces;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace ScriptHandler.Models.ScriptNodes
@@ -16,8 +17,10 @@ namespace ScriptHandler.Models.ScriptNodes
 		public DeviceParameterData Parameter { get; set; }
 
 		public int BitIndex { get; set; }
+		public int ComparedValue { get; set; }
+        public IEnumerable<object> BooleanValues { get; } = new List<object> { 0, 1 }; 
 
-		private int _bitSelectedIndex;
+        private int _bitSelectedIndex;
 		public int BitSelectedIndex 
 		{
 			get => _bitSelectedIndex;
@@ -42,7 +45,7 @@ namespace ScriptHandler.Models.ScriptNodes
 				string desc = "Compare BIT ";
 				if (Parameter != null)
 					desc += $"\"{Parameter.Name}\" ";
-				desc += "- ID:" + ID;
+				desc += "to Value - ID:" + ID;
 				return desc;
 			}
 		}
