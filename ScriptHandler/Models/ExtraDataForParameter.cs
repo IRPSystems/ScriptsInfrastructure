@@ -20,6 +20,7 @@ namespace ScriptHandler.Models
 
 		public int Ni6002_IOPort { get; set; }
 		public int Ni6002_Line { get; set; }
+		public int NI6002_NumofCounts { get; set; }
 		public double NIDAQShuntResistor { get; set; }
 		public int AteCommand { get; set; }
 		public eThermistorType NIThermistorIndex { get; set; }
@@ -89,6 +90,7 @@ namespace ScriptHandler.Models
 			Zimmer_Channel = source.Zimmer_Channel;
 			NumatoGPIOPort = source.NumatoGPIOPort;
             NIThermistorIndex = source.NIThermistorIndex;
+			NI6002_NumofCounts = source.NI6002_NumofCounts;
         }
 
 		public void SetToParameter(DeviceParameterData parameter)
@@ -99,6 +101,7 @@ namespace ScriptHandler.Models
 				ni.portLine = Ni6002_Line;
 				ni.shunt_resistor = NIDAQShuntResistor;
 				ni.ThermistorType = NIThermistorIndex;
+				ni.numofcounts = NI6002_NumofCounts;
 			}
 			else if (parameter is NumatoGPIO_ParamData numato)
 			{

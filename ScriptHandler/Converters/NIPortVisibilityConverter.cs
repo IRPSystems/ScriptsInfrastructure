@@ -22,7 +22,8 @@ namespace ScriptHandler.Converter
 
             if (paramname.Equals(Type, StringComparison.OrdinalIgnoreCase))
                 return Visibility.Visible;
-			if (!paramname.Equals("Analog Input Thermistor") && !paramname.Equals("Analog Input Current") && Type.Equals("NI"))
+			if (!paramname.Equals("Analog Input Thermistor", StringComparison.OrdinalIgnoreCase) && !paramname.Equals("Analog Input Current", StringComparison.OrdinalIgnoreCase)
+				&& !paramname.Equals("Digital Counter", StringComparison.OrdinalIgnoreCase) && Type.Equals("NI"))
 				return Visibility.Visible;
 
                 return Visibility.Collapsed;
