@@ -133,16 +133,16 @@ namespace ScriptRunner.Services
 			GeneratedScriptData soScript,
 			bool isAbort)
 		{
-			
 
-            if (scriptData != AbortScript)
+
+			if (scriptData != AbortScript)
 				_errorMessage = null;
 
 			bool isAllDataSet = IsAllDataSet(
-				scriptData.IsContainsSO, 
+				scriptData.IsContainsSO,
 				soScript);
-			if(isAllDataSet == false) 
-			{ 
+			if (isAllDataSet == false)
+			{
 				End(ScriptStopModeEnum.Ended, null);
 				return;
 			}
@@ -151,6 +151,11 @@ namespace ScriptRunner.Services
 			InitRecordingListForProject(projects);
 
 			scriptData.State = SciptStateEnum.Running;
+
+			scriptData.State = SciptStateEnum.None;
+
+			ClearProjectScriptsState(scriptData.ScriptItemsList);
+
 
 			RunScript.Run(_logParametersList, scriptData, null, soScript, isRecord, isAbort);
 
@@ -201,6 +206,16 @@ namespace ScriptRunner.Services
 			{
 				_projectIndex = 0;
 				_testIndex = 0;
+			}
+
+			foreach (GeneratedProjectData project in projectsList)
+			{
+				foreach (GeneratedScriptData projScript in project.TestsList)
+				{
+					projScript.State = SciptStateEnum.None;
+
+					ClearProjectScriptsState(projScript.ScriptItemsList);
+				}
 			}
 
 
@@ -310,7 +325,10 @@ namespace ScriptRunner.Services
 								GeneratedScriptData testData =
 									projectsList[_projectIndex].TestsList[_testIndex];
 								testData.State = SciptStateEnum.Running;
-								
+
+								testData.State = SciptStateEnum.None;
+								ClearProjectScriptsState(testData.ScriptItemsList);
+
 								RunScript.Run(
 									logParametersList,
 									testData,
@@ -494,6 +512,17 @@ namespace ScriptRunner.Services
 
 			RunScript.AbortScript("User Abort");
 			_errorMessage = "User Abort";
+		}
+
+		private void ClearProjectScriptsState(ObservableCollection<IScriptItem> scriptItemsList)
+		{
+			foreach(IScriptItem item in scriptItemsList)
+			{
+				if (!(item is ScriptStepBase step))
+					continue;
+
+				step.StepState = SciptStateEnum.None;
+			}
 		}
 
 		#endregion Methods
