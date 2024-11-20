@@ -3,6 +3,7 @@ using DBCFileParser.Model;
 using DeviceCommunicators.General;
 using DeviceHandler.Models;
 using FlashingToolLib.FlashingTools;
+using FlashingToolLib.FlashingTools.UDS;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
+using static iso15765.CUdsClient;
 
 namespace ScriptHandler.Models.ScriptSteps
 {
@@ -22,8 +24,7 @@ namespace ScriptHandler.Models.ScriptSteps
 		public string FilePath { get; set; }
 		public string RXId { get; set; }
 		public string TXId { get; set; }
-		public UdsSequence UdsSequence { get; set; }
-
+		public ECustomer Customer { get; set; }
 
 		public int NumOfFlashFile { get; set; }
 
@@ -79,7 +80,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			}
 			
 
-			IsPass = FlashingHandler.Flash(FilePath, RXId, TXId, UdsSequence.ToString());
+			IsPass = FlashingHandler.Flash(FilePath, RXId, TXId, Customer);
 			ErrorMessage = FlashingHandler.ErrorMessage;
 
 			if (Application.Current != null)
@@ -141,7 +142,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			FilePath = (sourceNode as ScriptNodeEOLFlash).FlashFilePath;
 			RXId = (sourceNode as ScriptNodeEOLFlash).RXId;
 			TXId = (sourceNode as ScriptNodeEOLFlash).TXId;
-			UdsSequence = (sourceNode as ScriptNodeEOLFlash).UdsSequence;
+			Customer = (sourceNode as ScriptNodeEOLFlash).Customer;
 
 			NumOfFlashFile = (sourceNode as ScriptNodeEOLFlash).NumOfFlashFile;
 
