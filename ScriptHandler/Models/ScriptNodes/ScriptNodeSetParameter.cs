@@ -207,6 +207,17 @@ namespace ScriptHandler.Models.ScriptNodes
 			return false;
 		}
 
+		public override object Clone()
+		{
+			ScriptNodeSetParameter setParam = MemberwiseClone() as
+				ScriptNodeSetParameter;
+
+			setParam.ExtraData = this.ExtraData.Clone()
+				as ExtraDataForParameter;
+
+			return setParam;
+		}
+
 		#endregion Method
 	}
 }

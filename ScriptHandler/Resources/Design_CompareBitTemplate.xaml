@@ -8,6 +8,11 @@
     <DataTemplate x:Key="ParamValueTemplate">
 
         <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="5"/>
@@ -30,14 +35,49 @@
 
             </ComboBox>
 
-            <TextBox Grid.Column="2" x:Name="tb" Text="{Binding BitIndex}" Visibility="Collapsed"/>
+            <TextBlock Name="cb3" Grid.Row="2" Grid.Column="0" Text="Value" VerticalAlignment="Center"/>
+            <ComboBox Grid.Row="2" Grid.Column="2" 
+                      Name="cb2"
+                      ItemsSource="{Binding BooleanValues}"
+                      SelectedIndex="{Binding ComparedValue}">
 
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+
+            </ComboBox>
+
+            <!--<Grid Name="cb2" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="77" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Value" VerticalAlignment="Center" Grid.Column="0" />
+                <ComboBox 
+                     Grid.Column="2"
+                     ItemsSource="{Binding BooleanValues}"
+                     SelectedIndex="{Binding ComparedValue}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Grid>-->
+            
+            <TextBox Grid.Column="2" x:Name="tb" Text="{Binding BitIndex}" Visibility="Collapsed"/>
+            
         </Grid>
 
         <DataTemplate.Triggers>
 
             <DataTrigger Binding="{Binding Parameter.DropDown}" Value="{x:Null}">
                 <Setter TargetName="cb" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="cb2" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="cb3" Property="Visibility" Value="Collapsed"/>
                 <Setter TargetName="tb" Property="Visibility" Value="Visible"/>
             </DataTrigger>
 
