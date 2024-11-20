@@ -196,5 +196,18 @@ namespace ScriptHandler.Models.ScriptNodes
 
 			return false;
 		}
+
+		public override object Clone()
+		{
+			ScriptNodeCompareWithTolerance compare = MemberwiseClone() as
+				ScriptNodeCompareWithTolerance;
+
+			compare.CompareValue_ExtraData = this.CompareValue_ExtraData.Clone()
+				as ExtraDataForParameter;
+			compare.Parameter_ExtraData = this.CompareValue_ExtraData.Clone()
+				as ExtraDataForParameter;
+
+			return compare;
+		}
 	}
 }
