@@ -32,4 +32,10 @@
     <ProjectReference Include="..\..\Infrastructure\Services\Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="iso15765">
+      <HintPath>..\..\FlashingToollib\FlashingToolLib\Resources\iso15765.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

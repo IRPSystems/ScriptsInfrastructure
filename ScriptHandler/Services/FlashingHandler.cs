@@ -13,6 +13,11 @@ using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Entities.Enums;
 using DeviceHandler.Enums;
+using FlashingToolLib.FlashingTools.UDS;
+using System.Windows.Documents;
+using System.Collections.Generic;
+using static FlashingToolLib.FlasherService;
+using static iso15765.CUdsClient;
 
 namespace ScriptHandler.Services
 {
@@ -91,11 +96,30 @@ namespace ScriptHandler.Services
 
 		#region Methods
 
+        public bool SelectFlashingTool(ref eFlashingTool flashingTool , string filePath)
+        {
+            if (!_flasherService.SelectFlashTool(filePath))
+            {
+                return false;
+            }
+            flashingTool = _flasherService.flashingTool;
+            return true;
+        }
+
+        public void LoadUdsXML(ECustomer customer)
+        {
+            List<CCustomer> udsCustomerList;
+            string errorMsg;
+            string xmlPath = Environment.CurrentDirectory + "\\Data\\UDS_Messages.xml";
+            _flasherService.OpenUDSXml(out udsCustomerList, out errorMsg, xmlPath);
+            _flasherService.SetFlashingParamsUDS(customer);
+        }
+
 		public bool Flash(
             string filePath,
 			string rxMsgIdStr = "1CFFF9FE",
 			string txMsgIdStr = "1CFFFEF9",
-            string udsSequenceStr = "generic",
+            ECustomer customer = ECustomer.GENERIC,
             string securityKey = "")
         {
 
@@ -140,12 +164,7 @@ namespace ScriptHandler.Services
 
 				_isStopped = false;
 
-
 				_flasherService.FileHandler(filePath);
-
-
-
-                
 
                 bool flashStatus = false;
 
@@ -155,45 +174,17 @@ namespace ScriptHandler.Services
                 {
                     case FlasherService.eFlashingTool.UDS:
 
-                        uint rx;
-                        bool result = uint.TryParse(rxMsgIdStr, System.Globalization.NumberStyles.HexNumber, null, out rx);
-                        if (!result)
-                        {
-                            errorMsg = $"Invalid RX: {rxMsgIdStr}";
-                            break;
-                        }
-
-                        uint tx;
-                        result = uint.TryParse(txMsgIdStr, System.Globalization.NumberStyles.HexNumber, null, out tx);
-                        if (!result)
-                        {
-                            errorMsg = $"Invalid TX: {rxMsgIdStr}";
-                            break;
-                        }
-
-                        UdsSequence udsSequence;
-                        result = Enum.TryParse(udsSequenceStr, out udsSequence);
-                        if (!result)
-                        {
-                            errorMsg = $"Invalid UDS sequence: {udsSequence}";
-                            break;
-                        }
-
                         //Disconnect from peak to allow cyflash to use peak port
                         if (mcuCommunicator.IsInitialized)
 							mcuDevice.Disconnect();
 
                         System.Threading.Thread.Sleep(100);
 
-
+                        uint id = mcuCommunicator.CanService.GetHwId();
 
                         _flasherService.SetFlashingParamsUDS(
-                            udsSequence,
-                            rx,
-                            tx,
-							mcuCommunicator.CanService.GetHwId(),
-							mcuCommunicator.CanService.Baudrate,
-							_udsLogPath);
+                            customer, mcuCommunicator.CanService.GetHwId(),
+                            _udsLogPath);
                         flashStatus = _flasherService.Flash(ref errorMsg);
 
                         //Reopen can port
