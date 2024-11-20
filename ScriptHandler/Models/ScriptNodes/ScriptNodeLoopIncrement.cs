@@ -65,5 +65,16 @@ namespace ScriptHandler.Models.ScriptNodes
 
             return false;
         }
-    }
+
+		public override object Clone()
+		{
+			ScriptNodeLoopIncrement increment = MemberwiseClone() as
+				ScriptNodeLoopIncrement;
+
+			increment.ExtraData = this.ExtraData.Clone()
+				as ExtraDataForParameter;
+
+			return increment;
+		}
+	}
 }

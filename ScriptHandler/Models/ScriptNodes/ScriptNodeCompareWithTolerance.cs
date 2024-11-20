@@ -204,7 +204,7 @@ namespace ScriptHandler.Models.ScriptNodes
 
 			compare.CompareValue_ExtraData = this.CompareValue_ExtraData.Clone()
 				as ExtraDataForParameter;
-			compare.Parameter_ExtraData = this.CompareValue_ExtraData.Clone()
+			compare.Parameter_ExtraData = this.Parameter_ExtraData.Clone()
 				as ExtraDataForParameter;
 
 			return compare;
