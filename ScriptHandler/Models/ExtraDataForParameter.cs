@@ -116,5 +116,10 @@ namespace ScriptHandler.Models
 				ate.Value = AteCommand;
 			}
 		}
+
+		public object Clone()
+		{
+			return MemberwiseClone();
+		}
 	}
 }

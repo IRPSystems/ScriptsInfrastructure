@@ -4,6 +4,7 @@ using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Entities.Models;
+using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,7 +19,9 @@ namespace ScriptHandler.Models.ScriptNodes
 
 		public int BitIndex { get; set; }
 		public int ComparedValue { get; set; }
-        public IEnumerable<object> BooleanValues { get; } = new List<object> { 0, 1 }; 
+
+		[JsonIgnore]
+		public IEnumerable<object> BooleanValues { get; } = new List<object> { 0, 1 }; 
 
         private int _bitSelectedIndex;
 		public int BitSelectedIndex 
