@@ -2,12 +2,14 @@
 using CommunityToolkit.Mvvm.Input;
 using DeviceHandler.Models;
 using FlashingToolLib.FlashingTools;
+using FlashingToolLib.FlashingTools.UDS;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Syncfusion.UI.Xaml.Diagram;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Controls;
+using static iso15765.CUdsClient;
 
 namespace ScriptHandler.Models.ScriptNodes
 {
@@ -36,7 +38,7 @@ namespace ScriptHandler.Models.ScriptNodes
 
 		public string RXId { get; set; }
 		public string TXId { get; set; }
-		public UdsSequence UdsSequence { get; set; }
+		public ECustomer Customer { get; set; }
 
 
 
@@ -79,8 +81,8 @@ namespace ScriptHandler.Models.ScriptNodes
 			UdsSequence_SelectionChangedCommand = new RelayCommand(UdsSequence_SelectionChanged);
 
 			FileExtension = "";
-			UdsSequence = UdsSequence.generic;
-			UdsSequence_SelectionChanged();
+            Customer = ECustomer.GENERIC;
+			//UdsSequence_SelectionChanged();
 		}
 
 		private void FlashFilePathOpen()
@@ -106,19 +108,19 @@ namespace ScriptHandler.Models.ScriptNodes
 		{
 			
 
-			switch (UdsSequence)
-			{
-				case UdsSequence.bootloader:
-				case UdsSequence.silence:
-					RXId = "3FE";
-					TXId = "3FF";
-					break;
-				case UdsSequence.generic:
-				default:
-					RXId = "1CFFF9FE";
-					TXId = "1CFFFEF9";
-					break;
-			}
+			//switch (eCustomer)
+			//{
+			//	case UdsSequence.bootloader:
+			//	case UdsSequence.silence:
+			//		RXId = "3FE";
+			//		TXId = "3FF";
+			//		break;
+			//	case UdsSequence.generic:
+			//	default:
+			//		RXId = "1CFFF9FE";
+			//		TXId = "1CFFFEF9";
+			//		break;
+			//}
 		}
 
 		public override object Clone()
