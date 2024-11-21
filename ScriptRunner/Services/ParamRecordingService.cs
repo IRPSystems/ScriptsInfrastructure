@@ -83,7 +83,8 @@ namespace ScriptRunner.Services
 
 			_lockObj = new object();
 
-			if(_devicesContainer.TypeToDevicesFullData.ContainsKey(Entities.Enums.DeviceTypesEnum.MCU))
+			if(_devicesContainer != null &&
+				_devicesContainer.TypeToDevicesFullData.ContainsKey(Entities.Enums.DeviceTypesEnum.MCU))
 			{
 				DeviceFullData mcuData =
 					_devicesContainer.TypeToDevicesFullData[Entities.Enums.DeviceTypesEnum.MCU];
