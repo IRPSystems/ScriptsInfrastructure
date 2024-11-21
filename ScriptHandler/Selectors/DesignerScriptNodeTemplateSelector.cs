@@ -13,7 +13,7 @@ namespace ScriptHandler.Selectors
 		{
 			FrameworkElement element = container as FrameworkElement;
 
-			if (element is ScriptNodeReleaseTasks)
+			if (item is ScriptNodeReleaseTasks)
 			{
 				object ret = GetReleaseTasks(element);
 				return ret as DataTemplate;
@@ -90,8 +90,6 @@ namespace ScriptHandler.Selectors
 			if (value is ScriptNodeMailToOutlook)
 				return null;
 			if (value is ScriptNodeOpenUrls)
-				return null;
-			if (value is ScriptNodeReleaseTasks)
 				return null;
 			if (value is ScriptNodeRenameFiles)
 				return null;

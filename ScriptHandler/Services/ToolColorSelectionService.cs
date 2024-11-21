@@ -98,16 +98,14 @@ namespace ScriptHandler.Services
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#00FF90");
 			if (value is ScriptNodeOpenUrls)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#00FFFF");
-			if (value is ScriptNodeReleaseTasks)
-				return (SolidColorBrush)new BrushConverter().ConvertFrom("#0094FF");
 			if (value is ScriptNodeRenameFiles)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#0026FF");
 			if (value is ScriptNodeUploadToGithub)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#4800FF");
 			if (value is ScriptNodeUseExeFiles)
-				return (SolidColorBrush)new BrushConverter().ConvertFrom("#FF00DC");
+				return (SolidColorBrush)new BrushConverter().ConvertFrom("#B200FF");
 			if (value is ScriptNodeZipFiles)
-				return (SolidColorBrush)new BrushConverter().ConvertFrom("#FF006E");
+				return (SolidColorBrush)new BrushConverter().ConvertFrom("#FF00DC");
 			return null;
 		}
 	}

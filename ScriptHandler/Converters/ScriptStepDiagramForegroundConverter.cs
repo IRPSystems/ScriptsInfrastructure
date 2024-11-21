@@ -100,19 +100,17 @@ namespace ScriptHandler.Converter
 			if (value is ScriptNodeCopyFiles)
 				return Brushes.White;
 			if (value is ScriptNodeCreateReleaseNotes)
-				return Brushes.White;
+				return Brushes.Black;
 			if (value is ScriptNodeGitCommands)
-				return Brushes.White;
+				return Brushes.Black;
 			if (value is ScriptNodeLinkToJira)
-				return Brushes.White;
+				return Brushes.Black;
 			if (value is ScriptNodeLogicConstrains)
-				return Brushes.White;
+				return Brushes.Black;
 			if (value is ScriptNodeMailToOutlook)
-				return Brushes.White;
+				return Brushes.Black;
 			if (value is ScriptNodeOpenUrls)
-				return Brushes.White;
-			if (value is ScriptNodeReleaseTasks)
-				return Brushes.White;
+				return Brushes.Black;
 			if (value is ScriptNodeRenameFiles)
 				return Brushes.White;
 			if (value is ScriptNodeUploadToGithub)
