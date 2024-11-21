@@ -49,6 +49,10 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			_stepsCounter = 1;
 
+			_getValue.EOLReportsSelectionData = EOLReportsSelectionData;
+			_setValue.EOLReportsSelectionData = EOLReportsSelectionData;
+			_saveValue.EOLReportsSelectionData = EOLReportsSelectionData;
+
 			EOLStepSummeryData eolStepSummeryData;
 
 			SerialNumber = Regex.Replace(UserSN, "[A-Za-z ]", "");

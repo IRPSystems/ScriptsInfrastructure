@@ -110,6 +110,8 @@ namespace ScriptHandler.Models
 			string errorHeader = "Compare range:\r\n";
 			string errorMessage = errorHeader + "Failed to get the compared parameter for compare range\r\n\r\n";
 
+			_getParamValue.EOLReportsSelectionData = EOLReportsSelectionData;
+
 			_stepsCounter = 1;
 
 			double paramValue_Left = 0;
@@ -197,7 +199,7 @@ namespace ScriptHandler.Models
 				this);
 
 			eolStepSummeryData.MeasuredTolerance = MeasuredTolerance;
-            //eolStepSummeryData.TestValue = paramValue_Left;
+            eolStepSummeryData.TestValue = null;
             eolStepSummeryData.ComparisonValue = paramValue_Right;
             eolStepSummeryData.MinVal = minVal;
             eolStepSummeryData.MaxVal = maxVal;
