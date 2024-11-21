@@ -1,8 +1,8 @@
 ﻿
 
-namespace ScriptHandler.Models.ScriptNodes.Tasks
+namespace ScriptHandler.Models.ScriptNodes.ReleaseTasks
 {
-	public class ScriptNodeUploadToGithub : ScriptNodeBase
+	public class ScriptNodeUploadToGithub : ScriptNodeReleaseTasks
 	{
 
 		public override string Description

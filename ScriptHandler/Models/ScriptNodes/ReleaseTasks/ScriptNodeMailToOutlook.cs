@@ -1,8 +1,8 @@
 ﻿
 
-namespace ScriptHandler.Models.ScriptNodes.Tasks
+namespace ScriptHandler.Models.ScriptNodes.ReleaseTasks
 {
-	public class ScriptNodeMailToOutlook : ScriptNodeBase
+	public class ScriptNodeMailToOutlook : ScriptNodeReleaseTasks
 	{
 
 		public override string Description

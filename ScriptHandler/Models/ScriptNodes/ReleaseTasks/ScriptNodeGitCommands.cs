@@ -1,8 +1,8 @@
 ﻿
 
-namespace ScriptHandler.Models.ScriptNodes.Tasks
+namespace ScriptHandler.Models.ScriptNodes.ReleaseTasks
 {
-	public class ScriptNodeGitCommands : ScriptNodeBase
+	public class ScriptNodeGitCommands : ScriptNodeReleaseTasks
 	{
 
 		public override string Description

@@ -1,8 +1,8 @@
 ﻿
 
-namespace ScriptHandler.Models.ScriptNodes.Tasks
+namespace ScriptHandler.Models.ScriptNodes.ReleaseTasks
 {
-	public class ScriptNodeOpenUrls : ScriptNodeBase
+	public class ScriptNodeOpenUrls : ScriptNodeReleaseTasks
 	{
 
 		public override string Description

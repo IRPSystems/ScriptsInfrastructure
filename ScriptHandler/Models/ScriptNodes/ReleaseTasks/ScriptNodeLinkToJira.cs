@@ -1,8 +1,8 @@
 ﻿
 
-namespace ScriptHandler.Models.ScriptNodes.Tasks
+namespace ScriptHandler.Models.ScriptNodes.ReleaseTasks
 {
-	public class ScriptNodeLinkToJira : ScriptNodeBase
+	public class ScriptNodeLinkToJira : ScriptNodeReleaseTasks
 	{
 
 		public override string Description

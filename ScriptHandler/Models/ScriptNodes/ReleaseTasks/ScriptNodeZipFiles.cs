@@ -1,8 +1,8 @@
 ﻿
 
-namespace ScriptHandler.Models.ScriptNodes.Tasks
+namespace ScriptHandler.Models.ScriptNodes.ReleaseTasks
 {
-	public class ScriptNodeZipFiles : ScriptNodeBase
+	public class ScriptNodeZipFiles : ScriptNodeReleaseTasks
 	{
 
 		public override string Description

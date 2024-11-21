@@ -1,10 +1,8 @@
 ﻿
 
-using DeviceCommunicators.Models;
-
-namespace ScriptHandler.Models.ScriptNodes.Tasks
+namespace ScriptHandler.Models.ScriptNodes.ReleaseTasks
 {
-	public class ScriptNodeBuildVersion : ScriptNodeBase
+	public class ScriptNodeBuildVersion : ScriptNodeReleaseTasks
 	{
 		public override string Description
 		{
