@@ -8,6 +8,7 @@ using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Models.ScriptSteps;
 using ScriptHandler.Models;
+using ScriptHandler.Models.ScriptNodes.ReleaseTasks;
 
 namespace ScriptHandler.Converter
 {
@@ -16,6 +17,12 @@ namespace ScriptHandler.Converter
 
 		object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
+			if(value is ScriptNodeReleaseTasks)
+			{
+				object ret = GetReleaseTasks(value);
+				return ret;
+			}
+
 			if (value is ScriptNodeSetParameter || value is ScriptStepSetParameter)
 				return Brushes.White;
             if (value is ScriptNodeSaveParameter || value is ScriptStepSaveParameter)
@@ -84,6 +91,37 @@ namespace ScriptHandler.Converter
 		object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			return string.Empty;
+		}
+
+		private object GetReleaseTasks(object value)
+		{
+			if(value is ScriptNodeBuildVersion)
+				return Brushes.White;
+			if (value is ScriptNodeCopyFiles)
+				return Brushes.White;
+			if (value is ScriptNodeCreateReleaseNotes)
+				return Brushes.White;
+			if (value is ScriptNodeGitCommands)
+				return Brushes.White;
+			if (value is ScriptNodeLinkToJira)
+				return Brushes.White;
+			if (value is ScriptNodeLogicConstrains)
+				return Brushes.White;
+			if (value is ScriptNodeMailToOutlook)
+				return Brushes.White;
+			if (value is ScriptNodeOpenUrls)
+				return Brushes.White;
+			if (value is ScriptNodeReleaseTasks)
+				return Brushes.White;
+			if (value is ScriptNodeRenameFiles)
+				return Brushes.White;
+			if (value is ScriptNodeUploadToGithub)
+				return Brushes.White;
+			if (value is ScriptNodeUseExeFiles)
+				return Brushes.White;
+			if (value is ScriptNodeZipFiles)
+				return Brushes.White;
+			return null;
 		}
 	}
 }

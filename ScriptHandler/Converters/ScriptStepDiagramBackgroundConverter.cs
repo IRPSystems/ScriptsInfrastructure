@@ -2,11 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 using System;
-using System.Windows.Media;
 using ScriptHandler.Interfaces;
-using ScriptHandler.Models.ScriptNodes;
-using ScriptHandler.Models;
-using ScriptHandler.Models.ScriptSteps;
 using ScriptHandler.Services;
 
 namespace ScriptHandler.Converter
