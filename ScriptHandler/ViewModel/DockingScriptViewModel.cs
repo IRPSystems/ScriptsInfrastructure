@@ -95,13 +95,15 @@ namespace ScriptHandler.ViewModels
 			}
 			AddSideWindow(_designTools);
 
-
-			_designParameters = new ContentControl();
-			ParametersView designParametersView = new ParametersView() { DataContext = designParameters };
-			_designParameters.Content = designParametersView;
-			SetHeader(_designParameters, "Parameters"); ;
-			SetSideInDockedMode(_designParameters, DockSide.Right);
-			AddSideWindow(_designParameters);
+			if (designParameters != null)
+			{
+				_designParameters = new ContentControl();
+				ParametersView designParametersView = new ParametersView() { DataContext = designParameters };
+				_designParameters.Content = designParametersView;
+				SetHeader(_designParameters, "Parameters"); ;
+				SetSideInDockedMode(_designParameters, DockSide.Right);
+				AddSideWindow(_designParameters);
+			}
 		}
 
 		private void AddSideWindow(ContentControl contentControl)

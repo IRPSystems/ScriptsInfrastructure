@@ -80,7 +80,8 @@ namespace ScriptHandler.ViewModels
 			DevicesContainer devicesContainer,
 			FlashingHandler flashingHandler,
 			ScriptUserData scriptUserData,
-			string toolsNamespaceToSearch = null)
+			string toolsNamespaceToSearch = null,
+			bool isShowParameters = true)
         {
 
 
@@ -104,7 +105,9 @@ namespace ScriptHandler.ViewModels
 
 			_designDragDropData = new DragDropData();
 			DesignTools = new DesignToolsViewModel(_designDragDropData, toolsNamespaceToSearch);
-			DesignParameters = new ParametersViewModel(_designDragDropData, devicesContainer, false, false);
+
+			if(isShowParameters)
+				DesignParameters = new ParametersViewModel(_designDragDropData, devicesContainer, false, false);
 
 			DesignTools.AddNodeEvent += AddNodeEventHandler;
 
