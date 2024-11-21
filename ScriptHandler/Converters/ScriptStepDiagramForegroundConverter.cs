@@ -9,6 +9,7 @@ using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Models.ScriptSteps;
 using ScriptHandler.Models;
 using ScriptHandler.Models.ScriptNodes.ReleaseTasks;
+using ScriptHandler.Models.ScriptStep.ReleaseTasks;
 
 namespace ScriptHandler.Converter
 {
@@ -95,29 +96,29 @@ namespace ScriptHandler.Converter
 
 		private object GetReleaseTasks(object value)
 		{
-			if(value is ScriptNodeBuildVersion)
+			if(value is ScriptNodeBuildVersion || value is ScriptStepBuildVersion)
 				return Brushes.White;
-			if (value is ScriptNodeCopyFiles)
+			if (value is ScriptNodeCopyFiles || value is ScriptStepCopyFiles)
 				return Brushes.White;
-			if (value is ScriptNodeCreateReleaseNotes)
+			if (value is ScriptNodeCreateReleaseNotes || value is ScriptStepCreateReleaseNotes)
 				return Brushes.Black;
-			if (value is ScriptNodeGitCommands)
+			if (value is ScriptNodeGitCommands || value is ScriptStepGitCommands)
 				return Brushes.Black;
-			if (value is ScriptNodeLinkToJira)
+			if (value is ScriptNodeLinkToJira || value is ScriptStepLinkToJira)
 				return Brushes.Black;
-			if (value is ScriptNodeLogicConstrains)
+			if (value is ScriptNodeLogicConstrains || value is ScriptStepLogicConstrains)
 				return Brushes.Black;
-			if (value is ScriptNodeMailToOutlook)
+			if (value is ScriptNodeMailToOutlook || value is ScriptStepMailToOutlook)
 				return Brushes.Black;
-			if (value is ScriptNodeOpenUrls)
+			if (value is ScriptNodeOpenUrls || value is ScriptStepOpenUrls)
 				return Brushes.Black;
-			if (value is ScriptNodeRenameFiles)
+			if (value is ScriptNodeRenameFiles || value is ScriptStepRenameFiles)
 				return Brushes.White;
-			if (value is ScriptNodeUploadToGithub)
+			if (value is ScriptNodeUploadToGithub || value is ScriptStepUploadToGithub)
 				return Brushes.White;
-			if (value is ScriptNodeUseExeFiles)
+			if (value is ScriptNodeUseExeFiles || value is ScriptStepUseExeFiles)
 				return Brushes.White;
-			if (value is ScriptNodeZipFiles)
+			if (value is ScriptNodeZipFiles || value is ScriptStepZipFiles)
 				return Brushes.White;
 			return null;
 		}

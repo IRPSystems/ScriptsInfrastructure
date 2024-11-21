@@ -6,6 +6,7 @@ using ScriptHandler.Models.ScriptSteps;
 using ScriptHandler.Models;
 using System.Windows.Media;
 using ScriptHandler.Models.ScriptNodes.ReleaseTasks;
+using ScriptHandler.Models.ScriptStep.ReleaseTasks;
 
 namespace ScriptHandler.Services
 {
@@ -82,29 +83,29 @@ namespace ScriptHandler.Services
 
 		private static Brush GetReleaseTasks(object value)
 		{
-			if (value is ScriptNodeBuildVersion)
+			if (value is ScriptNodeBuildVersion || value is ScriptStepBuildVersion)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#FF0000");
-			if (value is ScriptNodeCopyFiles)
+			if (value is ScriptNodeCopyFiles || value is ScriptStepCopyFiles)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#FF6A00");
-			if (value is ScriptNodeCreateReleaseNotes)
+			if (value is ScriptNodeCreateReleaseNotes || value is ScriptStepCreateReleaseNotes)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#FFD800");
-			if (value is ScriptNodeGitCommands)
+			if (value is ScriptNodeGitCommands || value is ScriptStepGitCommands)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#B6FF00");
-			if (value is ScriptNodeLinkToJira)
+			if (value is ScriptNodeLinkToJira || value is ScriptStepLinkToJira)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#4CFF00");
-			if (value is ScriptNodeLogicConstrains)
+			if (value is ScriptNodeLogicConstrains || value is ScriptStepLogicConstrains)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#00FF21");
-			if (value is ScriptNodeMailToOutlook)
+			if (value is ScriptNodeMailToOutlook || value is ScriptStepMailToOutlook)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#00FF90");
-			if (value is ScriptNodeOpenUrls)
+			if (value is ScriptNodeOpenUrls || value is ScriptStepOpenUrls)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#00FFFF");
-			if (value is ScriptNodeRenameFiles)
+			if (value is ScriptNodeRenameFiles || value is ScriptStepRenameFiles)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#0026FF");
-			if (value is ScriptNodeUploadToGithub)
+			if (value is ScriptNodeUploadToGithub || value is ScriptStepUploadToGithub)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#4800FF");
-			if (value is ScriptNodeUseExeFiles)
+			if (value is ScriptNodeUseExeFiles || value is ScriptStepUseExeFiles)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#B200FF");
-			if (value is ScriptNodeZipFiles)
+			if (value is ScriptNodeZipFiles || value is ScriptStepZipFiles)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#FF00DC");
 			return null;
 		}

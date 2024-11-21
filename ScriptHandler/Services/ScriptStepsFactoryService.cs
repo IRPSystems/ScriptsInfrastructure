@@ -1,7 +1,10 @@
 ﻿
 using DeviceCommunicators.EvvaDevice;
+using Newtonsoft.Json.Linq;
 using ScriptHandler.Models;
 using ScriptHandler.Models.ScriptNodes;
+using ScriptHandler.Models.ScriptNodes.ReleaseTasks;
+using ScriptHandler.Models.ScriptStep.ReleaseTasks;
 using ScriptHandler.Models.ScriptSteps;
 
 namespace ScriptHandler.Services
@@ -10,6 +13,12 @@ namespace ScriptHandler.Services
 	{
 		public static ScriptStepBase Factory(ScriptNodeBase node)
 		{
+			if (node is ScriptNodeReleaseTasks)
+			{
+				ScriptStepBase ret = GetReleaseTasks(node);
+				return ret;
+			}
+
 			if (node.GetType().Name == "ScriptNodeCompare")
 				return new ScriptStepCompare();
 			else if (node.GetType().Name == "ScriptNodeDelay")
@@ -77,6 +86,35 @@ namespace ScriptHandler.Services
 
 			return null;
 
+		}
+
+		private static ScriptStepBase GetReleaseTasks(object value)
+		{
+			if (value is ScriptNodeBuildVersion)
+				return new ScriptStepBuildVersion();
+			if (value is ScriptNodeCopyFiles)
+				return new ScriptStepCopyFiles();
+			if (value is ScriptNodeCreateReleaseNotes)
+				return new ScriptStepCreateReleaseNotes();
+			if (value is ScriptNodeGitCommands)
+				return new ScriptStepGitCommands();
+			if (value is ScriptNodeLinkToJira)
+				return new ScriptStepLinkToJira();
+			if (value is ScriptNodeLogicConstrains)
+				return new ScriptStepLogicConstrains();
+			if (value is ScriptNodeMailToOutlook)
+				return new ScriptStepMailToOutlook();
+			if (value is ScriptNodeOpenUrls)
+				return new ScriptStepOpenUrls();
+			if (value is ScriptNodeRenameFiles)
+				return new ScriptStepRenameFiles();
+			if (value is ScriptNodeUploadToGithub)
+				return new ScriptStepUploadToGithub();
+			if (value is ScriptNodeUseExeFiles)
+				return new ScriptStepUseExeFiles();
+			if (value is ScriptNodeZipFiles)
+				return new ScriptStepZipFiles();
+			return null;
 		}
 	}
 }
