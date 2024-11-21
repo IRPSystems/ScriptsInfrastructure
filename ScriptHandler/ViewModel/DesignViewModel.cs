@@ -79,7 +79,8 @@ namespace ScriptHandler.ViewModels
 		public DesignViewModel(
 			DevicesContainer devicesContainer,
 			FlashingHandler flashingHandler,
-			ScriptUserData scriptUserData)
+			ScriptUserData scriptUserData,
+			string toolsNamespaceToSearch = null)
         {
 
 
@@ -102,7 +103,7 @@ namespace ScriptHandler.ViewModels
 
 
 			_designDragDropData = new DragDropData();
-			DesignTools = new DesignToolsViewModel(_designDragDropData);
+			DesignTools = new DesignToolsViewModel(_designDragDropData, toolsNamespaceToSearch);
 			DesignParameters = new ParametersViewModel(_designDragDropData, devicesContainer, false, false);
 
 			DesignTools.AddNodeEvent += AddNodeEventHandler;

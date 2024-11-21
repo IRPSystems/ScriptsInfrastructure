@@ -33,17 +33,18 @@ namespace ScriptHandler.ViewModels
 		#region Constructor
 
 		public DesignToolsViewModel(
-			DragDropData designDragDropData)
+			DragDropData designDragDropData,
+			string namespaceToSearch = null)
 		{
 			_designDragDropData = designDragDropData;
-			InitScriptNodeToolList();
+			InitScriptNodeToolList(namespaceToSearch);
 		}
 
 		#endregion Constructor
 
 		#region Methods
 
-		private void InitScriptNodeToolList()
+		private void InitScriptNodeToolList(string subNamespacr)
 		{
 			LoggerService.Inforamtion(this, "Initiating the tools list");
 
@@ -51,7 +52,10 @@ namespace ScriptHandler.ViewModels
 				SingleOrDefault(assembly => assembly.GetName().Name == "ScriptHandler");
 
 			List<Type> typesList = assembly.GetTypes().ToList();
-			typesList = typesList.Where((t) => t.Namespace == "ScriptHandler.Models.ScriptNodes").ToList();
+			string name = "ScriptHandler.Models.ScriptNodes";
+			if (string.IsNullOrEmpty(subNamespacr) == false)
+				name += $".{subNamespacr}";
+			typesList = typesList.Where((t) => t.Namespace == name).ToList();
 
 			ScriptNodeToolList = new ObservableCollection<ScriptNodeBase>();
 			foreach (Type type in typesList)
