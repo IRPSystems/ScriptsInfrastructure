@@ -56,7 +56,7 @@ namespace ScriptHandler.Models
 				if (Parameter.Value is string str)
 				{
 					int index = 0;
-                    bool res = int.TryParse(str, out value);
+                    //bool res = int.TryParse(str, out value);
 
                     if (Parameter is MCU_ParamData param)
                     {
@@ -67,7 +67,7 @@ namespace ScriptHandler.Models
 							bit = 0;
                     }
 
-                    if (res == false || index == -1)
+                    if (index == -1)
 					{
 						IsPass = false;
 						ErrorMessage += "Recived value is not an integer value";
