@@ -93,7 +93,12 @@ namespace ScriptHandler.Models.ScriptSteps
             _eState = eState.Init;
             _isStopped = false;
 
-            if (RefSensorParam is ZimmerPowerMeter_ParamData powerMeter)
+			_getValue.EOLReportsSelectionData = EOLReportsSelectionData;
+			_setValue.EOLReportsSelectionData = EOLReportsSelectionData;
+			_saveValue.EOLReportsSelectionData = EOLReportsSelectionData;
+
+
+			if (RefSensorParam is ZimmerPowerMeter_ParamData powerMeter)
                 powerMeter.Channel = RefSensorChannel;
 
             if (RefSensorParam is NI6002_ParamData niParamData)

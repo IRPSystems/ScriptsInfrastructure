@@ -209,6 +209,9 @@ namespace ScriptRunner.Services
 			GeneratedScriptData scriptData,
 			ref int totlsRunSteps)
 		{
+			if (scriptData == null)
+				return;
+
 			foreach (IScriptItem item in scriptData.ScriptItemsList)
 			{
 				if(item is ISubScript subScript)
