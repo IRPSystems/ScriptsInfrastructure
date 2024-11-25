@@ -1,5 +1,6 @@
 ﻿
 using DeviceCommunicators.General;
+using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
@@ -35,8 +36,8 @@ namespace ScriptHandler.Models
 			try
 			{
 				IsPass = false;
-
-				ErrorMessage = Description;
+                uint? bit = null;
+                ErrorMessage = Description;
 
 				string description = Description;
 				if(string.IsNullOrEmpty(UserTitle) == false ) 
@@ -54,13 +55,24 @@ namespace ScriptHandler.Models
 				int value = 0;
 				if (Parameter.Value is string str)
 				{
-					bool res = int.TryParse(str, out value);
-					if (res == false)
+					int index = 0;
+                    //bool res = int.TryParse(str, out value);
+
+                    if (Parameter is MCU_ParamData param)
+                    {
+                        index = param.DropDown.FindIndex(dropdown => dropdown.Name == str);
+						if (index == BitIndex)
+							bit = 1;
+						else
+							bit = 0;
+                    }
+
+                    if (index == -1)
 					{
 						IsPass = false;
 						ErrorMessage += "Recived value is not an integer value";
 						return;
-					}
+					}					
 				}
 				else
 				{
@@ -73,7 +85,9 @@ namespace ScriptHandler.Models
 					}
 				}
 
-				uint bit = (uint)((value >> (BitIndex - 1)) & 1);
+				if(bit == null)
+					bit = (uint)((value >> (BitIndex - 1)) & 1);
+
 				if (bit != ComparedValue)
 				{
 					IsPass = false;
