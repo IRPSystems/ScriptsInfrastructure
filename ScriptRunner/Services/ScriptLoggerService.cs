@@ -52,7 +52,7 @@ namespace ScriptRunner.Services
 
 			SetLineCollors(lineData, logType);
 
-			LoggerService.Inforamtion(this, $"***[{lineData.Time}] [{lineData.Data}] [{logType}]");
+			//LoggerService.Inforamtion(this, $"***[{lineData.Time}] [{lineData.Data}] [{logType}]");
 		}
 
 		public void AddLine( 
@@ -77,7 +77,7 @@ namespace ScriptRunner.Services
 				});
 			}
 
-			LoggerService.Inforamtion(this, $"***[{lineData.Time}] [{lineData.Data}] [{logType}]");
+			//LoggerService.Inforamtion(this, $"***[{lineData.Time}] [{lineData.Data}] [{logType}]");
 		}
 
 		private void SetLineCollors(
