@@ -118,5 +118,19 @@ namespace ScriptHandler.Models
 			Parameter = (sourceNode as ScriptNodeIncrementValue).Parameter;
 			IncrementValue = (sourceNode as ScriptNodeIncrementValue).IncrementValue;
 		}
+
+		public override List<string> GetReportHeaders()
+		{
+			List<string> headers = base.GetReportHeaders();
+
+			string stepDescription = headers[0].Trim('\"');
+
+			string description =
+				$"{stepDescription}\r\nGet {Parameter.Name}";
+			headers.Add($"\"{description}\"");
+
+
+			return headers;
+		}
 	}
 }

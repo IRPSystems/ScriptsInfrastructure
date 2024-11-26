@@ -7,10 +7,8 @@ using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
-using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
 using Services.Services;
 using System.Collections.Generic;
@@ -236,16 +234,38 @@ namespace ScriptHandler.Models
 
 			string stepDescription = Description;
 			if(string.IsNullOrEmpty(UserTitle) == false)
-				stepDescription = UserTitle;
+				stepDescription += $";\r\n{UserTitle}";
 
 			string testName = FixStringService.GetFixedString(TestName);
 			string subScriptName = FixStringService.GetFixedString(SubScriptName);
 
 			string description =
 				$"{testName};\r\n{subScriptName};\r\n{stepDescription};";
-
-			headers.Add($"\"{description}\"");
+			description = $"\"{description}\"";
+			headers.Add(description);
 			return headers;
+		}
+
+		public virtual List<string> GetReportValues()
+		{
+			List<string> values = new List<string>();
+
+			string stepState = "FAILED";
+			if (IsPass)
+				stepState = "PASSED";
+
+			values.Add(stepState);
+
+			foreach (EOLStepSummeryData stepSum in EOLStepSummerysList)
+			{
+				if (string.IsNullOrEmpty(stepSum.ParentStepDescription))
+					continue;
+
+				string value = $"{stepSum.Description}={stepSum.TestValue}";
+				values.Add(value);
+			}
+
+			return values;
 		}
 
 		#endregion Methods
