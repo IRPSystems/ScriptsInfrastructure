@@ -389,6 +389,39 @@ namespace ScriptHandler.Models.ScriptSteps
 			}
 		}
 
+		public override List<string> GetReportHeaders()
+		{
+			List<string> headers = base.GetReportHeaders();
+
+			string stepDescription = headers[0].Trim('\"');
+
+			if (Value is DeviceParameterData valueParam)
+			{
+				string description =
+						$"{stepDescription}\r\nGet {valueParam.Name}";
+
+				headers.Add($"\"{description}\"");
+			}
+
+			if (ValueLeft is DeviceParameterData valueLeft)
+			{
+				string description =
+						$"{stepDescription}\r\nGet {valueLeft.Name}";
+
+				headers.Add($"\"{description}\"");
+			}
+
+			if (ValueRight is DeviceParameterData valueRight)
+			{
+				string description =
+						$"{stepDescription}\r\nGet {valueRight.Name}";
+
+				headers.Add($"\"{description}\"");
+			}
+
+			return headers;
+		}
+
 		#endregion Methodes
 	}
 }

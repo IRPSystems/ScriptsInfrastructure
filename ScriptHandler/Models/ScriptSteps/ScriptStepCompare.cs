@@ -299,5 +299,31 @@ namespace ScriptHandler.Models
 			}
 			DevicesContainer = devicesContainer;
 		}
+
+		public override List<string> GetReportHeaders()
+		{
+			List<string> headers = base.GetReportHeaders();
+
+			string stepDescription = headers[0].Trim('\"');
+
+			if (ValueLeft is DeviceParameterData paramLeft)
+			{
+				string description =
+					$"{stepDescription}\r\nGet {paramLeft.Name}";
+
+				headers.Add($"\"{description}\"");
+			}
+
+			if (ValueRight is DeviceParameterData paramRight)
+			{
+				string description =
+					$"{stepDescription}\r\nGet {paramRight.Name}";
+
+				headers.Add($"\"{description}\"");
+			}
+
+			return headers;
+		}
+
 	}
 }

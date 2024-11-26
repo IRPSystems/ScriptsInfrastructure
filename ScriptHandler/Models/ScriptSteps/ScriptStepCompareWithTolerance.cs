@@ -5,6 +5,7 @@ using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ScriptHandler.Enums;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
@@ -445,6 +446,30 @@ namespace ScriptHandler.Models
 
 			DevicesContainer = devicesContainer;
 		}
+
+		public override List<string> GetReportHeaders()
+		{
+			List<string> headers = base.GetReportHeaders();
+
+			string stepDescription = headers[0].Trim('\"');
+
+			string description =
+					$"{stepDescription}\r\nGet {Parameter.Name}";
+
+			headers.Add($"\"{description}\"");
+
+			if (CompareValue is DeviceParameterData compareValue)
+			{
+				description =
+						$"{stepDescription}\r\nGet {compareValue.Name}";
+
+				headers.Add($"\"{description}\"");
+			}
+
+
+			return headers;
+		}
+
 
 		#endregion Methods
 	}

@@ -148,5 +148,19 @@ namespace ScriptHandler.Models
 				Parameter,
 				devicesContainer);
 		}
+
+		public override List<string> GetReportHeaders()
+		{
+			List<string> headers = base.GetReportHeaders();
+
+			string stepDescription = headers[0].Trim('\"');
+
+			string description =
+					$"{stepDescription}\r\nGet {Parameter.Name}";
+
+			headers.Add($"\"{description}\"");
+
+			return headers;
+		}
 	}
 }

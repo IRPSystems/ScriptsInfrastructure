@@ -12,6 +12,7 @@ using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
+using Services.Services;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -92,10 +93,13 @@ namespace ScriptHandler.Models
 		public EOLReportsSelectionData EOLReportsSelectionData { get; set; }
 		public List<EOLStepSummeryData> EOLStepSummerysList { get; set; }
 
+		public string SubScriptName { get; set; }
+		public string TestName { get; set; }
 
 		public int ProgressPercentage { get; set; }
 		protected int _totalNumOfSteps;
 		protected int _stepsCounter;
+
 
 
 
@@ -224,6 +228,24 @@ namespace ScriptHandler.Models
 			}
 
 			return actualParam;
+		}
+
+		public virtual List<string> GetReportHeaders()
+		{
+			List<string> headers = new List<string>();
+
+			string stepDescription = Description;
+			if(string.IsNullOrEmpty(UserTitle) == false)
+				stepDescription = UserTitle;
+
+			string testName = FixStringService.GetFixedString(TestName);
+			string subScriptName = FixStringService.GetFixedString(SubScriptName);
+
+			string description =
+				$"{testName};\r\n{subScriptName};\r\n{stepDescription};";
+
+			headers.Add($"\"{description}\"");
+			return headers;
 		}
 
 		#endregion Methods

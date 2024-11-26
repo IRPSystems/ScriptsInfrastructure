@@ -8,6 +8,7 @@ using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -178,6 +179,25 @@ namespace ScriptHandler.Models.ScriptSteps
 			SN_Param = GetRealParam(
 				SN_Param,
 				devicesContainer);
+		}
+
+		public override List<string> GetReportHeaders()
+		{
+			List<string> headers = base.GetReportHeaders();
+
+			string stepDescription = headers[0].Trim('\"');
+
+			string description =
+					$"{stepDescription}\r\nSet {SN_Param.Name} = {SerialNumber}";
+			headers.Add($"\"{description}\"");
+
+			description =
+					$"{stepDescription}\r\nGet {SN_Param.Name}";
+			headers.Add($"\"{description}\"");
+			
+
+
+			return headers;
 		}
 
 		#endregion Methods
