@@ -1,4 +1,5 @@
 ﻿
+using ControlzEx.Standard;
 using DeviceCommunicators.General;
 using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
@@ -18,6 +19,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Windows;
 
 namespace ScriptHandler.Models
@@ -41,141 +43,163 @@ namespace ScriptHandler.Models
 
 		public override void Execute()
 		{
-			IsPass = false;
-
-			if (!IsUseAverage)
-				AverageOfNRead = 1;
-
-			double leftVal = 0;
-			string leftParamName = "";
-			_stepsCounter = 1;
-
-
-
-            if (ValueLeft is DeviceParameterData paramLeft)
+			try
 			{
-				int intValue = 0;
+				IsPass = false;
+				_isExecuted = true;
 
-                double sum = 0;
-				for (int i = 0; i < AverageOfNRead; i++)
+				if (!IsUseAverage)
+					AverageOfNRead = 1;
+
+				double leftVal = 0;
+				string leftParamName = "";
+				_stepsCounter = 1;
+
+
+
+				if (ValueLeft is DeviceParameterData paramLeft)
 				{
-					object val = GetCompareParaValue(paramLeft);
-
-					if (val == null || IsPass == false)
-					{
-						return;
-					}
-
-					if (val is string strval && strval.StartsWith("0x"))
-					{
-                        string hexSubstring = strval.Substring(2);
-                        bool isSuccess = int.TryParse(hexSubstring, System.Globalization.NumberStyles.HexNumber, null, out intValue);
-						val = intValue;
-						if (!isSuccess) 
-							{ return; }
-
-						val = intValue;
-					}
-					if(val is string)
-					{
-						if(paramLeft is MCU_ParamData mCU_ParamData)
-						{
-                            foreach (DropDownParamData dropDown in mCU_ParamData.DropDown)
-                            {
-								if(dropDown.Name == (string)val)
-								{
-									sum = Convert.ToDouble(dropDown.Value);
-									break;
-								}
-                            }
-                        }
-					}
-					else
-					{
-                        sum += Convert.ToDouble(val);
-                    }
-                   
-
 					
+					double sum = 0;
+					for (int i = 0; i < AverageOfNRead; i++)
+					{
+						object val = GetCompareParaValue(paramLeft);
+						if (val == null || IsPass == false)
+							return;
 
-                    System.Threading.Thread.Sleep(1);
+
+						double? dVal = GetNumericVal(val, paramLeft);
+						if (dVal == null)
+							return;
+
+						sum += (double)dVal;
+
+
+						System.Threading.Thread.Sleep(1);
+					}
+
+					leftVal = sum / AverageOfNRead;
+					leftParamName = paramLeft.Name;
 				}
 
-				leftVal = sum / AverageOfNRead;
-				leftParamName = paramLeft.Name;
-			}
+				_stepsCounter++;
+				double? rightVal = 0;
+				string rightParamName = "";
+				string compareReference = "Fixed Value";
+				if (ValueRight is DeviceParameterData paramRight)
+				{
+					compareReference = paramRight.DeviceType.ToString();
 
-            _stepsCounter++;
-			double? rightVal = 0;
-			string rightParamName = "";
-			string compareReference = "Fixed Value";
-			if (ValueRight is DeviceParameterData paramRight)
-			{
-                compareReference = paramRight.DeviceType.ToString();
+					object val = GetCompareParaValue(paramRight);
+					if (val == null || IsPass == false)
+						return;
 
-                object val = GetCompareParaValue(paramRight);
-				if (val == null || IsPass == false)
+
+					rightVal = GetNumericVal(val, paramRight);
+					rightParamName = paramRight.Name;
+				}
+				else
+					rightVal = ValueRight as double?;
+				if (rightVal == null)
+				{
 					return;
+				}
 
-				rightVal = Convert.ToDouble(val);
-				rightParamName = paramRight.Name;
+
+				ErrorMessage = leftParamName + " = " + leftVal + "; ";
+				if (!string.IsNullOrEmpty(rightParamName))
+				{
+					ErrorMessage += rightParamName + " = " + rightVal + "; ";
+				}
+				else
+					ErrorMessage += "The value = " + rightVal + "; ";
+
+				_stepsCounter++;
+
+
+
+				Compare(leftVal, (double)rightVal);
+
+				_stepsCounter++;
+
+				string stepDescription = Description;
+				if (!string.IsNullOrEmpty(UserTitle))
+					stepDescription = UserTitle;
+
+
+				EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
+					"",
+					stepDescription,
+					this);
+
+				//eolStepSummeryData.TestValue = leftVal;
+				eolStepSummeryData.ComparisonValue = rightVal;
+				eolStepSummeryData.Reference = compareReference;
+				eolStepSummeryData.Method = Comparation.ToString();
+				eolStepSummeryData.IsPass = IsPass;
+				eolStepSummeryData.ErrorDescription = ErrorMessage;
+				EOLStepSummerysList.Add(eolStepSummeryData);
+
+				#region Log comparation
+				string str = leftParamName + " = " + leftVal + "; ";
+				if (!string.IsNullOrEmpty(rightParamName))
+				{
+					str += rightParamName + " = " + rightVal + "; ";
+				}
+				else
+					str += "The value = " + rightVal + "; ";
+
+				str += "\r\n" + "IsPass = " + IsPass;
+
+				LoggerService.Inforamtion(this, str);
+
+				#endregion Log comparation
+			}
+			catch (Exception ex)
+			{
+				LoggerService.Error(this, "Failed to execute", ex);
+				IsPass = false;
+				ErrorMessage += $"Failed to execute\r\n\r\n{ex}";
+			}
+		}
+
+		private double? GetNumericVal(
+			object val,
+			DeviceParameterData parameter)
+		{
+			double dVal = 0;
+
+			if (val is string strval && strval.StartsWith("0x"))
+			{
+				int intValue;
+				string hexSubstring = strval.Substring(2);
+				bool isSuccess = int.TryParse(hexSubstring, System.Globalization.NumberStyles.HexNumber, null, out intValue);
+				val = intValue;
+				if (!isSuccess)
+					return null; 
+
+				val = intValue;
+			}
+			if (val is string)
+			{
+				if (parameter is MCU_ParamData mCU_ParamData)
+				{
+					foreach (DropDownParamData dropDown in mCU_ParamData.DropDown)
+					{
+						if (dropDown.Name == (string)val)
+						{
+							dVal = Convert.ToDouble(dropDown.Value);
+							break;
+						}
+					}
+				}
 			}
 			else
-				rightVal = ValueRight as double?;
-			if(rightVal == null)
 			{
-				return;
+				dVal += Convert.ToDouble(val);
 			}
 
-
-            ErrorMessage = leftParamName + " = " + leftVal + "; ";
-			if(!string.IsNullOrEmpty(rightParamName))
-			{
-				ErrorMessage += rightParamName + " = " + rightVal + "; ";
-			}
-			else
-				ErrorMessage += "The value = " + rightVal + "; ";
-
-			_stepsCounter++;
-
-
-
-            Compare(leftVal, (double)rightVal);
-
-			_stepsCounter++;
-
-            string stepDescription = Description;
-            if (!string.IsNullOrEmpty(UserTitle))
-                stepDescription = UserTitle;
-            
-
-            EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
-				"",
-				stepDescription,
-				this);
-
-			//eolStepSummeryData.TestValue = leftVal;
-			eolStepSummeryData.ComparisonValue = rightVal;
-			eolStepSummeryData.Reference = compareReference;
-            eolStepSummeryData.Method = Comparation.ToString();
-			eolStepSummeryData.IsPass = IsPass;
-			eolStepSummeryData.ErrorDescription = ErrorMessage;
-            EOLStepSummerysList.Add(eolStepSummeryData);
-
-            #region Log comparation
-            string str = leftParamName + " = " + leftVal + "; ";
-			if (!string.IsNullOrEmpty(rightParamName))
-			{
-				str += rightParamName + " = " + rightVal + "; ";
-			}
-			else
-				str += "The value = " + rightVal + "; ";
-
-			str += "\r\n" + "IsPass = " + IsPass;
-
-			LoggerService.Inforamtion(this, str);
-
-			#endregion Log comparation
+			return dVal;
 		}
 
 		private void Compare(
@@ -299,5 +323,67 @@ namespace ScriptHandler.Models
 			}
 			DevicesContainer = devicesContainer;
 		}
+
+		public override List<string> GetReportHeaders()
+		{
+			List<string> headers = base.GetReportHeaders();
+
+			string stepDescription = headers[0].Trim('\"');
+
+			if (ValueLeft is DeviceParameterData paramLeft)
+			{
+				string description =
+					$"{stepDescription}\r\nGet {paramLeft.Name}";
+
+				headers.Add($"\"{description}\"");
+			}
+
+			if (ValueRight is DeviceParameterData paramRight)
+			{
+				string description =
+					$"{stepDescription}\r\nGet {paramRight.Name}";
+
+				headers.Add($"\"{description}\"");
+			}
+
+			return headers;
+		}
+
+		public override List<string> GetReportValues()
+		{
+			List<string> values = base.GetReportValues();
+
+			if (ValueLeft is DeviceParameterData paramLeft)
+			{
+				EOLStepSummeryData stepSummeryData =
+					EOLStepSummerysList.Find((e) =>
+						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(paramLeft.Name));
+
+				if(stepSummeryData != null)
+					values.Add(stepSummeryData.TestValue.ToString());
+				else
+					values.Add("");
+				
+			}
+
+			if (ValueRight is DeviceParameterData paramRight)
+			{
+				EOLStepSummeryData stepSummeryData =
+					EOLStepSummerysList.Find((e) =>
+						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(paramRight.Name));
+
+				if (stepSummeryData != null)
+					values.Add(stepSummeryData.TestValue.ToString());
+				else
+					values.Add("");
+				
+			}
+
+			_isExecuted = false;
+
+			return values;
+		}
+
+
 	}
 }

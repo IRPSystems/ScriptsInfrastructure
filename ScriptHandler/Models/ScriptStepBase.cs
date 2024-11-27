@@ -7,11 +7,10 @@ using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
-using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
+using Services.Services;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -35,6 +34,8 @@ namespace ScriptHandler.Models
 		public IScriptItem PassNext { get; set; }
 		[JsonIgnore]
 		public IScriptItem FailNext { get; set; }
+
+		
 
 		public string PassNextDescription { get; set; }
 		public string FailNextDescription { get; set; }
@@ -92,11 +93,14 @@ namespace ScriptHandler.Models
 		public EOLReportsSelectionData EOLReportsSelectionData { get; set; }
 		public List<EOLStepSummeryData> EOLStepSummerysList { get; set; }
 
+		public string SubScriptName { get; set; }
+		public string TestName { get; set; }
 
 		public int ProgressPercentage { get; set; }
 		protected int _totalNumOfSteps;
 		protected int _stepsCounter;
 
+		protected bool _isExecuted;
 
 
 		#endregion Properties and Fields
@@ -106,8 +110,8 @@ namespace ScriptHandler.Models
 		public ScriptStepBase()
 		{
 			EOLStepSummerysList = new List<EOLStepSummeryData>();
-
-        }
+			_isExecuted = false;
+		}
 
 		#endregion Constructor
 
@@ -224,6 +228,39 @@ namespace ScriptHandler.Models
 			}
 
 			return actualParam;
+		}
+
+		public virtual List<string> GetReportHeaders()
+		{
+			List<string> headers = new List<string>();
+
+			string stepDescription = Description;
+			if(string.IsNullOrEmpty(UserTitle) == false)
+				stepDescription += $";\r\n{UserTitle}";
+
+			string testName = FixStringService.GetFixedString(TestName);
+			string subScriptName = FixStringService.GetFixedString(SubScriptName);
+
+			string description =
+				$"{testName};\r\n{subScriptName};\r\n{stepDescription};";
+			description = $"\"{description}\"";
+			headers.Add(description);
+			return headers;
+		}
+
+		public virtual List<string> GetReportValues()
+		{
+			List<string> values = new List<string>();
+
+			string stepState = $"\"{ErrorMessage}\"";
+			if (!_isExecuted)
+				stepState = "Not Executed";			
+			else if (IsPass)
+				stepState = "PASSED";
+
+			values.Add(stepState);
+
+			return values;
 		}
 
 		#endregion Methods

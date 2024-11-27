@@ -4,12 +4,11 @@ using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using ScriptHandler.Interfaces;
-using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
+using Services.Services;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Threading;
 
 namespace ScriptHandler.Models.ScriptSteps
 {
@@ -35,6 +34,10 @@ namespace ScriptHandler.Models.ScriptSteps
 		{
 			_totalNumOfSteps = 4;
 			UserSN = "E7P-22-00-00032";
+
+			_setValue = new ScriptStepSetParameter();
+			_getValue = new ScriptStepGetParamValue();
+			_saveValue = new ScriptStepSetSaveParameter();
 		}
 
 		#endregion Constructor
@@ -43,64 +46,45 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		public override void Execute()
 		{
-			//Get SN from UI - Temp userSN
-
-			//remove daash and letters
-
-			_stepsCounter = 1;
-
-			_getValue.EOLReportsSelectionData = EOLReportsSelectionData;
-			_setValue.EOLReportsSelectionData = EOLReportsSelectionData;
-			_saveValue.EOLReportsSelectionData = EOLReportsSelectionData;
-
-			EOLStepSummeryData eolStepSummeryData;
-
-			SerialNumber = Regex.Replace(UserSN, "[A-Za-z ]", "");
-			SerialNumber = SerialNumber.Remove(0, 1);
-			SerialNumber = SerialNumber.Replace("-", "");
-
-			//Set SN
-			_setValue = new ScriptStepSetParameter();
-			_setValue.Parameter = SN_Param;
-			_setValue.Communicator = Communicator;
-			_setValue.Value = SerialNumber;
-			_setValue.Execute();
-			EOLStepSummerysList.AddRange(_setValue.EOLStepSummerysList);
-
-			string description = Description;
-			if (!string.IsNullOrEmpty(UserTitle))
-				description = UserTitle;
-
-			if (!_setValue.IsPass)
+			try
 			{
-				ErrorMessage = "Unable to set: " + SN_Param.Name;
-				IsPass = false;				
-                eolStepSummeryData = new EOLStepSummeryData(
-                    "",
-					description,
-					this);
-                eolStepSummeryData.IsPass = IsPass;
-                eolStepSummeryData.ErrorDescription = ErrorMessage;
-                EOLStepSummerysList.Add(eolStepSummeryData);
-				return;
-			}
 
-			_stepsCounter++;
+				//Get SN from UI - Temp userSN
 
-			//Verify SN- get
+				//remove daash and letters
 
-			_getValue = new ScriptStepGetParamValue();
-			_getValue.Parameter = SN_Param;
-			_getValue.Communicator = Communicator;			
-			_getValue.SendAndReceive(out eolStepSummeryData, Description);
-			EOLStepSummerysList.Add(eolStepSummeryData);
-			if (_getValue.IsPass)
-			{				
-				//Validate SN
-				if (SN_Param.Value as string == UserSN)
+
+				_isExecuted = true;
+
+				_stepsCounter = 1;
+
+				if (_setValue != null && _getValue != null && _saveValue != null)
 				{
-					ErrorMessage = "Wrong SN \r\n"
-					+ _getValue.ErrorMessage;
+					_getValue.EOLReportsSelectionData = EOLReportsSelectionData;
+					_setValue.EOLReportsSelectionData = EOLReportsSelectionData;
+					_saveValue.EOLReportsSelectionData = EOLReportsSelectionData;
+				}
+
+				EOLStepSummeryData eolStepSummeryData;
+
+				SerialNumber = Regex.Replace(SerialNumber, "[A-Za-z ]", "");
+				SerialNumber = SerialNumber.Remove(0, 1);
+				SerialNumber = SerialNumber.Replace("-", "");
+
+				//Set SN
+				_setValue.Parameter = SN_Param;
+				_setValue.Communicator = Communicator;
+				_setValue.Value = SerialNumber;
+				_setValue.Execute();
+				EOLStepSummerysList.AddRange(_setValue.EOLStepSummerysList);
+
+				string description = Description;
+				if (!string.IsNullOrEmpty(UserTitle))
+					description = UserTitle;
+
+				if (!_setValue.IsPass)
+				{
+					ErrorMessage = "Unable to set: " + SN_Param.Name;
 					IsPass = false;
 					eolStepSummeryData = new EOLStepSummeryData(
 						"",
@@ -111,43 +95,74 @@ namespace ScriptHandler.Models.ScriptSteps
 					EOLStepSummerysList.Add(eolStepSummeryData);
 					return;
 				}
+
+				_stepsCounter++;
+
+				//Verify SN- get
+
+				_getValue.Parameter = SN_Param;
+				_getValue.Communicator = Communicator;
+				_getValue.SendAndReceive(out eolStepSummeryData, Description);
+				EOLStepSummerysList.Add(eolStepSummeryData);
+				if (_getValue.IsPass)
+				{
+					//Validate SN
+					if (SN_Param.Value as string == UserSN)
+					{
+						ErrorMessage = "Wrong SN \r\n"
+						+ _getValue.ErrorMessage;
+						IsPass = false;
+						eolStepSummeryData = new EOLStepSummeryData(
+							"",
+							description,
+							this);
+						eolStepSummeryData.IsPass = IsPass;
+						eolStepSummeryData.ErrorDescription = ErrorMessage;
+						EOLStepSummerysList.Add(eolStepSummeryData);
+						return;
+					}
+				}
+				else
+				{
+					ErrorMessage = "Failed to get the SN parameter";
+					IsPass = false;
+					eolStepSummeryData = new EOLStepSummeryData(
+							"",
+							description,
+							this);
+					eolStepSummeryData.IsPass = IsPass;
+					eolStepSummeryData.ErrorDescription = ErrorMessage;
+					EOLStepSummerysList.Add(eolStepSummeryData);
+					return;
+				}
+
+				_stepsCounter++;
+
+				//If succeed save param
+
+				_saveValue.Parameter = SN_Param;
+				_saveValue.Communicator = Communicator;
+				_saveValue.Value = Convert.ToDouble(SerialNumber);
+				_saveValue.Execute();
+				EOLStepSummerysList.AddRange(_saveValue.EOLStepSummerysList);
+
+				if (!_saveValue.IsPass)
+				{
+					IsPass = false;
+					ErrorMessage = "Unable to save SN: " + _saveValue.ErrorMessage;
+					return;
+				}
+				IsPass = true;
+
+				AddToEOLSummary();
+
 			}
-			else
+			catch (Exception ex)
 			{
-				ErrorMessage = "Failed to get the SN parameter";
+				LoggerService.Error(this, "Failed to execute", ex);
 				IsPass = false;
-                eolStepSummeryData = new EOLStepSummeryData(
-						"",
-						description,
-						this);
-				eolStepSummeryData.IsPass = IsPass;
-                eolStepSummeryData.ErrorDescription = ErrorMessage;
-                EOLStepSummerysList.Add(eolStepSummeryData);
-				return;
+				ErrorMessage += $"Failed to execute {ex}";
 			}
-
-			_stepsCounter++;
-
-			//If succeed save param
-
-			_saveValue = new ScriptStepSetSaveParameter();
-			_saveValue.Parameter = SN_Param;
-			_saveValue.Communicator = Communicator;
-			_saveValue.Value = Convert.ToDouble(SerialNumber);
-			_saveValue.Execute();
-			EOLStepSummerysList.AddRange(_saveValue.EOLStepSummerysList);
-
-			if (!_saveValue.IsPass)
-			{
-				IsPass = false;
-				ErrorMessage = "Unable to save SN: " + _saveValue.ErrorMessage;
-				return;
-			}
-			IsPass = true;
-
-			AddToEOLSummary();
-
-			return;
 		}
 
 		protected override void Stop()
@@ -178,6 +193,46 @@ namespace ScriptHandler.Models.ScriptSteps
 			SN_Param = GetRealParam(
 				SN_Param,
 				devicesContainer);
+		}
+
+		public override List<string> GetReportHeaders()
+		{
+			List<string> headers = base.GetReportHeaders();
+
+			string stepDescription = headers[0].Trim('\"');
+
+			string description =
+					$"{stepDescription}\r\nSet {SN_Param.Name} = {SerialNumber}";
+			headers.Add($"\"{description}\"");
+
+			description =
+					$"{stepDescription}\r\nGet {SN_Param.Name}";
+			headers.Add($"\"{description}\"");
+			
+
+
+			return headers;
+		}
+
+		public override List<string> GetReportValues()
+		{
+			List<string> values = base.GetReportValues();
+
+			values.Add(SerialNumber);
+
+
+			EOLStepSummeryData stepSummeryData =
+				EOLStepSummerysList.Find((e) =>
+					!string.IsNullOrEmpty(e.Description) && e.Description.Contains(SN_Param.Name));
+
+			if (stepSummeryData != null)
+				values.Add(stepSummeryData.TestValue.ToString());
+			else
+				values.Add("");
+
+			_isExecuted = false;
+
+			return values;
 		}
 
 		#endregion Methods
