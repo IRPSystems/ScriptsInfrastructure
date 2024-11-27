@@ -42,6 +42,7 @@ namespace ScriptHandler.Models
 		public override void Execute()
 		{
 			IsPass = false;
+			_isExecuted = true;
 
 			if (!IsUseAverage)
 				AverageOfNRead = 1;
@@ -331,41 +332,31 @@ namespace ScriptHandler.Models
 
 			if (ValueLeft is DeviceParameterData paramLeft)
 			{
-				if (IsPass)
-				{
-					EOLStepSummeryData stepSummeryData =
-						EOLStepSummerysList.Find((e) =>
-							!string.IsNullOrEmpty(e.Description) && e.Description.Contains(paramLeft.Name));
+				EOLStepSummeryData stepSummeryData =
+					EOLStepSummerysList.Find((e) =>
+						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(paramLeft.Name));
 
-					if(stepSummeryData != null)
-						values.Add(stepSummeryData.TestValue.ToString());
-					else
-						values.Add(",");
-				}
+				if(stepSummeryData != null)
+					values.Add(stepSummeryData.TestValue.ToString());
 				else
-				{
-					values.Add(",");
-				}
+					values.Add("");
+				
 			}
 
 			if (ValueRight is DeviceParameterData paramRight)
 			{
-				if (IsPass)
-				{
-					EOLStepSummeryData stepSummeryData =
-						EOLStepSummerysList.Find((e) =>
-							!string.IsNullOrEmpty(e.Description) && e.Description.Contains(paramRight.Name));
+				EOLStepSummeryData stepSummeryData =
+					EOLStepSummerysList.Find((e) =>
+						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(paramRight.Name));
 
-					if (stepSummeryData != null)
-						values.Add(stepSummeryData.TestValue.ToString());
-					else
-						values.Add(",");
-				}
+				if (stepSummeryData != null)
+					values.Add(stepSummeryData.TestValue.ToString());
 				else
-				{
-					values.Add(",");
-				}
+					values.Add("");
+				
 			}
+
+			_isExecuted = false;
 
 			return values;
 		}

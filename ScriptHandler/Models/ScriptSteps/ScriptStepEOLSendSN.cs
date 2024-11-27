@@ -48,6 +48,8 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			//remove daash and letters
 
+			_isExecuted = true;
+
 			_stepsCounter = 1;
 
 			_getValue.EOLReportsSelectionData = EOLReportsSelectionData;
@@ -204,25 +206,19 @@ namespace ScriptHandler.Models.ScriptSteps
 		{
 			List<string> values = base.GetReportValues();
 
-			if (IsPass)
-			{
-				values.Add(SerialNumber);
+			values.Add(SerialNumber);
 
 
-				EOLStepSummeryData stepSummeryData =
-					EOLStepSummerysList.Find((e) =>
-						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(SN_Param.Name));
+			EOLStepSummeryData stepSummeryData =
+				EOLStepSummerysList.Find((e) =>
+					!string.IsNullOrEmpty(e.Description) && e.Description.Contains(SN_Param.Name));
 
-				if (stepSummeryData != null)
-					values.Add(stepSummeryData.TestValue.ToString());
-				else
-					values.Add(",");
-			}
+			if (stepSummeryData != null)
+				values.Add(stepSummeryData.TestValue.ToString());
 			else
-			{
-				values.Add(",,");
-			}
+				values.Add("");
 
+			_isExecuted = false;
 
 			return values;
 		}

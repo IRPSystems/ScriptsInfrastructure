@@ -35,6 +35,8 @@ namespace ScriptHandler.Models
 		[JsonIgnore]
 		public IScriptItem FailNext { get; set; }
 
+		
+
 		public string PassNextDescription { get; set; }
 		public string FailNextDescription { get; set; }
 
@@ -98,7 +100,7 @@ namespace ScriptHandler.Models
 		protected int _totalNumOfSteps;
 		protected int _stepsCounter;
 
-
+		protected bool _isExecuted;
 
 
 		#endregion Properties and Fields
@@ -108,8 +110,8 @@ namespace ScriptHandler.Models
 		public ScriptStepBase()
 		{
 			EOLStepSummerysList = new List<EOLStepSummeryData>();
-
-        }
+			_isExecuted = false;
+		}
 
 		#endregion Constructor
 
@@ -251,7 +253,9 @@ namespace ScriptHandler.Models
 			List<string> values = new List<string>();
 
 			string stepState = $"\"{ErrorMessage}\"";
-			if (IsPass)
+			if (!_isExecuted)
+				stepState = "Not Executed";			
+			else if (IsPass)
 				stepState = "PASSED";
 
 			values.Add(stepState);

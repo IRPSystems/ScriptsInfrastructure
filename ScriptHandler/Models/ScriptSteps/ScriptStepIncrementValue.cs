@@ -37,6 +37,7 @@ namespace ScriptHandler.Models
 		{
 			_isStoped = false;
 			IsPass = true;
+			_isExecuted = true;
 
 			_stepsCounter = 1;
 
@@ -137,22 +138,16 @@ namespace ScriptHandler.Models
 		{
 			List<string> values = base.GetReportValues();
 
-			if (IsPass)
-			{
-				EOLStepSummeryData stepSummeryData =
-					EOLStepSummerysList.Find((e) =>
-						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(Parameter.Name));
+			EOLStepSummeryData stepSummeryData =
+				EOLStepSummerysList.Find((e) =>
+					!string.IsNullOrEmpty(e.Description) && e.Description.Contains(Parameter.Name));
 
-				if (stepSummeryData != null)
-					values.Add(stepSummeryData.TestValue.ToString());
-				else
-					values.Add(",");
-			}
+			if (stepSummeryData != null)
+				values.Add(stepSummeryData.TestValue.ToString());
 			else
-			{
-				values.Add(",");
-			}
+				values.Add("");
 
+			_isExecuted = false;
 
 			return values;
 		}
