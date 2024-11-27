@@ -250,20 +250,11 @@ namespace ScriptHandler.Models
 		{
 			List<string> values = new List<string>();
 
-			string stepState = "FAILED";
+			string stepState = $"\"{ErrorMessage}\"";
 			if (IsPass)
 				stepState = "PASSED";
 
 			values.Add(stepState);
-
-			foreach (EOLStepSummeryData stepSum in EOLStepSummerysList)
-			{
-				if (string.IsNullOrEmpty(stepSum.ParentStepDescription))
-					continue;
-
-				string value = $"{stepSum.Description}={stepSum.TestValue}";
-				values.Add(value);
-			}
 
 			return values;
 		}

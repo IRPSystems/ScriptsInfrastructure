@@ -470,6 +470,33 @@ namespace ScriptHandler.Models
 			return headers;
 		}
 
+		public override List<string> GetReportValues()
+		{
+			List<string> values = base.GetReportValues();
+
+			if (CompareValue is DeviceParameterData compareValue)
+			{
+				if (IsPass)
+				{
+					EOLStepSummeryData stepSummeryData =
+						EOLStepSummerysList.Find((e) =>
+							!string.IsNullOrEmpty(e.Description) && e.Description.Contains(compareValue.Name));
+
+					if (stepSummeryData != null)
+						values.Add(stepSummeryData.TestValue.ToString());
+					else
+						values.Add(",");
+				}
+				else
+				{
+					values.Add(",");
+				}
+			}
+
+
+			return values;
+		}
+
 
 		#endregion Methods
 	}

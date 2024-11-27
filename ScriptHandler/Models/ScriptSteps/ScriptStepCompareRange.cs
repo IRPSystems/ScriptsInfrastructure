@@ -422,6 +422,71 @@ namespace ScriptHandler.Models.ScriptSteps
 			return headers;
 		}
 
+		public override List<string> GetReportValues()
+		{
+			List<string> values = base.GetReportValues();
+
+			if (Value is DeviceParameterData valueParam)
+			{
+				if (IsPass)
+				{
+					EOLStepSummeryData stepSummeryData =
+						EOLStepSummerysList.Find((e) =>
+							!string.IsNullOrEmpty(e.Description) && e.Description.Contains(valueParam.Name));
+
+					if (stepSummeryData != null)
+						values.Add(stepSummeryData.TestValue.ToString());
+					else
+						values.Add(",");
+				}
+				else
+				{
+					values.Add(",");
+				}
+			}
+
+			if (ValueLeft is DeviceParameterData valueLeft)
+			{
+				if (IsPass)
+				{
+					EOLStepSummeryData stepSummeryData =
+						EOLStepSummerysList.Find((e) =>
+							!string.IsNullOrEmpty(e.Description) && e.Description.Contains(valueLeft.Name));
+
+					if (stepSummeryData != null)
+						values.Add(stepSummeryData.TestValue.ToString());
+					else
+						values.Add(",");
+				}
+				else
+				{
+					values.Add(",");
+				}
+			}
+
+			if (ValueRight is DeviceParameterData valueRight)
+			{
+				if (IsPass)
+				{
+					EOLStepSummeryData stepSummeryData =
+						EOLStepSummerysList.Find((e) =>
+							!string.IsNullOrEmpty(e.Description) && e.Description.Contains(valueRight.Name));
+
+					if (stepSummeryData != null)
+						values.Add(stepSummeryData.TestValue.ToString());
+					else
+						values.Add(",");
+				}
+				else
+				{
+					values.Add(",");
+				}
+			}
+
+
+			return values;
+		}
+
 		#endregion Methodes
 	}
 }

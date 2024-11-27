@@ -162,5 +162,29 @@ namespace ScriptHandler.Models
 
 			return headers;
 		}
+
+		public override List<string> GetReportValues()
+		{
+			List<string> values = base.GetReportValues();
+
+			if (IsPass)
+			{
+				EOLStepSummeryData stepSummeryData =
+					EOLStepSummerysList.Find((e) =>
+						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(Parameter.Name));
+
+				if (stepSummeryData != null)
+					values.Add(stepSummeryData.TestValue.ToString());
+				else
+					values.Add(",");
+			}
+			else
+			{
+				values.Add(",");
+			}
+
+
+			return values;
+		}
 	}
 }

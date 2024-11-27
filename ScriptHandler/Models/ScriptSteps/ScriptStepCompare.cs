@@ -325,6 +325,51 @@ namespace ScriptHandler.Models
 			return headers;
 		}
 
-		
+		public override List<string> GetReportValues()
+		{
+			List<string> values = base.GetReportValues();
+
+			if (ValueLeft is DeviceParameterData paramLeft)
+			{
+				if (IsPass)
+				{
+					EOLStepSummeryData stepSummeryData =
+						EOLStepSummerysList.Find((e) =>
+							!string.IsNullOrEmpty(e.Description) && e.Description.Contains(paramLeft.Name));
+
+					if(stepSummeryData != null)
+						values.Add(stepSummeryData.TestValue.ToString());
+					else
+						values.Add(",");
+				}
+				else
+				{
+					values.Add(",");
+				}
+			}
+
+			if (ValueRight is DeviceParameterData paramRight)
+			{
+				if (IsPass)
+				{
+					EOLStepSummeryData stepSummeryData =
+						EOLStepSummerysList.Find((e) =>
+							!string.IsNullOrEmpty(e.Description) && e.Description.Contains(paramRight.Name));
+
+					if (stepSummeryData != null)
+						values.Add(stepSummeryData.TestValue.ToString());
+					else
+						values.Add(",");
+				}
+				else
+				{
+					values.Add(",");
+				}
+			}
+
+			return values;
+		}
+
+
 	}
 }
