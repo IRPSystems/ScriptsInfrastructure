@@ -52,9 +52,9 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			_stepsCounter = 1;
 
-			_getValue.EOLReportsSelectionData = EOLReportsSelectionData;
-			_setValue.EOLReportsSelectionData = EOLReportsSelectionData;
-			_saveValue.EOLReportsSelectionData = EOLReportsSelectionData;
+			
+			
+			
 
 			EOLStepSummeryData eolStepSummeryData;
 
@@ -64,6 +64,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			//Set SN
 			_setValue = new ScriptStepSetParameter();
+			_setValue.EOLReportsSelectionData = EOLReportsSelectionData;
 			_setValue.Parameter = SN_Param;
 			_setValue.Communicator = Communicator;
 			_setValue.Value = SerialNumber;
@@ -93,6 +94,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			//Verify SN- get
 
 			_getValue = new ScriptStepGetParamValue();
+			_getValue.EOLReportsSelectionData = EOLReportsSelectionData;
 			_getValue.Parameter = SN_Param;
 			_getValue.Communicator = Communicator;			
 			_getValue.SendAndReceive(out eolStepSummeryData, Description);
@@ -134,6 +136,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			//If succeed save param
 
 			_saveValue = new ScriptStepSetSaveParameter();
+			_saveValue.EOLReportsSelectionData = EOLReportsSelectionData;
 			_saveValue.Parameter = SN_Param;
 			_saveValue.Communicator = Communicator;
 			_saveValue.Value = Convert.ToDouble(SerialNumber);
