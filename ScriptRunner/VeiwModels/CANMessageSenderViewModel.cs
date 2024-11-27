@@ -17,6 +17,9 @@ using ScriptHandler.Interfaces;
 using ScriptHandler.Services;
 using Services.Services;
 using System.Collections.Generic;
+using DeviceCommunicators.Models;
+using DeviceCommunicators.Services;
+using DeviceHandler.ViewModels;
 
 namespace ScriptRunner.ViewModels
 {
@@ -50,6 +53,12 @@ namespace ScriptRunner.ViewModels
 
 		public bool IsStartEnabled { get; set; }
 
+		
+		public bool IsGlobalComm { get; set; }
+
+		public DeviceFullData LocalCommDevice { get; set; }
+
+
 
 		#endregion Properties
 
@@ -66,17 +75,32 @@ namespace ScriptRunner.ViewModels
 
 		public CANMessageSenderViewModel(
 			DevicesContainer devicesContainer,
+			string mcuFilePath,
 			ScriptUserData scriptUserData)
 		{
 			_devicesContainer = devicesContainer;
 			_scriptUserData = scriptUserData;
 
 			IsStartEnabled = true;
+			IsGlobalComm = true;
 
 			BrowseCANMessagesScriptPathCommand = new RelayCommand(BrowseCANMessagesScriptPath);
 			StartCANMessageSenderCommand = new RelayCommand(StartCANMessageSender);
 			StopCANMessageSenderCommand = new RelayCommand(StopAllCANMessages);
+			GlobalCommCommand = new RelayCommand(GlobalComm);
+			LocalCommCommand = new RelayCommand(LocalComm);
 
+			ReadDevicesFileService _readDevicesFile = new ReadDevicesFileService();
+			ObservableCollection<DeviceData> devicesList = new ObservableCollection<DeviceData>();
+			_readDevicesFile.ReadFromMCUJson(
+				mcuFilePath,
+				devicesList,
+				"MCU",
+				DeviceTypesEnum.MCU);
+			LocalCommDevice = new DeviceFullData_MCU(devicesList[0]);
+			LocalCommDevice.Init("CANMessage", null);
+
+			(LocalCommDevice.ConnectionViewModel as CanConnectViewModel).ThisVisibility = Visibility.Collapsed;
 
 			try
 			{
@@ -223,8 +247,16 @@ namespace ScriptRunner.ViewModels
 			if (_devicesContainer.TypeToDevicesFullData.ContainsKey(DeviceTypesEnum.MCU) == false)
 				return;
 
-			DeviceFullData mcuDevice = _devicesContainer.TypeToDevicesFullData[DeviceTypesEnum.MCU];
-			canMessage.Communicator = mcuDevice.DeviceCommunicator;
+			if (IsGlobalComm)
+			{
+				DeviceFullData mcuDevice = _devicesContainer.TypeToDevicesFullData[DeviceTypesEnum.MCU];
+				canMessage.Communicator = mcuDevice.DeviceCommunicator;
+			}
+			else
+			{
+				canMessage.Communicator = LocalCommDevice.DeviceCommunicator;
+			}
+
 			canMessage.IsAddCRCCounter = data.IsUseCRCCounter;
 			canMessage.Execute();
 		}
@@ -325,7 +357,15 @@ namespace ScriptRunner.ViewModels
 			CANMessageRequest(sz);
 		}
 
+		private void GlobalComm()
+		{
+			(LocalCommDevice.ConnectionViewModel as CanConnectViewModel).ThisVisibility = Visibility.Collapsed;
+		}
 
+		private void LocalComm()
+		{
+			(LocalCommDevice.ConnectionViewModel as CanConnectViewModel).ThisVisibility = Visibility.Visible;
+		}
 
 		#endregion Methods
 
@@ -337,6 +377,9 @@ namespace ScriptRunner.ViewModels
 		public RelayCommand CANMessageSenderCommand { get; private set; }
 		public RelayCommand StartCANMessageSenderCommand { get; private set; }
 		public RelayCommand StopCANMessageSenderCommand { get; private set; }
+
+		public RelayCommand GlobalCommCommand { get; private set; }
+		public RelayCommand LocalCommCommand { get; private set; }
 
 		#endregion Commands
 	}
