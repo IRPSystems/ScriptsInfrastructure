@@ -3,6 +3,7 @@ using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
 using DeviceCommunicators.TSCPrinter;
 using DeviceHandler.Models;
+using Entities.Enums;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
 using System.Collections.Generic;
@@ -101,6 +102,17 @@ namespace ScriptHandler.Models
                     parameterData as DeviceParameterData,
                     devicesContainer) as PrinterTSC_ParamData;
 
+        }
+
+        public override List<DeviceTypesEnum> GetUsedDevices()
+        {
+            List<DeviceTypesEnum> UsedDevices = new List<DeviceTypesEnum>();
+
+            if (ParamData is DeviceParameterData deviceParameter)
+            {
+                UsedDevices.Add(deviceParameter.DeviceType);
+            }
+            return UsedDevices;
         }
 
         #endregion Methods

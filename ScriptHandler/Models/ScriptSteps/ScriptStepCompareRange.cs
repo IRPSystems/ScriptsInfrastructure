@@ -4,6 +4,7 @@ using DeviceCommunicators.Models;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
+using Entities.Enums;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
@@ -54,7 +55,6 @@ namespace ScriptHandler.Models.ScriptSteps
 		public override void Execute()
 		{
 			IsPass = false;
-			_isExecuted = true;
 			string errorHeader = "Compare range:\r\n";
 			string errorMessage = errorHeader + "Failed to get the compared parameter for compare range\r\n\r\n";
 
@@ -390,88 +390,21 @@ namespace ScriptHandler.Models.ScriptSteps
 			}
 		}
 
-		public override List<string> GetReportHeaders()
-		{
-			List<string> headers = base.GetReportHeaders();
+        public override List<DeviceTypesEnum> GetUsedDevices()
+        {
+            List<DeviceTypesEnum> UsedDevices = new List<DeviceTypesEnum>();
 
-			string stepDescription = headers[0].Trim('\"');
+            if (ValueLeft is DeviceParameterData deviceLeft)
+            {
+                UsedDevices.Add(deviceLeft.DeviceType);
+            }
+            if (ValueRight is DeviceParameterData deviceRight)
+            {
+                UsedDevices.Add(deviceRight.DeviceType);
+            }
+            return UsedDevices;
+        }
 
-			if (Value is DeviceParameterData valueParam)
-			{
-				string description =
-						$"{stepDescription}\r\nGet {valueParam.Name}";
-
-				headers.Add($"\"{description}\"");
-			}
-
-			if (ValueLeft is DeviceParameterData valueLeft)
-			{
-				string description =
-						$"{stepDescription}\r\nGet {valueLeft.Name}";
-
-				headers.Add($"\"{description}\"");
-			}
-
-			if (ValueRight is DeviceParameterData valueRight)
-			{
-				string description =
-						$"{stepDescription}\r\nGet {valueRight.Name}";
-
-				headers.Add($"\"{description}\"");
-			}
-
-			return headers;
-		}
-
-		public override List<string> GetReportValues()
-		{
-			List<string> values = base.GetReportValues();
-
-			if (Value is DeviceParameterData valueParam)
-			{
-				EOLStepSummeryData stepSummeryData =
-					EOLStepSummerysList.Find((e) =>
-						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(valueParam.Name));
-
-				if (stepSummeryData != null)
-					values.Add(stepSummeryData.TestValue.ToString());
-				else
-					values.Add("");
-
-			}
-
-			if (ValueLeft is DeviceParameterData valueLeft)
-			{
-				EOLStepSummeryData stepSummeryData =
-					EOLStepSummerysList.Find((e) =>
-						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(valueLeft.Name));
-
-				if (stepSummeryData != null)
-					values.Add(stepSummeryData.TestValue.ToString());
-				else
-					values.Add("");
-
-			}
-
-			if (ValueRight is DeviceParameterData valueRight)
-			{
-				EOLStepSummeryData stepSummeryData =
-					EOLStepSummerysList.Find((e) =>
-						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(valueRight.Name));
-
-				if (stepSummeryData != null)
-					values.Add(stepSummeryData.TestValue.ToString());
-				else
-					values.Add("");
-
-			}
-
-			_isExecuted = false;
-
-
-			return values;
-		}
-
-		#endregion Methodes
-	}
+        #endregion Methodes
+    }
 }

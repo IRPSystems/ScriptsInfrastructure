@@ -18,6 +18,7 @@ using System.Windows.Documents;
 using System.Collections.Generic;
 using static FlashingToolLib.FlasherService;
 using static iso15765.CUdsClient;
+using System.Windows;
 
 namespace ScriptHandler.Services
 {
@@ -111,8 +112,12 @@ namespace ScriptHandler.Services
             List<CCustomer> udsCustomerList;
             string errorMsg;
             string xmlPath = Environment.CurrentDirectory + "\\Data\\UDS_Messages.xml";
-            _flasherService.OpenUDSXml(out udsCustomerList, out errorMsg, xmlPath);
-            _flasherService.SetFlashingParamsUDS(customer);
+            if (!_flasherService.OpenUDSXml(out udsCustomerList, out errorMsg, xmlPath))
+            {
+                MessageBox.Show(errorMsg);
+                return;
+            }
+            _flasherService.SetFlashingParamsUDS(customer, ref errorMsg);
         }
 
 		public bool Flash(
@@ -183,7 +188,7 @@ namespace ScriptHandler.Services
                         uint id = mcuCommunicator.CanService.GetHwId();
 
                         _flasherService.SetFlashingParamsUDS(
-                            customer, mcuCommunicator.CanService.GetHwId(),
+                            customer, ref errorMsg ,mcuCommunicator.CanService.GetHwId(),
                             _udsLogPath);
                         flashStatus = _flasherService.Flash(ref errorMsg);
 

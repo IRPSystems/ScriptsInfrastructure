@@ -12,6 +12,7 @@ using DeviceCommunicators.SwitchRelay32;
 using DeviceCommunicators.ZimmerPowerMeter;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
+using Entities.Enums;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ScriptHandler.Enums;
@@ -350,7 +351,14 @@ namespace ScriptHandler.Models
 
 		}
 
-		#endregion Methodes
+        public override List<DeviceTypesEnum> GetUsedDevices()
+        {
+            List<DeviceTypesEnum> UsedDevices = new List<DeviceTypesEnum>();
+            UsedDevices.Add(Parameter.DeviceType);
+            return UsedDevices;
+        }
 
-	}
+        #endregion Methodes
+
+    }
 }

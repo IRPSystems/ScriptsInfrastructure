@@ -3,6 +3,7 @@ using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
+using Entities.Enums;
 using Entities.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Enums;
@@ -440,6 +441,17 @@ namespace ScriptHandler.Models.ScriptSteps
 			//}
 		}
 
-		#endregion Methods
-	}
+        public override List<DeviceTypesEnum> GetUsedDevices()
+        {
+            List<DeviceTypesEnum> UsedDevices = new List<DeviceTypesEnum>();
+
+            if (Parameter is DeviceParameterData deviceParameter)
+            {
+                UsedDevices.Add(deviceParameter.DeviceType);
+            }
+            return UsedDevices;
+        }
+
+        #endregion Methods
+    }
 }

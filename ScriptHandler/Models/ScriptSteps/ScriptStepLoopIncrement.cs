@@ -2,6 +2,7 @@
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
+using Entities.Enums;
 using ScriptHandler.Enums;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
@@ -156,5 +157,15 @@ namespace ScriptHandler.Models
 
 			ExtraData = new ExtraDataForParameter((sourceNode as ScriptNodeLoopIncrement).ExtraData);
 		}
+
+        public override List<DeviceTypesEnum> GetUsedDevices()
+        {
+            List<DeviceTypesEnum> UsedDevices = new List<DeviceTypesEnum>();
+            if(Parameter != null)
+            {
+                UsedDevices.Add(Parameter.DeviceType);
+            }
+            return UsedDevices;
+        }
     }
 }

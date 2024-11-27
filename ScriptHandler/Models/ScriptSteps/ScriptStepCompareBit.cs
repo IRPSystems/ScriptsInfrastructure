@@ -4,6 +4,7 @@ using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
+using Entities.Enums;
 using Entities.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
@@ -38,8 +39,6 @@ namespace ScriptHandler.Models
 				IsPass = false;
                 uint? bit = null;
                 ErrorMessage = Description;
-
-				_isExecuted = true;
 
 				string description = Description;
 				if(string.IsNullOrEmpty(UserTitle) == false ) 
@@ -151,36 +150,15 @@ namespace ScriptHandler.Models
 				devicesContainer);
 		}
 
-		public override List<string> GetReportHeaders()
-		{
-			List<string> headers = base.GetReportHeaders();
+        public override List<DeviceTypesEnum> GetUsedDevices()
+        {
+            List<DeviceTypesEnum> UsedDevices = new List<DeviceTypesEnum>();
 
-			string stepDescription = headers[0].Trim('\"');
-
-			string description =
-					$"{stepDescription}\r\nGet {Parameter.Name}";
-
-			headers.Add($"\"{description}\"");
-
-			return headers;
-		}
-
-		public override List<string> GetReportValues()
-		{
-			List<string> values = base.GetReportValues();
-
-			EOLStepSummeryData stepSummeryData =
-				EOLStepSummerysList.Find((e) =>
-					!string.IsNullOrEmpty(e.Description) && e.Description.Contains(Parameter.Name));
-
-			if (stepSummeryData != null)
-				values.Add(stepSummeryData.TestValue.ToString());
-			else
-				values.Add("");
-
-			_isExecuted = false;
-
-			return values;
-		}
-	}
+            if (Parameter is DeviceParameterData deviceParameter)
+            {
+                UsedDevices.Add(deviceParameter.DeviceType);
+            }
+            return UsedDevices;
+        }
+    }
 }

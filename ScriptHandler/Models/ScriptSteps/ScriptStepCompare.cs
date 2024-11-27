@@ -5,6 +5,7 @@ using DeviceCommunicators.Models;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
+using Entities.Enums;
 using Entities.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -42,7 +43,6 @@ namespace ScriptHandler.Models
 		public override void Execute()
 		{
 			IsPass = false;
-			_isExecuted = true;
 
 			if (!IsUseAverage)
 				AverageOfNRead = 1;
@@ -301,66 +301,19 @@ namespace ScriptHandler.Models
 			DevicesContainer = devicesContainer;
 		}
 
-		public override List<string> GetReportHeaders()
+        public override List<DeviceTypesEnum> GetUsedDevices()
 		{
-			List<string> headers = base.GetReportHeaders();
-
-			string stepDescription = headers[0].Trim('\"');
-
-			if (ValueLeft is DeviceParameterData paramLeft)
+			List<DeviceTypesEnum> UsedDevices = new List<DeviceTypesEnum>();
+            
+			if(ValueLeft is DeviceParameterData deviceLeft)
 			{
-				string description =
-					$"{stepDescription}\r\nGet {paramLeft.Name}";
-
-				headers.Add($"\"{description}\"");
-			}
-
-			if (ValueRight is DeviceParameterData paramRight)
+				UsedDevices.Add(deviceLeft.DeviceType);
+            }
+			if(ValueRight is DeviceParameterData deviceRight)
 			{
-				string description =
-					$"{stepDescription}\r\nGet {paramRight.Name}";
-
-				headers.Add($"\"{description}\"");
-			}
-
-			return headers;
-		}
-
-		public override List<string> GetReportValues()
-		{
-			List<string> values = base.GetReportValues();
-
-			if (ValueLeft is DeviceParameterData paramLeft)
-			{
-				EOLStepSummeryData stepSummeryData =
-					EOLStepSummerysList.Find((e) =>
-						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(paramLeft.Name));
-
-				if(stepSummeryData != null)
-					values.Add(stepSummeryData.TestValue.ToString());
-				else
-					values.Add("");
-				
-			}
-
-			if (ValueRight is DeviceParameterData paramRight)
-			{
-				EOLStepSummeryData stepSummeryData =
-					EOLStepSummerysList.Find((e) =>
-						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(paramRight.Name));
-
-				if (stepSummeryData != null)
-					values.Add(stepSummeryData.TestValue.ToString());
-				else
-					values.Add("");
-				
-			}
-
-			_isExecuted = false;
-
-			return values;
-		}
-
-
-	}
+                UsedDevices.Add(deviceRight.DeviceType);
+            }
+			return UsedDevices;
+        }
+    }
 }
