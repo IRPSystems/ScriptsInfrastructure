@@ -38,10 +38,14 @@ namespace ScriptHandler.Models
 
 		public ScriptStepSetSaveParameter()
 		{
-			if (Application.Current != null)
-				Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
-			
-			_isStopped = false;
+            try
+            {
+                if (Application.Current != null)
+                    Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
+            }
+            catch { }
+
+            _isStopped = false;
 
 			_saveParameter = new MCU_ParamData()
 			{

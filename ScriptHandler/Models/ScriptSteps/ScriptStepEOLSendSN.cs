@@ -44,26 +44,31 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		public override void Execute()
 		{
-			//Get SN from UI - Temp userSN
+            //Get SN from UI - Temp userSN
 
-			//remove daash and letters
+            //remove daash and letters
+            _setValue = new ScriptStepSetParameter();
+            _getValue = new ScriptStepGetParamValue();
+            _saveValue = new ScriptStepSetSaveParameter();
 
-			_isExecuted = true;
+            _isExecuted = true;
 
 			_stepsCounter = 1;
 
-			
-			
-			
+			if (_setValue != null && _getValue != null && _saveValue != null)
+			{
+				_getValue.EOLReportsSelectionData = EOLReportsSelectionData;
+				_setValue.EOLReportsSelectionData = EOLReportsSelectionData;
+				_saveValue.EOLReportsSelectionData = EOLReportsSelectionData;
+			}
 
 			EOLStepSummeryData eolStepSummeryData;
 
-			SerialNumber = Regex.Replace(UserSN, "[A-Za-z ]", "");
+			SerialNumber = Regex.Replace(SerialNumber, "[A-Za-z ]", "");
 			SerialNumber = SerialNumber.Remove(0, 1);
 			SerialNumber = SerialNumber.Replace("-", "");
 
 			//Set SN
-			_setValue = new ScriptStepSetParameter();
 			_setValue.EOLReportsSelectionData = EOLReportsSelectionData;
 			_setValue.Parameter = SN_Param;
 			_setValue.Communicator = Communicator;
@@ -93,7 +98,6 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			//Verify SN- get
 
-			_getValue = new ScriptStepGetParamValue();
 			_getValue.EOLReportsSelectionData = EOLReportsSelectionData;
 			_getValue.Parameter = SN_Param;
 			_getValue.Communicator = Communicator;			
@@ -135,7 +139,6 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			//If succeed save param
 
-			_saveValue = new ScriptStepSetSaveParameter();
 			_saveValue.EOLReportsSelectionData = EOLReportsSelectionData;
 			_saveValue.Parameter = SN_Param;
 			_saveValue.Communicator = Communicator;
