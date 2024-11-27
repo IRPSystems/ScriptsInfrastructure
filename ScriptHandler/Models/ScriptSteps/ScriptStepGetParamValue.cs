@@ -4,6 +4,7 @@ using DeviceCommunicators.Models;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
+using Entities.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
 using Services.Services;
@@ -141,6 +142,13 @@ namespace ScriptHandler.Models
 					double? value = null;
 					if (parameter.Value is string str)
 					{
+						if(parameter is IParamWithDropDown dropDown)
+						{
+							DropDownParamData dd = dropDown.DropDown.Find((d) => d.Name == str);
+							if (dd != null)
+								str = dd.Value;
+						}
+
 						double d;
 						bool res = double.TryParse(str, out d);
 						if (res)
