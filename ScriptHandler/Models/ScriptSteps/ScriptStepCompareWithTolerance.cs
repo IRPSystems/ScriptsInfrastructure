@@ -108,6 +108,7 @@ namespace ScriptHandler.Models
 		public override void Execute()
 		{
 			IsPass = false;
+			_isExecuted = true;
 			string errorHeader = "Compare range:\r\n";
 			string errorMessage = errorHeader + "Failed to get the compared parameter for compare range\r\n\r\n";
 
@@ -474,25 +475,29 @@ namespace ScriptHandler.Models
 		{
 			List<string> values = base.GetReportValues();
 
+			EOLStepSummeryData stepSummeryData =
+					EOLStepSummerysList.Find((e) =>
+						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(Parameter.Name));
+
+			if (stepSummeryData != null)
+				values.Add(stepSummeryData.TestValue.ToString());
+			else
+				values.Add("");
+
 			if (CompareValue is DeviceParameterData compareValue)
 			{
-				if (IsPass)
-				{
-					EOLStepSummeryData stepSummeryData =
-						EOLStepSummerysList.Find((e) =>
-							!string.IsNullOrEmpty(e.Description) && e.Description.Contains(compareValue.Name));
+				stepSummeryData =
+					EOLStepSummerysList.Find((e) =>
+						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(compareValue.Name));
 
-					if (stepSummeryData != null)
-						values.Add(stepSummeryData.TestValue.ToString());
-					else
-						values.Add(",");
-				}
+				if (stepSummeryData != null)
+					values.Add(stepSummeryData.TestValue.ToString());
 				else
-				{
-					values.Add(",");
-				}
+					values.Add("");
+
 			}
 
+			_isExecuted = false;
 
 			return values;
 		}

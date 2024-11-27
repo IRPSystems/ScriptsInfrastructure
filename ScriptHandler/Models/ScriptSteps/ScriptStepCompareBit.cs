@@ -39,6 +39,8 @@ namespace ScriptHandler.Models
                 uint? bit = null;
                 ErrorMessage = Description;
 
+				_isExecuted = true;
+
 				string description = Description;
 				if(string.IsNullOrEmpty(UserTitle) == false ) 
 					description = UserTitle;
@@ -167,22 +169,16 @@ namespace ScriptHandler.Models
 		{
 			List<string> values = base.GetReportValues();
 
-			if (IsPass)
-			{
-				EOLStepSummeryData stepSummeryData =
-					EOLStepSummerysList.Find((e) =>
-						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(Parameter.Name));
+			EOLStepSummeryData stepSummeryData =
+				EOLStepSummerysList.Find((e) =>
+					!string.IsNullOrEmpty(e.Description) && e.Description.Contains(Parameter.Name));
 
-				if (stepSummeryData != null)
-					values.Add(stepSummeryData.TestValue.ToString());
-				else
-					values.Add(",");
-			}
+			if (stepSummeryData != null)
+				values.Add(stepSummeryData.TestValue.ToString());
 			else
-			{
-				values.Add(",");
-			}
+				values.Add("");
 
+			_isExecuted = false;
 
 			return values;
 		}

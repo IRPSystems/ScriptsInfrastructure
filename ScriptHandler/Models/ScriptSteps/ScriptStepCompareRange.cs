@@ -54,6 +54,7 @@ namespace ScriptHandler.Models.ScriptSteps
 		public override void Execute()
 		{
 			IsPass = false;
+			_isExecuted = true;
 			string errorHeader = "Compare range:\r\n";
 			string errorMessage = errorHeader + "Failed to get the compared parameter for compare range\r\n\r\n";
 
@@ -428,60 +429,44 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			if (Value is DeviceParameterData valueParam)
 			{
-				if (IsPass)
-				{
-					EOLStepSummeryData stepSummeryData =
-						EOLStepSummerysList.Find((e) =>
-							!string.IsNullOrEmpty(e.Description) && e.Description.Contains(valueParam.Name));
+				EOLStepSummeryData stepSummeryData =
+					EOLStepSummerysList.Find((e) =>
+						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(valueParam.Name));
 
-					if (stepSummeryData != null)
-						values.Add(stepSummeryData.TestValue.ToString());
-					else
-						values.Add(",");
-				}
+				if (stepSummeryData != null)
+					values.Add(stepSummeryData.TestValue.ToString());
 				else
-				{
-					values.Add(",");
-				}
+					values.Add("");
+
 			}
 
 			if (ValueLeft is DeviceParameterData valueLeft)
 			{
-				if (IsPass)
-				{
-					EOLStepSummeryData stepSummeryData =
-						EOLStepSummerysList.Find((e) =>
-							!string.IsNullOrEmpty(e.Description) && e.Description.Contains(valueLeft.Name));
+				EOLStepSummeryData stepSummeryData =
+					EOLStepSummerysList.Find((e) =>
+						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(valueLeft.Name));
 
-					if (stepSummeryData != null)
-						values.Add(stepSummeryData.TestValue.ToString());
-					else
-						values.Add(",");
-				}
+				if (stepSummeryData != null)
+					values.Add(stepSummeryData.TestValue.ToString());
 				else
-				{
-					values.Add(",");
-				}
+					values.Add("");
+
 			}
 
 			if (ValueRight is DeviceParameterData valueRight)
 			{
-				if (IsPass)
-				{
-					EOLStepSummeryData stepSummeryData =
-						EOLStepSummerysList.Find((e) =>
-							!string.IsNullOrEmpty(e.Description) && e.Description.Contains(valueRight.Name));
+				EOLStepSummeryData stepSummeryData =
+					EOLStepSummerysList.Find((e) =>
+						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(valueRight.Name));
 
-					if (stepSummeryData != null)
-						values.Add(stepSummeryData.TestValue.ToString());
-					else
-						values.Add(",");
-				}
+				if (stepSummeryData != null)
+					values.Add(stepSummeryData.TestValue.ToString());
 				else
-				{
-					values.Add(",");
-				}
+					values.Add("");
+
 			}
+
+			_isExecuted = false;
 
 
 			return values;
