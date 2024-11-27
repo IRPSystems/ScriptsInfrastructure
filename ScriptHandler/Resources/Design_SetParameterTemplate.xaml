@@ -495,117 +495,13 @@
 
             </ComboBox>
 
-            <Grid Grid.Row="2" Grid.Column="2" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="20"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBox  Name="tb"    
-                          Visibility="Collapsed">
-
-                    <TextBox.Resources>
-                        <validation_rules:BindingProxy x:Key="proxy" Data="{Binding}"/>
-                    </TextBox.Resources>
-
-                    <TextBox.Text>
-                        <Binding Path="Value" UpdateSourceTrigger="PropertyChanged">
-                            <Binding.ValidationRules>
-                                <validation_rules:SetParamValidationRule >
-
-                                    <validation_rules:SetParamValidationRule.SetParam>
-                                        <validation_rules:ParameterWrapper SetParamNode="{Binding Data.Parameter, Source={StaticResource proxy}}" />
-                                    </validation_rules:SetParamValidationRule.SetParam>
-
-                                </validation_rules:SetParamValidationRule>
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-
-                </TextBox>
-
-                <TextBlock Grid.Column="2" 
-                           Text="?"
-                           Name="qMark"
-                           Visibility="Collapsed"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Center"
-                           FontSize="16"/>
-
-                <Ellipse Grid.Column="2" 
-                         Name="ellipse"
-                         Visibility="Collapsed"
-                         Stroke="{DynamicResource MahApps.Brushes.Accent}"
-                         Fill="Transparent"
-                         StrokeThickness="1"
-                         Width="20" Height="20">
-
-                    <Ellipse.ToolTip>
-                        <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
-                                BorderThickness="1">
-                            <Grid Margin="5" DataContext="{Binding Parameter}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="5"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="25" />
-                                    <RowDefinition Height="5" />
-                                    <RowDefinition Height="25" />
-                                </Grid.RowDefinitions>
-
-                                <TextBlock Grid.Row="0" Grid.Column="0"
-                                           Text="Range: "
-                                           FontWeight="SemiBold"
-                                           VerticalAlignment="Center"/>
-                                <StackPanel Grid.Column="2" Orientation="Horizontal">
-
-                                    <TextBlock Text="{Binding Range[0]}"
-                                               VerticalAlignment="Center"/>
-
-                                    <TextBlock Text=", "
-                                               VerticalAlignment="Center"/>
-
-                                    <TextBlock Text="{Binding Range[1]}"
-                                               VerticalAlignment="Center"/>
-
-                                </StackPanel>
-
-
-
-                                <TextBlock Grid.Row="2" Grid.Column="0"
-                                           Text="Units: "
-                                           FontWeight="SemiBold"
-                                           VerticalAlignment="Center"/>
-
-                                <TextBlock Grid.Row="2" Grid.Column="2"
-                                           Text="{Binding Units}"
-                                           VerticalAlignment="Center"/>
-
-                            </Grid>
-                        </Border>
-                    </Ellipse.ToolTip>
-
-                </Ellipse>
-
-            </Grid>
+            <ContentControl Grid.Row="2" Grid.ColumnSpan="3"
+                            ContentTemplate="{StaticResource ParamValueTemplate}"
+                            Content="{Binding}"
+                            Visibility="Visible"/>
 
 
         </Grid>
-
-        <DataTemplate.Triggers>
-
-            <DataTrigger Binding="{Binding Parameter.DropDown}" Value="{x:Null}">
-                <Setter TargetName="cb" Property="Visibility" Value="Collapsed"/>
-                <Setter TargetName="tb" Property="Visibility" Value="Visible"/>
-                <Setter TargetName="ellipse" Property="Visibility" Value="Visible"/>
-                <Setter TargetName="qMark" Property="Visibility" Value="Visible"/>
-            </DataTrigger>
-
-        </DataTemplate.Triggers>
 
     </DataTemplate>
 
