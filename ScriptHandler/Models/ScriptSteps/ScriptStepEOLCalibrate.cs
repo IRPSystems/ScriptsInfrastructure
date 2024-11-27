@@ -93,6 +93,7 @@ namespace ScriptHandler.Models.ScriptSteps
 		{
             _eState = eState.Init;
             _isStopped = false;
+			_isExecuted = true;
 
 			_getValue.EOLReportsSelectionData = EOLReportsSelectionData;
 			_setValue.EOLReportsSelectionData = EOLReportsSelectionData;
