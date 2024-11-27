@@ -456,12 +456,14 @@
                 <RowDefinition Height="27"/>
                 <RowDefinition Height="5"/>
                 <RowDefinition Height="27"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="27"/>
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="500"/>
             </Grid.ColumnDefinitions>
 
 
@@ -481,7 +483,7 @@
 
             <TextBlock Grid.Row="2" Grid.Column="0" Text="Value" VerticalAlignment="Center"/>
 
-            <ComboBox Grid.Row="2" Grid.Column="2" 
+            <!--<ComboBox Grid.Row="2" Grid.Column="2" 
                       Name="cb"
                       ItemsSource="{Binding Parameter.DropDown}"
                       Visibility="Visible"
@@ -493,7 +495,7 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
 
-            </ComboBox>
+            </ComboBox>-->
 
             <ContentControl Grid.Row="2" Grid.ColumnSpan="3"
                             ContentTemplate="{StaticResource ParamValueTemplate}"
