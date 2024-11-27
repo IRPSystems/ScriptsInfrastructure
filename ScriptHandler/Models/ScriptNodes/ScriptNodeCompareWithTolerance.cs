@@ -142,7 +142,7 @@ namespace ScriptHandler.Models.ScriptNodes
 
 			if (value is DeviceParameterData param)
 			{
-				description = "\"" + param + "\"";
+				description = param.ToString();
 			}
 			else if (value is string str)
 			{
@@ -151,7 +151,7 @@ namespace ScriptHandler.Models.ScriptNodes
 				if (res)
 					description = str;
 				else
-					description = "\"" + str + "\"";
+					description = str;
 			}
 			else
 			{
