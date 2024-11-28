@@ -68,13 +68,13 @@ namespace ScriptHandler.Models.ScriptNodes
 
 		public override object Clone()
 		{
-			ScriptNodeCompareWithTolerance compare = MemberwiseClone() as
-				ScriptNodeCompareWithTolerance;
+			ScriptNodeLoopIncrement increment = MemberwiseClone() as
+				ScriptNodeLoopIncrement;
 
-			compare.CompareValue_ExtraData = this.ExtraData.Clone()
+			increment.ExtraData = this.ExtraData.Clone()
 				as ExtraDataForParameter;
 
-			return compare;
+			return increment;
 		}
 	}
 }

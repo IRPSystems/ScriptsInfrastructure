@@ -2,14 +2,11 @@
 using DeviceCommunicators.EvvaDevice;
 using DeviceCommunicators.Models;
 using DeviceCommunicators.NI_6002;
-using DeviceCommunicators.NumatoGPIO;
 using DeviceCommunicators.SwitchRelay32;
 using DeviceHandler.Models;
 using Entities.Enums;
 using Entities.Models;
-using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
-using Syncfusion.Windows.Tools;
 using System;
 using System.Collections.ObjectModel;
 
@@ -209,13 +206,13 @@ namespace ScriptHandler.Models.ScriptNodes
 
 		public override object Clone()
 		{
-			ScriptNodeCompareWithTolerance compare = MemberwiseClone() as
-				ScriptNodeCompareWithTolerance;
+			ScriptNodeSetParameter setParameter = MemberwiseClone() as
+				ScriptNodeSetParameter;
 
-			compare.CompareValue_ExtraData = this.ExtraData.Clone()
+			setParameter.ExtraData = this.ExtraData.Clone()
 				as ExtraDataForParameter;
 
-			return compare;
+			return setParameter;
 		}
 
 		#endregion Method
