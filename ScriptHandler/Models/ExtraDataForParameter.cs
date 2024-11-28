@@ -8,10 +8,11 @@ using DeviceCommunicators.NumatoGPIO;
 using DeviceCommunicators.ZimmerPowerMeter;
 using Entities.Models;
 using Syncfusion.Windows.Shared;
+using System;
 
 namespace ScriptHandler.Models
 {
-	public class ExtraDataForParameter: ObservableObject
+	public class ExtraDataForParameter: ObservableObject, ICloneable
 	{
 
 
@@ -112,6 +113,11 @@ namespace ScriptHandler.Models
 			{
 				ate.Value = AteCommand;
 			}
+		}
+
+		public object Clone()
+		{
+			return MemberwiseClone();
 		}
 	}
 }

@@ -207,6 +207,17 @@ namespace ScriptHandler.Models.ScriptNodes
 			return false;
 		}
 
+		public override object Clone()
+		{
+			ScriptNodeCompareWithTolerance compare = MemberwiseClone() as
+				ScriptNodeCompareWithTolerance;
+
+			compare.CompareValue_ExtraData = this.ExtraData.Clone()
+				as ExtraDataForParameter;
+
+			return compare;
+		}
+
 		#endregion Method
 	}
 }
