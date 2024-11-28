@@ -142,7 +142,8 @@ namespace ScriptHandler.Models
 					double? value = null;
 					if (parameter.Value is string str)
 					{
-						if(parameter is IParamWithDropDown dropDown)
+						if(parameter is IParamWithDropDown dropDown &&
+							dropDown.DropDown != null)
 						{
 							DropDownParamData dd = dropDown.DropDown.Find((d) => d.Name == str);
 							if (dd != null)
