@@ -56,7 +56,6 @@ namespace ScriptRunner.Services
 		private ScriptInternalStateEnum _state;
 
 		private ScriptStepPause _pause;
-		private ScriptStepBase _pausedStep;
 
 		private ManualResetEvent _userDecision;
 
@@ -165,22 +164,22 @@ namespace ScriptRunner.Services
 					{
 						try
 						{
-							if (_isPaused)
-							{
-								while (_isPaused && !_cancellationToken.IsCancellationRequested)
-									System.Threading.Thread.Sleep(1);
+							//if (_isPaused)
+							//{
+							//	while (_isPaused && !_cancellationToken.IsCancellationRequested)
+							//		System.Threading.Thread.Sleep(1);
 
-								if (_cancellationToken.IsCancellationRequested)
-									continue;
+							//	if (_cancellationToken.IsCancellationRequested)
+							//		continue;
 
-								if (!_isPaused)
-								{
-									if (_state != ScriptInternalStateEnum.Resume)
-										_state = ScriptInternalStateEnum.HandleSpecial;
-									SetCurrentStep(_pausedStep);
-								}
+							//	if (!_isPaused)
+							//	{
+							//		if (_state != ScriptInternalStateEnum.Resume)
+							//			_state = ScriptInternalStateEnum.HandleSpecial;
+							//		SetCurrentStep(_pausedStep);
+							//	}
 
-							}
+							//}
 
 
 

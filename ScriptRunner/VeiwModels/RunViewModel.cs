@@ -383,9 +383,9 @@ namespace ScriptRunner.ViewModels
 
 		private void ScriptEndedEventHandler(ScriptStopModeEnum e)
 		{
-			_isAborted = false;
+			//_isAborted = false;
 			_runTimeTimer.Stop();
-			_isAborted = false;
+			//_isAborted = false;
 		}
 
 
@@ -394,7 +394,7 @@ namespace ScriptRunner.ViewModels
 			if(RunExplorer.SelectedScript == null) 
 				return;
 
-			_isAborted = false;
+			//_isAborted = false;
 
 			SetIsPlayEnabled(false);
 			SetIsGeneralEnabled(false);
@@ -441,7 +441,7 @@ namespace ScriptRunner.ViewModels
 
 		private void StartAll()
 		{
-			_isAborted = false;
+			//_isAborted = false;
 			ErrorMessage = null;
 
 			SetIsPlayEnabled(false);
@@ -517,12 +517,12 @@ namespace ScriptRunner.ViewModels
 			return null;
 		}
 
-		private bool _isAborted;
+		//private bool _isAborted;
 		private void Abort()
 		{
 			LoggerService.Inforamtion(this, "Abort clicked");
 
-			_isAborted = true;
+			//_isAborted = true;
 			LoggerService.Inforamtion(this, "User clicked abort");
 			_isGeneralPlayEnabled = true;
 			OnPropertyChanged(nameof(IsPlayNotEnabled));
