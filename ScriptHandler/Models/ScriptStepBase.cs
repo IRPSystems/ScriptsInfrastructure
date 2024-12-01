@@ -6,6 +6,7 @@ using DeviceCommunicators.Models;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
+using Entities.Enums;
 using Newtonsoft.Json;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
@@ -150,7 +151,12 @@ namespace ScriptHandler.Models
             EOLStepSummerysList.Add(eolStepSummeryData);
         }
 
-		public virtual bool IsNotSet(
+        public virtual List<DeviceTypesEnum> GetUsedDevices()
+		{
+			return null;
+        }
+
+        public virtual bool IsNotSet(
 			DevicesContainer devicesContainer,
 			ObservableCollection<InvalidScriptItemData> errorsList)
 		{

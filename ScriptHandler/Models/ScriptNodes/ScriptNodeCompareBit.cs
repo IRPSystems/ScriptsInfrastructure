@@ -47,8 +47,8 @@ namespace ScriptHandler.Models.ScriptNodes
 			{
 				string desc = "Compare BIT ";
 				if (Parameter != null)
-					desc += $"{Parameter.Name} to Value";
-				desc += $" - ID: {ID}";
+					desc += $"\"{Parameter.Name}\" ";
+				desc += "to Value - ID:" + ID;
 				return desc;
 			}
 		}

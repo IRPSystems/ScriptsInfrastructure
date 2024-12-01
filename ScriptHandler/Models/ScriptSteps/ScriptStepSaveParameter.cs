@@ -4,6 +4,7 @@ using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
+using Entities.Enums;
 using Newtonsoft.Json.Linq;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
@@ -163,5 +164,12 @@ namespace ScriptHandler.Models.ScriptSteps
 				Parameter,
 				devicesContainer);
 		}
-	}
+
+        public override List<DeviceTypesEnum> GetUsedDevices()
+        {
+            List<DeviceTypesEnum> UsedDevices = new List<DeviceTypesEnum>();
+            UsedDevices.Add(Parameter.DeviceType);
+            return UsedDevices;
+        }
+    }
 }

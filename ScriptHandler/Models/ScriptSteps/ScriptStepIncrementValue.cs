@@ -3,6 +3,7 @@ using DeviceCommunicators.Enums;
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
+using Entities.Enums;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
 using Services.Services;
@@ -37,7 +38,6 @@ namespace ScriptHandler.Models
 		{
 			_isStoped = false;
 			IsPass = true;
-			_isExecuted = true;
 
 			_stepsCounter = 1;
 
@@ -120,36 +120,11 @@ namespace ScriptHandler.Models
 			IncrementValue = (sourceNode as ScriptNodeIncrementValue).IncrementValue;
 		}
 
-		public override List<string> GetReportHeaders()
-		{
-			List<string> headers = base.GetReportHeaders();
-
-			string stepDescription = headers[0].Trim('\"');
-
-			string description =
-				$"{stepDescription}\r\nGet {Parameter.Name}";
-			headers.Add($"\"{description}\"");
-
-
-			return headers;
-		}
-
-		public override List<string> GetReportValues()
-		{
-			List<string> values = base.GetReportValues();
-
-			EOLStepSummeryData stepSummeryData =
-				EOLStepSummerysList.Find((e) =>
-					!string.IsNullOrEmpty(e.Description) && e.Description.Contains(Parameter.Name));
-
-			if (stepSummeryData != null)
-				values.Add(stepSummeryData.TestValue.ToString());
-			else
-				values.Add("");
-
-			_isExecuted = false;
-
-			return values;
-		}
-	}
+        public override List<DeviceTypesEnum> GetUsedDevices()
+        {
+            List<DeviceTypesEnum> UsedDevices = new List<DeviceTypesEnum>();
+            UsedDevices.Add(Parameter.DeviceType);
+            return UsedDevices;
+        }
+    }
 }

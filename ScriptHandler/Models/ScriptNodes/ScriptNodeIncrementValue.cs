@@ -39,7 +39,7 @@ namespace ScriptHandler.Models.ScriptNodes
 				string stepDescription = "Increment ";
 				if (_parameter is DeviceParameterData deviceParameter)
 				{
-					stepDescription += deviceParameter;
+					stepDescription += " \"" + deviceParameter + "\"";
 				}
 
 				stepDescription += " By " + IncrementValue;

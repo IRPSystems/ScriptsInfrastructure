@@ -1,7 +1,9 @@
 ﻿
 using DBCFileParser.Model;
 using DeviceCommunicators.General;
+using DeviceCommunicators.Models;
 using DeviceHandler.Models;
+using Entities.Enums;
 using FlashingToolLib.FlashingTools;
 using FlashingToolLib.FlashingTools.UDS;
 using Newtonsoft.Json;
@@ -11,6 +13,7 @@ using ScriptHandler.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Input;
 using static iso15765.CUdsClient;
@@ -160,6 +163,13 @@ namespace ScriptHandler.Models.ScriptSteps
 			return false;
 		}
 
-		#endregion Methods
-	}
+        public override List<DeviceTypesEnum> GetUsedDevices()
+        {
+            List<DeviceTypesEnum> UsedDevices = new List<DeviceTypesEnum>();
+            UsedDevices.Add(DeviceTypesEnum.MCU);
+            return UsedDevices;
+        }
+
+        #endregion Methods
+    }
 }

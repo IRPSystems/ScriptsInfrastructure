@@ -4,237 +4,228 @@ using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using ScriptHandler.Interfaces;
+using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
-using Services.Services;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace ScriptHandler.Models.ScriptSteps
 {
-	public class ScriptStepEOLSendSN : ScriptStepBase, IScriptStepWithCommunicator
-	{
-		#region Properties and Fields
+    public class ScriptStepEOLSendSN : ScriptStepBase, IScriptStepWithCommunicator
+    {
+        #region Properties and Fields
 
-		public DeviceParameterData SN_Param { get; set; }
-		public DeviceCommunicator Communicator { get; set; }
+        public DeviceParameterData SN_Param { get; set; }
+        public DeviceCommunicator Communicator { get; set; }
 
-		public string SerialNumber { get; set; }
-		public string UserSN { get; set; }
+        public string SerialNumber { get; set; }
+        public string UserSN { get; set; }
 
-		private ScriptStepSetParameter _setValue;
-		private ScriptStepGetParamValue _getValue;
-		private ScriptStepSetSaveParameter _saveValue;
+        private ScriptStepSetParameter _setValue;
+        private ScriptStepGetParamValue _getValue;
+        private ScriptStepSetSaveParameter _saveValue;
 
-		#endregion Properties and Fields
+        #endregion Properties and Fields
 
-		#region Constructor
+        #region Constructor
 
-		public ScriptStepEOLSendSN()
-		{
-			_totalNumOfSteps = 4;
-			UserSN = "E7P-22-00-00032";
+        public ScriptStepEOLSendSN()
+        {
+            _totalNumOfSteps = 4;
+            UserSN = "E7P-22-00-00032";
+        }
 
-			_setValue = new ScriptStepSetParameter();
-			_getValue = new ScriptStepGetParamValue();
-			_saveValue = new ScriptStepSetSaveParameter();
-		}
+        #endregion Constructor
 
-		#endregion Constructor
+        #region Methods
 
-		#region Methods
+        public override void Execute()
+        {
+            //Get SN from UI - Temp userSN
 
-		public override void Execute()
-		{
-			try
-			{
+            //remove daash and letters
+            _setValue = new ScriptStepSetParameter();
+            _getValue = new ScriptStepGetParamValue();
+            _saveValue = new ScriptStepSetSaveParameter();
 
-				//Get SN from UI - Temp userSN
+            _isExecuted = true;
 
-				//remove daash and letters
+            _stepsCounter = 1;
 
+            if (_setValue != null && _getValue != null && _saveValue != null)
+            {
+                _getValue.EOLReportsSelectionData = EOLReportsSelectionData;
+                _setValue.EOLReportsSelectionData = EOLReportsSelectionData;
+                _saveValue.EOLReportsSelectionData = EOLReportsSelectionData;
+            }
 
-				_isExecuted = true;
+            EOLStepSummeryData eolStepSummeryData;
 
-				_stepsCounter = 1;
+            SerialNumber = Regex.Replace(SerialNumber, "[A-Za-z ]", "");
+            SerialNumber = SerialNumber.Remove(0, 1);
+            SerialNumber = SerialNumber.Replace("-", "");
 
-				if (_setValue != null && _getValue != null && _saveValue != null)
-				{
-					_getValue.EOLReportsSelectionData = EOLReportsSelectionData;
-					_setValue.EOLReportsSelectionData = EOLReportsSelectionData;
-					_saveValue.EOLReportsSelectionData = EOLReportsSelectionData;
-				}
+            //Set SN
+            _setValue.Parameter = SN_Param;
+            _setValue.Communicator = Communicator;
+            _setValue.Value = SerialNumber;
+            _setValue.Execute();
+            EOLStepSummerysList.AddRange(_setValue.EOLStepSummerysList);
 
-				EOLStepSummeryData eolStepSummeryData;
+            string description = Description;
+            if (!string.IsNullOrEmpty(UserTitle))
+                description = UserTitle;
 
-				SerialNumber = Regex.Replace(SerialNumber, "[A-Za-z ]", "");
-				SerialNumber = SerialNumber.Remove(0, 1);
-				SerialNumber = SerialNumber.Replace("-", "");
+            if (!_setValue.IsPass)
+            {
+                ErrorMessage = "Unable to set: " + SN_Param.Name;
+                IsPass = false;
+                eolStepSummeryData = new EOLStepSummeryData(
+                    "",
+                    description,
+                    this);
+                eolStepSummeryData.IsPass = IsPass;
+                eolStepSummeryData.ErrorDescription = ErrorMessage;
+                EOLStepSummerysList.Add(eolStepSummeryData);
+                return;
+            }
 
-				//Set SN
-				_setValue.Parameter = SN_Param;
-				_setValue.Communicator = Communicator;
-				_setValue.Value = SerialNumber;
-				_setValue.Execute();
-				EOLStepSummerysList.AddRange(_setValue.EOLStepSummerysList);
+            _stepsCounter++;
 
-				string description = Description;
-				if (!string.IsNullOrEmpty(UserTitle))
-					description = UserTitle;
+            //Verify SN- get
 
-				if (!_setValue.IsPass)
-				{
-					ErrorMessage = "Unable to set: " + SN_Param.Name;
-					IsPass = false;
-					eolStepSummeryData = new EOLStepSummeryData(
-						"",
-						description,
-						this);
-					eolStepSummeryData.IsPass = IsPass;
-					eolStepSummeryData.ErrorDescription = ErrorMessage;
-					EOLStepSummerysList.Add(eolStepSummeryData);
-					return;
-				}
+            _getValue.Parameter = SN_Param;
+            _getValue.Communicator = Communicator;
+            _getValue.SendAndReceive(out eolStepSummeryData, Description);
+            EOLStepSummerysList.Add(eolStepSummeryData);
+            if (_getValue.IsPass)
+            {
+                //Validate SN
+                if (SN_Param.Value as string == UserSN)
+                {
+                    ErrorMessage = "Wrong SN \r\n"
+                    + _getValue.ErrorMessage;
+                    IsPass = false;
+                    eolStepSummeryData = new EOLStepSummeryData(
+                        "",
+                        description,
+                        this);
+                    eolStepSummeryData.IsPass = IsPass;
+                    eolStepSummeryData.ErrorDescription = ErrorMessage;
+                    EOLStepSummerysList.Add(eolStepSummeryData);
+                    return;
+                }
+            }
+            else
+            {
+                ErrorMessage = "Failed to get the SN parameter";
+                IsPass = false;
+                eolStepSummeryData = new EOLStepSummeryData(
+                        "",
+                        description,
+                        this);
+                eolStepSummeryData.IsPass = IsPass;
+                eolStepSummeryData.ErrorDescription = ErrorMessage;
+                EOLStepSummerysList.Add(eolStepSummeryData);
+                return;
+            }
 
-				_stepsCounter++;
+            _stepsCounter++;
 
-				//Verify SN- get
+            //If succeed save param
 
-				_getValue.Parameter = SN_Param;
-				_getValue.Communicator = Communicator;
-				_getValue.SendAndReceive(out eolStepSummeryData, Description);
-				EOLStepSummerysList.Add(eolStepSummeryData);
-				if (_getValue.IsPass)
-				{
-					//Validate SN
-					if (SN_Param.Value as string == UserSN)
-					{
-						ErrorMessage = "Wrong SN \r\n"
-						+ _getValue.ErrorMessage;
-						IsPass = false;
-						eolStepSummeryData = new EOLStepSummeryData(
-							"",
-							description,
-							this);
-						eolStepSummeryData.IsPass = IsPass;
-						eolStepSummeryData.ErrorDescription = ErrorMessage;
-						EOLStepSummerysList.Add(eolStepSummeryData);
-						return;
-					}
-				}
-				else
-				{
-					ErrorMessage = "Failed to get the SN parameter";
-					IsPass = false;
-					eolStepSummeryData = new EOLStepSummeryData(
-							"",
-							description,
-							this);
-					eolStepSummeryData.IsPass = IsPass;
-					eolStepSummeryData.ErrorDescription = ErrorMessage;
-					EOLStepSummerysList.Add(eolStepSummeryData);
-					return;
-				}
+            _saveValue.Parameter = SN_Param;
+            _saveValue.Communicator = Communicator;
+            _saveValue.Value = Convert.ToDouble(SerialNumber);
+            _saveValue.Execute();
+            EOLStepSummerysList.AddRange(_saveValue.EOLStepSummerysList);
 
-				_stepsCounter++;
+            if (!_saveValue.IsPass)
+            {
+                IsPass = false;
+                ErrorMessage = "Unable to save SN: " + _saveValue.ErrorMessage;
+                return;
+            }
+            IsPass = true;
 
-				//If succeed save param
+            AddToEOLSummary();
 
-				_saveValue.Parameter = SN_Param;
-				_saveValue.Communicator = Communicator;
-				_saveValue.Value = Convert.ToDouble(SerialNumber);
-				_saveValue.Execute();
-				EOLStepSummerysList.AddRange(_saveValue.EOLStepSummerysList);
+            return;
+        }
 
-				if (!_saveValue.IsPass)
-				{
-					IsPass = false;
-					ErrorMessage = "Unable to save SN: " + _saveValue.ErrorMessage;
-					return;
-				}
-				IsPass = true;
+        protected override void Stop()
+        {
 
-				AddToEOLSummary();
+        }
 
-			}
-			catch (Exception ex)
-			{
-				LoggerService.Error(this, "Failed to execute", ex);
-				IsPass = false;
-				ErrorMessage += $"Failed to execute {ex}";
-			}
-		}
+        protected override void Generate(
+            ScriptNodeBase sourceNode,
+            Dictionary<int, ScriptStepBase> stepNameToObject,
+            ref List<DeviceCommunicator> usedCommunicatorsList,
+            GenerateProjectService generateService,
+            DevicesContainer devicesContainer)
+        {
 
-		protected override void Stop()
-		{
+        }
 
-		}
+        public override void GetRealParamAfterLoad(
+            DevicesContainer devicesContainer)
+        {
+            SN_Param = new MCU_ParamData()
+            {
+                Name = "Serial Number",
+                Cmd = "serialnumber",
+                DeviceType = Entities.Enums.DeviceTypesEnum.MCU
+            };
 
-		protected override void Generate(
-			ScriptNodeBase sourceNode,
-			Dictionary<int, ScriptStepBase> stepNameToObject,
-			ref List<DeviceCommunicator> usedCommunicatorsList,
-			GenerateProjectService generateService,
-			DevicesContainer devicesContainer)
-		{
+            SN_Param = GetRealParam(
+                SN_Param,
+                devicesContainer);
+        }
 
-		}
+        public override List<string> GetReportHeaders()
+        {
+            List<string> headers = base.GetReportHeaders();
 
-		public override void GetRealParamAfterLoad(
-			DevicesContainer devicesContainer)
-		{
-			SN_Param = new MCU_ParamData()
-			{
-				Name = "Serial Number",
-				Cmd = "serialnumber",
-				DeviceType = Entities.Enums.DeviceTypesEnum.MCU
-			};
+            string stepDescription = headers[0].Trim('\"');
 
-			SN_Param = GetRealParam(
-				SN_Param,
-				devicesContainer);
-		}
+            string description =
+                    $"{stepDescription}\r\nSet {SN_Param.Name} = {SerialNumber}";
+            headers.Add($"\"{description}\"");
 
-		public override List<string> GetReportHeaders()
-		{
-			List<string> headers = base.GetReportHeaders();
-
-			string stepDescription = headers[0].Trim('\"');
-
-			string description =
-					$"{stepDescription}\r\nSet {SN_Param.Name} = {SerialNumber}";
-			headers.Add($"\"{description}\"");
-
-			description =
-					$"{stepDescription}\r\nGet {SN_Param.Name}";
-			headers.Add($"\"{description}\"");
-			
+            description =
+                    $"{stepDescription}\r\nGet {SN_Param.Name}";
+            headers.Add($"\"{description}\"");
 
 
-			return headers;
-		}
 
-		public override List<string> GetReportValues()
-		{
-			List<string> values = base.GetReportValues();
+            return headers;
+        }
 
-			values.Add(SerialNumber);
+        public override List<string> GetReportValues()
+        {
+            List<string> values = base.GetReportValues();
+
+            values.Add(SerialNumber);
 
 
-			EOLStepSummeryData stepSummeryData =
-				EOLStepSummerysList.Find((e) =>
-					!string.IsNullOrEmpty(e.Description) && e.Description.Contains(SN_Param.Name));
+            EOLStepSummeryData stepSummeryData =
+                EOLStepSummerysList.Find((e) =>
+                    !string.IsNullOrEmpty(e.Description) && e.Description.Contains(SN_Param.Name));
 
-			if (stepSummeryData != null)
-				values.Add(stepSummeryData.TestValue.ToString());
-			else
-				values.Add("");
+            if (stepSummeryData != null)
+                values.Add(stepSummeryData.TestValue.ToString());
+            else
+                values.Add("");
 
-			_isExecuted = false;
+            _isExecuted = false;
 
-			return values;
-		}
+            return values;
+        }
 
-		#endregion Methods
-	}
+        #endregion Methods
+    }
 }

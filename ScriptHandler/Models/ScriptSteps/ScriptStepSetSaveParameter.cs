@@ -18,6 +18,7 @@ using ScriptHandler.Models.ScriptNodes;
 using System.Collections.ObjectModel;
 using DeviceCommunicators.Models;
 using DeviceHandler.Interfaces;
+using Entities.Enums;
 
 namespace ScriptHandler.Models
 {
@@ -237,5 +238,12 @@ namespace ScriptHandler.Models
 				devicesContainer);
 
 		}
-	}
+
+        public override List<DeviceTypesEnum> GetUsedDevices()
+        {
+            List<DeviceTypesEnum> UsedDevices = new List<DeviceTypesEnum>();
+            UsedDevices.Add(Parameter.DeviceType);
+            return UsedDevices;
+        }
+    }
 }

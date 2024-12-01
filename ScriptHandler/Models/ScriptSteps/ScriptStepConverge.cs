@@ -3,6 +3,7 @@ using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
+using Entities.Enums;
 using Entities.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Enums;
@@ -96,6 +97,8 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		public override void Execute()
 		{
+			_isExecuted = true;
+
 			_cancellationTokenSource = new CancellationTokenSource();
 			_cancellationToken = _cancellationTokenSource.Token;
 
@@ -317,7 +320,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			EOLStepSummeryData eolStepSummeryData;
 			bool isOK = SendAndReceive(out eolStepSummeryData, description);
-			EOLStepSummerysList.Add(eolStepSummeryData);
+			//EOLStepSummerysList.Add(eolStepSummeryData);
 			if (!isOK)
 			{
 				ErrorMessage = _errorMessageHeader + ErrorMessage + "\r\nCommunication error";
@@ -341,6 +344,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			{
 				if (_executeState == ExecuteStateEnum.WaitToEnterValue)
 				{
+					EOLStepSummerysList.Add(eolStepSummeryData);
 					_isStartingState = true;
 					_executeState = ExecuteStateEnum.WaitForConvergeTime;
 				}
@@ -349,6 +353,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			{
 				if (_executeState == ExecuteStateEnum.WaitForConvergeTime)
 				{
+					EOLStepSummerysList.Add(eolStepSummeryData);
 					ErrorMessage = _errorMessageHeader + ErrorMessage + "\r\nValue is out of range during the converge time";
 					End(false);
 				}
@@ -440,6 +445,53 @@ namespace ScriptHandler.Models.ScriptSteps
 			//}
 		}
 
-		#endregion Methods
-	}
+		public override List<string> GetReportHeaders()
+		{
+			List<string> headers = base.GetReportHeaders();
+
+			string stepDescription = headers[0].Trim('\"');
+
+			string description = string.Empty;
+
+			if (TargetValue is DeviceParameterData param)
+			{
+				description =
+					$"{stepDescription}\r\nGet Target value {param.Name}";
+
+				headers.Add($"\"{description}\"");
+			}
+
+			description =
+					$"{stepDescription}\r\nConverged value {Parameter.Name}";
+			headers.Add($"\"{description}\"");
+
+			description =
+					$"{stepDescription}\r\nConverged value after interval {Parameter.Name}";
+			headers.Add($"\"{description}\"");
+
+			return headers;
+		}
+
+		public override List<string> GetReportValues()
+		{
+			List<string> values = base.GetReportValues();
+
+			_isExecuted = false;
+
+			return values;
+		}
+
+        public override List<DeviceTypesEnum> GetUsedDevices()
+        {
+            List<DeviceTypesEnum> UsedDevices = new List<DeviceTypesEnum>();
+
+            if (Parameter is DeviceParameterData deviceParameter)
+            {
+                UsedDevices.Add(deviceParameter.DeviceType);
+            }
+            return UsedDevices;
+        }
+
+        #endregion Methods
+    }
 }

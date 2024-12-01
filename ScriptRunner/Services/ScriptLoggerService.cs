@@ -9,6 +9,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 
@@ -115,7 +116,7 @@ namespace ScriptRunner.Services
 
 		public void Clear()
 		{
-			LogLineList.Clear();
+			//LogLineList.Clear();
 		}
 
 		public void Start()
@@ -125,6 +126,7 @@ namespace ScriptRunner.Services
 
 		public void Stop()
 		{
+			Thread.Sleep(3000);
 			LogLineList.Stop();
 		}
 

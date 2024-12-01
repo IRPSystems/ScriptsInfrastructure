@@ -12,6 +12,7 @@ using DeviceCommunicators.ZimmerPowerMeter;
 using ScriptHandler.Enums;
 using DeviceCommunicators.NI_6002;
 using Services.Services;
+using Entities.Enums;
 using System.Reflection.Metadata;
 
 namespace ScriptHandler.Models.ScriptSteps
@@ -93,7 +94,6 @@ namespace ScriptHandler.Models.ScriptSteps
 		{
             _eState = eState.Init;
             _isStopped = false;
-			_isExecuted = true;
 
 			_getValue.EOLReportsSelectionData = EOLReportsSelectionData;
 			_setValue.EOLReportsSelectionData = EOLReportsSelectionData;
@@ -157,7 +157,7 @@ namespace ScriptHandler.Models.ScriptSteps
                             _eState = eState.StopOrFail;
 							break;
                         }
-                        LoggerService.Inforamtion(this, "ReadSensorsPreCalib: avgRefSensorRead:" + avgRefSensorRead.ToString());
+                        LoggerService.Error(this, "ReadSensorsPreCalib: avgRefSensorRead:" + avgRefSensorRead.ToString());
                         _eState = eState.CalculateNewGain;
                         break;
 
@@ -264,7 +264,6 @@ namespace ScriptHandler.Models.ScriptSteps
         private double GetAvgRead(ScriptStepGetParamValue scriptStepGetParamValue, int numOfReads, DeviceParameterData deviceParameterData)
 		{
 			double avgRead = 0;
-			EOLStepSummeryData eolStepSummeryData = null;
 			for (int i = 0; i < numOfReads; i++)
 			{
 				if(_isStopped)
@@ -276,9 +275,10 @@ namespace ScriptHandler.Models.ScriptSteps
 				if (!string.IsNullOrEmpty(UserTitle))
 					description = UserTitle;
 
-				
+				EOLStepSummeryData eolStepSummeryData;
 				scriptStepGetParamValue.SendAndReceive(out eolStepSummeryData, description);
                 Thread.Sleep(50);
+				EOLStepSummerysList.Add(eolStepSummeryData);
 				if (!scriptStepGetParamValue.IsPass)
 				{
 					ErrorMessage = "Calibration Error \r\n"
@@ -292,11 +292,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			}
 
             avgRead = avgRead / numOfReads;
-
-			eolStepSummeryData.TestValue = avgRead;
-			EOLStepSummerysList.Add(eolStepSummeryData);
-
-			return avgRead;
+            return avgRead;
         }
 
 
@@ -360,71 +356,25 @@ namespace ScriptHandler.Models.ScriptSteps
 				devicesContainer);
 		}
 
-		public override List<string> GetReportHeaders()
-		{
-			List<string> headers = base.GetReportHeaders();
+        public override List<DeviceTypesEnum> GetUsedDevices()
+        {
+            List<DeviceTypesEnum> UsedDevices = new List<DeviceTypesEnum>();
 
-			string stepDescription = headers[0].Trim('\"');
+            if (McuParam is DeviceParameterData deviceParameter)
+            {
+                UsedDevices.Add(deviceParameter.DeviceType);
+            }
+            if (RefSensorParam is DeviceParameterData deviceParameter2)
+            {
+                UsedDevices.Add(deviceParameter2.DeviceType);
+            }
+            if (GainParam is DeviceParameterData deviceParameter3)
+            {
+                UsedDevices.Add(deviceParameter3.DeviceType);
+            }
+            return UsedDevices;
+        }
 
-			string description =
-					$"{stepDescription}\r\nGet {GainParam.Name}";
-			headers.Add($"\"{description}\"");
-
-			description =
-					$"{stepDescription}\r\nGet {McuParam.Name}";
-			headers.Add($"\"{description}\"");
-
-			description =
-					$"{stepDescription}\r\nGet {RefSensorParam.Name}";
-			headers.Add($"\"{description}\"");
-
-			description =
-					$"{stepDescription}\r\nSet {GainParam.Name}";
-			headers.Add($"\"{description}\"");
-
-			return headers;
-		}
-
-		public override List<string> GetReportValues()
-		{
-			List<string> values = base.GetReportValues();
-
-
-			EOLStepSummeryData stepSummeryData =
-				EOLStepSummerysList.Find((e) =>
-					!string.IsNullOrEmpty(e.Description) && e.Description.Contains(GainParam.Name));
-
-			if (stepSummeryData != null)
-				values.Add(stepSummeryData.TestValue.ToString());
-			else
-				values.Add("");
-
-
-			stepSummeryData =
-				EOLStepSummerysList.Find((e) =>
-					!string.IsNullOrEmpty(e.Description) && e.Description.Contains(McuParam.Name));
-
-			if (stepSummeryData != null)
-				values.Add(stepSummeryData.TestValue.ToString());
-			else
-				values.Add("");
-
-
-			stepSummeryData =
-				EOLStepSummerysList.Find((e) =>
-					!string.IsNullOrEmpty(e.Description) && e.Description.Contains(RefSensorParam.Name));
-
-			if (stepSummeryData != null)
-				values.Add(stepSummeryData.TestValue.ToString());
-			else
-				values.Add("");
-
-
-			_isExecuted = false;
-
-			return values;
-		}
-
-		#endregion Methods
-	}
+        #endregion Methods
+    }
 }
