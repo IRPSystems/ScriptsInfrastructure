@@ -467,6 +467,9 @@ namespace ScriptRunner.Services
 
 		private bool Repeat()
 		{
+			if(this is RunSingleScriptService_SO)
+				return false;
+
 			if (_scriptStep == null)
 				return true;
 
