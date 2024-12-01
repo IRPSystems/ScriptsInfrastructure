@@ -2,14 +2,11 @@
 using DeviceCommunicators.EvvaDevice;
 using DeviceCommunicators.Models;
 using DeviceCommunicators.NI_6002;
-using DeviceCommunicators.NumatoGPIO;
 using DeviceCommunicators.SwitchRelay32;
 using DeviceHandler.Models;
 using Entities.Enums;
 using Entities.Models;
-using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
-using Syncfusion.Windows.Tools;
 using System;
 using System.Collections.ObjectModel;
 
@@ -209,13 +206,13 @@ namespace ScriptHandler.Models.ScriptNodes
 
 		public override object Clone()
 		{
-			ScriptNodeSetParameter setParam = MemberwiseClone() as
+			ScriptNodeSetParameter setParameter = MemberwiseClone() as
 				ScriptNodeSetParameter;
 
-			setParam.ExtraData = this.ExtraData.Clone()
+			setParameter.ExtraData = this.ExtraData.Clone()
 				as ExtraDataForParameter;
 
-			return setParam;
+			return setParameter;
 		}
 
 		#endregion Method
