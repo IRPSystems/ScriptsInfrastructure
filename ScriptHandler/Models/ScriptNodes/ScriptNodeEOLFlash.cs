@@ -47,8 +47,10 @@ namespace ScriptHandler.Models.ScriptNodes
 		public string SourceModeGroupName { get => $"EOLSourceMode_{Description}"; }
 		public bool IsEolSource { get; set; }
 		public bool IsToolSource { get; set; }
+        public bool MCU_Used { get; set; }
+        public bool MCU2_Used { get; set; }
 
-		[JsonIgnore]
+        [JsonIgnore]
 		public string FileExtension { get; set; }
 
 		public override string Description 
