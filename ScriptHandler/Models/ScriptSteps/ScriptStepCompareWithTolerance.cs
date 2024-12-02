@@ -294,7 +294,7 @@ namespace ScriptHandler.Models
 
 				paramValue = Convert.ToDouble(val);
 				paramName =
-					"(\"" + param + "\" = " + paramValue + ")";
+					"(" + param + " = " + paramValue + ")";
 
 			}
 			else if (value is string str)
