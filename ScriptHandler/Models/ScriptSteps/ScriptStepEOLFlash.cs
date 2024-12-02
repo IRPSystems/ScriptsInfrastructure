@@ -33,8 +33,9 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		public bool IsEolSource { get; set; }
 		public bool IsToolSource { get; set; }
-
-		[JsonIgnore]
+        public bool MCU_Used { get; set; }
+        public bool MCU2_Used { get; set; }
+        [JsonIgnore]
 		public FlashingHandler FlashingHandler { get; set; }
 		
 
@@ -83,7 +84,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			}
 			
 
-			IsPass = FlashingHandler.Flash(FilePath, RXId, TXId, Customer);
+			IsPass = FlashingHandler.Flash(FilePath, MCU2_Used, RXId, TXId);
 			ErrorMessage = FlashingHandler.ErrorMessage;
 
 			if (Application.Current != null)
@@ -151,6 +152,9 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			IsEolSource = (sourceNode as ScriptNodeEOLFlash).IsEolSource;
 			IsToolSource = (sourceNode as ScriptNodeEOLFlash).IsToolSource;
+
+			MCU2_Used = (sourceNode as ScriptNodeEOLFlash).MCU2_Used;
+			MCU_Used = (sourceNode as ScriptNodeEOLFlash).MCU_Used;
 		}
 
 		public override bool IsNotSet(

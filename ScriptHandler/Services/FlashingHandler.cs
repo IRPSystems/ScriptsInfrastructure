@@ -122,10 +122,12 @@ namespace ScriptHandler.Services
 
 		public bool Flash(
             string filePath,
-			string rxMsgIdStr = "1CFFF9FE",
+            bool mcuUsed = false,
+            string rxMsgIdStr = "1CFFF9FE",
 			string txMsgIdStr = "1CFFFEF9",
             ECustomer customer = ECustomer.GENERIC,
-            string securityKey = "")
+            string securityKey = ""           
+            )
         {
 
             try
@@ -151,7 +153,7 @@ namespace ScriptHandler.Services
                     return false;
                 }
 
-                DeviceFullData mcuDevice = _devicesContainer.TypeToDevicesFullData[DeviceTypesEnum.MCU];
+                DeviceFullData mcuDevice = _devicesContainer.TypeToDevicesFullData[mcuUsed ? DeviceTypesEnum.MCU_2 : DeviceTypesEnum.MCU ];
 				MCU_Communicator mcuCommunicator = mcuDevice.DeviceCommunicator as MCU_Communicator;
 				
 
