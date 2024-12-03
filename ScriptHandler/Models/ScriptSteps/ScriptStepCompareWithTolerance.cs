@@ -331,7 +331,10 @@ namespace ScriptHandler.Models
 			{
 				DeviceFullData deviceFullData =
 					DevicesContainer.DevicesFullDataList.ToList().Find((d) => d.Device.DeviceType == parameter.DeviceType);
-				Communicator = deviceFullData.DeviceCommunicator;
+
+				
+				if (deviceFullData != null)
+					Communicator = deviceFullData.DeviceCommunicator;
 			}
 
 
@@ -508,7 +511,6 @@ namespace ScriptHandler.Models
 
 			}
 
-			_isExecuted = false;
 
 			return values;
 		}
