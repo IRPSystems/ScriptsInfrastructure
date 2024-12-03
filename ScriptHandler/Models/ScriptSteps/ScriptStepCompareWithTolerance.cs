@@ -458,6 +458,64 @@ namespace ScriptHandler.Models
             return UsedDevices;
         }
 
-        #endregion Methods
-    }
+		public override List<string> GetReportHeaders()
+		{
+			List<string> headers = base.GetReportHeaders();
+
+			string stepDescription = headers[0].Trim('\"');
+
+			string description =
+					$"{stepDescription}\r\nGet {Parameter.Name}";
+
+			headers.Add($"\"{description}\"");
+
+			if (CompareValue is DeviceParameterData compareValue)
+			{
+				description =
+						$"{stepDescription}\r\nGet {compareValue.Name}";
+
+				headers.Add($"\"{description}\"");
+			}
+
+
+			return headers;
+		}
+
+		public override List<string> GetReportValues()
+		{
+			List<string> values = base.GetReportValues();
+
+			EOLStepSummeryData stepSummeryData =
+					EOLStepSummerysList.Find((e) =>
+						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(Parameter.Name));
+
+			if (stepSummeryData != null)
+				values.Add(stepSummeryData.TestValue.ToString());
+			else
+				values.Add("");
+
+			if (CompareValue is DeviceParameterData compareValue)
+			{
+				stepSummeryData =
+					EOLStepSummerysList.Find((e) =>
+						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(compareValue.Name));
+
+				if (stepSummeryData != null)
+					values.Add(stepSummeryData.TestValue.ToString());
+				else
+					values.Add("");
+
+			}
+
+			_isExecuted = false;
+
+			return values;
+		}
+
+
+		#endregion Methods
+	}
+
+#endregion Methods
+}
 }

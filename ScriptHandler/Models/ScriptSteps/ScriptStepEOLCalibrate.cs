@@ -375,6 +375,71 @@ namespace ScriptHandler.Models.ScriptSteps
             return UsedDevices;
         }
 
-        #endregion Methods
-    }
+		public override List<string> GetReportHeaders()
+		{
+			List<string> headers = base.GetReportHeaders();
+
+			string stepDescription = headers[0].Trim('\"');
+
+			string description =
+					$"{stepDescription}\r\nGet {GainParam.Name}";
+			headers.Add($"\"{description}\"");
+
+			description =
+					$"{stepDescription}\r\nGet {McuParam.Name}";
+			headers.Add($"\"{description}\"");
+
+			description =
+					$"{stepDescription}\r\nGet {RefSensorParam.Name}";
+			headers.Add($"\"{description}\"");
+
+			description =
+					$"{stepDescription}\r\nSet {GainParam.Name}";
+			headers.Add($"\"{description}\"");
+
+			return headers;
+		}
+
+		public override List<string> GetReportValues()
+		{
+			List<string> values = base.GetReportValues();
+
+
+			EOLStepSummeryData stepSummeryData =
+				EOLStepSummerysList.Find((e) =>
+					!string.IsNullOrEmpty(e.Description) && e.Description.Contains(GainParam.Name));
+
+			if (stepSummeryData != null)
+				values.Add(stepSummeryData.TestValue.ToString());
+			else
+				values.Add("");
+
+
+			stepSummeryData =
+				EOLStepSummerysList.Find((e) =>
+					!string.IsNullOrEmpty(e.Description) && e.Description.Contains(McuParam.Name));
+
+			if (stepSummeryData != null)
+				values.Add(stepSummeryData.TestValue.ToString());
+			else
+				values.Add("");
+
+
+			stepSummeryData =
+				EOLStepSummerysList.Find((e) =>
+					!string.IsNullOrEmpty(e.Description) && e.Description.Contains(RefSensorParam.Name));
+
+			if (stepSummeryData != null)
+				values.Add(stepSummeryData.TestValue.ToString());
+			else
+				values.Add("");
+
+
+			_isExecuted = false;
+
+			return values;
+		}
+
+		#endregion Methods
+	}
 }

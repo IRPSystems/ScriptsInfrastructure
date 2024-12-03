@@ -126,5 +126,37 @@ namespace ScriptHandler.Models
             UsedDevices.Add(Parameter.DeviceType);
             return UsedDevices;
         }
-    }
+
+		public override List<string> GetReportHeaders()
+		{
+			List<string> headers = base.GetReportHeaders();
+
+			string stepDescription = headers[0].Trim('\"');
+
+			string description =
+				$"{stepDescription}\r\nGet {Parameter.Name}";
+			headers.Add($"\"{description}\"");
+
+
+			return headers;
+		}
+
+		public override List<string> GetReportValues()
+		{
+			List<string> values = base.GetReportValues();
+
+			EOLStepSummeryData stepSummeryData =
+				EOLStepSummerysList.Find((e) =>
+					!string.IsNullOrEmpty(e.Description) && e.Description.Contains(Parameter.Name));
+
+			if (stepSummeryData != null)
+				values.Add(stepSummeryData.TestValue.ToString());
+			else
+				values.Add("");
+
+			_isExecuted = false;
+
+			return values;
+		}
+	}
 }
