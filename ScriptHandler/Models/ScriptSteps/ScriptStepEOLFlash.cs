@@ -74,6 +74,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			UploadPrecent = 0;
 			RemainingTime = "";
 			ProgressMessage = "";
+			_isExecuted = true;
 
 			if (Application.Current != null)
 			{
@@ -84,7 +85,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			}
 			
 
-			IsPass = FlashingHandler.Flash(FilePath, MCU2_Used, RXId, TXId);
+			IsPass = FlashingHandler.Flash(FilePath, MCU2_Used, RXId, TXId, Customer);
 			ErrorMessage = FlashingHandler.ErrorMessage;
 
 			if (Application.Current != null)

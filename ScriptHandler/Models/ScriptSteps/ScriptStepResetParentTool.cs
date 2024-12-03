@@ -27,6 +27,7 @@ namespace ScriptHandler.Models
 		{
 			
 			IsPass = true;
+			_isExecuted = true;
 		}
 
 		

@@ -42,7 +42,8 @@ namespace ScriptHandler.Models
 
 		public override void Execute()
 		{
-			IsPass = false;
+			IsPass = false; 
+			_isExecuted = true;
 
 			if (!IsUseAverage)
 				AverageOfNRead = 1;
@@ -315,5 +316,65 @@ namespace ScriptHandler.Models
             }
 			return UsedDevices;
         }
-    }
+
+		public override List<string> GetReportHeaders()
+		{
+			List<string> headers = base.GetReportHeaders();
+
+			string stepDescription = headers[0].Trim('\"');
+
+			if (ValueLeft is DeviceParameterData paramLeft)
+			{
+				string description =
+					$"{stepDescription}\r\nGet {paramLeft.Name}";
+
+				headers.Add($"\"{description}\"");
+			}
+
+			if (ValueRight is DeviceParameterData paramRight)
+			{
+				string description =
+					$"{stepDescription}\r\nGet {paramRight.Name}";
+
+				headers.Add($"\"{description}\"");
+			}
+
+			return headers;
+		}
+
+		public override List<string> GetReportValues()
+		{
+			List<string> values = base.GetReportValues();
+
+			if (ValueLeft is DeviceParameterData paramLeft)
+			{
+				EOLStepSummeryData stepSummeryData =
+					EOLStepSummerysList.Find((e) =>
+						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(paramLeft.Name));
+
+				if (stepSummeryData != null)
+					values.Add(stepSummeryData.TestValue.ToString());
+				else
+					values.Add("");
+
+			}
+
+			if (ValueRight is DeviceParameterData paramRight)
+			{
+				EOLStepSummeryData stepSummeryData =
+					EOLStepSummerysList.Find((e) =>
+						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(paramRight.Name));
+
+				if (stepSummeryData != null)
+					values.Add(stepSummeryData.TestValue.ToString());
+				else
+					values.Add("");
+
+			}
+
+			_isExecuted = false;
+
+			return values;
+		}
+	}
 }

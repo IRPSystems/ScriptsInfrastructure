@@ -10,6 +10,7 @@ using Entities.Enums;
 using Newtonsoft.Json;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
+using ScriptHandler.Models.ScriptSteps;
 using ScriptHandler.Services;
 using Services.Services;
 using System.Collections.Generic;
@@ -244,13 +245,17 @@ namespace ScriptHandler.Models
 			if(string.IsNullOrEmpty(UserTitle) == false)
 				stepDescription += $";\r\n{UserTitle}";
 
+			stepDescription = FixStringService.GetFixedString(stepDescription);
+
 			string testName = FixStringService.GetFixedString(TestName);
 			string subScriptName = FixStringService.GetFixedString(SubScriptName);
 
 			string description =
 				$"{testName};\r\n{subScriptName};\r\n{stepDescription};";
+
 			description = $"\"{description}\"";
 			headers.Add(description);
+
 			return headers;
 		}
 
@@ -258,11 +263,14 @@ namespace ScriptHandler.Models
 		{
 			List<string> values = new List<string>();
 
-			string stepState = $"\"{ErrorMessage}\"";
+			string stepState = "FAILED";
 			if (!_isExecuted)
-				stepState = "Not Executed";			
+				stepState = "Not Executed";
 			else if (IsPass)
 				stepState = "PASSED";
+
+
+			_isExecuted = false; 
 
 			values.Add(stepState);
 

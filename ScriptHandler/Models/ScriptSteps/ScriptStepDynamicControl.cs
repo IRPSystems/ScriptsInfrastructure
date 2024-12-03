@@ -64,6 +64,7 @@ namespace ScriptHandler.Models
 		public override void Execute()
 		{
 			IsPass = false;
+			_isExecuted = true;
 			_linesCounter = 0;
 			ErrorMessage = "Dynamic Control failed\r\n\r\n";
 			PercentageOfLines = 0;

@@ -27,6 +27,7 @@ namespace ScriptHandler.Models
 		{
 			ErrorMessage = "Failed to reste the Sweep\r\n\r\n";
 			IsPass = ParentSweep.Reset();
+			_isExecuted = true;
 		}
 
 		
