@@ -516,6 +516,4 @@ namespace ScriptHandler.Models
 		#endregion Methods
 	}
 
-#endregion Methods
-}
 }
