@@ -259,10 +259,12 @@ namespace ScriptHandler.Models
 			List<string> values = new List<string>();
 
 			string stepState = $"\"{ErrorMessage}\"";
-			if (!_isExecuted)
-				stepState = "Not Executed";			
-			else if (IsPass)
+			if (IsPass)
 				stepState = "PASSED";
+			//if (!_isExecuted)
+			//	stepState = "Not Executed";			
+			//else if (IsPass)
+			//	stepState = "PASSED";
 
 			values.Add(stepState);
 
