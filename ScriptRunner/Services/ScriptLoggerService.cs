@@ -85,6 +85,9 @@ namespace ScriptRunner.Services
 			LogLineData lineData,
 			LogTypeEnum logType)
 		{
+			if (Application.Current == null)
+				return;
+
 			switch (logType)
 			{
 
