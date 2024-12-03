@@ -56,8 +56,9 @@ namespace ScriptHandler.Models.ScriptSteps
         {
             ErrorMessage = "Failed to save the parameter.\r\n" +
                     "\tParameter: " + Parameter.Name + "\r\n\r\n";
+			_isExecuted = true;
 
-            _waitGetCallback = new ManualResetEvent(false);
+			_waitGetCallback = new ManualResetEvent(false);
 
             EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData();
             eolStepSummeryData.Description = Description;

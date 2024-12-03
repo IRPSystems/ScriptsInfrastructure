@@ -48,9 +48,10 @@ namespace ScriptHandler.Models
 
 		public override void Execute()
 		{
-            //EOLStepSummeryData eolStepSummeryData;
+			//EOLStepSummeryData eolStepSummeryData;
+			_isExecuted = true;
 
-            _setValue = new ScriptStepSetParameter();
+			_setValue = new ScriptStepSetParameter();
             _setValue.Parameter = ParamData;
             _setValue.Communicator = TscCommunicator;
             _setValue.Execute();

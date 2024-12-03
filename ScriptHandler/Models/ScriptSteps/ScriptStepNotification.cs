@@ -26,6 +26,7 @@ namespace ScriptHandler.Models
 		public override void Execute()
 		{
 			IsPass = true;
+			_isExecuted = true;
 		}
 
 		public override bool IsNotSet(

@@ -37,6 +37,7 @@ namespace ScriptHandler.Models
 
 		public override void Execute()
 		{
+			_isExecuted = true;
 			if (StepToUpdate == null)
 			{
 				ErrorMessage = Description +":\r\nThe message to update is not set.";

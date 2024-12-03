@@ -46,7 +46,8 @@ namespace ScriptHandler.Models
         {
             _isStoped = false;
             IsPass = true;
-            int counter = LoopsAmount;
+			_isExecuted = true;
+			int counter = LoopsAmount;
             double value;
 
             _stepsCounter = 1;

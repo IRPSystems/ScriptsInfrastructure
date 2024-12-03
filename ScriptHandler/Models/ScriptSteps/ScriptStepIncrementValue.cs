@@ -38,6 +38,7 @@ namespace ScriptHandler.Models
 		{
 			_isStoped = false;
 			IsPass = true;
+			_isExecuted = true;
 
 			_stepsCounter = 1;
 

@@ -72,8 +72,9 @@ namespace ScriptHandler.Models
 
 		public override void Execute()
 		{
-		
-			if(SelectedMotor == null)
+			_isExecuted = true;
+
+			if (SelectedMotor == null)
 			{
 				ErrorMessage = "No motor is selected.";
 				IsPass = false;

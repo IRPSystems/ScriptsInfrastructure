@@ -59,6 +59,7 @@ namespace ScriptHandler.Models
 
 		public override void Execute()
 		{
+			_isExecuted = true;
 			if (Communicator == null || Parameter == null ||
 				string.IsNullOrEmpty(FilePath))
 			{

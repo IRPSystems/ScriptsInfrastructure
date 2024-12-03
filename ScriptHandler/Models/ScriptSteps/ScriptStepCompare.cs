@@ -42,7 +42,8 @@ namespace ScriptHandler.Models
 
 		public override void Execute()
 		{
-			IsPass = false;
+			IsPass = false; 
+			_isExecuted = true;
 
 			if (!IsUseAverage)
 				AverageOfNRead = 1;

@@ -55,6 +55,7 @@ namespace ScriptHandler.Models.ScriptSteps
 		public override void Execute()
 		{
 			IsPass = false;
+			_isExecuted = true;
 			string errorHeader = "Compare range:\r\n";
 			string errorMessage = errorHeader + "Failed to get the compared parameter for compare range\r\n\r\n";
 
