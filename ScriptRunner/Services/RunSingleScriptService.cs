@@ -467,8 +467,12 @@ namespace ScriptRunner.Services
 
 		private bool Repeat()
 		{
-			if (CurrentScript.IsPass == true && this is RunSingleScriptService_SO)
+			if (this is RunSingleScriptService_SO)
 			{
+				if (_isStopped || CurrentScript.IsPass != true)
+					return true;
+
+
 				Start();
 				return false;
 			}
