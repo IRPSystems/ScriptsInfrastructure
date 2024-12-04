@@ -7,10 +7,10 @@
                     xmlns:converter="clr-namespace:ScriptHandler.Converter">
 
     <converter:EOLFlashExtraDataVisibilityConverter x:Key="EOLFlashExtraDataVisibilityConverter" />
-    <ObjectDataProvider x:Key="udsSequence" MethodName="GetValues"
+    <ObjectDataProvider x:Key="eCustomer" MethodName="GetValues"
                     ObjectType="{x:Type system:Enum}">
         <ObjectDataProvider.MethodParameters>
-            <x:Type TypeName="flashing_tool:UdsSequence"/>
+            <x:Type TypeName="flashing_tool:eCustomer"/>
         </ObjectDataProvider.MethodParameters>
     </ObjectDataProvider>
 
@@ -136,27 +136,11 @@
                     </Grid.ColumnDefinitions>
 
                     <ComboBox Name="Cmb_UdsSeq" 
-                              ItemsSource="{Binding Source={StaticResource udsSequence}}"
+                              ItemsSource="{Binding Source={StaticResource eCustomer}}"
                               Grid.Column="0" 
-                              SelectedItem="{Binding UdsSequence, Mode=TwoWay}">
-
-                        <i:Interaction.Triggers>
-
-                            <i:EventTrigger EventName="SelectionChanged">
-                                <i:InvokeCommandAction Command="{Binding Path=DataContext.UdsSequence_SelectionChangedCommand, 
-                                                         Mode=OneWay, 
-                                                         RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}" 
-                                           PassEventArgsToCommand="False"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
+                              SelectedItem="{Binding Customer, Mode=TwoWay}">
 
                     </ComboBox>
-
-
-                    <TextBlock Grid.Column="2"  Text="Rx:" VerticalAlignment="Center"/>
-                    <controls_view:HexTextBoxView Text="{Binding RXId}" Grid.Column="4"/>
-                    <TextBlock Grid.Column="6" Text="Tx:" VerticalAlignment="Center"/>
-                    <controls_view:HexTextBoxView Text="{Binding TXId}" Grid.Column="8"/>
                 </Grid>
             </Grid>
 

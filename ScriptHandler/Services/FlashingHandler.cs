@@ -123,8 +123,6 @@ namespace ScriptHandler.Services
 		public bool Flash(
             string filePath,
             bool mcuUsed = false,
-            string rxMsgIdStr = "1CFFF9FE",
-			string txMsgIdStr = "1CFFFEF9",
             ECustomer customer = ECustomer.GENERIC,
             string securityKey = ""           
             )
