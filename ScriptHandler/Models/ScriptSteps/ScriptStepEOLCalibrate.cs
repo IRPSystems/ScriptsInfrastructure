@@ -207,6 +207,7 @@ namespace ScriptHandler.Models.ScriptSteps
                         IsPass = false;
                         break;
                 }
+				Thread.Sleep(1);
             }
 
             AddToEOLSummary();
