@@ -80,11 +80,9 @@ namespace ScriptHandler.Models.ScriptNodes
 			Name = "EOL Flash";
 
 			FlashFilePathOpenCommand = new RelayCommand(FlashFilePathOpen);
-			UdsSequence_SelectionChangedCommand = new RelayCommand(UdsSequence_SelectionChanged);
 
 			FileExtension = "";
             Customer = ECustomer.GENERIC;
-			//UdsSequence_SelectionChanged();
 		}
 
 		private void FlashFilePathOpen()
@@ -104,25 +102,6 @@ namespace ScriptHandler.Models.ScriptNodes
 				return;
 
 			FlashFilePath = openFileDlg.FileName;
-		}
-
-		private void UdsSequence_SelectionChanged()
-		{
-			
-
-			//switch (eCustomer)
-			//{
-			//	case UdsSequence.bootloader:
-			//	case UdsSequence.silence:
-			//		RXId = "3FE";
-			//		TXId = "3FF";
-			//		break;
-			//	case UdsSequence.generic:
-			//	default:
-			//		RXId = "1CFFF9FE";
-			//		TXId = "1CFFFEF9";
-			//		break;
-			//}
 		}
 
 		public override object Clone()
@@ -149,8 +128,6 @@ namespace ScriptHandler.Models.ScriptNodes
 
 		[JsonIgnore]
 		public RelayCommand FlashFilePathOpenCommand { get; private set; }
-		[JsonIgnore]
-		public RelayCommand UdsSequence_SelectionChangedCommand { get; private set; }
 
 		#endregion Commeands
 	}

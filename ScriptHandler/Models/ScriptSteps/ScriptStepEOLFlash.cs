@@ -85,7 +85,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			}
 			
 
-			IsPass = FlashingHandler.Flash(FilePath, MCU2_Used, RXId, TXId, Customer);
+			IsPass = FlashingHandler.Flash(FilePath, MCU2_Used, Customer);
 			ErrorMessage = FlashingHandler.ErrorMessage;
 
 			if (Application.Current != null)

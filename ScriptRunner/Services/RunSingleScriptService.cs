@@ -140,10 +140,13 @@ namespace ScriptRunner.Services
 				return;
 			}
 
-			_mainScriptLogger.AddLine(
-				_runTime.RunTime,
-				"Start script \"" + CurrentScript.Name + "\"",
-				LogTypeEnum.ScriptData);
+			if (!(this is RunSingleScriptService_SO))
+			{
+				_mainScriptLogger.AddLine(
+					_runTime.RunTime,
+					"Start script \"" + CurrentScript.Name + "\"",
+					LogTypeEnum.ScriptData);
+			}
 
 			SetCurrentStep(CurrentScript.ScriptItemsList[0] as ScriptStepBase);
 			
@@ -220,11 +223,13 @@ namespace ScriptRunner.Services
 
 									LoggerService.Debug(this, "Execute - " + _currentStep.Description + " - " + _currentStep.StepState);
 
-
-									_mainScriptLogger.AddLine(
+									if (!(this is RunSingleScriptService_SO))
+									{
+										_mainScriptLogger.AddLine(
 										_runTime.RunTime,
 										"Start step \"" + _currentStep.Description + "\"",
 										LogTypeEnum.StepData);
+									}
 
 									if (_currentStep == null)
 										break;
@@ -341,10 +346,13 @@ namespace ScriptRunner.Services
 						data += GetStepLogData(
 							_currentStep.EOLStepSummerysList[_currentStep.EOLStepSummerysList.Count - 1]);
 					}
-					_mainScriptLogger.AddLine(
-						_runTime.RunTime,
-						data,
-						LogTypeEnum.Pass);
+					if (!(this is RunSingleScriptService_SO))
+					{
+						_mainScriptLogger.AddLine(
+							_runTime.RunTime,
+							data,
+							LogTypeEnum.Pass);
+					}
 
 					SetCurrentStep(_currentStep.PassNext as ScriptStepBase);
 
@@ -352,10 +360,13 @@ namespace ScriptRunner.Services
 				}
 				else
 				{
-					_mainScriptLogger.AddLine(
+					if (!(this is RunSingleScriptService_SO))
+					{
+						_mainScriptLogger.AddLine(
 						_runTime.RunTime,
 						$"Step \"{_currentStep.Description}\" failed\r\n{_currentStep.ErrorMessage}",
 						LogTypeEnum.Fail);
+					}
 
 					if (CurrentScript != null && _currentStep.FailNext == null)
 						CurrentScript.IsPass = false;
@@ -416,11 +427,13 @@ namespace ScriptRunner.Services
 
 			if (CurrentScript != null)
 			{
-				_mainScriptLogger.AddLine(
+				if (!(this is RunSingleScriptService_SO))
+				{
+					_mainScriptLogger.AddLine(
 					_runTime.RunTime,
 					"End script \"" + CurrentScript.Name + "\"",
 					LogTypeEnum.ScriptData);
-
+				}
 				CurrentScript.State = SciptStateEnum.Ended;
 				
 				if (CurrentScript.IsPass == null)
@@ -431,11 +444,15 @@ namespace ScriptRunner.Services
 
 			else 
 			{
-				_mainScriptLogger.AddLine(
+				if (!(this is RunSingleScriptService_SO))
+				{
+					_mainScriptLogger.AddLine(
 					_runTime.RunTime,
 					"End script \"Unknown\"",
 					LogTypeEnum.ScriptData);
+				}
 			}
+
 
 			_userDecision.Reset();
 
@@ -546,7 +563,7 @@ namespace ScriptRunner.Services
 			_subScript.ScriptEndedEvent += SubScriptEndedEventHandler;
 			_subScript.CurrentStepChangedEvent += CurrentStepChangedEventHandler;
 			_subScript.AbortEvent += SubScript_AbortEvent;
-			_subScript.StartSafetyOfficerEvent += SubScript_StartSafetyOfficerEvent;
+            _subScript.StartSafetyOfficerEvent += SubScript_StartSafetyOfficerEvent;
 			_subScript.StopSafetyOfficerEvent += SubScript_StopSafetyOfficerEvent;
 
 
