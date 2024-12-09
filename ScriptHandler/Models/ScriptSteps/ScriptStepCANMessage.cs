@@ -2,6 +2,7 @@
 using DBCFileParser.Model;
 using DeviceCommunicators.Enums;
 using DeviceCommunicators.General;
+using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Newtonsoft.Json;
@@ -13,6 +14,7 @@ using Services.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Threading;
 using System.Timers;
 using System.Windows;
@@ -209,24 +211,8 @@ namespace ScriptHandler.Models
 				}
 
 				lock (_lockPayloadObj)
-					Communicator.SendMessage(isExtendedId, NodeId, _payloadBytes, MessageCallback);
-
-				int eventThatSignaledIndex =
-					WaitHandle.WaitAny(
-						new WaitHandle[] { _messageEnd, _cancellationToken.WaitHandle }, 2000);
-				_messageEnd.Reset();
-				if (eventThatSignaledIndex == WaitHandle.WaitTimeout)
-				{
-					_counter++;
-
-					if (_counter > 3)
-					{
-						ContinuousErrorEvent?.Invoke(Description + "\r\n\r\nNo response from the communicator");
-						IsPass = false;
-						End(true);
-						return;
-					}
-				}
+					(Communicator as MCU_Communicator).CanService.Send(_payloadBytes, NodeId, isExtendedId);
+				
 
 				if (IsStopByInterations)
 				{
@@ -246,6 +232,7 @@ namespace ScriptHandler.Models
 						return;
 					}
 				}
+
 			}
 			catch (Exception ex)
 			{
