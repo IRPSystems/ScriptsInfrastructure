@@ -294,16 +294,6 @@ namespace ScriptHandler.Models
 
 			IsPass = isPassed;
 			ContinuousEndedEvent?.Invoke(this);
-
-			System.Threading.Thread.Sleep(1000);
-			string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			path = Path.Combine(path, $"CANMessagesInterval_{NodeId.ToString("X")}.csv");
-			using (StreamWriter sw = new StreamWriter(path))
-			{
-				foreach((uint,TimeSpan) ts in _tsIntervals) 
-					sw.WriteLine("0x" + ts.Item1.ToString("X") + "," + ts.Item2.TotalMilliseconds);
-
-			}
 		}
 
 		public void StopContinuous()
