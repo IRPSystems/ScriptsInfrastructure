@@ -9,5 +9,12 @@ namespace ScriptHandler.Models
         public bool IsSaveToReport { get; set; }
         public bool IsSaveToPdfExecTable { get; set; }
         public bool IsSaveToPdfDynTable { get; set; }
-    }
+
+        public EOLReportsSelectionData() 
+        {
+			IsSaveToReport = true;
+			IsSaveToPdfExecTable = true;
+			IsSaveToPdfDynTable = true;
+		}
+	}
 }
