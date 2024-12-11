@@ -489,7 +489,7 @@ namespace ScriptRunner.Services
 				if (_isStopped || CurrentScript.IsPass != true)
 					return true;
 
-
+				System.Threading.Thread.Sleep(1);
 				Start();
 				return false;
 			}
