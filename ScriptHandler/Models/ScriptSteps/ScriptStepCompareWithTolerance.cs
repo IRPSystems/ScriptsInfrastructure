@@ -374,6 +374,7 @@ namespace ScriptHandler.Models
 				}
 				avgSum += Math.Abs(Convert.ToDouble(parameter.Value));
 
+				System.Threading.Thread.Sleep(1);
             }
 
 			if (parameter == null)

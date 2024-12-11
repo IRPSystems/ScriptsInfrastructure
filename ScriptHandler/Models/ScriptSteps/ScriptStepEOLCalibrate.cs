@@ -291,6 +291,8 @@ namespace ScriptHandler.Models.ScriptSteps
 				{
 					avgRead += Math.Abs(Convert.ToDouble(deviceParameterData.Value));
 				}
+
+				System.Threading.Thread.Sleep(1);
 			}
 
             avgRead = avgRead / numOfReads;
