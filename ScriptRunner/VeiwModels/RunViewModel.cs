@@ -1,6 +1,7 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using DeviceCommunicators.Dyno;
 using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
@@ -245,6 +246,9 @@ namespace ScriptRunner.ViewModels
 				}
 
 
+				WeakReferenceMessenger.Default.Register<RECORD_LIST_CHANGEDMessage>(
+				this, new MessageHandler<object, RECORD_LIST_CHANGEDMessage>(RECORD_LIST_CHANGEDMessageHandler));
+
 			}
 			catch (Exception ex)
 			{
@@ -276,6 +280,13 @@ namespace ScriptRunner.ViewModels
 			ControllersList = new ObservableCollection<string>(linesList);
 			
 
+		}
+
+		protected void RECORD_LIST_CHANGEDMessageHandler(
+			object sender,
+			RECORD_LIST_CHANGEDMessage message)
+		{
+			_logParametersList = message.LogParametersList;
 		}
 
 		private void ReadMotorList()
