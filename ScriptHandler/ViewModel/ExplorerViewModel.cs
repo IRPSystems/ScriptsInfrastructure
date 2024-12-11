@@ -12,6 +12,7 @@ using ScriptHandler.Views;
 using Services.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -74,6 +75,8 @@ namespace ScriptHandler.ViewModels
 			RenameScriptCommand = new RelayCommand<DesignScriptViewModel>(RenameScript);
 
 			SelectRecordingFileCommand = new RelayCommand(SelectRecordingFile);
+
+			SetAllReportsCommand = new RelayCommand(SetAllReports);
 
 			_postLoad = new ProjectPostLoadService();
 		}
@@ -1168,6 +1171,33 @@ namespace ScriptHandler.ViewModels
 			}
 		}
 
+		private void SetAllReports()
+		{
+			foreach (DesignScriptViewModel script in Project.ScriptsList)
+			{
+				SetAllReportsForScript(script.CurrentScript.ScriptItemsList);
+			}
+		}
+
+		private void SetAllReportsForScript(
+			ObservableCollection<IScriptItem> scriptItemsList)
+		{ 
+			foreach(IScriptItem item in scriptItemsList)
+			{
+				if (!(item is ScriptNodeBase scriptNodeBase))
+					continue;
+
+				scriptNodeBase.EOLReportsSelectionData.IsSaveToReport = true;
+				scriptNodeBase.EOLReportsSelectionData.IsSaveToPdfExecTable = true;
+				scriptNodeBase.EOLReportsSelectionData.IsSaveToPdfDynTable = true;
+
+				if(item is ISubScript subScript)
+				{
+					SetAllReportsForScript(subScript.Script.ScriptItemsList);
+				}
+			}
+		}
+
 		#endregion Methods
 
 		#region Commands
@@ -1177,6 +1207,9 @@ namespace ScriptHandler.ViewModels
 		public RelayCommand ProjectAddNewScriptCommand { get; private set; }
 		public RelayCommand ProjectAddExistingCommand { get; private set; }
 		public RelayCommand ProjectRenameCommand { get; private set; }
+
+
+		public RelayCommand SetAllReportsCommand { get; private set; }
 
 		public RelayCommand<DesignScriptViewModel> DeleteScriptCommand { get; private set; }
 		public RelayCommand<DesignScriptViewModel> CopyScriptCommand { get; private set; }
