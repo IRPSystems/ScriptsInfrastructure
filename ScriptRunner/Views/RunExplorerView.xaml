@@ -20,14 +20,6 @@
             <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
-
-            <Style x:Key="ProjectsListStyle" TargetType="ListView" >
-                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />                
-            </Style>
-
-
-
-
             <Style x:Key="ProjectsListItemStyle" TargetType="ListViewItem" >
                 <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
 

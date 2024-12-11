@@ -20,6 +20,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <converters:IsChangedToBackgroundConverter x:Key="IsChangedToBackgroundConverter" />
+            <converters:MonitorListConverter x:Key="MonitorListConverter" />
             <selectors:ExplorerItemTemplateSelector x:Key="ExplorerItemTemplateSelector" />
 
 
@@ -138,7 +139,7 @@
                         Width="25"
                         Height="25"
                         Margin="1,1"
-                        ToolTip="Select recording file"
+                        ToolTip="{Binding Project.RecordParametersFile, Converter={StaticResource MonitorListConverter}}"
                         Command="{Binding SelectRecordingFileCommand}"
                         VerticalAlignment="Center">
                     <iconPacks:Material Kind="Monitor" />
