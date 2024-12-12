@@ -318,6 +318,9 @@ namespace ScriptRunner.Services
 
 								if (projectsList[_projectIndex].TestsList[_testIndex].IsDoRun == false)
 								{
+									projectsList[_projectIndex].TestsList[_testIndex].IsPass = true;
+									SetIsPassForNotRunTest(
+										projectsList[_projectIndex].TestsList[_testIndex].ScriptItemsList);
 									_testIndex++;
 									break;
 								}
@@ -522,6 +525,19 @@ namespace ScriptRunner.Services
 					continue;
 
 				step.StepState = SciptStateEnum.None;
+			}
+		}
+
+		private void SetIsPassForNotRunTest(
+			ObservableCollection<IScriptItem> itemsList)
+		{
+			foreach (IScriptItem item in itemsList)
+			{
+				if(item is ISubScript subScript)
+				{
+					subScript.Script.IsPass = true;
+					SetIsPassForNotRunTest(subScript.Script.ScriptItemsList);
+				}
 			}
 		}
 
