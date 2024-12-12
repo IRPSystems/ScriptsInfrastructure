@@ -14,7 +14,7 @@ namespace ScriptHandler.Models
 		public override void Execute()
 		{
 			IsPass = false;
-			_isExecuted = true;
+			IsExecuted = true;
 		}
 
 		protected override void Stop()

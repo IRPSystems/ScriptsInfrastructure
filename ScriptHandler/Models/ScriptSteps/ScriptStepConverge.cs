@@ -97,7 +97,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		public override void Execute()
 		{
-			_isExecuted = true;
+			IsExecuted = true;
 
 			_cancellationTokenSource = new CancellationTokenSource();
 			_cancellationToken = _cancellationTokenSource.Token;
@@ -476,7 +476,7 @@ namespace ScriptHandler.Models.ScriptSteps
 		{
 			List<string> values = base.GetReportValues();
 
-			_isExecuted = false;
+			IsExecuted = false;
 
 			return values;
 		}

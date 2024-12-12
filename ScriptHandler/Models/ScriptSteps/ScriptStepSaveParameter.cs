@@ -56,7 +56,7 @@ namespace ScriptHandler.Models.ScriptSteps
         {
             ErrorMessage = "Failed to save the parameter.\r\n" +
                     "\tParameter: " + Parameter.Name + "\r\n\r\n";
-			_isExecuted = true;
+			IsExecuted = true;
 
 			_waitGetCallback = new ManualResetEvent(false);
 

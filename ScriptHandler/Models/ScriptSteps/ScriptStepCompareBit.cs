@@ -40,7 +40,7 @@ namespace ScriptHandler.Models
                 uint? bit = null;
                 ErrorMessage = Description;
 
-                _isExecuted = true;
+                IsExecuted = true;
 
                 string description = Description;
                 if (string.IsNullOrEmpty(UserTitle) == false)
@@ -179,7 +179,7 @@ namespace ScriptHandler.Models
             else
                 values.Add("");
 
-            _isExecuted = false;
+            IsExecuted = false;
 
             return values;
         }

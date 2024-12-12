@@ -64,7 +64,7 @@ namespace ScriptHandler.Models
 
 			_pauseTime = new TimeSpan();
 			_startTimeout = DateTime.Now;
-			_isExecuted = true;
+			IsExecuted = true;
 
 			switch (IntervalUnite)
 			{

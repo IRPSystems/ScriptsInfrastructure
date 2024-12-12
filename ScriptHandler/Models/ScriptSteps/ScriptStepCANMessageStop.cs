@@ -25,7 +25,7 @@ namespace ScriptHandler.Models
 
 		public override void Execute()
 		{
-			_isExecuted = true;
+			IsExecuted = true;
 			if (StepToStop == null)
 			{
 				ErrorMessage = Description + ":\r\nThe step to stop is not set.";

@@ -138,7 +138,7 @@ namespace ScriptHandler.Models
 		public override void Execute()
 		{			
 			IsPass = true;
-			_isExecuted = true;
+			IsExecuted = true;
 
 			NumOfMessages = 0;
 			_counterForCounterField = 0;

@@ -87,7 +87,7 @@ namespace ScriptHandler.Models
 
 		public override void Execute()
 		{
-			_isExecuted = true;
+			IsExecuted = true;
 			if (SweepItemsList == null || SweepItemsList.Count == 0)
 				return;
 

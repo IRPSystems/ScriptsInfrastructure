@@ -51,7 +51,7 @@ namespace ScriptHandler.Models.ScriptSteps
             _getValue = new ScriptStepGetParamValue();
             _saveValue = new ScriptStepSetSaveParameter();
 
-            _isExecuted = true;
+            IsExecuted = true;
 
             _stepsCounter = 1;
 
@@ -221,7 +221,7 @@ namespace ScriptHandler.Models.ScriptSteps
             else
                 values.Add("");
 
-            _isExecuted = false;
+            IsExecuted = false;
 
             return values;
         }

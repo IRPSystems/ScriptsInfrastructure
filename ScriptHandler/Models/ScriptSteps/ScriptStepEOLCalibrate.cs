@@ -94,7 +94,7 @@ namespace ScriptHandler.Models.ScriptSteps
 		{
             _eState = eState.Init;
             _isStopped = false;
-			_isExecuted = true;
+			IsExecuted = true;
 
 			_getValue.EOLReportsSelectionData = EOLReportsSelectionData;
 			_setValue.EOLReportsSelectionData = EOLReportsSelectionData;
@@ -439,7 +439,7 @@ namespace ScriptHandler.Models.ScriptSteps
 				values.Add("");
 
 
-			_isExecuted = false;
+			IsExecuted = false;
 
 			return values;
 		}

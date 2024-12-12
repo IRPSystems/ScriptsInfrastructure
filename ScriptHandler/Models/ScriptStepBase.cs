@@ -102,7 +102,7 @@ namespace ScriptHandler.Models
 		protected int _totalNumOfSteps;
 		protected int _stepsCounter;
 
-		protected bool _isExecuted;
+		public bool IsExecuted;
 
 
 		#endregion Properties and Fields
@@ -112,7 +112,7 @@ namespace ScriptHandler.Models
 		public ScriptStepBase()
 		{
 			EOLStepSummerysList = new List<EOLStepSummeryData>();
-			_isExecuted = false;
+			IsExecuted = false;
 		}
 
 		#endregion Constructor
@@ -264,13 +264,13 @@ namespace ScriptHandler.Models
 			List<string> values = new List<string>();
 
 			string stepState = "FAILED";
-			if (!_isExecuted)
+			if (!IsExecuted)
 				stepState = "Not Executed";
 			else if (IsPass)
 				stepState = "PASSED";
 
 
-			_isExecuted = false; 
+			IsExecuted = false; 
 
 			values.Add(stepState);
 

@@ -74,7 +74,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			UploadPrecent = 0;
 			RemainingTime = "";
 			ProgressMessage = "";
-			_isExecuted = true;
+			IsExecuted = true;
 
 			if (Application.Current != null)
 			{

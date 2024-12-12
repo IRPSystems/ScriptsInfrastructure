@@ -36,55 +36,62 @@ namespace ScriptHandler.Models
 
 		public override void Execute()
 		{
-			_isStoped = false;
-			IsPass = true;
-			_isExecuted = true;
-
-			_stepsCounter = 1;
-
-			_setParameter.Communicator = Communicator;
-			_setParameter.Parameter = Parameter;
-
-			ErrorMessage = "";
-
-			EOLStepSummeryData eolStepSummeryData;
-			bool isOK = SendAndReceive(out eolStepSummeryData);
-			EOLStepSummerysList.Add(eolStepSummeryData);
-			if (!isOK)
+			try
 			{
-				LoggerService.Inforamtion(this, "Failed SendAndReceive");
-				IsPass = false;
-				return;
+				_isStoped = false;
+				IsPass = true;
+				IsExecuted = true;
+
+				_stepsCounter = 1;
+
+				_setParameter.Communicator = Communicator;
+				_setParameter.Parameter = Parameter;
+
+				ErrorMessage = "";
+
+				EOLStepSummeryData eolStepSummeryData;
+				bool isOK = SendAndReceive(out eolStepSummeryData);
+				EOLStepSummerysList.Add(eolStepSummeryData);
+				if (!isOK)
+				{
+					LoggerService.Inforamtion(this, "Failed SendAndReceive");
+					IsPass = false;
+					return;
+				}
+
+				if (_isStoped)
+					return;
+
+				_stepsCounter++;
+
+				double value = Convert.ToDouble(Parameter.Value);
+				value += IncrementValue;
+
+
+
+				_setParameter.Value = value;
+				_setParameter.Execute();
+				EOLStepSummerysList.AddRange(_setParameter.EOLStepSummerysList);
+				if (!_setParameter.IsPass)
+				{
+					ErrorMessage += _setParameter.ErrorMessage;
+					IsPass = false;
+				}
+
+				//_waitForGet.Reset();
+				//Communicator.SetParamValue(Parameter, value, GetValueCallback);
+
+				//bool isNotTimeOut = _waitForGet.WaitOne(2000);
+				//_waitForGet.Reset();
+				//if(!isNotTimeOut)
+				//	IsPass = false;
+
+				AddToEOLSummary();
 			}
-
-			if (_isStoped)
-				return;
-
-			_stepsCounter++;
-
-			double value = Convert.ToDouble(Parameter.Value);
-			value += IncrementValue;
-
-			
-
-			_setParameter.Value = value;
-			_setParameter.Execute();
-			EOLStepSummerysList.AddRange(_setParameter.EOLStepSummerysList);
-			if (!_setParameter.IsPass)
+			catch (Exception ex)
 			{
-				ErrorMessage += _setParameter.ErrorMessage;
-				IsPass = false;
+				LoggerService.Error(this, "Failed to execute the Increment tool", "Error", ex);
 			}
-
-			//_waitForGet.Reset();
-			//Communicator.SetParamValue(Parameter, value, GetValueCallback);
-
-			//bool isNotTimeOut = _waitForGet.WaitOne(2000);
-			//_waitForGet.Reset();
-			//if(!isNotTimeOut)
-			//	IsPass = false;
-
-			AddToEOLSummary();
 		}
 
 		private void GetValueCallback(DeviceParameterData param, CommunicatorResultEnum result, string resultDescription)
@@ -155,7 +162,7 @@ namespace ScriptHandler.Models
 			else
 				values.Add("");
 
-			_isExecuted = false;
+			IsExecuted = false;
 
 			return values;
 		}
