@@ -99,6 +99,7 @@ namespace ScriptHandler.Models
 
 			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData();
 			eolStepSummeryData.Description = GetOnlineDescription();
+			eolStepSummeryData.Description = Description;
 
 			_stepsCounter = 1;
 			

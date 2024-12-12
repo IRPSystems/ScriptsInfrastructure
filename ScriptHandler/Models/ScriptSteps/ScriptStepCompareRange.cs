@@ -61,11 +61,13 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			_stepsCounter = 1;
 
+			string units = "";
 			double paramValue = 0;
 			string paramName = "";
 			bool res = GetValueAndName(
 				out paramValue,
 				out paramName,
+				out units,
 				Value);
 			if (!res)
 			{
@@ -73,6 +75,8 @@ namespace ScriptHandler.Models.ScriptSteps
 				IsPass = false;
 				return;
 			}
+
+			string mainUnits = units;
 
 			ErrorMessage = errorHeader + "Failed to get the left value parameter for compare range";
 
@@ -83,6 +87,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			res = GetValueAndName(
 				out paramValue_Left,
 				out paramName_Left,
+				out units,
 				ValueLeft);
 			if (!res)
 			{
@@ -97,9 +102,11 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			double paramValue_Right = 0;
 			string paramName_Right = "";
+			
 			res = GetValueAndName(
 				out paramValue_Right,
 				out paramName_Right,
+				out units,
 				ValueRight);
 			if (!res)
 			{
@@ -149,14 +156,15 @@ namespace ScriptHandler.Models.ScriptSteps
 				stepDescription,
 				this);
 
-           // eolStepSummeryData.TestValue = paramValue;
+            eolStepSummeryData.TestValue = paramValue;
             eolStepSummeryData.ComparisonValue = paramValue_Right;
             eolStepSummeryData.MinVal = paramValue_Left;
             eolStepSummeryData.MaxVal = paramValue_Right;
             eolStepSummeryData.Method = comparisonMethod;
             eolStepSummeryData.IsPass = IsPass;
             eolStepSummeryData.ErrorDescription = ErrorMessage;
-            EOLStepSummerysList.Add(eolStepSummeryData);
+			eolStepSummeryData.Units = mainUnits;
+			EOLStepSummerysList.Add(eolStepSummeryData);
         }
 
 		private void Compare_Between2Values(
@@ -229,13 +237,16 @@ namespace ScriptHandler.Models.ScriptSteps
 		private bool GetValueAndName(
 			out double paramValue,
 			out string paramName,
+			out string units,
 			object value)
 		{
 			paramValue = 0;
 			paramName = "";
+			units = "";
 
 			if (value is DeviceParameterData param)
 			{
+				units = param.Units;
 				object val = GetCompareParaValue(param);
 				if (val == null)
 					return false;

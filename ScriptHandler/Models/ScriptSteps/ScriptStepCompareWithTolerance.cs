@@ -205,7 +205,7 @@ namespace ScriptHandler.Models
 					this);
 
 				eolStepSummeryData.MeasuredTolerance = MeasuredTolerance;
-				eolStepSummeryData.TestValue = null;
+				eolStepSummeryData.TestValue = paramValue_Left;
 				eolStepSummeryData.ComparisonValue = paramValue_Right;
 				eolStepSummeryData.MinVal = minVal;
 				eolStepSummeryData.MaxVal = maxVal;
@@ -213,6 +213,7 @@ namespace ScriptHandler.Models
 				eolStepSummeryData.Reference = reference;
 				eolStepSummeryData.IsPass = IsPass;
 				eolStepSummeryData.ErrorDescription = ErrorMessage;
+				eolStepSummeryData.Units = Parameter.Units;
 				EOLStepSummerysList.Add(eolStepSummeryData);
 			}
 			catch (Exception ex)

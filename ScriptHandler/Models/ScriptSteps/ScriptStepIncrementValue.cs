@@ -50,7 +50,7 @@ namespace ScriptHandler.Models
 				ErrorMessage = "";
 
 				EOLStepSummeryData eolStepSummeryData;
-				bool isOK = SendAndReceive(out eolStepSummeryData);
+				bool isOK = SendAndReceive(out eolStepSummeryData, Description);
 				EOLStepSummerysList.Add(eolStepSummeryData);
 				if (!isOK)
 				{
@@ -71,6 +71,8 @@ namespace ScriptHandler.Models
 
 				_setParameter.Value = value;
 				_setParameter.Execute();
+				foreach (var summery in _setParameter.EOLStepSummerysList)
+					summery.ParentStepDescription = Description;
 				EOLStepSummerysList.AddRange(_setParameter.EOLStepSummerysList);
 				if (!_setParameter.IsPass)
 				{

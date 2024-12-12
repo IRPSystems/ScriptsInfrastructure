@@ -53,7 +53,7 @@ namespace ScriptHandler.Models
 			_stepsCounter = 1;
 
 
-
+			string units = "";
             if (ValueLeft is DeviceParameterData paramLeft)
 			{
 				int intValue = 0;
@@ -105,6 +105,8 @@ namespace ScriptHandler.Models
 
 				leftVal = sum / AverageOfNRead;
 				leftParamName = paramLeft.Name;
+
+				units = paramLeft.Units;
 			}
 
             _stepsCounter++;
@@ -156,13 +158,15 @@ namespace ScriptHandler.Models
 				stepDescription,
 				this);
 
-			//eolStepSummeryData.TestValue = leftVal;
+			eolStepSummeryData.TestValue = leftVal;
 			eolStepSummeryData.ComparisonValue = rightVal;
 			eolStepSummeryData.Reference = compareReference;
             eolStepSummeryData.Method = Comparation.ToString();
 			eolStepSummeryData.IsPass = IsPass;
 			eolStepSummeryData.ErrorDescription = ErrorMessage;
-            EOLStepSummerysList.Add(eolStepSummeryData);
+			eolStepSummeryData.Units = units;
+
+			EOLStepSummerysList.Add(eolStepSummeryData);
 
             #region Log comparation
             string str = leftParamName + " = " + leftVal + "; ";

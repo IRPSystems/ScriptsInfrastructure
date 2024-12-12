@@ -144,7 +144,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			myTask.Wait();
 
-			//IsPass = true;
+			AddToEOLSummary();
 		}
 
 		private void SetMinMaxTarget()

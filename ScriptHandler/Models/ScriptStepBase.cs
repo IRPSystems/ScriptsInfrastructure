@@ -149,6 +149,15 @@ namespace ScriptHandler.Models
 				this);
 			eolStepSummeryData.IsPass = IsPass;
             eolStepSummeryData.ErrorDescription = ErrorMessage;
+
+			string unit = "";
+			if (this is IScriptStepWithParameter withParameter
+				&& withParameter.Parameter != null)
+			{
+				unit = withParameter.Parameter.Units;
+			}
+			eolStepSummeryData.Units = unit;
+
             EOLStepSummerysList.Add(eolStepSummeryData);
         }
 

@@ -107,7 +107,8 @@ namespace ScriptHandler.Models
                     description,
                     this);
                 eolStepSummeryData.IsPass = IsPass;
-                eolStepSummeryData.ErrorDescription = ErrorMessage;
+                eolStepSummeryData.TestValue = value;
+				eolStepSummeryData.ErrorDescription = ErrorMessage;
                 EOLStepSummerysList.Add(eolStepSummeryData);
                 IsPass = true;
             }
