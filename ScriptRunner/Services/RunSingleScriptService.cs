@@ -95,7 +95,6 @@ namespace ScriptRunner.Services
 			_stopScriptStep = stopScriptStep;
 			_devicesContainer = devicesContainer;
 			_canMessageSender = canMessageSender;
-
 			_lockCurrentStep = new object();
 			_userDecision = new ManualResetEvent(false);
 
@@ -125,7 +124,7 @@ namespace ScriptRunner.Services
 				return;
 
 			_state = ScriptInternalStateEnum.HandleSpecial;
-			CurrentScript.IsPass = null;
+			CurrentScript.IsPass = true;
 
 			CurrentScript.PassRunSteps = 0;
 			CurrentScript.FailRunSteps = 0;
@@ -436,7 +435,7 @@ namespace ScriptRunner.Services
 				}
 				CurrentScript.State = SciptStateEnum.Ended;
 				
-				if (CurrentScript.IsPass == null)
+				if (CurrentScript.IsPass == true)
 					CurrentScript.IsPass = true;
 
 				

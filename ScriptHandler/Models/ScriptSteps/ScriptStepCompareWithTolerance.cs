@@ -190,7 +190,7 @@ namespace ScriptHandler.Models
 				if (IsPercentageTolerance)
 				{
 					minVal = paramValue_Right - (paramValue_Right * Tolerance / 100);
-					maxVal = paramValue_Right - (paramValue_Right * Tolerance / 100);
+					maxVal = paramValue_Right + (paramValue_Right * Tolerance / 100);
 				}
 				else
 				{
