@@ -157,12 +157,15 @@ namespace ScriptHandler.Models
         {
             List<string> headers = base.GetReportHeaders();
 
-            string stepDescription = headers[0].Trim('\"');
+            if(Parameter != null)
+            {
+                string stepDescription = headers[0].Trim('\"');
 
-            string description =
-                    $"{stepDescription}\r\nGet {Parameter.Name}";
+                string description =
+                        $"{stepDescription}\r\nGet {Parameter?.Name}";
 
-            headers.Add($"\"{description}\"");
+                headers.Add($"\"{description}\"");
+            }
 
             return headers;
         }

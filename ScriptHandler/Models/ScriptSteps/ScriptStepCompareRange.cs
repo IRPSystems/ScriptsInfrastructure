@@ -454,47 +454,49 @@ namespace ScriptHandler.Models.ScriptSteps
 		{
 			List<string> values = base.GetReportValues();
 
-			if (Value is DeviceParameterData valueParam)
+			if(Value != null || ValueLeft != null || ValueRight != null)
 			{
-				EOLStepSummeryData stepSummeryData =
-					EOLStepSummerysList.Find((e) =>
-						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(valueParam.Name));
+                if (Value is DeviceParameterData valueParam)
+                {
+                    EOLStepSummeryData stepSummeryData =
+                        EOLStepSummerysList.Find((e) =>
+                            !string.IsNullOrEmpty(e.Description) && e.Description.Contains(valueParam.Name));
 
-				if (stepSummeryData != null)
-					values.Add(stepSummeryData.TestValue.ToString());
-				else
-					values.Add("");
+                    if (stepSummeryData != null)
+                        values.Add(stepSummeryData.TestValue.ToString());
+                    else
+                        values.Add("");
 
-			}
+                }
 
-			if (ValueLeft is DeviceParameterData valueLeft)
-			{
-				EOLStepSummeryData stepSummeryData =
-					EOLStepSummerysList.Find((e) =>
-						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(valueLeft.Name));
+                if (ValueLeft is DeviceParameterData valueLeft)
+                {
+                    EOLStepSummeryData stepSummeryData =
+                        EOLStepSummerysList.Find((e) =>
+                            !string.IsNullOrEmpty(e.Description) && e.Description.Contains(valueLeft.Name));
 
-				if (stepSummeryData != null)
-					values.Add(stepSummeryData.TestValue.ToString());
-				else
-					values.Add("");
+                    if (stepSummeryData != null)
+                        values.Add(stepSummeryData.TestValue.ToString());
+                    else
+                        values.Add("");
 
-			}
+                }
 
-			if (ValueRight is DeviceParameterData valueRight)
-			{
-				EOLStepSummeryData stepSummeryData =
-					EOLStepSummerysList.Find((e) =>
-						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(valueRight.Name));
+                if (ValueRight is DeviceParameterData valueRight)
+                {
+                    EOLStepSummeryData stepSummeryData =
+                        EOLStepSummerysList.Find((e) =>
+                            !string.IsNullOrEmpty(e.Description) && e.Description.Contains(valueRight.Name));
 
-				if (stepSummeryData != null)
-					values.Add(stepSummeryData.TestValue.ToString());
-				else
-					values.Add("");
+                    if (stepSummeryData != null)
+                        values.Add(stepSummeryData.TestValue.ToString());
+                    else
+                        values.Add("");
 
-			}
+                }
+            }
 
 			IsExecuted = false;
-
 
 			return values;
 		}

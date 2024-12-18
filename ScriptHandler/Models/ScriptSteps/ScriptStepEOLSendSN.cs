@@ -18,7 +18,7 @@ namespace ScriptHandler.Models.ScriptSteps
     {
         #region Properties and Fields
 
-        public DeviceParameterData SN_Param { get; set; }
+        public DeviceParameterData SN_Param { get; set; } 
         public DeviceCommunicator Communicator { get; set; }
 
         public string SerialNumber { get; set; }
@@ -192,15 +192,16 @@ namespace ScriptHandler.Models.ScriptSteps
 
             string stepDescription = headers[0].Trim('\"');
 
-            string description =
-                    $"{stepDescription}\r\nSet {SN_Param.Name} = {SerialNumber}";
-            headers.Add($"\"{description}\"");
+            if(SN_Param != null)
+            {
+                string description =
+                $"{stepDescription}\r\nSet {SN_Param.Name} = {SerialNumber}";
+                headers.Add($"\"{description}\"");
 
-            description =
-                    $"{stepDescription}\r\nGet {SN_Param.Name}";
-            headers.Add($"\"{description}\"");
-
-
+                description =
+                        $"{stepDescription}\r\nGet {SN_Param.Name}";
+                headers.Add($"\"{description}\"");
+            }
 
             return headers;
         }

@@ -327,21 +327,24 @@ namespace ScriptHandler.Models
 
 			string stepDescription = headers[0].Trim('\"');
 
-			if (ValueLeft is DeviceParameterData paramLeft)
+			if(ValueLeft != null || ValueRight != null)
 			{
-				string description =
-					$"{stepDescription}\r\nGet {paramLeft.Name}";
+                if (ValueLeft is DeviceParameterData paramLeft)
+                {
+                    string description =
+                        $"{stepDescription}\r\nGet {paramLeft.Name}";
 
-				headers.Add($"\"{description}\"");
-			}
+                    headers.Add($"\"{description}\"");
+                }
 
-			if (ValueRight is DeviceParameterData paramRight)
-			{
-				string description =
-					$"{stepDescription}\r\nGet {paramRight.Name}";
+                if (ValueRight is DeviceParameterData paramRight)
+                {
+                    string description =
+                        $"{stepDescription}\r\nGet {paramRight.Name}";
 
-				headers.Add($"\"{description}\"");
-			}
+                    headers.Add($"\"{description}\"");
+                }
+            }
 
 			return headers;
 		}

@@ -382,24 +382,26 @@ namespace ScriptHandler.Models.ScriptSteps
 		public override List<string> GetReportHeaders()
 		{
 			List<string> headers = base.GetReportHeaders();
+			if(GainParam != null)
+			{
+                string stepDescription = headers[0].Trim('\"');
 
-			string stepDescription = headers[0].Trim('\"');
+                string description =
+                        $"{stepDescription}\r\nGet {GainParam?.Name}";
+                headers.Add($"\"{description}\"");
 
-			string description =
-					$"{stepDescription}\r\nGet {GainParam.Name}";
-			headers.Add($"\"{description}\"");
+                description =
+                        $"{stepDescription}\r\nGet {McuParam?.Name}";
+                headers.Add($"\"{description}\"");
 
-			description =
-					$"{stepDescription}\r\nGet {McuParam.Name}";
-			headers.Add($"\"{description}\"");
+                description =
+                        $"{stepDescription}\r\nGet {RefSensorParam?.Name}";
+                headers.Add($"\"{description}\"");
 
-			description =
-					$"{stepDescription}\r\nGet {RefSensorParam.Name}";
-			headers.Add($"\"{description}\"");
-
-			description =
-					$"{stepDescription}\r\nSet {GainParam.Name}";
-			headers.Add($"\"{description}\"");
+                description =
+                        $"{stepDescription}\r\nSet {GainParam?.Name}";
+                headers.Add($"\"{description}\"");
+            }
 
 			return headers;
 		}

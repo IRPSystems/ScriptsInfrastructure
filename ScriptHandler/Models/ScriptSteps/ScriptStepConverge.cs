@@ -449,25 +449,28 @@ namespace ScriptHandler.Models.ScriptSteps
 		{
 			List<string> headers = base.GetReportHeaders();
 
-			string stepDescription = headers[0].Trim('\"');
-
-			string description = string.Empty;
-
-			if (TargetValue is DeviceParameterData param)
+			if(Parameter != null || TargetValue != null)
 			{
-				description =
-					$"{stepDescription}\r\nGet Target value {param.Name}";
+                string stepDescription = headers[0].Trim('\"');
 
-				headers.Add($"\"{description}\"");
-			}
+                string description = string.Empty;
 
-			description =
-					$"{stepDescription}\r\nConverged value {Parameter.Name}";
-			headers.Add($"\"{description}\"");
+                if (TargetValue is DeviceParameterData param)
+                {
+                    description =
+                        $"{stepDescription}\r\nGet Target value {param.Name}";
 
-			description =
-					$"{stepDescription}\r\nConverged value after interval {Parameter.Name}";
-			headers.Add($"\"{description}\"");
+                    headers.Add($"\"{description}\"");
+                }
+
+                description =
+                        $"{stepDescription}\r\nConverged value {Parameter.Name}";
+                headers.Add($"\"{description}\"");
+
+                description =
+                        $"{stepDescription}\r\nConverged value after interval {Parameter.Name}";
+                headers.Add($"\"{description}\"");
+            }
 
 			return headers;
 		}

@@ -497,23 +497,27 @@ namespace ScriptHandler.Models
 		{
 			List<string> headers = base.GetReportHeaders();
 
-			string stepDescription = headers[0].Trim('\"');
-
-			string description =
-					$"{stepDescription}\r\nGet {Parameter.Name}";
-
-			headers.Add($"\"{description}\"");
-
-			if (CompareValue is DeviceParameterData compareValue)
+			if(Parameter != null)
 			{
-				description =
-						$"{stepDescription}\r\nGet {compareValue.Name}";
+                string stepDescription = headers[0].Trim('\"');
 
-				headers.Add($"\"{description}\"");
-			}
+                string description =
+                        $"{stepDescription}\r\nGet {Parameter?.Name}";
+
+                headers.Add($"\"{description}\"");
+
+                if (CompareValue is DeviceParameterData compareValue)
+                {
+                    description =
+                            $"{stepDescription}\r\nGet {compareValue.Name}";
+
+                    headers.Add($"\"{description}\"");
+                }
+
+            }
 
 
-			return headers;
+            return headers;
 		}
 
 		public override List<string> GetReportValues()
