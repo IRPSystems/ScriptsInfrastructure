@@ -181,7 +181,7 @@ namespace ScriptRunner.ViewModels
 			}
 		}		
 
-		private void Closing(CancelEventArgs e)
+		public void Closing(CancelEventArgs e)
 		{
 			StopAllCANMessages();
 		}
@@ -244,11 +244,13 @@ namespace ScriptRunner.ViewModels
 			};
 			CANMessagesList.Add(data);
 
-			if (_devicesContainer.TypeToDevicesFullData.ContainsKey(DeviceTypesEnum.MCU) == false)
-				return;
+			
 
 			if (IsGlobalComm)
 			{
+				if (_devicesContainer.TypeToDevicesFullData.ContainsKey(DeviceTypesEnum.MCU) == false)
+					return;
+
 				DeviceFullData mcuDevice = _devicesContainer.TypeToDevicesFullData[DeviceTypesEnum.MCU];
 				canMessage.Communicator = mcuDevice.DeviceCommunicator;
 			}

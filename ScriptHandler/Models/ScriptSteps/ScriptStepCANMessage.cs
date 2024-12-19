@@ -5,6 +5,7 @@ using DeviceCommunicators.General;
 using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
+using MicroLibrary;
 using Newtonsoft.Json;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
@@ -14,7 +15,6 @@ using Services.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Threading;
 using System.Timers;
 using System.Windows;
@@ -89,7 +89,7 @@ namespace ScriptHandler.Models
 
 
 
-		private System.Timers.Timer _sendIntervalTimer;
+		private MicroTimer _sendIntervalTimer;
 		private TimeSpan _tsInterval;
 		private byte[] _payloadBytes;
 		private int _iterationsCount;
@@ -108,6 +108,7 @@ namespace ScriptHandler.Models
 		private const byte _CRC8_START_VALUE = 0xFF;
 		private const byte _CRC8_XOR = 0xFF;
 
+
 		#endregion Fields
 
 		#region Constructor
@@ -117,8 +118,8 @@ namespace ScriptHandler.Models
 			if (Application.Current != null)
 				Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
 
-			_sendIntervalTimer = new System.Timers.Timer();
-			_sendIntervalTimer.Elapsed += ElapsedEventHandler;
+			_sendIntervalTimer = new MicroTimer();
+			_sendIntervalTimer.MicroTimerElapsed += ElapsedEventHandler;
 
 			_messageEnd = new ManualResetEvent(false);
 
@@ -182,7 +183,7 @@ namespace ScriptHandler.Models
 				_startTime = DateTime.Now;
 
 				_sendIntervalTimer.Enabled = true;
-				_sendIntervalTimer.Interval = _tsInterval.TotalMilliseconds;
+				_sendIntervalTimer.Interval = (long)(_tsInterval.TotalMilliseconds * 1000);
 				_sendIntervalTimer.Start();
 			}
 			catch(Exception ex)
@@ -191,11 +192,11 @@ namespace ScriptHandler.Models
 			}
 		}
 
-		
-		private void ElapsedEventHandler(object sender, ElapsedEventArgs e)
+		private void ElapsedEventHandler(object sender, MicroTimerEventArgs e)
 		{
 			try
 			{
+		
 				NumOfMessages++;
 
 				bool isExtendedId = false;
@@ -335,7 +336,7 @@ namespace ScriptHandler.Models
 				}
 
 				_sendIntervalTimer.Stop();
-				_sendIntervalTimer.Interval = _tsInterval.TotalMilliseconds;
+				_sendIntervalTimer.Interval = (long)_tsInterval.TotalMilliseconds;
 				_sendIntervalTimer.Start();
 			}
 
