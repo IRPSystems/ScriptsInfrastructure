@@ -181,7 +181,7 @@ namespace ScriptRunner.ViewModels
 			}
 		}		
 
-		private void Closing(CancelEventArgs e)
+		public void Closing(CancelEventArgs e)
 		{
 			StopAllCANMessages();
 		}
