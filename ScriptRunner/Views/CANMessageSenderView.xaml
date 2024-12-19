@@ -13,44 +13,48 @@
              d:DesignHeight="450" d:DesignWidth="1500">
 
     <UserControl.Resources>
-        
-        <DataTemplate x:Key="StateTemplate">
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Controls;component/Resources/ButtonWithIcon.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-            <Grid>
-                <Ellipse Name="elps"
+            <DataTemplate x:Key="StateTemplate">
+
+                <Grid>
+                    <Ellipse Name="elps"
                  Stroke="{DynamicResource MahApps.Brushes.Gray1}"
                  Fill="{DynamicResource MahApps.Brushes.Gray7}" 
                  Height="20" Width="20"/>
-            </Grid>
+                </Grid>
 
-            <DataTemplate.Triggers>
+                <DataTemplate.Triggers>
 
-                <DataTrigger Binding="{Binding State}" Value="Sending">
-                    <Setter TargetName="elps" Property="Fill" Value="Green" />
-                </DataTrigger>
+                    <DataTrigger Binding="{Binding State}" Value="Sending">
+                        <Setter TargetName="elps" Property="Fill" Value="Green" />
+                    </DataTrigger>
 
-                <DataTrigger Binding="{Binding State}" Value="Updated">
-                    <Setter TargetName="elps" Property="Fill" Value="Orange" />
-                </DataTrigger>
+                    <DataTrigger Binding="{Binding State}" Value="Updated">
+                        <Setter TargetName="elps" Property="Fill" Value="Orange" />
+                    </DataTrigger>
 
-                <DataTrigger Binding="{Binding State}" Value="Stopped">
-                    <Setter TargetName="elps" Property="Fill" Value="Red" />
-                </DataTrigger>
+                    <DataTrigger Binding="{Binding State}" Value="Stopped">
+                        <Setter TargetName="elps" Property="Fill" Value="Red" />
+                    </DataTrigger>
 
-            </DataTemplate.Triggers>
+                </DataTemplate.Triggers>
 
-        </DataTemplate>
+            </DataTemplate>
 
-        <DataTemplate x:Key="CommStateTemplate">
+            <DataTemplate x:Key="CommStateTemplate">
 
-            <Border Name="bd"
+                <Border Name="bd"
             BorderBrush="{DynamicResource MahApps.Brushes.Gray1}" 
             BorderThickness="1"
             Background="White"
             Width="75"
             Margin="2">
 
-                <TextBlock Name="tb"
+                    <TextBlock Name="tb"
                    Text="{Binding Device.Name}" 
                    Foreground="Black"
                    HorizontalAlignment="Center" VerticalAlignment="Center" 
@@ -58,41 +62,42 @@
                    TextWrapping="Wrap"
                    ToolTip="{Binding CommErrDescription}"/>
 
-            </Border>
+                </Border>
 
-            <DataTemplate.Triggers>
+                <DataTemplate.Triggers>
 
-                <DataTrigger Binding="{Binding CommState}" Value="None">
-                    <Setter TargetName="bd" Property="Background" Value="Gray"/>
-                    <Setter TargetName="tb" Property="Foreground" Value="White"/>
-                </DataTrigger>
+                    <DataTrigger Binding="{Binding CommState}" Value="None">
+                        <Setter TargetName="bd" Property="Background" Value="Gray"/>
+                        <Setter TargetName="tb" Property="Foreground" Value="White"/>
+                    </DataTrigger>
 
-                <DataTrigger Binding="{Binding CommState}" Value="Initiated">
-                    <Setter TargetName="bd" Property="Background" Value="Blue"/>
-                    <Setter TargetName="tb" Property="Foreground" Value="White"/>
-                </DataTrigger>
+                    <DataTrigger Binding="{Binding CommState}" Value="Initiated">
+                        <Setter TargetName="bd" Property="Background" Value="Blue"/>
+                        <Setter TargetName="tb" Property="Foreground" Value="White"/>
+                    </DataTrigger>
 
-                <DataTrigger Binding="{Binding CommState}" Value="Connected">
-                    <Setter TargetName="bd" Property="Background" Value="Green"/>
-                    <Setter TargetName="tb" Property="Foreground" Value="White"/>
-                </DataTrigger>
+                    <DataTrigger Binding="{Binding CommState}" Value="Connected">
+                        <Setter TargetName="bd" Property="Background" Value="Green"/>
+                        <Setter TargetName="tb" Property="Foreground" Value="White"/>
+                    </DataTrigger>
 
-                <DataTrigger Binding="{Binding CommState}" Value="Disconnected">
-                    <Setter TargetName="bd" Property="Background" Value="Red"/>
-                    <Setter TargetName="tb" Property="Foreground" Value="White"/>
-                </DataTrigger>
+                    <DataTrigger Binding="{Binding CommState}" Value="Disconnected">
+                        <Setter TargetName="bd" Property="Background" Value="Red"/>
+                        <Setter TargetName="tb" Property="Foreground" Value="White"/>
+                    </DataTrigger>
 
-            </DataTemplate.Triggers>
+                </DataTemplate.Triggers>
 
 
-            
 
-        </DataTemplate>
 
-        <script_handler_convertors:HexUintConverter x:Key="HexUintConverter" />
-        <local_converters:NumberToBytesConverter x:Key="NumberToBytesConverter" />
-        <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+            </DataTemplate>
 
+            <script_handler_convertors:HexUintConverter x:Key="HexUintConverter" />
+            <local_converters:NumberToBytesConverter x:Key="NumberToBytesConverter" />
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+
+        </ResourceDictionary>
     </UserControl.Resources>
     
     <Grid>
