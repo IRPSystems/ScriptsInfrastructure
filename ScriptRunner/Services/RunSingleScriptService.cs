@@ -372,7 +372,10 @@ namespace ScriptRunner.Services
 					
 					ScriptErrorMessage += _currentStep.ErrorMessage;
 
-					SetCurrentStep(_currentStep.FailNext as ScriptStepBase);
+					if (_scriptStep != null && _scriptStep.TimeoutSpan > (TimeSpan.Zero) && _scriptStep.TimeInSubScript >= _scriptStep.TimeoutSpan)
+                        _currentStep = null;
+					else
+						SetCurrentStep(_currentStep.FailNext as ScriptStepBase);
 
 					CurrentScript.FailRunSteps++;
 
