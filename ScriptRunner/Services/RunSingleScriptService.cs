@@ -147,7 +147,7 @@ namespace ScriptRunner.Services
 					LogTypeEnum.ScriptData);
 			}
 
-			SetCurrentStep(CurrentScript.ScriptItemsList[0] as ScriptStepBase);
+		SetCurrentStep(CurrentScript.ScriptItemsList[0] as ScriptStepBase);
 			
 
 			_cancellationTokenSource = new CancellationTokenSource();
@@ -359,20 +359,23 @@ namespace ScriptRunner.Services
 				}
 				else
 				{
-					if (!(this is RunSingleScriptService_SO))
-					{
+					//if (!(this is RunSingleScriptService_SO))
+					//{
 						_mainScriptLogger.AddLine(
 						_runTime.RunTime,
 						$"Step \"{_currentStep.Description}\" failed\r\n{_currentStep.ErrorMessage}",
 						LogTypeEnum.Fail);
-					}
+					//}
 
 					if (CurrentScript != null && _currentStep.FailNext == null)
 						CurrentScript.IsPass = false;
 					
 					ScriptErrorMessage += _currentStep.ErrorMessage;
 
-					SetCurrentStep(_currentStep.FailNext as ScriptStepBase);
+					if (_scriptStep != null && _scriptStep.TimeoutSpan > (TimeSpan.Zero) && _scriptStep.TimeInSubScript >= _scriptStep.TimeoutSpan)
+                        _currentStep = null;
+					else
+						SetCurrentStep(_currentStep.FailNext as ScriptStepBase);
 
 					CurrentScript.FailRunSteps++;
 
