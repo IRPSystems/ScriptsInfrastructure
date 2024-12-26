@@ -18,8 +18,8 @@ namespace ScriptHandler.Models
 
 		public DeviceParameterData Parameter { get; set; }
 
-
-		public int Ni6002_IOPort { get; set; }
+        public int NI6002_ExpectedRPM { get; set; }
+        public int Ni6002_IOPort { get; set; }
 		public int Ni6002_Line { get; set; }
 		public int NI6002_NumofCounts { get; set; }
 		public double NIDAQShuntResistor { get; set; }
@@ -92,6 +92,8 @@ namespace ScriptHandler.Models
 			NumatoGPIOPort = source.NumatoGPIOPort;
             NIThermistorIndex = source.NIThermistorIndex;
 			NI6002_NumofCounts = source.NI6002_NumofCounts;
+            NI6002_ExpectedRPM = source.NI6002_ExpectedRPM;
+
         }
 
 		public void SetToParameter(DeviceParameterData parameter)
@@ -103,7 +105,9 @@ namespace ScriptHandler.Models
 				ni.shunt_resistor = NIDAQShuntResistor;
 				ni.ThermistorType = NIThermistorIndex;
 				ni.numofcounts = NI6002_NumofCounts;
-			}
+				ni.ExpectedRPM = NI6002_ExpectedRPM;
+
+            }
 			else if (parameter is NumatoGPIO_ParamData numato)
 			{
 				numato.Io_port = NumatoGPIOPort;
