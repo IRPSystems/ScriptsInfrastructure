@@ -36,12 +36,13 @@ namespace ScriptRunner.Services
 		}
 
 		public string ScriptErrorMessage { get; set; }
+        public string OperatorErrorMessage { get; set; }
 
-		#endregion Properties
+        #endregion Properties
 
-		#region Fields
+        #region Fields
 
-		private ScriptStepBase _currentStep;
+        private ScriptStepBase _currentStep;
 
 
 		private CancellationTokenSource _cancellationTokenSource;
@@ -372,17 +373,21 @@ namespace ScriptRunner.Services
 					
 					ScriptErrorMessage += _currentStep.ErrorMessage;
 
-					if (_scriptStep != null && _scriptStep.TimeoutSpan > (TimeSpan.Zero) && _scriptStep.TimeInSubScript >= _scriptStep.TimeoutSpan)
+
+                    if (_scriptStep != null && _scriptStep.TimeoutSpan > (TimeSpan.Zero) && _scriptStep.TimeInSubScript >= _scriptStep.TimeoutSpan)
                         _currentStep = null;
 					else
 						SetCurrentStep(_currentStep.FailNext as ScriptStepBase);
 
 					CurrentScript.FailRunSteps++;
 
+
+
 					if (this is RunSingleScriptService_SO so)
 					{
 						so.IsAborted = true;
 					}
+
 				}
 
 				if (_isAborted)
@@ -692,9 +697,7 @@ namespace ScriptRunner.Services
 		public event Action<bool> ScriptEndedEvent;
 		public event Action<ScriptStepBase> CurrentStepChangedEvent;
 
-
-		public event Action<string> AbortEvent;
-
+        public event Action<string> AbortEvent;
 		public event Action StartSafetyOfficerEvent;
 		public event Action StopSafetyOfficerEvent;
 

@@ -40,8 +40,9 @@ namespace ScriptRunner.Services
 
 		private string _errorMessage;
 
+        public string OperatorErrorMessage { get; set; }
 
-		private CancellationTokenSource _cancellationTokenSource;
+        private CancellationTokenSource _cancellationTokenSource;
 		private CancellationToken _cancellationToken;
 
 		private RunProjectsState _state;
@@ -427,6 +428,7 @@ namespace ScriptRunner.Services
 				return;
 			}
 
+
 			GeneratedScriptData scriptData = null;
 			if (_projectsList != null && _projectsList.Count > 0 &&
 				_projectIndex >= 0 && _projectIndex < _projectsList.Count &&
@@ -439,8 +441,12 @@ namespace ScriptRunner.Services
 			if (stopMode == ScriptStopModeEnum.Aborted || stopMode == ScriptStopModeEnum.Stopped ||
 				IsAbortClicked)
 			{
+				if (RunScript.CurrentScript is RunSingleScriptService_SO)
+					OperatorErrorMessageEvent?.Invoke("Saftey Officer Script Failed\r\n");
+				else if (!IsAbortClicked)				
+					OperatorErrorMessageEvent?.Invoke("Main Script Failed\r\n" );
 				
-				End(stopMode, scriptData);
+                End(stopMode, scriptData);
 				if(IsAbortClicked && stopMode != ScriptStopModeEnum.Aborted)
 				{
 					RunScript.AbortScript("User Abort");
@@ -468,7 +474,8 @@ namespace ScriptRunner.Services
 					project.State = SciptStateEnum.Ended;
 			}
 
-			if(stopMode == ScriptStopModeEnum.Aborted &&
+
+            if (stopMode == ScriptStopModeEnum.Aborted &&
 				scriptData != AbortScript)
 			{
 				_state = RunProjectsState.RunAbortScript;
@@ -476,7 +483,7 @@ namespace ScriptRunner.Services
 				return;
 			}
 
-			RunEndedEvent?.Invoke(stopMode, scriptData);
+            RunEndedEvent?.Invoke(stopMode, scriptData);
 			if (_cancellationTokenSource != null)
 			{
 				_cancellationTokenSource.Cancel();
@@ -500,9 +507,9 @@ namespace ScriptRunner.Services
 
 			if (RunScript.CurrentScript == null || RunScript.CurrentScript.CurrentScript == null)
 			{
-				ErrorMessageEvent?.Invoke(null);
-				_errorMessage = "User Abort";
-				StartSingle(
+                ErrorMessageEvent?.Invoke(null);
+                _errorMessage = "User Abort";
+                StartSingle(
 					null,
 					AbortScript,
 					false,
@@ -523,8 +530,7 @@ namespace ScriptRunner.Services
 			{
 				if (!(item is ScriptStepBase step))
 					continue;
-
-				step.StepState = SciptStateEnum.None;
+                step.StepState = SciptStateEnum.None;
 			}
 		}
 
@@ -535,10 +541,11 @@ namespace ScriptRunner.Services
 			{
 				if(item is ISubScript subScript)
 				{
-					subScript.Script.IsPass = true;
+                    subScript.Script.IsPass = true;
 					SetIsPassForNotRunTest(subScript.Script.ScriptItemsList);
 				}
-			}
+
+            }
 		}
 
 		#endregion Methods
@@ -547,7 +554,8 @@ namespace ScriptRunner.Services
 
 		public event Action<ScriptStopModeEnum, GeneratedScriptData> RunEndedEvent;
 		public event Action<string> ErrorMessageEvent;
+        public event Action<string> OperatorErrorMessageEvent;
 
-		#endregion Events
-	}
+        #endregion Events
+    }
 }

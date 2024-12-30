@@ -1,5 +1,6 @@
 ﻿
 using DeviceCommunicators.General;
+using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
@@ -11,6 +12,7 @@ using ScriptHandler.Enums;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
 using Services.Services;
+using Syncfusion.Windows.Tools.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -115,9 +117,8 @@ namespace ScriptHandler.Models
 				IsExecuted = true;
 				string errorHeader = "Compare range:\r\n";
 				string errorMessage = errorHeader + "Failed to get the compared parameter for compare range\r\n\r\n";
-
 				_getParamValue.EOLReportsSelectionData = EOLReportsSelectionData;
-
+				OperatorErrorDescription = string.Empty;
 				_stepsCounter = 1;
 
 				double paramValue_Left = 0;
@@ -134,6 +135,7 @@ namespace ScriptHandler.Models
 					Parameter);
 				if (!res)
 				{
+					OperatorErrorDescription = $"Failed to Get {Parameter.Name} Value";
 					ErrorMessage = errorMessage + ErrorMessage;
 					IsPass = false;
 					return;
@@ -156,7 +158,9 @@ namespace ScriptHandler.Models
 					CompareValue);
 				if (!res)
 				{
-					ErrorMessage = errorMessage + ErrorMessage;
+					if(CompareValue is DeviceParameterData paramdata)
+						OperatorErrorDescription = $"Failed to Get {paramdata.Name} Value";
+                    ErrorMessage = errorMessage + ErrorMessage;
 					IsPass = false;
 					return;
 				}
@@ -252,6 +256,9 @@ namespace ScriptHandler.Models
 						paramName_Left + " = " +
 						paramName_Right + " ± " +
 						tolerance;
+					OperatorErrorDescription = "Value not in range: " + paramValue_Left +
+						"\r\nComparison Value: " + paramValue_Right +
+						"\r\nAllowed tolerance: " + tolerance;
                     IsPass = false;
 				}
 			}
@@ -260,10 +267,16 @@ namespace ScriptHandler.Models
                 double lowest = paramValue_Right - tolerance;
                 double heighest = paramValue_Right + tolerance;
 
-                if (lowest <= paramValue_Left && paramValue_Left <= heighest)
-                    IsPass = true;
-                else
-                    IsPass = false;
+				if (lowest <= paramValue_Left && paramValue_Left <= heighest)
+					IsPass = true;
+				else
+				{
+					IsPass = false;
+					OperatorErrorDescription = "Value not in range: " + paramValue_Left +
+						"\r\nMax limit: " + heighest +
+						"\r\nLower Limit: " + lowest;				
+                }
+
             }
 		}
 
@@ -324,8 +337,17 @@ namespace ScriptHandler.Models
 				paramName = d.ToString();
 				paramValue = d;
 			}
+            else if (Parameter is MCU_ParamData mcuparam)
+            {
+                if (mcuparam.DropDown != null)
+                {
+                    int tvalue = Convert.ToInt32(value);
+                    paramName = mcuparam.DropDown[tvalue].Name;
+                    paramValue = Convert.ToDouble(mcuparam.DropDown[tvalue].Value);
+                }
+            }
 
-			return true;
+            return true;
 		}
 
 		private object GetCompareParaValue(
@@ -375,7 +397,7 @@ namespace ScriptHandler.Models
 					ErrorMessage = "Compare Error \r\n"
 					+ parameter.ErrorDescription;
 					IsPass = false;
-					return 0;
+					return null;
 				}
 
 				double dValue = 0;
@@ -506,13 +528,13 @@ namespace ScriptHandler.Models
 
                 headers.Add($"\"{description}\"");
 
-                if (CompareValue is DeviceParameterData compareValue)
-                {
-                    description =
-                            $"{stepDescription}\r\nGet {compareValue.Name}";
+				if (CompareValue is DeviceParameterData compareValue)
+				{
+					description =
+							$"{stepDescription}\r\nGet {compareValue.Name}";
 
-                    headers.Add($"\"{description}\"");
-                }
+					headers.Add($"\"{description}\"");
+				}
 
             }
 

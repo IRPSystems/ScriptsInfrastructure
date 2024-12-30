@@ -29,6 +29,7 @@ namespace ScriptHandler.Models
 
 		public string Name { get; set; }
 		public virtual string Description { get; set; }
+		public virtual string OperatorErrorDescription { get; set; }
 
 		public bool IsPass { get; set; }
 
