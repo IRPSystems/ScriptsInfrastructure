@@ -18,7 +18,7 @@ namespace ScriptHandler.Models
 
 		public DeviceParameterData Parameter { get; set; }
 
-        public int NI6002_ExpectedRPM { get; set; }
+        public int Ni6002_ExpectedRPM { get; set; }
         public int Ni6002_IOPort { get; set; }
 		public int Ni6002_Line { get; set; }
 		public int NI6002_NumofCounts { get; set; }
@@ -92,8 +92,7 @@ namespace ScriptHandler.Models
 			NumatoGPIOPort = source.NumatoGPIOPort;
             NIThermistorIndex = source.NIThermistorIndex;
 			NI6002_NumofCounts = source.NI6002_NumofCounts;
-            NI6002_ExpectedRPM = source.NI6002_ExpectedRPM;
-
+			Ni6002_ExpectedRPM = source.Ni6002_ExpectedRPM;
         }
 
 		public void SetToParameter(DeviceParameterData parameter)
