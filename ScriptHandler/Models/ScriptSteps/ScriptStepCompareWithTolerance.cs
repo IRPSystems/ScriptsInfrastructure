@@ -342,8 +342,8 @@ namespace ScriptHandler.Models
                 if (mcuparam.DropDown != null)
                 {
                     int tvalue = Convert.ToInt32(value);
-                    paramName = mcuparam.DropDown[tvalue].Name;
-                    paramValue = Convert.ToDouble(mcuparam.DropDown[tvalue].Value);
+                    paramName = mcuparam.DropDown.FirstOrDefault(item => item.Value == tvalue.ToString())?.Name;
+                    paramValue = Convert.ToDouble(tvalue);
                 }
             }
 
