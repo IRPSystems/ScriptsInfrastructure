@@ -97,7 +97,8 @@ namespace ScriptRunner.Services
 			MainScriptLogger = new ScriptLoggerService(logLineList);
 
 			ParamRecording = new ParamRecordingService(
-				devicesContainer);
+				devicesContainer,
+				canMessageSender);
 
 
 			ParamRecording.RecordingRate = 5;

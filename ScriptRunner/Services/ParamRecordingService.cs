@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CsvHelper;
+using DeviceCommunicators.DBC;
 using DeviceCommunicators.Enums;
 using DeviceCommunicators.Models;
 using DeviceHandler.Enums;
@@ -9,6 +10,7 @@ using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using Entities.Models;
 using ScriptRunner.Models;
+using ScriptRunner.ViewModels;
 using Services.Services;
 using System;
 using System.Collections.ObjectModel;
@@ -20,6 +22,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
+using static ScriptRunner.ViewModels.CANMessageSenderViewModel;
 
 namespace ScriptRunner.Services
 {
@@ -64,6 +67,8 @@ namespace ScriptRunner.Services
 		private DateTime _prevTime;
 		private double _secCounter;
 
+		private CANMessageSenderViewModel _canMessageSender;
+
 #if _USE_TIMER
 		private System.Timers.Timer _timer;
 #endif
@@ -75,9 +80,11 @@ namespace ScriptRunner.Services
 		#region Constructor
 
 		public ParamRecordingService(
-			DevicesContainer devicesContainer)
+			DevicesContainer devicesContainer,
+			CANMessageSenderViewModel canMessageSender)
 		{
 			_devicesContainer = devicesContainer;
+			_canMessageSender = canMessageSender;
 
 			_getUUTData = new GetUUTDataForRecordingService();
 
@@ -415,12 +422,18 @@ namespace ScriptRunner.Services
 							{
 								try
 								{
+									if (paramData is DBC_ParamData dbcParam)
+									{
+										ExtractDataFromDBCParam(dbcParam);
+									}
 
 									if (paramData.Value == null)
 									{
 										_csvWriter.WriteField("NaN-rec");
 										continue;
 									}
+
+									
 
 									double value = 0;
 									if (paramData.Value.GetType().Name == "String")
@@ -472,6 +485,16 @@ namespace ScriptRunner.Services
 
 				}
 			}, _cancellationToken);
+		}
+
+		private void ExtractDataFromDBCParam(DBC_ParamData dbcParam)
+		{
+			foreach(CANMessageForSenderData data in _canMessageSender.CANMessagesList)
+			{
+				if (data.Message.NodeId == dbcParam.ParentMessage.ID)
+					dbcParam.Value = data.Message.Payload;
+			}
+
 		}
 
 #endif // _USE_TIMER
