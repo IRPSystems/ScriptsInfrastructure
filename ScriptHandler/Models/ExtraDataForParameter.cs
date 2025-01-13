@@ -104,7 +104,7 @@ namespace ScriptHandler.Models
 				ni.shunt_resistor = NIDAQShuntResistor;
 				ni.ThermistorType = NIThermistorIndex;
 				ni.numofcounts = NI6002_NumofCounts;
-				ni.ExpectedRPM = NI6002_ExpectedRPM;
+				ni.ExpectedRPM = Ni6002_ExpectedRPM;
 
             }
 			else if (parameter is NumatoGPIO_ParamData numato)
