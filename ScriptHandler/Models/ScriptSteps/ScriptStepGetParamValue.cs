@@ -1,6 +1,7 @@
 ﻿using DeviceCommunicators.Enums;
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
+using DeviceCommunicators.NI_6002;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
@@ -129,6 +130,8 @@ namespace ScriptHandler.Models
 				{
 					IsPass = false;
 					ErrorMessage += "Communication timeout.";
+                    if (Communicator is NI6002_Communicator communicator)
+						communicator.DisposeTask();
 					eolStepSummery.IsPass = false;
 					eolStepSummery.ErrorDescription = ErrorMessage;
 					return IsPass;
