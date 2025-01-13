@@ -408,8 +408,8 @@ namespace ScriptRunner.Services
 									currentProject.RecordingParametersList.Count > 0)
 			{
 				logParametersList = currentProject.RecordingParametersList;
+				WeakReferenceMessenger.Default.Send(new RECORD_LIST_CHANGEDMessage() { LogParametersList = logParametersList });
 			}
-			WeakReferenceMessenger.Default.Send(new RECORD_LIST_CHANGEDMessage() { LogParametersList = logParametersList });
 
 			_isChangingLogParamList = false;
 

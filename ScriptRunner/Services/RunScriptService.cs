@@ -151,6 +151,8 @@ namespace ScriptRunner.Services
 				});
 			}
 
+			LoggerService.Inforamtion(this, "---- Start running a script");
+
 			foreach (ScriptStepBase step in currentScript.ScriptItemsList)
 				step.StepState = SciptStateEnum.None;
 
@@ -279,6 +281,7 @@ namespace ScriptRunner.Services
 
 			MainScriptLogger.Stop();
 
+			LoggerService.Inforamtion(this, "---- End running a script");
 			ScriptEndedEvent?.Invoke(stopMode);
 		}
 
