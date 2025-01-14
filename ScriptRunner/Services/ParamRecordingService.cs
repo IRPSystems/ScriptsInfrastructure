@@ -422,10 +422,7 @@ namespace ScriptRunner.Services
 							{
 								try
 								{
-									if (paramData is DBC_ParamData dbcParam)
-									{
-										ExtractDataFromDBCParam(dbcParam);
-									}
+									
 
 									if (paramData.Value == null)
 									{
@@ -440,6 +437,16 @@ namespace ScriptRunner.Services
 									{
 										HandleStringValue(paramData);
 										continue;
+									}
+									else if (paramData is DBC_ParamData dbcParam)
+									{
+										ExtractDataFromDBCParam(dbcParam);
+										if (dbcParam.Value == null)
+											return;
+
+										double dVal = Convert.ToDouble(paramData.Value);
+										value = dbcParam.GetValue(
+											BitConverter.GetBytes(dVal));
 									}
 									else
 										value = Convert.ToDouble(paramData.Value);
