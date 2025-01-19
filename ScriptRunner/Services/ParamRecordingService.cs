@@ -424,7 +424,8 @@ namespace ScriptRunner.Services
 								{
 									
 
-									if (paramData.Value == null)
+									if (paramData.Value == null &&
+										!(paramData is DBC_ParamData))
 									{
 										_csvWriter.WriteField("NaN-rec");
 										continue;
@@ -433,20 +434,21 @@ namespace ScriptRunner.Services
 									
 
 									double value = 0;
-									if (paramData.Value.GetType().Name == "String")
+									if (paramData is DBC_ParamData dbcParam)
+									{
+										double? dVal = ExtractDataFromDBCParam(dbcParam);										
+										if (dVal == null)
+										{
+											_csvWriter.WriteField("NaN-rec");
+											continue;
+										}
+
+										value = (double)dVal;
+									}
+									else if (paramData.Value.GetType().Name == "String")
 									{
 										HandleStringValue(paramData);
 										continue;
-									}
-									else if (paramData is DBC_ParamData dbcParam)
-									{
-										ExtractDataFromDBCParam(dbcParam);
-										if (dbcParam.Value == null)
-											return;
-
-										double dVal = Convert.ToDouble(paramData.Value);
-										value = dbcParam.GetValue(
-											BitConverter.GetBytes(dVal));
 									}
 									else
 										value = Convert.ToDouble(paramData.Value);
@@ -494,14 +496,31 @@ namespace ScriptRunner.Services
 			}, _cancellationToken);
 		}
 
-		private void ExtractDataFromDBCParam(DBC_ParamData dbcParam)
+		private double? ExtractDataFromDBCParam(DBC_ParamData dbcParam)
 		{
 			foreach(CANMessageForSenderData data in _canMessageSender.CANMessagesList)
 			{
 				if (data.Message.NodeId == dbcParam.ParentMessage.ID)
-					dbcParam.Value = data.Message.Payload;
+				{
+					//ulong value = data.Message.Payload;
+					ulong value = 0;
+					for (int i = 0; i < dbcParam.Signal.StartBit; i++)
+					{
+						ulong bit = ((data.Message.Payload >> (i + dbcParam.Signal.StartBit)) & 1);
+						value += (bit << i);
+					}
+
+					double dValue = value;
+					dValue += dbcParam.Signal.Offset;
+					dValue *= dbcParam.Signal.Factor;
+					if(dbcParam.Signal.ValueType == DBCFileParser.Model.DbcValueType.Signed) 
+						dValue *= -1;
+
+					return dValue;
+				}
 			}
 
+			return null;
 		}
 
 #endif // _USE_TIMER
