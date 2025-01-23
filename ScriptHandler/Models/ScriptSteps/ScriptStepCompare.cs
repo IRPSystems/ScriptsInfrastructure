@@ -157,8 +157,9 @@ namespace ScriptHandler.Models
 				"",
 				stepDescription,
 				this);
-
-			eolStepSummeryData.TestValue = leftVal;
+            if (ValueRight is DeviceParameterData)
+                eolStepSummeryData.IsDynParam = true;
+            eolStepSummeryData.TestValue = leftVal;
 			eolStepSummeryData.ComparisonValue = rightVal;
 			eolStepSummeryData.Reference = compareReference;
             eolStepSummeryData.Method = Comparation.ToString();

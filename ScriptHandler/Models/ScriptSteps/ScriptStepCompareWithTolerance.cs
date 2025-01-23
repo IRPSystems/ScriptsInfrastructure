@@ -208,7 +208,9 @@ namespace ScriptHandler.Models
 					stepDescription,
 					this);
 
-				eolStepSummeryData.MeasuredTolerance = MeasuredTolerance;
+				if (CompareValue is DeviceParameterData)
+					eolStepSummeryData.IsDynParam = true;
+                eolStepSummeryData.MeasuredTolerance = MeasuredTolerance;
 				eolStepSummeryData.TestValue = paramValue_Left;
 				eolStepSummeryData.ComparisonValue = paramValue_Right;
 				eolStepSummeryData.MinVal = minVal;
@@ -436,7 +438,7 @@ namespace ScriptHandler.Models
 			}
 
 			eolStepSummeryData.TestValue = avgSum;
-			EOLStepSummerysList.Add(eolStepSummeryData);
+			//EOLStepSummerysList.Add(eolStepSummeryData);
 
 			return avgSum;
 		}

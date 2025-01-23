@@ -18,6 +18,7 @@ namespace ScriptHandler.Models
         public string Reference { get; set; }
         public bool IsPass { get; set; }
         public string ErrorDescription { get; set; }
+		public bool IsDynParam { get; set; }
 
 		public ScriptStepBase Step { get; set; }
 		//public string SubScriptName { get; set; }
