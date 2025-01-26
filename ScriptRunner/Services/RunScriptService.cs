@@ -50,12 +50,12 @@ namespace ScriptRunner.Services
 
 		public string ErrorMessage { get; set; }
 
-		#endregion Properties
+        #endregion Properties
 
-		#region Fields
+        #region Fields
 
 
-		private RunSingleScriptService_SO _soScript;
+        private RunSingleScriptService_SO _soScript;
 
 		public StopScriptStepService StopScriptStep;
 
@@ -97,7 +97,8 @@ namespace ScriptRunner.Services
 			MainScriptLogger = new ScriptLoggerService(logLineList);
 
 			ParamRecording = new ParamRecordingService(
-				devicesContainer);
+				devicesContainer,
+				canMessageSender);
 
 
 			ParamRecording.RecordingRate = 5;
@@ -150,6 +151,8 @@ namespace ScriptRunner.Services
 					Mouse.OverrideCursor = Cursors.Wait;
 				});
 			}
+
+			LoggerService.Inforamtion(this, "---- Start running a script");
 
 			foreach (ScriptStepBase step in currentScript.ScriptItemsList)
 				step.StepState = SciptStateEnum.None;
@@ -274,12 +277,12 @@ namespace ScriptRunner.Services
 			if (ParamRecording.IsRecording)
 				ParamRecording.StopRecording();
 
-
 			if(CurrentScript.CurrentScript != null)
 				MainScriptLogger.Save(_testName);
 
 			MainScriptLogger.Stop();
 
+			LoggerService.Inforamtion(this, "---- End running a script");
 			ScriptEndedEvent?.Invoke(stopMode);
 		}
 
@@ -309,7 +312,6 @@ namespace ScriptRunner.Services
 		public void AbortScript(string message)
 		{
 			ErrorMessage = message;
-
 			if (ParamRecording != null)
 				ParamRecording.StopRecording();
 
@@ -359,7 +361,8 @@ namespace ScriptRunner.Services
 			IsSoRunning = false;
 		}
 
-		private void _soScript_ScriptEndedEvent(bool isAborted)
+
+        private void _soScript_ScriptEndedEvent(bool isAborted)
 		{
 			IsSoRunning = false;
 

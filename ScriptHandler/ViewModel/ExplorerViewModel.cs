@@ -1190,8 +1190,9 @@ namespace ScriptHandler.ViewModels
 				scriptNodeBase.EOLReportsSelectionData.IsSaveToReport = true;
 				scriptNodeBase.EOLReportsSelectionData.IsSaveToPdfExecTable = true;
 				scriptNodeBase.EOLReportsSelectionData.IsSaveToPdfDynTable = true;
+                scriptNodeBase.EOLReportsSelectionData.IsSaveToCustomerVer = false;
 
-				if(item is ISubScript subScript)
+                if (item is ISubScript subScript)
 				{
 					SetAllReportsForScript(subScript.Script.ScriptItemsList);
 				}
