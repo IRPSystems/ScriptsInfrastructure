@@ -336,6 +336,8 @@ namespace ScriptRunner.Services
 				if (_currentStep == null)
 					return;
 
+				StepEndedEvent?.Invoke(_currentStep);
+
 				_currentStep.StepState = SciptStateEnum.Ended;
 				if (_currentStep.IsPass)
 				{
@@ -687,6 +689,7 @@ namespace ScriptRunner.Services
 		#region Events
 
 		public event Action<bool> ScriptEndedEvent;
+		public event Action<ScriptStepBase> StepEndedEvent;
 		public event Action<ScriptStepBase> CurrentStepChangedEvent;
 
 
