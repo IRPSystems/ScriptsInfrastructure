@@ -158,7 +158,7 @@ namespace ScriptHandler.Models
 				unit = withParameter.Parameter.Units;
 			}
 			eolStepSummeryData.Units = unit;
-
+			eolStepSummeryData.IsDynParam = true;
             EOLStepSummerysList.Add(eolStepSummeryData);
         }
 

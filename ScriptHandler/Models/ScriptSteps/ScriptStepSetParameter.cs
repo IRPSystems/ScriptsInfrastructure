@@ -155,7 +155,7 @@ namespace ScriptHandler.Models
 				ErrorMessage += "Communication timeout.";
 				IsPass = false;
 			}
-
+			
 			AddToEOLSummary();
 			_stepsCounter++;
 		}

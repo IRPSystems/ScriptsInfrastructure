@@ -67,7 +67,7 @@ namespace ScriptHandler.Models
 			value = Convert.ToDouble(SetFirstValue);
             _setParameter.Value = value;
             _setParameter.Execute();
-            EOLStepSummerysList.AddRange(_setParameter.EOLStepSummerysList);
+            //EOLStepSummerysList.AddRange(_setParameter.EOLStepSummerysList);
             if (!_setParameter.IsPass)
             {
                 ErrorMessage += _setParameter.ErrorMessage;
@@ -101,7 +101,7 @@ namespace ScriptHandler.Models
 
             _stepsCounter++;
 
-            EOLStepSummerysList.AddRange(_setParameter.EOLStepSummerysList);
+            //EOLStepSummerysList.AddRange(_setParameter.EOLStepSummerysList);
             if (!_setParameter.IsPass)
             {
                 ErrorMessage += _setParameter.ErrorMessage;

@@ -72,8 +72,9 @@ namespace ScriptHandler.Models.ScriptSteps
             _setValue.Parameter = SN_Param;
             _setValue.Communicator = Communicator;
             _setValue.Value = SerialNumber;
+            _setValue.UserTitle = UserTitle;
             _setValue.Execute();
-            EOLStepSummerysList.AddRange(_setValue.EOLStepSummerysList);
+            //EOLStepSummerysList.AddRange(_setValue.EOLStepSummerysList);
 
             string description = Description;
             if (!string.IsNullOrEmpty(UserTitle))
@@ -99,8 +100,9 @@ namespace ScriptHandler.Models.ScriptSteps
 
             _getValue.Parameter = SN_Param;
             _getValue.Communicator = Communicator;
+            _getValue.UserTitle = UserTitle;
             _getValue.SendAndReceive(out eolStepSummeryData, Description);
-            EOLStepSummerysList.Add(eolStepSummeryData);
+            //EOLStepSummerysList.Add(eolStepSummeryData);
             if (_getValue.IsPass)
             {
                 //Validate SN
@@ -139,9 +141,10 @@ namespace ScriptHandler.Models.ScriptSteps
 
             _saveValue.Parameter = SN_Param;
             _saveValue.Communicator = Communicator;
+            _saveValue.UserTitle = UserTitle;
             _saveValue.Value = Convert.ToDouble(SerialNumber);
             _saveValue.Execute();
-            EOLStepSummerysList.AddRange(_saveValue.EOLStepSummerysList);
+           //EOLStepSummerysList.AddRange(_saveValue.EOLStepSummerysList);
 
             if (!_saveValue.IsPass)
             {
