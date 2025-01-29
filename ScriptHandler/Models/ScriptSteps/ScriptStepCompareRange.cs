@@ -348,8 +348,9 @@ namespace ScriptHandler.Models.ScriptSteps
 			EOLStepSummerysList.Add(eolStepSummeryData);
 			if (!isOK)
 			{
-				IsPass = false;
-				return 0;
+                IsPass = false;
+                PopulateSendResponseLog(UserTitle, this.GetType().Name, Parameter.Name, Parameter.DeviceType, Parameter.CommSendResLog);
+                return 0;
 			}
 
 			if (parameter == null)

@@ -136,10 +136,13 @@ namespace ScriptHandler.Models
 				if (!res)
 				{
 					OperatorErrorDescription = $"Failed to Get {Parameter.Name} Value";
-					ErrorMessage = errorMessage + ErrorMessage;
+                    
+                    ErrorMessage = errorMessage + ErrorMessage;
 					IsPass = false;
 					return;
 				}
+
+
 
 				ErrorMessage = errorHeader + "Failed to get the left value parameter for compare range";
 
@@ -159,7 +162,10 @@ namespace ScriptHandler.Models
 				if (!res)
 				{
 					if(CompareValue is DeviceParameterData paramdata)
-						OperatorErrorDescription = $"Failed to Get {paramdata.Name} Value";
+					{
+                        OperatorErrorDescription = $"Failed to Get {paramdata.Name} Value";
+                    }
+						
                     ErrorMessage = errorMessage + ErrorMessage;
 					IsPass = false;
 					return;
@@ -181,7 +187,7 @@ namespace ScriptHandler.Models
 				if (CompareValue is DeviceParameterData param)
 				{
 					reference = param.DeviceType.ToString();
-				}
+                }
 
 				string stepDescription = Description;
 				if (!string.IsNullOrEmpty(UserTitle))
@@ -202,8 +208,9 @@ namespace ScriptHandler.Models
 					maxVal = paramValue_Right + Tolerance;
 				}
 
+				
 
-				EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
+                EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
 					"",
 					stepDescription,
 					this);
@@ -314,7 +321,10 @@ namespace ScriptHandler.Models
 					factor, 
 					param);
 				if (val == null)
-					return false;
+				{
+                    return false;
+                }
+					
 
 				paramValue = Convert.ToDouble(val);
 				paramName =
@@ -342,8 +352,8 @@ namespace ScriptHandler.Models
                 if (mcuparam.DropDown != null)
                 {
                     int tvalue = Convert.ToInt32(value);
-                    paramName = mcuparam.DropDown.FirstOrDefault(item => item.Value == tvalue.ToString())?.Name;
-                    paramValue = Convert.ToDouble(tvalue);
+                    paramName = mcuparam.DropDown[tvalue].Name;
+                    paramValue = Convert.ToDouble(mcuparam.DropDown[tvalue].Value);
                 }
             }
 
@@ -394,10 +404,11 @@ namespace ScriptHandler.Models
 				Thread.Sleep(100);
 				if (!isOK)
 				{
-					ErrorMessage = "Compare Error \r\n"
+                    ErrorMessage = "Compare Error \r\n"
 					+ parameter.ErrorDescription;
 					IsPass = false;
-					return null;
+                    PopulateSendResponseLog(UserTitle, this.GetType().Name, Parameter.Name, Parameter.DeviceType, Parameter.CommSendResLog);
+                    return null;
 				}
 
 				double dValue = 0;
@@ -438,7 +449,7 @@ namespace ScriptHandler.Models
 			eolStepSummeryData.TestValue = avgSum;
 			EOLStepSummerysList.Add(eolStepSummeryData);
 
-			return avgSum;
+            return avgSum;
 		}
 
 

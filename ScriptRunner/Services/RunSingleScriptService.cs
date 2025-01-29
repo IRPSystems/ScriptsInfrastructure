@@ -337,9 +337,12 @@ namespace ScriptRunner.Services
 				if (_currentStep == null)
 					return;
 
-				StepEndedEvent?.Invoke(_currentStep);
+				if(_currentStep.CommSendResLog != null)
+				{
+                    StepEndedEvent?.Invoke(_currentStep);
+                }
 
-				_currentStep.StepState = SciptStateEnum.Ended;
+                _currentStep.StepState = SciptStateEnum.Ended;
 				if (_currentStep.IsPass)
 				{
 					string data = "Step \"" + _currentStep.Description + "\" passed";

@@ -112,7 +112,7 @@ namespace ScriptHandler.Models
 					"\tParameter: \"" + Parameter.Name + "\"\r\n" +
 					"\tValue: " + Value + "\r\n\r\n";
 
-			if (Communicator == null || Communicator.IsInitialized == false)
+            if (Communicator == null || Communicator.IsInitialized == false)
 			{
 				ErrorMessage += "The communication is not initialized";
 				IsPass = false;
@@ -151,12 +151,17 @@ namespace ScriptHandler.Models
 
 			bool isNotTimeout = _waitGetCallback.WaitOne(timeOut);
 			if (!isNotTimeout)
-			{				
-				ErrorMessage += "Communication timeout.";
+			{
+                ErrorMessage += "Communication timeout.";
 				IsPass = false;
 			}
 
-			AddToEOLSummary();
+			if(IsPass == false)
+			{
+                PopulateSendResponseLog(UserTitle, this.GetType().Name, Parameter.Name, Parameter.DeviceType, Parameter.CommSendResLog);
+            }
+
+            AddToEOLSummary();
 			_stepsCounter++;
 		}
 
