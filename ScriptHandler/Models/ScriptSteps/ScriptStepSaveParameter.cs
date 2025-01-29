@@ -88,6 +88,7 @@ namespace ScriptHandler.Models.ScriptSteps
             bool isNotTimeout = _waitGetCallback.WaitOne(1000);
             if (!isNotTimeout)
             {
+                PopulateSendResponseLog(UserTitle, this.GetType().Name, Parameter.Name, Parameter.DeviceType, Parameter.CommSendResLog);
                 ErrorMessage += "Communication timeout.";
                 IsPass = false;
             }
