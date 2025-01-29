@@ -13,6 +13,7 @@ using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptSteps;
 using ScriptHandler.Services;
 using Services.Services;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -138,19 +139,26 @@ namespace ScriptHandler.Models
 
 		public virtual void PopulateSendResponseLog(string stepName, string tool, string Parameter, DeviceTypesEnum device ,CommSendResLog commSendResLog)
 		{
-			if(commSendResLog == null)
+			try
 			{
-				return;
-			}
-            CommSendResLog = new CommSendResLog();
-            CommSendResLog.StepName = stepName;
-            CommSendResLog.Tool = tool;
-			CommSendResLog.ParamName = Parameter;
-            CommSendResLog.Device = device.ToString();
-			CommSendResLog.SendCommand = commSendResLog.SendCommand;
-            CommSendResLog.ReceivedValue = commSendResLog.ReceivedValue;
-            CommSendResLog.CommErrorMsg = commSendResLog.CommErrorMsg;
-			CommSendResLog.NumberOfTries = commSendResLog.NumberOfTries;
+                if (commSendResLog == null)
+                {
+                    return;
+                }
+                CommSendResLog = new CommSendResLog();
+                CommSendResLog.StepName = stepName;
+                CommSendResLog.Tool = tool;
+                CommSendResLog.ParamName = Parameter;
+                CommSendResLog.Device = device.ToString();
+                CommSendResLog.SendCommand = commSendResLog.SendCommand;
+                CommSendResLog.ReceivedValue = commSendResLog.ReceivedValue;
+                CommSendResLog.CommErrorMsg = commSendResLog.CommErrorMsg;
+                CommSendResLog.NumberOfTries = commSendResLog.NumberOfTries;
+            }
+			catch (Exception ex)
+			{
+				LoggerService.Error(this, "Error while updating send res log: " + ex.InnerException.Message);
+            }
         }
 
 		public virtual void AddToEOLSummary()
