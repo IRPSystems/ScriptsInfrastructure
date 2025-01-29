@@ -247,7 +247,8 @@ namespace ScriptHandler.Models
 			if (!isOK)
 			{
 				IsPass = false;
-				return 0;
+                PopulateSendResponseLog(UserTitle, this.GetType().Name, parameter.Name, parameter.DeviceType, parameter.CommSendResLog);
+                return 0;
 			}
 			LoggerService.Error(this, " value "+parameter.Value.ToString());
 			return parameter.Value;

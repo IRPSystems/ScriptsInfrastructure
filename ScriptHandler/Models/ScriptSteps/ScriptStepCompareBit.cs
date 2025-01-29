@@ -14,6 +14,7 @@ using Services.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.Common;
 using System.Reflection.Metadata;
 using System.Windows;
 
@@ -50,9 +51,9 @@ namespace ScriptHandler.Models
                 bool isOK = SendAndReceive(Parameter, out eolStepSummeryData, description);
                 if (!isOK)
                 {
+                    PopulateSendResponseLog(UserTitle, this.GetType().Name, Parameter.Name, Parameter.DeviceType, Parameter.CommSendResLog);
                     return;
                 }
-
                 EOLStepSummerysList.Add(eolStepSummeryData);
 
                 int value = 0;
