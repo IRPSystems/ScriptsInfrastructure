@@ -131,7 +131,6 @@ namespace ScriptHandler.Models.ScriptSteps
 						_getValue.Parameter = GainParam;
                         _getValue.Communicator = MCU_Communicator;
                         _getValue.SendAndReceive(out eolStepSummeryData, description);
-						EOLStepSummerysList.Add(eolStepSummeryData);
 						if (!_getValue.IsPass)
                         {
                             ErrorMessage = "Calibration Error \r\n"
@@ -191,7 +190,6 @@ namespace ScriptHandler.Models.ScriptSteps
                         _setValue.Value = newGain;
                         _setValue.Execute();
 						EOLStepSummerysList.AddRange(_setValue.EOLStepSummerysList);
-
 						if (!_setValue.IsPass)
 						{
 							ErrorMessage = "Unable to set: " + GainParam.Name;
@@ -265,7 +263,8 @@ namespace ScriptHandler.Models.ScriptSteps
         /// </summary>
         private double GetAvgRead(ScriptStepGetParamValue scriptStepGetParamValue, int numOfReads, DeviceParameterData deviceParameterData)
 		{
-			double avgRead = 0;
+            EOLStepSummeryData eolStepSummeryData = new();
+            double avgRead = 0;
 			for (int i = 0; i < numOfReads; i++)
 			{
 				if(_isStopped)
@@ -277,10 +276,8 @@ namespace ScriptHandler.Models.ScriptSteps
 				if (!string.IsNullOrEmpty(UserTitle))
 					description = UserTitle;
 
-				EOLStepSummeryData eolStepSummeryData;
 				scriptStepGetParamValue.SendAndReceive(out eolStepSummeryData, description);
                 Thread.Sleep(50);
-				EOLStepSummerysList.Add(eolStepSummeryData);
 				if (!scriptStepGetParamValue.IsPass)
 				{
 					ErrorMessage = "Calibration Error \r\n"
@@ -296,6 +293,8 @@ namespace ScriptHandler.Models.ScriptSteps
 			}
 
             avgRead = avgRead / numOfReads;
+			eolStepSummeryData.TestValue = avgRead;
+            EOLStepSummerysList.Add(eolStepSummeryData);
             return avgRead;
         }
 
