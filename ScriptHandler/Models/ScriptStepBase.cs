@@ -13,6 +13,7 @@ using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptSteps;
 using ScriptHandler.Services;
 using Services.Services;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -95,8 +96,9 @@ namespace ScriptHandler.Models
 
 		public EOLReportsSelectionData EOLReportsSelectionData { get; set; }
 		public List<EOLStepSummeryData> EOLStepSummerysList { get; set; }
+        public CommSendResLog CommSendResLog { get; set; }
 
-		public string SubScriptName { get; set; }
+        public string SubScriptName { get; set; }
 		public string TestName { get; set; }
 
 		public int ProgressPercentage { get; set; }
@@ -114,7 +116,7 @@ namespace ScriptHandler.Models
 		{
 			EOLStepSummerysList = new List<EOLStepSummeryData>();
 			IsExecuted = false;
-		}
+        }
 
 		#endregion Constructor
 
@@ -134,6 +136,31 @@ namespace ScriptHandler.Models
 		{
 			Execute();
 		}
+
+		public virtual void PopulateSendResponseLog(string stepName, string tool, string Parameter, DeviceTypesEnum device ,CommSendResLog commSendResLog)
+		{
+			try
+			{
+                if (commSendResLog == null)
+                {
+                    return;
+                }
+                CommSendResLog = new CommSendResLog();
+                CommSendResLog.StepName = stepName;
+                CommSendResLog.Tool = tool;
+                CommSendResLog.ParamName = Parameter;
+                CommSendResLog.Device = device.ToString();
+                CommSendResLog.SendCommand = commSendResLog.SendCommand;
+                CommSendResLog.ReceivedValue = commSendResLog.ReceivedValue;
+                CommSendResLog.CommErrorMsg = commSendResLog.CommErrorMsg;
+                CommSendResLog.NumberOfTries = commSendResLog.NumberOfTries;
+				CommSendResLog.timeStamp = commSendResLog.timeStamp;
+            }
+			catch (Exception ex)
+			{
+				LoggerService.Error(this, "Error while updating send res log: " + ex.InnerException.Message);
+            }
+        }
 
 		public virtual void AddToEOLSummary()
 		{

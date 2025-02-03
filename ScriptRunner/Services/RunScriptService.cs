@@ -200,6 +200,7 @@ namespace ScriptRunner.Services
 				_devicesContainer,
 				_canMessageSender);
 			CurrentScript.ScriptEndedEvent += ScriptEndedEventHandler;
+			CurrentScript.StepEndedEvent += StepEndedEvent;
 			CurrentScript.CurrentStepChangedEvent += CurrentStepChangedEventHandler;
 			CurrentScript.AbortEvent += CurrentScript_AbortEvent;
 			CurrentScript.StartSafetyOfficerEvent += CurrentScript_StartSafetyOfficerEvent;
@@ -294,6 +295,12 @@ namespace ScriptRunner.Services
 			}
 
 			ScriptEnded();
+		}
+
+		private void StepEndedEventHandler(ScriptStepBase step)
+		{
+
+			
 		}
 
 		private void ErrorNotificationScriptEndedEventHandler(bool isAborted)
@@ -431,6 +438,7 @@ namespace ScriptRunner.Services
 
 		public event Action ScriptStartedEvent;
 		public event Action<ScriptStopModeEnum> ScriptEndedEvent;
+		public event Action<ScriptStepBase> StepEndedEvent;
 		public event Action<ScriptStepBase> CurrentStepChangedEvent;
 
 		#endregion Events
