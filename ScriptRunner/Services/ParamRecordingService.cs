@@ -1,6 +1,5 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Messaging;
 using CsvHelper;
 using DeviceCommunicators.DBC;
 using DeviceCommunicators.Enums;
@@ -8,8 +7,8 @@ using DeviceCommunicators.Models;
 using DeviceHandler.Enums;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
+using DeviceHandler.Services;
 using Entities.Models;
-using ScriptRunner.Models;
 using ScriptRunner.ViewModels;
 using Services.Services;
 using System;
@@ -19,7 +18,6 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 using static ScriptRunner.ViewModels.CANMessageSenderViewModel;
@@ -55,8 +53,6 @@ namespace ScriptRunner.Services
 		private int _receivedCounter;
 
 		private GetUUTDataForRecordingService _getUUTData;
-
-		private const int _readAnologInput_NumOfPorts = 2;
 
 		private bool _isFirstLineInFile;
 
@@ -166,6 +162,10 @@ namespace ScriptRunner.Services
 					LoggerService.Error(this, "The recording path \"" + recordingPath + "\" was not found", "Run Error");
 					return;
 				}
+
+
+
+				_getUUTData.GetUUTData(_devicesContainer);
 
 				_version = Assembly.GetEntryAssembly().GetName().Version.ToString();
 
