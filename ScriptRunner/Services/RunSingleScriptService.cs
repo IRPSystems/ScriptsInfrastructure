@@ -628,7 +628,7 @@ namespace ScriptRunner.Services
 		{
 			update.IsPass = true;
 			_canMessageSender.SendUpdateMessage(update);
-			System.Threading.Thread.Sleep(500);
+			//System.Threading.Thread.Sleep(500);
 		}
 
 		private void HandleCANMessageStop(ScriptStepCANMessageStop stop)
