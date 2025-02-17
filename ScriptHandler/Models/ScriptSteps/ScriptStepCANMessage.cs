@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 
@@ -89,7 +90,7 @@ namespace ScriptHandler.Models
 
 
 
-		private MicroTimer _sendIntervalTimer;
+		//private MicroTimer _sendIntervalTimer;
 		private TimeSpan _tsInterval;
 		private byte[] _payloadBytes;
 		private int _iterationsCount;
@@ -118,8 +119,8 @@ namespace ScriptHandler.Models
 			if (Application.Current != null)
 				Template = Application.Current.MainWindow.FindResource("AutoRunTemplate") as DataTemplate;
 
-			_sendIntervalTimer = new MicroTimer();
-			_sendIntervalTimer.MicroTimerElapsed += ElapsedEventHandler;
+			//_sendIntervalTimer = new MicroTimer();
+			//_sendIntervalTimer.MicroTimerElapsed += ElapsedEventHandler;
 
 			_messageEnd = new ManualResetEvent(false);
 
@@ -181,9 +182,11 @@ namespace ScriptHandler.Models
 
 				_startTime = DateTime.Now;
 
-				_sendIntervalTimer.Enabled = true;
-				_sendIntervalTimer.Interval = (long)(_tsInterval.TotalMilliseconds * 1000);
-				_sendIntervalTimer.Start();
+				//_sendIntervalTimer.Enabled = true;
+				//_sendIntervalTimer.Interval = (long)(_tsInterval.TotalMilliseconds * 1000);
+				//_sendIntervalTimer.Start();
+
+				ElapsedEventHandler();
 			}
 			catch(Exception ex)
 			{
@@ -191,53 +194,68 @@ namespace ScriptHandler.Models
 			}
 		}
 
-		private void ElapsedEventHandler(object sender, MicroTimerEventArgs e)
+		private void ElapsedEventHandler()
 		{
-			try
+			DateTime startTime = DateTime.Now;
+			TimeSpan waitTime = _tsInterval;
+			Task.Run(() =>
 			{
-		
-				NumOfMessages++;
-
-				bool isExtendedId = false;
-				NumericTypes numericTypes = NumericService.GetTypeOfUsedBytes(NodeId);
-				if (numericTypes == NumericTypes.Byte || numericTypes == NumericTypes.Short)
-					isExtendedId = false;
-				else if (numericTypes == NumericTypes.Integer || numericTypes == NumericTypes.Long)
-					isExtendedId = true;
-
-				if (IsAddCRCCounter)
+				while (!_cancellationToken.IsCancellationRequested)
 				{
-					AddCrcAndCounter();
-				}
+					DateTime startTime = DateTime.Now;
+					
 
-				lock (_lockPayloadObj)
-					(Communicator as MCU_Communicator).CanService.Send(_payloadBytes, NodeId, isExtendedId);
-				
-
-				if (IsStopByInterations)
-				{
-					_iterationsCount++;
-					if (_iterationsCount >= Iterations)
+					try
 					{
-						End(true);
-						return;
+
+						NumOfMessages++;
+
+						bool isExtendedId = false;
+						NumericTypes numericTypes = NumericService.GetTypeOfUsedBytes(NodeId);
+						if (numericTypes == NumericTypes.Byte || numericTypes == NumericTypes.Short)
+							isExtendedId = false;
+						else if (numericTypes == NumericTypes.Integer || numericTypes == NumericTypes.Long)
+							isExtendedId = true;
+
+						if (IsAddCRCCounter)
+						{
+							AddCrcAndCounter();
+						}
+
+						lock (_lockPayloadObj)
+							(Communicator as MCU_Communicator).CanService.Send(_payloadBytes, NodeId, isExtendedId);
+
+
+						if (IsStopByInterations)
+						{
+							_iterationsCount++;
+							if (_iterationsCount >= Iterations)
+							{
+								End(true);
+								return;
+							}
+						}
+						else if (IsStopByTime)
+						{
+							TimeSpan diff = DateTime.Now - _startTime;
+							if (diff >= _stopTime)
+							{
+								End(true);
+								return;
+							}
+						}
+
+						while ((DateTime.Now - startTime) < waitTime)
+						{
+							System.Threading.Thread.Sleep(1);
+						}
+					}
+					catch (Exception ex)
+					{
+						LoggerService.Error(this, "Failed to send CAN message", "Error", ex);
 					}
 				}
-				else if (IsStopByTime)
-				{
-					TimeSpan diff = DateTime.Now - _startTime;
-					if (diff >= _stopTime)
-					{
-						End(true);
-						return;
-					}
-				}
-
-			}
-			catch (Exception ex)
-			{
-				LoggerService.Error(this, "Failed to send CAN message", "Error", ex);
-			}
+			}, _cancellationToken);
 		}
 
 		private void AddCrcAndCounter()
@@ -288,7 +306,7 @@ namespace ScriptHandler.Models
 
 		private void End(bool isPassed)
 		{
-			_sendIntervalTimer.Stop();
+			//_sendIntervalTimer.Stop();
 
 			if(_cancellationTokenSource != null)
 				_cancellationTokenSource.Cancel();
@@ -334,9 +352,9 @@ namespace ScriptHandler.Models
 					case TimeUnitsEnum.hour: _tsInterval = new TimeSpan(0, interval, 0, 0, 0); break;
 				}
 
-				_sendIntervalTimer.Stop();
-				_sendIntervalTimer.Interval = (long)_tsInterval.TotalMilliseconds;
-				_sendIntervalTimer.Start();
+				//_sendIntervalTimer.Stop();
+				//_sendIntervalTimer.Interval = (long)_tsInterval.TotalMilliseconds;
+				//_sendIntervalTimer.Start();
 			}
 
 		}
