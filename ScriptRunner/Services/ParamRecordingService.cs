@@ -15,6 +15,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -225,6 +226,15 @@ namespace ScriptRunner.Services
 						_devicesContainer.TypeToDevicesFullData[data.DeviceType];
 					if (deviceFullData == null)
 						continue;
+
+					if (data is DBC_ParamData dbcParam)
+					{
+						CANMessageForSenderData canMsgData = _canMessageSender.CANMessagesList.ToList().Find((d) =>
+							d.Message.NodeId == dbcParam.ParentMessage.ID);
+						if (canMsgData != null)
+							continue;
+					}
+
 
 					deviceFullData.ParametersRepository.Add(data, RepositoryPriorityEnum.Medium, ParamReceived);
 				}
@@ -504,7 +514,7 @@ namespace ScriptRunner.Services
 				{
 					//ulong value = data.Message.Payload;
 					ulong value = 0;
-					for (int i = 0; i < dbcParam.Signal.StartBit; i++)
+					for (int i = 0; i < dbcParam.Signal.Length; i++)
 					{
 						ulong bit = ((data.Message.Payload >> (i + dbcParam.Signal.StartBit)) & 1);
 						value += (bit << i);
