@@ -214,6 +214,7 @@ namespace ScriptRunner.Services
 				foreach (GeneratedScriptData projScript in project.TestsList)
 				{
 					projScript.State = SciptStateEnum.None;
+					projScript.IsPass = null;
 
 					ClearProjectScriptsState(projScript.ScriptItemsList);
 				}
