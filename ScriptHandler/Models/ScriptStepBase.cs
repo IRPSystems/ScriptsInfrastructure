@@ -39,7 +39,7 @@ namespace ScriptHandler.Models
 		[JsonIgnore]
 		public IScriptItem FailNext { get; set; }
 
-		
+
 
 		public string PassNextDescription { get; set; }
 		public string FailNextDescription { get; set; }
@@ -48,12 +48,12 @@ namespace ScriptHandler.Models
 		public DataTemplate Template { get; set; }
 
 		private string _errorMessage;
-		public virtual string ErrorMessage 
+		public virtual string ErrorMessage
 		{
 			get
 			{
 				string msg = string.Empty;
-				if(string.IsNullOrEmpty(UserTitle) == false &&
+				if (string.IsNullOrEmpty(UserTitle) == false &&
 					(_errorMessage != null && _errorMessage.Contains(UserTitle) == false))
 				{
 					msg = $"{UserTitle}\r\n";
@@ -62,7 +62,7 @@ namespace ScriptHandler.Models
 				msg += _errorMessage;
 				return msg;
 			}
-			set { _errorMessage = value; } 
+			set { _errorMessage = value; }
 		}
 
 		private StopScriptStepService _stopScriptStep;
@@ -72,7 +72,7 @@ namespace ScriptHandler.Models
 			set
 			{
 				_stopScriptStep = value;
-				if(_stopScriptStep != null) 
+				if (_stopScriptStep != null)
 				{
 					_stopScriptStep.StopEvent += Stop;
 				}
@@ -82,7 +82,7 @@ namespace ScriptHandler.Models
 		public Brush BorderBrush { get; set; }
 
 		private SciptStateEnum _stepState;
-		public SciptStateEnum StepState 
+		public SciptStateEnum StepState
 		{
 			get => _stepState;
 			set
@@ -96,9 +96,9 @@ namespace ScriptHandler.Models
 
 		public EOLReportsSelectionData EOLReportsSelectionData { get; set; }
 		public List<EOLStepSummeryData> EOLStepSummerysList { get; set; }
-        public CommSendResLog CommSendResLog { get; set; }
+		public CommSendResLog CommSendResLog { get; set; }
 
-        public string SubScriptName { get; set; }
+		public string SubScriptName { get; set; }
 		public string TestName { get; set; }
 
 		public int ProgressPercentage { get; set; }
@@ -116,7 +116,7 @@ namespace ScriptHandler.Models
 		{
 			EOLStepSummerysList = new List<EOLStepSummeryData>();
 			IsExecuted = false;
-        }
+		}
 
 		#endregion Constructor
 
@@ -137,47 +137,47 @@ namespace ScriptHandler.Models
 			Execute();
 		}
 
-		public virtual void PopulateSendResponseLog(string stepName, string tool, string Parameter, DeviceTypesEnum device ,CommSendResLog commSendResLog)
+		public virtual void PopulateSendResponseLog(string stepName, string tool, string Parameter, DeviceTypesEnum device, CommSendResLog commSendResLog)
 		{
 			try
 			{
-                if (commSendResLog == null)
-                {
-                    return;
-                }
-                CommSendResLog = new CommSendResLog();
-                CommSendResLog.StepName = stepName;
-                CommSendResLog.Tool = tool;
-                CommSendResLog.ParamName = Parameter;
-                CommSendResLog.Device = device.ToString();
-                CommSendResLog.SendCommand = commSendResLog.SendCommand;
-                CommSendResLog.ReceivedValue = commSendResLog.ReceivedValue;
-                CommSendResLog.CommErrorMsg = commSendResLog.CommErrorMsg;
-                CommSendResLog.NumberOfTries = commSendResLog.NumberOfTries;
-            }
+				if (commSendResLog == null)
+				{
+					return;
+				}
+				CommSendResLog = new CommSendResLog();
+				CommSendResLog.StepName = stepName;
+				CommSendResLog.Tool = tool;
+				CommSendResLog.ParamName = Parameter;
+				CommSendResLog.Device = device.ToString();
+				CommSendResLog.SendCommand = commSendResLog.SendCommand;
+				CommSendResLog.ReceivedValue = commSendResLog.ReceivedValue;
+				CommSendResLog.CommErrorMsg = commSendResLog.CommErrorMsg;
+				CommSendResLog.NumberOfTries = commSendResLog.NumberOfTries;
+			}
 			catch (Exception ex)
 			{
 				LoggerService.Error(this, "Error while updating send res log: " + ex.InnerException.Message);
-            }
-        }
+			}
+		}
 
-		public virtual void AddToEOLSummary()
+		public virtual void AddToEOLSummary(double? testValue = null)
 		{
-            string _value = IsPass ? "Pass" : "Fail";
+			string _value = IsPass ? "Pass" : "Fail";
 
-            string stepDescription = Description;
-            if (!string.IsNullOrEmpty(UserTitle))
-                stepDescription = UserTitle;
-            
+			string stepDescription = Description;
+			if (!string.IsNullOrEmpty(UserTitle))
+				stepDescription = UserTitle;
 
-            EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
-                "",
+
+			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
+				"",
 				stepDescription,
 				this);
 			eolStepSummeryData.IsPass = IsPass;
-            eolStepSummeryData.ErrorDescription = ErrorMessage;
-
-			string unit = "";
+			eolStepSummeryData.ErrorDescription = ErrorMessage;
+			eolStepSummeryData.TestValue = testValue;
+            string unit = "";
 			if (this is IScriptStepWithParameter withParameter
 				&& withParameter.Parameter != null)
 			{
@@ -185,15 +185,15 @@ namespace ScriptHandler.Models
 			}
 			eolStepSummeryData.Units = unit;
 
-            EOLStepSummerysList.Add(eolStepSummeryData);
-        }
+			EOLStepSummerysList.Add(eolStepSummeryData);
+		}
 
-        public virtual List<DeviceTypesEnum> GetUsedDevices()
+		public virtual List<DeviceTypesEnum> GetUsedDevices()
 		{
 			return null;
-        }
+		}
 
-        public virtual bool IsNotSet(
+		public virtual bool IsNotSet(
 			DevicesContainer devicesContainer,
 			ObservableCollection<InvalidScriptItemData> errorsList)
 		{
@@ -278,7 +278,7 @@ namespace ScriptHandler.Models
 			List<string> headers = new List<string>();
 
 			string stepDescription = Description;
-			if(string.IsNullOrEmpty(UserTitle) == false)
+			if (string.IsNullOrEmpty(UserTitle) == false)
 				stepDescription += $";\r\n{UserTitle}";
 
 			stepDescription = FixStringService.GetFixedString(stepDescription);
@@ -302,11 +302,17 @@ namespace ScriptHandler.Models
 			string stepState = "FAILED";
 			if (!IsExecuted)
 				stepState = "Not Executed";
+
 			else if (IsPass)
-				stepState = "PASSED";
+			{
+				if (HasValueProperty(out var value))
+					stepState = Convert.ToString(value);
+				else
+					stepState = "PASSED";
+            }
 
 
-			IsExecuted = false; 
+            IsExecuted = false;
 
 			values.Add(stepState);
 
@@ -314,5 +320,17 @@ namespace ScriptHandler.Models
 		}
 
 		#endregion Methods
+
+		private bool HasValueProperty(out object value)
+		{
+			var propertyInfo = this.GetType().GetProperty("Value");
+			if (propertyInfo != null)
+			{
+				value = propertyInfo.GetValue(this);
+				return true;
+			}
+			value = null;
+			return false;
+		}
 	}
-}
+ }

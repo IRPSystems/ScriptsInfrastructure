@@ -98,10 +98,13 @@ namespace ScriptHandler.Models
 			_waitGetCallback = new AutoResetEvent(false);
 
 			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData();
-			eolStepSummeryData.Description = GetOnlineDescription();
-			eolStepSummeryData.Description = Description;
 
-			_stepsCounter = 1;
+			if(!string.IsNullOrEmpty(Description))
+				eolStepSummeryData.Description = Description;
+			else
+                eolStepSummeryData.Description = GetOnlineDescription();
+
+            _stepsCounter = 1;
 			
 			IsPass = true;
 			_isStopped = false;
@@ -135,7 +138,10 @@ namespace ScriptHandler.Models
 			{
 				GetValue();
 				if (IsPass == false)
-					return;
+				{
+                    AddToEOLSummary(Convert.ToDouble(Value));
+                    return;
+                }
 			}
 
 			_stepsCounter++;
@@ -160,8 +166,7 @@ namespace ScriptHandler.Models
 			{
                 PopulateSendResponseLog(UserTitle, this.GetType().Name, Parameter.Name, Parameter.DeviceType, Parameter.CommSendResLog);
             }
-
-            AddToEOLSummary();
+            AddToEOLSummary(Convert.ToDouble(Value));
 			_stepsCounter++;
 		}
 

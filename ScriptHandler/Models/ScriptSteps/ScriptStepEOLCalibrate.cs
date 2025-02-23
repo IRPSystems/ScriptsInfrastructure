@@ -47,7 +47,6 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		private ScriptStepGetParamValue _getValue;
         private ScriptStepSetParameter _setValue;
-		private ScriptStepSetSaveParameter _saveValue;
 
         private double avgMcuRead;
 		private double avgRefSensorRead;
@@ -68,7 +67,6 @@ namespace ScriptHandler.Models.ScriptSteps
 		{
 			_getValue = new ScriptStepGetParamValue();
 			_setValue = new ScriptStepSetParameter();
-			_saveValue = new ScriptStepSetSaveParameter();
 
 			_totalNumOfSteps = 9;
 		}
@@ -96,9 +94,11 @@ namespace ScriptHandler.Models.ScriptSteps
             _isStopped = false;
 			IsExecuted = true;
 
-			_getValue.EOLReportsSelectionData = EOLReportsSelectionData;
+            _getValue = new ScriptStepGetParamValue();
+            _setValue = new ScriptStepSetParameter();
+
+            _getValue.EOLReportsSelectionData = EOLReportsSelectionData;
 			_setValue.EOLReportsSelectionData = EOLReportsSelectionData;
-			_saveValue.EOLReportsSelectionData = EOLReportsSelectionData;
 
 
 			if (RefSensorParam is ZimmerPowerMeter_ParamData powerMeter)
@@ -152,35 +152,35 @@ namespace ScriptHandler.Models.ScriptSteps
 
                         _stepsCounter++;
 
-                        if (!GetReadsMcuAndRefSensor())
-                        {
-                            IsPass = false;
-                            _eState = eState.StopOrFail;
+						if (!GetReadsMcuAndRefSensor())
+						{
+							IsPass = false;
+							_eState = eState.StopOrFail;
 							break;
-                        }
-                        LoggerService.Error(this, "ReadSensorsPreCalib: avgRefSensorRead:" + avgRefSensorRead.ToString());
+						}
+						LoggerService.Error(this, "ReadSensorsPreCalib: avgRefSensorRead:" + avgRefSensorRead.ToString());
                         _eState = eState.CalculateNewGain;
                         break;
 
                     case eState.CalculateNewGain:
 
-                        _stepsCounter++;
+						_stepsCounter++;
 
-                        newGain = (prevGain * avgRefSensorRead) / avgMcuRead;
+						newGain = (prevGain * avgRefSensorRead) / avgMcuRead;
 
-                        if (newGain > GainMaxLimit || newGain < GainMinLimit)
-                        {
-                            IsPass = false;
-                            ErrorMessage = "Calculated gain has exceeded maximum limit\r\n" +
-                                            "Max gain limit: " + GainMaxLimit + "\r\n" +
-                                            "Min gain limit: " + GainMinLimit + "\r\n" +
-                                            "Calculated gain: " + newGain + "\r\n" +
-											"Avg MCU Read: " + avgMcuRead + "\r\n" + 
+						if (newGain > GainMaxLimit || newGain < GainMinLimit)
+						{
+							IsPass = false;
+							ErrorMessage = "Calculated gain has exceeded maximum limit\r\n" +
+											"Max gain limit: " + GainMaxLimit + "\r\n" +
+											"Min gain limit: " + GainMinLimit + "\r\n" +
+											"Calculated gain: " + newGain + "\r\n" +
+											"Avg MCU Read: " + avgMcuRead + "\r\n" +
 											"Avg Ref Read: " + avgRefSensorRead;
-                            _eState = eState.StopOrFail;
-                            break;
-                        }
-                        _eState = eState.SetNewGain;
+							_eState = eState.StopOrFail;
+							break;
+						}
+						_eState = eState.SetNewGain;
                         break;
 
                     case eState.SetNewGain:
@@ -189,6 +189,8 @@ namespace ScriptHandler.Models.ScriptSteps
                         _setValue.Parameter = GainParam;
                         _setValue.Communicator = MCU_Communicator;
                         _setValue.Value = newGain;
+						if(!string.IsNullOrEmpty(UserTitle))
+							_setValue.Description = UserTitle;
                         _setValue.Execute();
 						EOLStepSummerysList.AddRange(_setValue.EOLStepSummerysList);
 
@@ -440,10 +442,15 @@ namespace ScriptHandler.Models.ScriptSteps
 			else
 				values.Add("");
 
+         stepSummeryData =
+			EOLStepSummerysList.Find((e) =>
+				e.Step is ScriptStepSetParameter);
 
-			IsExecuted = false;
-
-			return values;
+            if (stepSummeryData != null)
+                values.Add(stepSummeryData.TestValue.ToString());
+            else
+                values.Add("");
+            return values;
 		}
 
 		#endregion Methods
