@@ -448,7 +448,7 @@ namespace ScriptHandler.Models
 
 			eolStepSummeryData.TestValue = avgSum;
 			EOLStepSummerysList.Add(eolStepSummeryData);
-
+            PopulateSendResponseLog(UserTitle, this.GetType().Name, parameter.Name, parameter.DeviceType, parameter.CommSendResLog);
             return avgSum;
 		}
 

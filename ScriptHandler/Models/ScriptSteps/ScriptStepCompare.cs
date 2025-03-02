@@ -250,7 +250,8 @@ namespace ScriptHandler.Models
                 return 0;
 			}
 			LoggerService.Error(this, " value "+parameter.Value.ToString());
-			return parameter.Value;
+            PopulateSendResponseLog(UserTitle, this.GetType().Name, parameter.Name, parameter.DeviceType, parameter.CommSendResLog);
+            return parameter.Value;
 		}
 
 		public override bool IsNotSet(
