@@ -154,7 +154,8 @@ namespace ScriptHandler.Models
 				CommSendResLog.ReceivedValue = commSendResLog.ReceivedValue;
 				CommSendResLog.CommErrorMsg = commSendResLog.CommErrorMsg;
 				CommSendResLog.NumberOfTries = commSendResLog.NumberOfTries;
-			}
+				CommSendResLog.timeStamp = commSendResLog.timeStamp;
+            }
 			catch (Exception ex)
 			{
 				LoggerService.Error(this, "Error while updating send res log: " + ex.InnerException.Message);
