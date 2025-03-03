@@ -1327,38 +1327,45 @@ namespace ScriptHandler.ViewModels
 		{
 			if (Clipboard.ContainsData("MyNode") == false)
 				return;
-			
-			string copyString = (string)Clipboard.GetData("MyNode");
-			JsonSerializerSettings settings = new JsonSerializerSettings();
-			settings.Formatting = Formatting.Indented;
-			settings.TypeNameHandling = TypeNameHandling.All;
-			List<IScriptItem> list =
-				JsonConvert.DeserializeObject(copyString, settings) as List<IScriptItem>;
 
-			foreach (IScriptItem item in list)
+			try
 			{
-				if(item is IScriptStepWithParameter withParam &&
-					withParam.Parameter != null)
+				string copyString = (string)Clipboard.GetData("MyNode");
+				JsonSerializerSettings settings = new JsonSerializerSettings();
+				settings.Formatting = Formatting.Indented;
+				settings.TypeNameHandling = TypeNameHandling.All;
+				List<IScriptItem> list =
+					JsonConvert.DeserializeObject(copyString, settings) as List<IScriptItem>;
+
+				foreach (IScriptItem item in list)
 				{
-					if(withParam.Parameter.Device == null) 
+					if (item is IScriptStepWithParameter withParam &&
+						withParam.Parameter != null)
 					{
-						if(_devicesContainer.TypeToDevicesFullData.ContainsKey(withParam.Parameter.DeviceType))
-							withParam.Parameter.Device = _devicesContainer.TypeToDevicesFullData[withParam.Parameter.DeviceType].Device;
+						if (withParam.Parameter.Device == null)
+						{
+							if (_devicesContainer.TypeToDevicesFullData.ContainsKey(withParam.Parameter.DeviceType))
+								withParam.Parameter.Device = _devicesContainer.TypeToDevicesFullData[withParam.Parameter.DeviceType].Device;
+						}
 					}
+
+					item.PassNext = null;
+					AddNode_do(
+						item as ScriptNodeBase,
+						item.GetType().Name,
+						null);
+
+					//	ScriptNodeList[ScriptNodeList.Count - 1].PassNext = ScriptNodeList[ScriptNodeList.Count - 2];
 				}
 
-				item.PassNext = null;
-				AddNode_do(
-					item as ScriptNodeBase,
-					item.GetType().Name,
-					null);
+				ScriptDiagram.SetOffsetY(true);
 
-			//	ScriptNodeList[ScriptNodeList.Count - 1].PassNext = ScriptNodeList[ScriptNodeList.Count - 2];
+				IsChanged = true;
 			}
-
-			ScriptDiagram.SetOffsetY(true);
-
-			IsChanged = true;
+			catch (Exception ex)
+			{
+				LoggerService.Error(this, "Failed to pase tool", "Error in Paset", ex);
+			}
 		}
 
 
