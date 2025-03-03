@@ -202,7 +202,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			Compare(
 				false,
-				paramValue_Right,
+				paramValue,
 				paramValue_Right,
 				Comparation2);
 		}
