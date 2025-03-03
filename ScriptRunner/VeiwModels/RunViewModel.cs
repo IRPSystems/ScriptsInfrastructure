@@ -38,14 +38,7 @@ namespace ScriptRunner.ViewModels
 		public RunScriptService RunScript { get; set; }
 
 
-		public ObservableCollection<string> ControllersList { get; set; }
-		public string SelectedController { get; set; }
-
-		public ObservableCollection<string> MotorsList { get; set; }
-		public string SelectedMotor { get; set; }
-
-		public string SOScriptsDirectory { get; set; }
-
+		
 
 		public bool IsPlayEnabled
 		{
@@ -79,7 +72,21 @@ namespace ScriptRunner.ViewModels
 				_abortScriptPath = value;
 
 				RunProjectsList.AbortScript = _openProjectForRun.GetSingleScript(
-					AbortScriptPath,
+					_abortScriptPath,
+					_devicesContainer,
+					_flashingHandler);
+			}
+		}
+
+		public string SafetyOfficerScriptPath
+		{
+			get => _safetyOfficerScriptPath;
+			set
+			{
+				_safetyOfficerScriptPath = value;
+
+				_safetyOfficerScript = _openProjectForRun.GetSingleScript(
+					_safetyOfficerScriptPath,
 					_devicesContainer,
 					_flashingHandler);
 			}
@@ -92,6 +99,9 @@ namespace ScriptRunner.ViewModels
 		private System.Timers.Timer _runTimeTimer;
 
 		private string _abortScriptPath;
+
+		private string _safetyOfficerScriptPath;
+		private GeneratedScriptData _safetyOfficerScript;
 
 
 		private bool _isConnected;
@@ -137,8 +147,6 @@ namespace ScriptRunner.ViewModels
 			_devicesContainer = devicesContainer;
 			_flashingHandler = flashingHandler;
 
-			ReadControllerList();
-			ReadMotorList();
 
 
 			DeviceFullData deviceFullDataSource = null;
@@ -186,7 +194,7 @@ namespace ScriptRunner.ViewModels
 				ShowScriptOutputCommand = new RelayCommand(ShowScriptOutput);
 
 				BrowseRecordFileCommand = new RelayCommand(BrowseRecordFile);
-				BrowseSOScriptsDirectoryCommand = new RelayCommand(BrowseSOScriptsDirectory);
+				BrowseSafetyOfficerScriptPathCommand = new RelayCommand(BrowseSafetyOfficerScriptPath);
 				BrowseAbortScriptPathCommand = new RelayCommand(BrowseAbortScriptPath);
 
 				StopScriptStepService stopScriptStep = new StopScriptStepService();
@@ -221,13 +229,6 @@ namespace ScriptRunner.ViewModels
 						RunScript.ParamRecording.RecordDirectory =
 							_scriptUserData.LastRecordPath;
 					}
-
-					if (!string.IsNullOrEmpty(_scriptUserData.LastSODirPath))
-					{
-						SOScriptsDirectory =
-							_scriptUserData.LastSODirPath;
-					}
-
 				}
 				else
 				{
@@ -264,47 +265,13 @@ namespace ScriptRunner.ViewModels
 
 		#region Methods
 
-		private void ReadControllerList()
-		{
-			string fileData = null;
-			using (StreamReader sr = new StreamReader("Data\\ControllersList.txt"))
-			{
-				fileData = sr.ReadToEnd();
-			}
-
-			if (string.IsNullOrEmpty(fileData))
-				return;
-
-			List<string> linesList = fileData.Split("\r\n").ToList();
-			linesList.RemoveAll(IsEmptyString);
-			ControllersList = new ObservableCollection<string>(linesList);
-			
-
-		}
+		
 
 		protected void RECORD_LIST_CHANGEDMessageHandler(
 			object sender,
 			RECORD_LIST_CHANGEDMessage message)
 		{
 			_logParametersList = message.LogParametersList;
-		}
-
-		private void ReadMotorList()
-		{
-			string fileData = null;
-			using (StreamReader sr = new StreamReader("Data\\MotorsList.txt"))
-			{
-				fileData = sr.ReadToEnd();
-			}
-
-			if (string.IsNullOrEmpty(fileData))
-				return;
-
-			List<string> linesList = fileData.Split("\r\n").ToList();
-			linesList.RemoveAll(IsEmptyString);
-			for (int i = 0; i < linesList.Count; i++)
-				linesList[i] = linesList[i].Trim();
-			MotorsList = new ObservableCollection<string>(linesList);
 		}
 
 		private static bool IsEmptyString(string s)
@@ -410,7 +377,6 @@ namespace ScriptRunner.ViewModels
 			SetIsPlayEnabled(false);
 			SetIsGeneralEnabled(false);
 
-			GeneratedScriptData soScript = SelectTheSOScript();
 
 			foreach (GeneratedProjectData project in RunExplorer.ProjectsList)
 			{
@@ -422,7 +388,7 @@ namespace ScriptRunner.ViewModels
 							project,
 							RunExplorer.SelectedScript,
 							IsRecord,
-							soScript,
+							_safetyOfficerScript,
 							false);
 					}
 				}
@@ -458,75 +424,17 @@ namespace ScriptRunner.ViewModels
 			SetIsPlayEnabled(false);
 			SetIsGeneralEnabled(false);
 
-			GeneratedScriptData soScript = SelectTheSOScript();
 			RunProjectsList.StartAll(
 				RunExplorer.ProjectsList, 
 				IsRecord, 
-				_stoppedScript, 
-				soScript,
+				_stoppedScript,
+				_safetyOfficerScript,
 				_logParametersList);
 
 			
 		}
 
-		private GeneratedScriptData SelectTheSOScript()
-		{ // TODO: SafetyOfficer - need to talk with the V&V and decide how to save the scripts
-			try
-			{
-				if(string.IsNullOrEmpty(SelectedController) || 
-					string.IsNullOrEmpty(SelectedMotor))
-				{
-					return null; 
-				}
-
-				if(string.IsNullOrEmpty(SOScriptsDirectory))
-				{
-					LoggerService.Error(
-						this,
-						$"The directory of the SO scripts was not selected",
-						"Error");
-					return null;
-				}
-
-
-				string selectedMotorController = $"{SelectedController}--{SelectedMotor}";
-
-				string projectFilePath = Path.Combine(SOScriptsDirectory, selectedMotorController + ".gprj");
-				if (File.Exists(projectFilePath) == false)
-				{
-					LoggerService.Error(
-						this,
-						$"Failed to find script for the combination of {SelectedController} - {SelectedMotor}",
-						"Error");
-					return null;
-				}
-
-				StopScriptStepService stopScriptStep = new StopScriptStepService();
-				GeneratedProjectData project = _openProjectForRun.Open(
-					projectFilePath,
-					_devicesContainer,
-					_flashingHandler,
-					stopScriptStep);
-
-				if(project.TestsList == null || project.TestsList.Count == 0)
-				{
-					LoggerService.Error(
-						this,
-						$"Failed to find script in the project for the combination of {SelectedController} - {SelectedMotor}",
-						"Error");
-					return null;
-				}
-
-
-				return project.TestsList[0];
-			}
-			catch(Exception ex) 
-			{ 
-				LoggerService.Error(this, "Failed to select the OS script", ex);
-			}
-
-			return null;
-		}
+		
 
 		//private bool _isAborted;
 		private void Abort()
@@ -611,23 +519,6 @@ namespace ScriptRunner.ViewModels
 			RunScript.ParamRecording.RecordDirectory = commonOpenFile.FileName;
 		}
 
-		private void BrowseSOScriptsDirectory()
-		{
-			string initDir = _scriptUserData.LastSODirPath;
-			if (Directory.Exists(initDir) == false)
-				initDir = "";
-			CommonOpenFileDialog commonOpenFile = new CommonOpenFileDialog();
-			commonOpenFile.IsFolderPicker = true;
-			commonOpenFile.InitialDirectory = initDir;
-			CommonFileDialogResult results = commonOpenFile.ShowDialog();
-			if (results != CommonFileDialogResult.Ok)
-				return;
-
-			_scriptUserData.LastSODirPath =
-				commonOpenFile.FileName;
-			SOScriptsDirectory = commonOpenFile.FileName;
-		}
-
 		private void BrowseAbortScriptPath()
 		{
 			string initDir = _scriptUserData.LastAbortScriptPath;
@@ -645,6 +536,25 @@ namespace ScriptRunner.ViewModels
 			_scriptUserData.LastAbortScriptPath =
 				Path.GetDirectoryName(openFileDialog.FileName);
 			AbortScriptPath = openFileDialog.FileName;
+		}
+
+		private void BrowseSafetyOfficerScriptPath()
+		{
+			string initDir = _scriptUserData.LastSafetyOfficerScriptPath;
+			if (string.IsNullOrEmpty(initDir))
+				initDir = "";
+			if (Directory.Exists(initDir) == false)
+				initDir = "";
+			OpenFileDialog openFileDialog = new OpenFileDialog();
+			openFileDialog.Filter = "Script Files | *.scr";
+			openFileDialog.InitialDirectory = initDir;
+			bool? result = openFileDialog.ShowDialog();
+			if (result != true)
+				return;
+
+			_scriptUserData.LastSafetyOfficerScriptPath =
+				Path.GetDirectoryName(openFileDialog.FileName);
+			SafetyOfficerScriptPath = openFileDialog.FileName;
 		}
 
 
@@ -680,10 +590,11 @@ namespace ScriptRunner.ViewModels
 
 		public RelayCommand StartAllCommand { get; private set; }
 		public RelayCommand AbortCommand { get; private set; }
-
+		public RelayCommand BrowseSafetyOfficerScriptPathCommand { get; private set; }
 
 		public RelayCommand StartCommand { get; private set; }
 		public RelayCommand ForewardCommand { get; private set; }
+	
 		//public RelayCommand PauseCommand { get; private set; }
 		//public RelayCommand StopCommand { get; private set; }
 
