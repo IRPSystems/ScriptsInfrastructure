@@ -137,7 +137,12 @@ namespace ScriptHandler.Models
 			Execute();
 		}
 
-		public virtual void PopulateSendResponseLog(string stepName, string tool, string Parameter, DeviceTypesEnum device ,CommSendResLog commSendResLog)
+		public virtual void PopulateSendResponseLog(
+			string stepName, 
+			string tool, 
+			string Parameter, 
+			DeviceTypesEnum device ,
+			CommSendResLog commSendResLog)
 		{
 			try
 			{
@@ -150,10 +155,13 @@ namespace ScriptHandler.Models
                 CommSendResLog.Tool = tool;
                 CommSendResLog.ParamName = Parameter;
                 CommSendResLog.Device = device.ToString();
-                CommSendResLog.SendCommand = commSendResLog.SendCommand;
-                CommSendResLog.ReceivedValue = commSendResLog.ReceivedValue;
-                CommSendResLog.CommErrorMsg = commSendResLog.CommErrorMsg;
-                CommSendResLog.NumberOfTries = commSendResLog.NumberOfTries;
+				if (commSendResLog != null)
+				{
+					CommSendResLog.SendCommand = commSendResLog.SendCommand;
+					CommSendResLog.ReceivedValue = commSendResLog.ReceivedValue;
+					CommSendResLog.CommErrorMsg = commSendResLog.CommErrorMsg;
+					CommSendResLog.NumberOfTries = commSendResLog.NumberOfTries;
+				}
             }
 			catch (Exception ex)
 			{
