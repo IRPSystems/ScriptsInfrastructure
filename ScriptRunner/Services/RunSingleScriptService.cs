@@ -148,7 +148,7 @@ namespace ScriptRunner.Services
 					LogTypeEnum.ScriptData);
 			}
 
-		SetCurrentStep(CurrentScript.ScriptItemsList[0] as ScriptStepBase);
+			SetCurrentStep(CurrentScript.ScriptItemsList[0] as ScriptStepBase);
 			
 
 			_cancellationTokenSource = new CancellationTokenSource();
