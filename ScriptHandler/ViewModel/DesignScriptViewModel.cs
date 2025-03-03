@@ -397,74 +397,83 @@ namespace ScriptHandler.ViewModels
 				}
 			}
 
-			DeviceParameterData param = e.Data.GetData(ParametersViewModel.DragDropFormat) as DeviceParameterData;
-
 			ListViewItem listViewItem =
 				FindAncestorService.FindAncestor<ListViewItem>((DependencyObject)e.OriginalSource);
 			if (listViewItem == null)
 				return;
 
+			var data = e.Data.GetData(ParametersViewModel.DragDropFormat);
+			DeviceParameterData param = null;
+			if (data is DeviceParameterData)
+				param = data as DeviceParameterData;
+			else if (data is System.Collections.IList list)
+			{
+				foreach (object obj in list)
+				{
+					param = obj as DeviceParameterData;
 
-			if (listViewItem.DataContext is ScriptNodeCompare compare)
-			{
-				if (tbName.EndsWith("Left"))
-					compare.ValueLeft = param;
-				else if (tbName.EndsWith("Right"))
-					compare.ValueRight = param;
-			}
-			else if (listViewItem.DataContext is ScriptNodeCompareRange compareRange)
-			{
-				if (tbName.EndsWith("Left"))
-					compareRange.ValueLeft = param;
-				else if (tbName.EndsWith("Right"))
-					compareRange.ValueRight = param;
-				else
-					compareRange.Value = param;
-			}
-			else if (listViewItem.DataContext is ScriptNodeCompareWithTolerance compareWithTolerance)
-			{
-				if (tbName.EndsWith("CompareValue"))
-					compareWithTolerance.CompareValue = param;
-				else
-					compareWithTolerance.Parameter = param;
-			}
-			else if (listViewItem.DataContext is ScriptNodeConverge converge)
-			{
-				if (tbName.EndsWith("TargetValue"))
-					converge.TargetValue = param;
-				else
-					converge.Parameter = param;
-			}
-			else if (listViewItem.DataContext is ScriptNodeDynamicControl dynamicControl)
-			{
-				if (textBlock != null && textBlock.DataContext is DynamicControlColumnData columnData)
-				{
-					columnData.Parameter = param;
-				}
-			}
-			else if (listViewItem.DataContext is IScriptStepWithParameter withParam)
-			{
-				if (listViewItem.DataContext is ScriptNodeSetParameter setParameter &&
-					tbName == "tbParamValue")
-				{
-					setParameter.ValueParameter = param;
-				}
-				else
-					withParam.Parameter = param;
-			}
-			else if (listViewItem.DataContext is ScriptNodeEOLCalibrate calibrate)
-			{
-				if (tbName == "tbParamGain")
-				{
-					calibrate.GainParam = param;
-				}
-				else if (tbName == "tbParamMCU")
-				{
-					calibrate.McuParam = param;
-				}
-				else if (tbName == "tbParamRefSensor")
-				{
-					calibrate.RefSensorParam = param;
+					if (listViewItem.DataContext is ScriptNodeCompare compare)
+					{
+						if (tbName.EndsWith("Left"))
+							compare.ValueLeft = param;
+						else if (tbName.EndsWith("Right"))
+							compare.ValueRight = param;
+					}
+					else if (listViewItem.DataContext is ScriptNodeCompareRange compareRange)
+					{
+						if (tbName.EndsWith("Left"))
+							compareRange.ValueLeft = param;
+						else if (tbName.EndsWith("Right"))
+							compareRange.ValueRight = param;
+						else
+							compareRange.Value = param;
+					}
+					else if (listViewItem.DataContext is ScriptNodeCompareWithTolerance compareWithTolerance)
+					{
+						if (tbName.EndsWith("CompareValue"))
+							compareWithTolerance.CompareValue = param;
+						else
+							compareWithTolerance.Parameter = param;
+					}
+					else if (listViewItem.DataContext is ScriptNodeConverge converge)
+					{
+						if (tbName.EndsWith("TargetValue"))
+							converge.TargetValue = param;
+						else
+							converge.Parameter = param;
+					}
+					else if (listViewItem.DataContext is ScriptNodeDynamicControl dynamicControl)
+					{
+						if (textBlock != null && textBlock.DataContext is DynamicControlColumnData columnData)
+						{
+							columnData.Parameter = param;
+						}
+					}
+					else if (listViewItem.DataContext is IScriptStepWithParameter withParam)
+					{
+						if (listViewItem.DataContext is ScriptNodeSetParameter setParameter &&
+							tbName == "tbParamValue")
+						{
+							setParameter.ValueParameter = param;
+						}
+						else
+							withParam.Parameter = param;
+					}
+					else if (listViewItem.DataContext is ScriptNodeEOLCalibrate calibrate)
+					{
+						if (tbName == "tbParamGain")
+						{
+							calibrate.GainParam = param;
+						}
+						else if (tbName == "tbParamMCU")
+						{
+							calibrate.McuParam = param;
+						}
+						else if (tbName == "tbParamRefSensor")
+						{
+							calibrate.RefSensorParam = param;
+						}
+					}
 				}
 			}
 		}

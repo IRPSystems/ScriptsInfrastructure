@@ -54,6 +54,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		public override void Execute()
 		{
+			ErrorMessage = string.Empty;
 			IsPass = false;
 			IsExecuted = true;
 			string errorHeader = "Compare range:\r\n";
@@ -202,7 +203,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
 			Compare(
 				false,
-				paramValue_Right,
+				paramValue,
 				paramValue_Right,
 				Comparation2);
 		}
@@ -349,7 +350,23 @@ namespace ScriptHandler.Models.ScriptSteps
 			if (!isOK)
 			{
                 IsPass = false;
-                PopulateSendResponseLog(UserTitle, this.GetType().Name, Parameter.Name, Parameter.DeviceType, Parameter.CommSendResLog);
+
+				string paramName = "Unknown";
+				DeviceTypesEnum paramDeviceType = DeviceTypesEnum.None;
+				CommSendResLog paramComSendResLog = null;
+				if (parameter != null)
+				{
+					paramName = parameter.Name;
+					paramDeviceType = parameter.DeviceType;
+					paramComSendResLog = parameter.CommSendResLog;
+				}
+
+				PopulateSendResponseLog(
+					UserTitle,
+					this.GetType().Name,
+					paramName,
+					paramDeviceType,
+					paramComSendResLog);
                 return 0;
 			}
 
