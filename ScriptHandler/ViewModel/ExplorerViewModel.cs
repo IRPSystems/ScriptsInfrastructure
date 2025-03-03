@@ -1,6 +1,7 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -11,6 +12,7 @@ using ScriptHandler.Services;
 using ScriptHandler.Views;
 using Services.Services;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -69,6 +71,7 @@ namespace ScriptHandler.ViewModels
 			ProjectAddExistingCommand = new RelayCommand(ProjectAddExistingTest);
 			ProjectRenameCommand = new RelayCommand(ProjectRename);
 
+			DeleteScriptWithKeyCommand = new RelayCommand<IList>(DeleteScriptWithKey);
 
 			DeleteScriptCommand = new RelayCommand<DesignScriptViewModel>(DeleteScript);
 			CopyScriptCommand = new RelayCommand<DesignScriptViewModel>(CopyScript);
@@ -472,6 +475,24 @@ namespace ScriptHandler.ViewModels
 
 			Project.ProjectPath = projectPath;
 			SaveProject();
+		}
+
+		private void DeleteScriptWithKey(IList list)
+		{
+			List<DesignScriptViewModel> scriptList = new List<DesignScriptViewModel>();
+			foreach (var item in list)
+			{
+				if (!(item is DesignScriptViewModel script))
+					continue;
+				scriptList.Add(script);
+			}
+
+			bool isFirst = true;
+			foreach (DesignScriptViewModel script in scriptList)
+			{
+				DeleteScript(script, isFirst);
+				isFirst = false;
+			}
 		}
 
 		private void DeleteScript(DesignScriptViewModel script)
@@ -1211,6 +1232,8 @@ namespace ScriptHandler.ViewModels
 
 
 		public RelayCommand SetAllReportsCommand { get; private set; }
+
+		public RelayCommand<IList> DeleteScriptWithKeyCommand { get; private set; }
 
 		public RelayCommand<DesignScriptViewModel> DeleteScriptCommand { get; private set; }
 		public RelayCommand<DesignScriptViewModel> CopyScriptCommand { get; private set; }
