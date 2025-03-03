@@ -521,8 +521,8 @@ namespace ScriptRunner.Services
 					}
 
 					double dValue = value;
-					dValue += dbcParam.Signal.Offset;
-					dValue *= dbcParam.Signal.Factor;
+					dValue -= dbcParam.Signal.Offset;
+					dValue /= dbcParam.Signal.Factor;
 					if(dbcParam.Signal.ValueType == DBCFileParser.Model.DbcValueType.Signed) 
 						dValue *= -1;
 
