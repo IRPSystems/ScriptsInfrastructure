@@ -19,12 +19,23 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using static ScriptHandler.Models.ScriptSteps.ScriptStepEOLCalibrate;
 
 namespace ScriptHandler.Models
 {
 	public class ScriptStepCompareWithTolerance : ScriptStepBase
 	{
 		#region Properties
+		private enum eState
+		{
+			Init,
+			ReadTestValue,
+			ComparisonValue,
+			CompareData,
+			StopOrFail,
+			SaveData,
+			EndSession
+		}
 
 		private DeviceParameterData _parameter;
 		public DeviceParameterData Parameter
@@ -52,9 +63,9 @@ namespace ScriptHandler.Models
 			}
 		}
 
-		
 
-		public double Tolerance { get; set; }
+        private bool _isStopped;
+        public double Tolerance { get; set; }
 
 		private double MeasuredTolerance;
 
@@ -87,12 +98,13 @@ namespace ScriptHandler.Models
 		public DeviceCommunicator Communicator { get; set; }
 
 		private ScriptStepGetParamValue _getParamValue;
+        private eState _eState;
 
-		#endregion Properties
+        #endregion Properties
 
-		#region Constructor
+        #region Constructor
 
-		public ScriptStepCompareWithTolerance()
+        public ScriptStepCompareWithTolerance()
 		{
 			if (Application.Current != null)
 			{
@@ -113,125 +125,148 @@ namespace ScriptHandler.Models
 		{
 			try
 			{
+
+				_eState = eState.Init;
 				IsPass = false;
 				IsExecuted = true;
-				string errorHeader = "Compare range:\r\n";
-				string errorMessage = errorHeader + "Failed to get the compared parameter for compare range\r\n\r\n";
+				string errorHeader = "Compare with tolerance:\r\n";
+				string errorMessage = errorHeader + "Failed to get the compared parameter for compare with tolerance\r\n\r\n";
 				_getParamValue.EOLReportsSelectionData = EOLReportsSelectionData;
-				OperatorErrorDescription = string.Empty;
-				_stepsCounter = 1;
+                OperatorErrorDescription = string.Empty;
 
-				double paramValue_Left = 0;
-				string paramName_Left = "";
+                double paramValue_Left = 0;
+                string paramName_Left = "";
 
-				bool res = GetValueAndName(
-					true,
-					IsUseParamAverage,
-					AverageOfNRead_Param,
-					IsUseParamFactor,
-					ParamFactor,
-					out paramValue_Left,
-					out paramName_Left,
-					Parameter);
-				if (!res)
+                double paramValue_Right = 0;
+                string paramName_Right = "";
+
+				double? minVal = null; 
+                double? maxVal = null;
+                string stepDescription = Description;
+                string reference = "Fixed Value";
+
+
+                while (_eState != eState.EndSession && _eState != eState.StopOrFail)
 				{
-					OperatorErrorDescription = $"Failed to Get {Parameter.Name} Value";
-                    
-                    ErrorMessage = errorMessage + ErrorMessage;
-					IsPass = false;
-					return;
-				}
-
-
-
-				ErrorMessage = errorHeader + "Failed to get the left value parameter for compare range";
-
-				_stepsCounter++;
-
-				double paramValue_Right = 0;
-				string paramName_Right = "";
-				res = GetValueAndName(
-					false,
-					IsUseCompareValueAverage,
-					AverageOfNRead_CompareValue,
-					IsUseCompareValueFactor,
-					CompareValueFactor,
-					out paramValue_Right,
-					out paramName_Right,
-					CompareValue);
-				if (!res)
-				{
-					if(CompareValue is DeviceParameterData paramdata)
+					switch (_eState)
 					{
-                        OperatorErrorDescription = $"Failed to Get {paramdata.Name} Value";
-                    }
-						
-                    ErrorMessage = errorMessage + ErrorMessage;
-					IsPass = false;
-					return;
+
+						case eState.Init:
+                            _stepsCounter = 1;
+							_eState = eState.ReadTestValue;
+                            break;
+						case eState.ReadTestValue:
+							bool res = GetValueAndName(
+								true,
+								IsUseParamAverage,
+								AverageOfNRead_Param,
+								IsUseParamFactor,
+								ParamFactor,
+								out paramValue_Left,
+								out paramName_Left,
+								Parameter);
+                            _stepsCounter++;
+                            ErrorMessage = errorHeader + "Failed to get the left value parameter for compare range";
+                            if (!res)
+                            {
+                                OperatorErrorDescription = $"Failed to Get {Parameter.Name} Value";
+                                ErrorMessage = errorMessage + ErrorMessage;
+                                IsPass = false;
+                                _eState = eState.SaveData;
+								break;
+                            }
+							_eState = eState.ComparisonValue;
+                            break;
+
+						case eState.ComparisonValue:
+                            res = GetValueAndName(
+								false,
+								IsUseCompareValueAverage,
+								AverageOfNRead_CompareValue,
+								IsUseCompareValueFactor,
+								CompareValueFactor,
+								out paramValue_Right,
+								out paramName_Right,
+								CompareValue);
+                            ErrorMessage = errorHeader + "Failed to get the right value parameter for compare range";
+                            _stepsCounter++;
+                            if (!res)
+                            {
+                                if (CompareValue is DeviceParameterData paramdata)
+                                {
+                                    OperatorErrorDescription = $"Failed to Get {paramdata.Name} Value";
+                                }
+
+                                ErrorMessage = errorMessage + ErrorMessage;
+                                IsPass = false;
+                                _eState = eState.SaveData;
+								break;
+                            }
+                            _eState = eState.CompareData;
+                            break;
+
+						case eState.CompareData:
+                            Compare_ValueWithTolerance(
+								paramValue_Left,
+								paramName_Left,
+								paramValue_Right,
+								paramName_Right,
+								Tolerance,
+								errorHeader);
+
+                            if (CompareValue is DeviceParameterData param)
+                            {
+                                reference = param.DeviceType.ToString();
+                            }
+
+                            if (!string.IsNullOrEmpty(UserTitle))
+                                stepDescription = UserTitle;
+
+
+                            if (IsPercentageTolerance)
+                            {
+                                minVal = paramValue_Right - (paramValue_Right * Tolerance / 100);
+                                maxVal = paramValue_Right + (paramValue_Right * Tolerance / 100);
+                            }
+                            else
+                            {
+                                minVal = paramValue_Right - Tolerance;
+                                maxVal = paramValue_Right + Tolerance;
+                            }
+							_stepsCounter++;
+							_eState = eState.SaveData;
+                            break;
+
+						case eState.SaveData:
+                            EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
+							"",
+							stepDescription,
+							this);
+
+                            eolStepSummeryData.MeasuredTolerance = MeasuredTolerance;
+                            eolStepSummeryData.TestValue = paramValue_Left;
+                            eolStepSummeryData.ComparisonValue = paramValue_Right;
+                            eolStepSummeryData.MinVal = minVal;
+                            eolStepSummeryData.MaxVal = maxVal;
+                            eolStepSummeryData.Method = ComparationTypesEnum.Tolerance.ToString();
+                            eolStepSummeryData.Reference = reference;
+                            eolStepSummeryData.IsPass = IsPass;
+                            eolStepSummeryData.ErrorDescription = ErrorMessage;
+                            eolStepSummeryData.Units = Parameter.Units;
+                            EOLStepSummerysList.Add(eolStepSummeryData);
+							_stepsCounter++;
+							_eState = eState.EndSession;
+                            break;
+					}
 				}
-
-				ErrorMessage = errorHeader + "Failed to get the right value parameter for compare range";
-
-				_stepsCounter++;
-
-				Compare_ValueWithTolerance(
-						paramValue_Left,
-						paramName_Left,
-						paramValue_Right,
-						paramName_Right,
-						Tolerance,
-						errorHeader);
-
-				string reference = "Fixed Value";
-				if (CompareValue is DeviceParameterData param)
-				{
-					reference = param.DeviceType.ToString();
-                }
-
-				string stepDescription = Description;
-				if (!string.IsNullOrEmpty(UserTitle))
-					stepDescription = UserTitle;
-
-
-				double minVal;
-				double maxVal;
-
-				if (IsPercentageTolerance)
-				{
-					minVal = paramValue_Right - (paramValue_Right * Tolerance / 100);
-					maxVal = paramValue_Right + (paramValue_Right * Tolerance / 100);
-				}
-				else
-				{
-					minVal = paramValue_Right - Tolerance;
-					maxVal = paramValue_Right + Tolerance;
-				}
-
-				
-
-                EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
-					"",
-					stepDescription,
-					this);
-
-				eolStepSummeryData.MeasuredTolerance = MeasuredTolerance;
-				eolStepSummeryData.TestValue = paramValue_Left;
-				eolStepSummeryData.ComparisonValue = paramValue_Right;
-				eolStepSummeryData.MinVal = minVal;
-				eolStepSummeryData.MaxVal = maxVal;
-				eolStepSummeryData.Method = ComparationTypesEnum.Tolerance.ToString();
-				eolStepSummeryData.Reference = reference;
-				eolStepSummeryData.IsPass = IsPass;
-				eolStepSummeryData.ErrorDescription = ErrorMessage;
-				eolStepSummeryData.Units = Parameter.Units;
-				EOLStepSummerysList.Add(eolStepSummeryData);
 			}
 			catch (Exception ex)
 			{
 				LoggerService.Error(this, "Failed to compare with tolerance", "Error", ex);
 			}
         }
+
+
 
 		private void Compare_ValueWithTolerance(
 			double paramValue_Left,
@@ -447,7 +482,7 @@ namespace ScriptHandler.Models
 			}
 
 			eolStepSummeryData.TestValue = avgSum;
-			EOLStepSummerysList.Add(eolStepSummeryData);
+			//EOLStepSummerysList.Add(eolStepSummeryData);
             PopulateSendResponseLog(UserTitle, this.GetType().Name, parameter.Name, parameter.DeviceType, parameter.CommSendResLog);
             return avgSum;
 		}
@@ -465,7 +500,16 @@ namespace ScriptHandler.Models
 			return false;
 		}
 
-		protected override void Generate(
+        protected override void Stop()
+        {
+            _eState = eState.StopOrFail;
+            if (_isStopped)
+                return;
+
+            _isStopped = true;
+        }
+
+        protected override void Generate(
 			ScriptNodeBase sourceNode,
 			Dictionary<int, ScriptStepBase> stepNameToObject,
 			ref List<DeviceCommunicator> usedCommunicatorsList,
