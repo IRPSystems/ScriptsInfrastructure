@@ -200,6 +200,12 @@ namespace ScriptRunner.Services
 									{
 										StartSubScript(subScript);
 									}
+									else if (_currentStep is ScriptStepCANMessage canMessage)
+									{
+										HandleCANMessageStartSending(canMessage);
+										_state = ScriptInternalStateEnum.EndStep;
+										break;
+									}
 									else if (_currentStep is ScriptStepCANMessageUpdate update)
 									{
 										HandleCANMessageUpdate(update);
@@ -660,6 +666,13 @@ namespace ScriptRunner.Services
 
 			_isPaused = false;
 			_userDecision.Set();
+		}
+
+		private void HandleCANMessageStartSending(ScriptStepCANMessage canMessage)
+		{
+			canMessage.IsPass = true;
+			_canMessageSender.SendMessage(canMessage);
+			//System.Threading.Thread.Sleep(500);
 		}
 
 		private void HandleCANMessageUpdate(ScriptStepCANMessageUpdate update)

@@ -337,6 +337,11 @@ namespace ScriptHandler.Models
 			lock(_lockPayloadObj)
 				_payloadBytes = BitConverter.GetBytes(payload);
 			Payload = BitConverter.ToUInt64(_payloadBytes, 0);
+
+			if(_cancellationToken.IsCancellationRequested)
+			{
+				Execute();
+			}
 		}
 
 		public void UpdateInterval(
@@ -356,6 +361,11 @@ namespace ScriptHandler.Models
 				//_sendIntervalTimer.Stop();
 				//_sendIntervalTimer.Interval = (long)_tsInterval.TotalMilliseconds;
 				//_sendIntervalTimer.Start();
+			}
+
+			if (_cancellationToken.IsCancellationRequested)
+			{
+				Execute();
 			}
 
 		}

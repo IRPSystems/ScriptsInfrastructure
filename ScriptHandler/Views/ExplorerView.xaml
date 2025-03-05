@@ -185,6 +185,12 @@
                   ItemTemplate="{StaticResource FileTemplate}"
                   AllowDrop="True" >
 
+            <ListView.InputBindings>
+                <KeyBinding Key="Delete" 
+                            Command="{Binding DeleteScriptWithKeyCommand}" 
+                            CommandParameter="{Binding SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"/>
+            </ListView.InputBindings>
+
             <i:Interaction.Triggers>
 
                 <i:EventTrigger EventName="MouseDoubleClick">

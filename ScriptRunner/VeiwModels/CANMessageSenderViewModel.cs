@@ -337,6 +337,19 @@ namespace ScriptRunner.ViewModels
 			}
 		}
 
+		public void SendMessage(ScriptStepCANMessage canMessage)
+		{
+			try
+			{
+				SendStep(canMessage);
+				IsStartEnabled = false;
+			}
+			catch (Exception ex)
+			{
+				LoggerService.Error(this, "Failed to update message", ex);
+			}
+		}
+
 		public void SendStopMessage(ScriptStepCANMessageStop stopMessage)
 		{
 			try
