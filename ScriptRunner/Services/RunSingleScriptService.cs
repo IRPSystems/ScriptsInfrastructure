@@ -482,7 +482,7 @@ namespace ScriptRunner.Services
 			OnPropertyChanged(nameof(CurrentStep));
 			
 
-			bool isEnd = Repeat();
+			bool isEnd = RepeatSubScript();
 			if (isEnd)
 			{
 				if (_scriptStep != null)
@@ -500,7 +500,7 @@ namespace ScriptRunner.Services
 			}
 		}
 
-		private bool Repeat()
+		private bool RepeatSubScript()
 		{
 			if (this is RunSingleScriptService_SO)
 			{
