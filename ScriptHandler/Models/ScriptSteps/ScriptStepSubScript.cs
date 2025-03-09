@@ -111,6 +111,7 @@ namespace ScriptHandler.Models
 		public void Dispose()
 		{
 			_timerRunTime.Stop();
+			RunIndex = 0;
 		}
 
 		protected override void Stop()
