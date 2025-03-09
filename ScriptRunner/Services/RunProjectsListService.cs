@@ -425,7 +425,7 @@ namespace ScriptRunner.Services
 				if (_errorMessage != "User Abort")
 					_errorMessage = RunScript.ErrorMessage;
 				ErrorMessageEvent?.Invoke(_errorMessage);
-				End(stopMode, AbortScript);
+				End(ScriptStopModeEnum.Aborted, AbortScript);
 				return;
 			}
 

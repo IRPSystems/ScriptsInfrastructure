@@ -66,8 +66,6 @@ namespace ScriptRunner.Services
 
 		private RunSingleScriptService _subScript;
 
-		private ScriptStepSubScript _scriptStep;
-
 		private StopScriptStepService _stopScriptStep;
 
 		
@@ -84,7 +82,6 @@ namespace ScriptRunner.Services
 			RunScriptService.RunTimeData runTime,
 			ScriptLoggerService mainScriptLogger,
 			GeneratedScriptData currentScript,
-			ScriptStepSubScript scriptStep,
 			StopScriptStepService stopScriptStep,
 			DevicesContainer devicesContainer,
 			CANMessageSenderViewModel canMessageSender)
@@ -92,7 +89,6 @@ namespace ScriptRunner.Services
 			_runTime = runTime;
 			_mainScriptLogger = mainScriptLogger;
 			CurrentScript = currentScript;
-			_scriptStep = scriptStep;
 			_stopScriptStep = stopScriptStep;
 			_devicesContainer = devicesContainer;
 			_canMessageSender = canMessageSender;
@@ -105,12 +101,6 @@ namespace ScriptRunner.Services
 				{
 					_pause = new ScriptStepPause();
 				});
-			}
-
-			if (scriptStep != null)
-			{
-				scriptStep.RunIndex = 0;
-				scriptStep.StartTime = DateTime.Now;
 			}
 		}
 
@@ -343,6 +333,21 @@ namespace ScriptRunner.Services
 				if (_currentStep == null)
 					return;
 
+				if(_currentStep is ScriptStepSubScript sub)
+				{
+					_currentStep.IsPass = sub.Script.IsPass == true;
+
+					bool isEnd = IsStopRepeatSubScript(sub);
+					if (!isEnd)
+					{
+						_state = ScriptInternalStateEnum.HandleSpecial;
+						return;
+					}
+
+					
+					sub.Dispose();
+				}
+
 				if(_currentStep.CommSendResLog != null)
 				{
                     StepEndedEvent?.Invoke(_currentStep);
@@ -385,10 +390,7 @@ namespace ScriptRunner.Services
 					ScriptErrorMessage += _currentStep.ErrorMessage;
 
 
-                    if (_scriptStep != null && _scriptStep.TimeoutSpan > (TimeSpan.Zero) && _scriptStep.TimeInSubScript >= _scriptStep.TimeoutSpan)
-                        _currentStep = null;
-					else
-						SetCurrentStep(_currentStep.FailNext as ScriptStepBase);
+     				SetCurrentStep(_currentStep.FailNext as ScriptStepBase);
 
 					CurrentScript.FailRunSteps++;
 
@@ -397,6 +399,7 @@ namespace ScriptRunner.Services
 					if (this is RunSingleScriptService_SO so)
 					{
 						so.IsAborted = true;
+						ScriptErrorMessage += $"\r\nSafety Officer Abort";
 					}
 
 				}
@@ -474,37 +477,29 @@ namespace ScriptRunner.Services
 
 			_userDecision.Reset();
 
-
-
-
 			
+			if (this is RunSingleScriptService_SO so)
+			{
+				_isAborted = so.IsAborted;
+			}
+
+			ScriptEndedEvent?.Invoke(_isAborted);
+
+
+
+
 			_currentStep = null;
 			OnPropertyChanged(nameof(CurrentStep));
 			
 
-			bool isEnd = Repeat();
-			if (isEnd)
-			{
-				if (_scriptStep != null)
-				{
-					_scriptStep.IsPass = CurrentScript.IsPass == true;
-					_scriptStep.Dispose();
-				}
-
-				if (this is RunSingleScriptService_SO so)
-				{
-					_isAborted = so.IsAborted;
-				}
-
-				ScriptEndedEvent?.Invoke(_isAborted);
-			}
+			
 		}
 
-		private bool Repeat()
+		private bool IsStopRepeatSubScript(ScriptStepSubScript subScript)
 		{
 			if (this is RunSingleScriptService_SO)
 			{
-				if (_isStopped || CurrentScript.IsPass != true)
+				if (_isStopped || subScript.IsPass != true)
 					return true;
 
 				System.Threading.Thread.Sleep(1);
@@ -512,35 +507,34 @@ namespace ScriptRunner.Services
 				return false;
 			}
 
-			if (_scriptStep == null)
+			if (subScript == null)
 				return true;
 
-			if (CurrentScript.IsPass == true && _scriptStep.IsStopOnPass)
+			if (subScript.IsPass == true && subScript.IsStopOnPass)
 				return true;
 
-			if (CurrentScript.IsPass == false && _scriptStep.IsStopOnFail)
+			if (subScript.IsPass == false && subScript.IsStopOnFail)
 				return true;
 
-			if(_scriptStep.IsInfinity)
+			if(subScript.IsInfinity)
 			{
-				_scriptStep.RunIndex++;
-				Start();
+				subScript.RunIndex++;
 				return false;
 			}
 
-			if (_scriptStep.ContinueUntilType == SubScriptContinueUntilTypeEnum.Repeats)
+			if (subScript.ContinueUntilType == SubScriptContinueUntilTypeEnum.Repeats)
 			{
-				_scriptStep.RunIndex++;
-				if (_scriptStep.RunIndex >= _scriptStep.Repeats)
+				subScript.RunIndex++;
+				if (subScript.RunIndex >= subScript.Repeats)
 					return true;
 			}
-			else if (_scriptStep.ContinueUntilType == SubScriptContinueUntilTypeEnum.Timeout)
+			else if (subScript.ContinueUntilType == SubScriptContinueUntilTypeEnum.Timeout)
 			{
-				if (_scriptStep.TimeInSubScript >= _scriptStep.TimeoutSpan)
+				if (subScript.TimeInSubScript >= subScript.TimeoutSpan)
 					return true;
 			}
 
-			Start();
+			//Start();
 			return false;
 		}
 
@@ -562,7 +556,6 @@ namespace ScriptRunner.Services
 					_runTime,
 					_mainScriptLogger,
 					generatedScript,
-					subScript as ScriptStepSubScript,
 					_stopScriptStep,
 					_devicesContainer,
 					_canMessageSender);
@@ -573,7 +566,6 @@ namespace ScriptRunner.Services
 					_runTime,
 					_mainScriptLogger,
 					generatedScript,
-					subScript as ScriptStepSubScript,
 					_stopScriptStep,
 					_devicesContainer,
 					_canMessageSender);
@@ -596,7 +588,8 @@ namespace ScriptRunner.Services
 				ScriptErrorMessage += _subScript.ScriptErrorMessage + "\r\n\r\n";
 			}
 
-			_subScript = null;
+			//_subScript = null;
+			//StepEnd();
 			OnPropertyChanged(nameof(CurrentStep));
 		}
 

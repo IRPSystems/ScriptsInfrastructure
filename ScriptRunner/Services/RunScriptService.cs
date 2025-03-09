@@ -128,7 +128,6 @@ namespace ScriptRunner.Services
 				RunTime,
 				MainScriptLogger,
 				soScript,
-				null,
 				StopScriptStep,
 				_devicesContainer,
 				_canMessageSender);
@@ -198,7 +197,6 @@ namespace ScriptRunner.Services
 				RunTime,
 				MainScriptLogger,
 				currentScript,
-				null,
 				StopScriptStep,
 				_devicesContainer,
 				_canMessageSender);
@@ -415,7 +413,6 @@ namespace ScriptRunner.Services
 				sweepItemForRun.SubScriptRunner = new RunSingleScriptService(
 					RunTime,
 					MainScriptLogger,
-					sweepItem.SubScript as GeneratedScriptData,
 					null,
 					StopScriptStep,
 					_devicesContainer,

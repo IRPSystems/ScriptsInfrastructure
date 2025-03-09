@@ -16,7 +16,6 @@ namespace ScriptRunner.Services
 			RunScriptService.RunTimeData runTime,
 			ScriptLoggerService mainScriptLogger,
 			GeneratedScriptData currentScript,
-			ScriptStepSubScript scriptStep,
 			StopScriptStepService stopScriptStep,
 			DevicesContainer devicesContainer,
 			CANMessageSenderViewModel canMessageSender):
@@ -24,7 +23,6 @@ namespace ScriptRunner.Services
 				runTime,
 				mainScriptLogger,
 				currentScript,
-				scriptStep,
 				stopScriptStep,
 				devicesContainer,
 				canMessageSender)
