@@ -399,6 +399,7 @@ namespace ScriptRunner.Services
 					if (this is RunSingleScriptService_SO so)
 					{
 						so.IsAborted = true;
+						ScriptErrorMessage += $"\r\nSafety Officer Abort";
 					}
 
 				}
