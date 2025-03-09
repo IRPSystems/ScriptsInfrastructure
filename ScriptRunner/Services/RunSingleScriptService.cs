@@ -555,7 +555,6 @@ namespace ScriptRunner.Services
 					_runTime,
 					_mainScriptLogger,
 					generatedScript,
-					subScript as ScriptStepSubScript,
 					_stopScriptStep,
 					_devicesContainer,
 					_canMessageSender);
@@ -566,7 +565,6 @@ namespace ScriptRunner.Services
 					_runTime,
 					_mainScriptLogger,
 					generatedScript,
-					subScript as ScriptStepSubScript,
 					_stopScriptStep,
 					_devicesContainer,
 					_canMessageSender);
