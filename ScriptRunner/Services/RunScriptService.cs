@@ -162,7 +162,10 @@ namespace ScriptRunner.Services
 
 
 			if (!isAbort)
+			{
+				ErrorMessage = string.Empty;
 				System.Threading.Thread.Sleep(1000);
+			}
 
 			if (currentScript.ScriptSender == ScriptSenderEnum.Abort)
 			{

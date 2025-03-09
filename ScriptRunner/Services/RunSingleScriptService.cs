@@ -148,7 +148,7 @@ namespace ScriptRunner.Services
 					LogTypeEnum.ScriptData);
 			}
 
-		SetCurrentStep(CurrentScript.ScriptItemsList[0] as ScriptStepBase);
+			SetCurrentStep(CurrentScript.ScriptItemsList[0] as ScriptStepBase);
 			
 
 			_cancellationTokenSource = new CancellationTokenSource();
@@ -199,6 +199,12 @@ namespace ScriptRunner.Services
 									if (_currentStep is ISubScript subScript)
 									{
 										StartSubScript(subScript);
+									}
+									else if (_currentStep is ScriptStepCANMessage canMessage)
+									{
+										HandleCANMessageStartSending(canMessage);
+										_state = ScriptInternalStateEnum.EndStep;
+										break;
 									}
 									else if (_currentStep is ScriptStepCANMessageUpdate update)
 									{
@@ -476,7 +482,7 @@ namespace ScriptRunner.Services
 			OnPropertyChanged(nameof(CurrentStep));
 			
 
-			bool isEnd = Repeat();
+			bool isEnd = IsStopRepeatSubScript();
 			if (isEnd)
 			{
 				if (_scriptStep != null)
@@ -494,7 +500,7 @@ namespace ScriptRunner.Services
 			}
 		}
 
-		private bool Repeat()
+		private bool IsStopRepeatSubScript()
 		{
 			if (this is RunSingleScriptService_SO)
 			{
@@ -662,11 +668,18 @@ namespace ScriptRunner.Services
 			_userDecision.Set();
 		}
 
+		private void HandleCANMessageStartSending(ScriptStepCANMessage canMessage)
+		{
+			canMessage.IsPass = true;
+			_canMessageSender.SendMessage(canMessage);
+			//System.Threading.Thread.Sleep(500);
+		}
+
 		private void HandleCANMessageUpdate(ScriptStepCANMessageUpdate update)
 		{
 			update.IsPass = true;
 			_canMessageSender.SendUpdateMessage(update);
-			System.Threading.Thread.Sleep(500);
+			//System.Threading.Thread.Sleep(500);
 		}
 
 		private void HandleCANMessageStop(ScriptStepCANMessageStop stop)

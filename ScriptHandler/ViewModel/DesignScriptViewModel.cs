@@ -397,74 +397,83 @@ namespace ScriptHandler.ViewModels
 				}
 			}
 
-			DeviceParameterData param = e.Data.GetData(ParametersViewModel.DragDropFormat) as DeviceParameterData;
-
 			ListViewItem listViewItem =
 				FindAncestorService.FindAncestor<ListViewItem>((DependencyObject)e.OriginalSource);
 			if (listViewItem == null)
 				return;
 
+			var data = e.Data.GetData(ParametersViewModel.DragDropFormat);
+			DeviceParameterData param = null;
+			if (data is DeviceParameterData)
+				param = data as DeviceParameterData;
+			else if (data is System.Collections.IList list)
+			{
+				foreach (object obj in list)
+				{
+					param = obj as DeviceParameterData;
 
-			if (listViewItem.DataContext is ScriptNodeCompare compare)
-			{
-				if (tbName.EndsWith("Left"))
-					compare.ValueLeft = param;
-				else if (tbName.EndsWith("Right"))
-					compare.ValueRight = param;
-			}
-			else if (listViewItem.DataContext is ScriptNodeCompareRange compareRange)
-			{
-				if (tbName.EndsWith("Left"))
-					compareRange.ValueLeft = param;
-				else if (tbName.EndsWith("Right"))
-					compareRange.ValueRight = param;
-				else
-					compareRange.Value = param;
-			}
-			else if (listViewItem.DataContext is ScriptNodeCompareWithTolerance compareWithTolerance)
-			{
-				if (tbName.EndsWith("CompareValue"))
-					compareWithTolerance.CompareValue = param;
-				else
-					compareWithTolerance.Parameter = param;
-			}
-			else if (listViewItem.DataContext is ScriptNodeConverge converge)
-			{
-				if (tbName.EndsWith("TargetValue"))
-					converge.TargetValue = param;
-				else
-					converge.Parameter = param;
-			}
-			else if (listViewItem.DataContext is ScriptNodeDynamicControl dynamicControl)
-			{
-				if (textBlock != null && textBlock.DataContext is DynamicControlColumnData columnData)
-				{
-					columnData.Parameter = param;
-				}
-			}
-			else if (listViewItem.DataContext is IScriptStepWithParameter withParam)
-			{
-				if (listViewItem.DataContext is ScriptNodeSetParameter setParameter &&
-					tbName == "tbParamValue")
-				{
-					setParameter.ValueParameter = param;
-				}
-				else
-					withParam.Parameter = param;
-			}
-			else if (listViewItem.DataContext is ScriptNodeEOLCalibrate calibrate)
-			{
-				if (tbName == "tbParamGain")
-				{
-					calibrate.GainParam = param;
-				}
-				else if (tbName == "tbParamMCU")
-				{
-					calibrate.McuParam = param;
-				}
-				else if (tbName == "tbParamRefSensor")
-				{
-					calibrate.RefSensorParam = param;
+					if (listViewItem.DataContext is ScriptNodeCompare compare)
+					{
+						if (tbName.EndsWith("Left"))
+							compare.ValueLeft = param;
+						else if (tbName.EndsWith("Right"))
+							compare.ValueRight = param;
+					}
+					else if (listViewItem.DataContext is ScriptNodeCompareRange compareRange)
+					{
+						if (tbName.EndsWith("Left"))
+							compareRange.ValueLeft = param;
+						else if (tbName.EndsWith("Right"))
+							compareRange.ValueRight = param;
+						else
+							compareRange.Value = param;
+					}
+					else if (listViewItem.DataContext is ScriptNodeCompareWithTolerance compareWithTolerance)
+					{
+						if (tbName.EndsWith("CompareValue"))
+							compareWithTolerance.CompareValue = param;
+						else
+							compareWithTolerance.Parameter = param;
+					}
+					else if (listViewItem.DataContext is ScriptNodeConverge converge)
+					{
+						if (tbName.EndsWith("TargetValue"))
+							converge.TargetValue = param;
+						else
+							converge.Parameter = param;
+					}
+					else if (listViewItem.DataContext is ScriptNodeDynamicControl dynamicControl)
+					{
+						if (textBlock != null && textBlock.DataContext is DynamicControlColumnData columnData)
+						{
+							columnData.Parameter = param;
+						}
+					}
+					else if (listViewItem.DataContext is IScriptStepWithParameter withParam)
+					{
+						if (listViewItem.DataContext is ScriptNodeSetParameter setParameter &&
+							tbName == "tbParamValue")
+						{
+							setParameter.ValueParameter = param;
+						}
+						else
+							withParam.Parameter = param;
+					}
+					else if (listViewItem.DataContext is ScriptNodeEOLCalibrate calibrate)
+					{
+						if (tbName == "tbParamGain")
+						{
+							calibrate.GainParam = param;
+						}
+						else if (tbName == "tbParamMCU")
+						{
+							calibrate.McuParam = param;
+						}
+						else if (tbName == "tbParamRefSensor")
+						{
+							calibrate.RefSensorParam = param;
+						}
+					}
 				}
 			}
 		}
@@ -1318,38 +1327,45 @@ namespace ScriptHandler.ViewModels
 		{
 			if (Clipboard.ContainsData("MyNode") == false)
 				return;
-			
-			string copyString = (string)Clipboard.GetData("MyNode");
-			JsonSerializerSettings settings = new JsonSerializerSettings();
-			settings.Formatting = Formatting.Indented;
-			settings.TypeNameHandling = TypeNameHandling.All;
-			List<IScriptItem> list =
-				JsonConvert.DeserializeObject(copyString, settings) as List<IScriptItem>;
 
-			foreach (IScriptItem item in list)
+			try
 			{
-				if(item is IScriptStepWithParameter withParam &&
-					withParam.Parameter != null)
+				string copyString = (string)Clipboard.GetData("MyNode");
+				JsonSerializerSettings settings = new JsonSerializerSettings();
+				settings.Formatting = Formatting.Indented;
+				settings.TypeNameHandling = TypeNameHandling.All;
+				List<IScriptItem> list =
+					JsonConvert.DeserializeObject(copyString, settings) as List<IScriptItem>;
+
+				foreach (IScriptItem item in list)
 				{
-					if(withParam.Parameter.Device == null) 
+					if (item is IScriptStepWithParameter withParam &&
+						withParam.Parameter != null)
 					{
-						if(_devicesContainer.TypeToDevicesFullData.ContainsKey(withParam.Parameter.DeviceType))
-							withParam.Parameter.Device = _devicesContainer.TypeToDevicesFullData[withParam.Parameter.DeviceType].Device;
+						if (withParam.Parameter.Device == null)
+						{
+							if (_devicesContainer.TypeToDevicesFullData.ContainsKey(withParam.Parameter.DeviceType))
+								withParam.Parameter.Device = _devicesContainer.TypeToDevicesFullData[withParam.Parameter.DeviceType].Device;
+						}
 					}
+
+					item.PassNext = null;
+					AddNode_do(
+						item as ScriptNodeBase,
+						item.GetType().Name,
+						null);
+
+					//	ScriptNodeList[ScriptNodeList.Count - 1].PassNext = ScriptNodeList[ScriptNodeList.Count - 2];
 				}
 
-				item.PassNext = null;
-				AddNode_do(
-					item as ScriptNodeBase,
-					item.GetType().Name,
-					null);
+				ScriptDiagram.SetOffsetY(true);
 
-			//	ScriptNodeList[ScriptNodeList.Count - 1].PassNext = ScriptNodeList[ScriptNodeList.Count - 2];
+				IsChanged = true;
 			}
-
-			ScriptDiagram.SetOffsetY(true);
-
-			IsChanged = true;
+			catch (Exception ex)
+			{
+				LoggerService.Error(this, "Failed to pase tool", "Error in Paset", ex);
+			}
 		}
 
 

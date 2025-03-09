@@ -231,27 +231,6 @@
 
 
 
-            <Line Y1="1" Stretch="Fill" 
-                  Stroke="{DynamicResource MahApps.Brushes.Accent}" 
-                  Margin="0,0,10,0"/>
-
-
-            <TextBlock Text="SafetyOfficer scripts directory" 
-                       VerticalAlignment="Center"
-                       Margin="0,0,5,0"/>
-            <TextBox Text="{Binding SOScriptsDirectory}" 
-                     ToolTip="{Binding SOScriptsDirectory}"
-                     HorizontalAlignment="Stretch"
-                     VerticalContentAlignment="Center"
-                     Width="250"
-                     Margin="0,1,5,1"/>
-            <Button Content="..."
-                    Command="{Binding BrowseSOScriptsDirectoryCommand}"
-                    FontSize="16"
-                    Margin="0,1,10,1"/>
-
-
-
         </StackPanel>
 
 
@@ -262,31 +241,19 @@
 
         <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="5,0,0,0" >
 
-            <TextBlock Text="Select a Motor" 
-                       VerticalAlignment="Center" 
+            <TextBlock Text="Safety officer script" 
+                       VerticalAlignment="Center"
                        Margin="0,0,5,0"/>
-            <ComboBox ItemsSource="{Binding MotorsList}" 
-                      SelectedItem="{Binding SelectedMotor}"   
-                      Width="150"
-                      Margin="0,1,15,1"/>
-
-
-
-            <TextBlock Text="Select a Controller" 
-                       VerticalAlignment="Center"                        
-                       Margin="0,0,5,0"/>
-            <ComboBox Grid.Row="2" Grid.Column="2"
-                      ItemsSource="{Binding ControllersList}" 
-                      SelectedItem="{Binding SelectedController}"
-                      Width="150"
-                      Margin="0,1,10,1"/>
-
-
-
-            <Line Y1="1" Stretch="Fill" 
-                  Stroke="{DynamicResource MahApps.Brushes.Accent}" 
-                  Margin="0,0,10,0"/>
-
+            <TextBox Text="{Binding SafetyOfficerScriptPath}" 
+                     ToolTip="{Binding SafetyOfficerScriptPath}"
+                     HorizontalAlignment="Stretch"
+                     VerticalContentAlignment="Center"
+                     Width="250"
+                     Margin="0,1,5,1"/>
+            <Button Content="..."
+                    Command="{Binding BrowseSafetyOfficerScriptPathCommand}"
+                    FontSize="16"
+                    Margin="0,1,30,1"/>
 
             <TextBlock Text="Abort script" 
                        VerticalAlignment="Center"
@@ -296,11 +263,10 @@
                      HorizontalAlignment="Stretch"
                      VerticalContentAlignment="Center"
                      Width="250"
-                       Margin="0,1,5,1"/>
+                     Margin="0,1,5,1"/>
             <Button Content="..."
                     Command="{Binding BrowseAbortScriptPathCommand}"
-                    FontSize="16"
-                    Margin="0,1,10,1"/>
+                    FontSize="16"/>
 
 
         </StackPanel>
