@@ -36,8 +36,10 @@ namespace ScriptHandler.Models
 
 		public override void Execute()
 		{
-			try
-			{
+            base.Execute();
+
+            try
+            {
 				_isStoped = false;
 				IsPass = true;
 				IsExecuted = true;

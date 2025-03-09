@@ -24,7 +24,7 @@ namespace ScriptHandler.Models
 	{
 		
 		public int BitIndex { get; set; }
-
+        public string FaultName { get; set; }
 		public int ComparedValue { get; set; }
 
 		public ScriptStepCompareBit()
@@ -35,8 +35,12 @@ namespace ScriptHandler.Models
 
         public override void Execute()
         {
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             try
             {
+                if (Parameter is IParamWithDropDown dropDown)
+                    FaultName = dropDown.DropDown[BitIndex].Name;
+
                 IsPass = false;
                 uint? bit = null;
                 ErrorMessage = Description;
@@ -90,16 +94,16 @@ namespace ScriptHandler.Models
                 }
 
                 if (bit == null)
-                    bit = (uint)((value >> (BitIndex - 1)) & 1);
+                     bit = (uint)((value >> (BitIndex - 1)) & 1);
 
                 if (bit != ComparedValue)
                 {
                     IsPass = false;
 
-                    string bitName = BitIndex.ToString();
-                    if (Parameter is IParamWithDropDown dropDown)
-                        bitName = $"\"{dropDown.DropDown[BitIndex].Name}\"";
-                    ErrorMessage += $"Bit {bitName} is not " + ComparedValue;
+                    //string bitName = BitIndex.ToString();
+                    //if (Parameter is IParamWithDropDown dropDown)
+                        //bitName = $"\"{dropDown.DropDown[BitIndex].Name}\"";
+                    ErrorMessage += $"Bit {FaultName} is not " + ComparedValue;
                     return;
                 }
 
@@ -118,6 +122,12 @@ namespace ScriptHandler.Models
                 LoggerService.Error(this, "Failed to execute CompareBit", ex);
                 IsPass = false;
                 ErrorMessage += ex.Message;
+            }
+            finally
+            {
+                //finished derived class execute method
+                stopwatch.Stop();
+                ExecutionTime = stopwatch.Elapsed;
             }
         }
 

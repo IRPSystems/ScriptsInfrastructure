@@ -22,6 +22,7 @@ using ScriptHandler.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 
@@ -88,87 +89,97 @@ namespace ScriptHandler.Models
 
 		public override void Execute()
 		{
-			IsExecuted = true;
-			if (Parameter == null)
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+			try
 			{
-				ErrorMessage = "The parameter is unknown";
-				return;
-			}
+				IsExecuted = true;
+				if (Parameter == null)
+				{
+					ErrorMessage = "The parameter is unknown";
+					return;
+				}
 
-			_waitGetCallback = new AutoResetEvent(false);
+				_waitGetCallback = new AutoResetEvent(false);
 
-			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData();
+				EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData();
 
-			if(!string.IsNullOrEmpty(Description))
-				eolStepSummeryData.Description = Description;
-			else
-                eolStepSummeryData.Description = GetOnlineDescription();
+				if (!string.IsNullOrEmpty(Description))
+					eolStepSummeryData.Description = Description;
+				else
+					eolStepSummeryData.Description = GetOnlineDescription();
 
-            _stepsCounter = 1;
-			
-			IsPass = true;
-			_isStopped = false;
+				_stepsCounter = 1;
+
+				IsPass = true;
+				_isStopped = false;
 
 
-			
-			ErrorMessage = "Failed to set the value.\r\n" +
-					"\tParameter: \"" + Parameter.Name + "\"\r\n" +
-					"\tValue: " + Value + "\r\n\r\n";
 
-            if (Communicator == null || Communicator.IsInitialized == false)
-			{
-				ErrorMessage += "The communication is not initialized";
-				IsPass = false;
-				eolStepSummeryData.IsPass = false;
-				eolStepSummeryData.ErrorDescription = ErrorMessage;
-				EOLStepSummerysList.Add(eolStepSummeryData);
-				return;
-			}
+				ErrorMessage = "Failed to set the value.\r\n" +
+						"\tParameter: \"" + Parameter.Name + "\"\r\n" +
+						"\tValue: " + Value + "\r\n\r\n";
 
-			if(ExtraData != null) 
-				ExtraData.SetToParameter(Parameter);
-			
-			if (Parameter is Scope_KeySight_ParamData ks_Param &&
-				Parameter.Name.ToLower() == "save")
-			{
-				ks_Param.data = "Evva_" + DateTime.Now.ToString("DD_MMM_YYY_HH_mm_ss");
-			}
+				if (Communicator == null || Communicator.IsInitialized == false)
+				{
+					ErrorMessage += "The communication is not initialized";
+					IsPass = false;
+					eolStepSummeryData.IsPass = false;
+					eolStepSummeryData.ErrorDescription = ErrorMessage;
+					EOLStepSummerysList.Add(eolStepSummeryData);
+					return;
+				}
 
-			if(ValueParameter != null)
-			{
-				GetValue();
+				if (ExtraData != null)
+					ExtraData.SetToParameter(Parameter);
+
+				if (Parameter is Scope_KeySight_ParamData ks_Param &&
+					Parameter.Name.ToLower() == "save")
+				{
+					ks_Param.data = "Evva_" + DateTime.Now.ToString("DD_MMM_YYY_HH_mm_ss");
+				}
+
+				if (ValueParameter != null)
+				{
+					GetValue();
+					if (IsPass == false)
+					{
+						AddToEOLSummary(Convert.ToDouble(Value));
+						return;
+					}
+				}
+
+				_stepsCounter++;
+
+				Communicator.SetParamValue(Parameter, Convert.ToDouble(Value), GetCallback);
+
+				int timeOut = 1000;
+				if (Parameter.CommunicationTimeout > 0)
+				{
+					timeOut = Parameter.CommunicationTimeout;
+				}
+
+
+				bool isNotTimeout = _waitGetCallback.WaitOne(timeOut);
+				if (!isNotTimeout)
+				{
+					ErrorMessage += "Communication timeout.";
+					IsPass = false;
+				}
+
 				if (IsPass == false)
 				{
-                    AddToEOLSummary(Convert.ToDouble(Value));
-                    return;
-                }
+					PopulateSendResponseLog(UserTitle, this.GetType().Name, Parameter.Name, Parameter.DeviceType, Parameter.CommSendResLog);
+				}
+				AddToEOLSummary(Convert.ToDouble(Value));
+				_stepsCounter++;
 			}
-
-			_stepsCounter++;
-
-			Communicator.SetParamValue(Parameter, Convert.ToDouble(Value), GetCallback);
-
-			int timeOut = 1000;
-			if (Parameter.CommunicationTimeout > 0)
+			finally
 			{
-				timeOut = Parameter.CommunicationTimeout;
+				//finished derived class execute method
+				stopwatch.Stop();
+				ExecutionTime = stopwatch.Elapsed;
 			}
-
-
-			bool isNotTimeout = _waitGetCallback.WaitOne(timeOut);
-			if (!isNotTimeout)
-			{
-                ErrorMessage += "Communication timeout.";
-				IsPass = false;
-			}
-
-			if(IsPass == false)
-			{
-                PopulateSendResponseLog(UserTitle, this.GetType().Name, Parameter.Name, Parameter.DeviceType, Parameter.CommSendResLog);
-            }
-            AddToEOLSummary(Convert.ToDouble(Value));
-			_stepsCounter++;
-		}
+        }
 
 		private string GetOnlineDescription()
 		{
