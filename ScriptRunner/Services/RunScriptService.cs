@@ -157,11 +157,12 @@ namespace ScriptRunner.Services
 				step.StepState = SciptStateEnum.None;
 
 
-			ParamRecording.StartRecording(currentScript.Name, recordingPath, logParametersList);
+			
 
 
 			if (!isAbort)
 			{
+				ParamRecording.StartRecording(currentScript.Name, recordingPath, logParametersList);
 				ErrorMessage = string.Empty;
 				System.Threading.Thread.Sleep(1000);
 			}
