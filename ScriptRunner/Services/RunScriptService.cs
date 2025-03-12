@@ -392,6 +392,7 @@ namespace ScriptRunner.Services
 				else if (item is ScriptStepSubScript subScript)
 				{
 					InitiateSweepItem(subScript.Script);
+					subScript.IsExecuted = true;
 				}
 			}
 		}
