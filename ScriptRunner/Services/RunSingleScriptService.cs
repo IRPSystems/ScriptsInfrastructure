@@ -346,6 +346,7 @@ namespace ScriptRunner.Services
 
 					
 					sub.Dispose();
+					_subScript = null;
 				}
 
 				if(_currentStep.CommSendResLog != null)
