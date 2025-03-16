@@ -115,6 +115,7 @@ namespace ScriptHandler.Models
 				});
 			}
 
+
 			_getParamValue = new ScriptStepGetParamValue();
 		}
 
@@ -554,15 +555,15 @@ namespace ScriptHandler.Models
 		{
 			base.GetRealParamAfterLoad(devicesContainer);
 
-			if (CompareValue is DeviceParameterData)
-			{
-				if (CompareValue is ICalculatedParamete)
-					return;
+			//if (CompareValue is DeviceParameterData)
+			//{
+			//	if (CompareValue is ICalculatedParamete)
+			//		return;
 
-				CompareValue = GetRealParam(
-					CompareValue as DeviceParameterData,
-					devicesContainer);
-			}
+			//	CompareValue = GetRealParam(
+			//		CompareValue as DeviceParameterData,
+			//		devicesContainer);
+			//}
 
 			DevicesContainer = devicesContainer;
 		}
