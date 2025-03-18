@@ -679,13 +679,13 @@ namespace ScriptHandler.ViewModels
 		
 		public void Open(ScriptData script = null, string path = null, bool allowTests = true)
 		{
-			if (CurrentScript != null)
-			{
-				bool isCancel = SaveIfNeeded();
-				if (isCancel)
-					return;
+			//if (CurrentScript != null)
+			//{
+			//	bool isCancel = SaveIfNeeded();
+			//	if (isCancel)
+			//		return;
 
-			}
+			//}
 
 			try
 			{
@@ -1252,14 +1252,14 @@ namespace ScriptHandler.ViewModels
 				{
 					Save(CurrentScript is TestData);
 				}
-				else if (result == MessageBoxResult.No)
-				{
-					string path = CurrentScript.ScriptPath;
-					CurrentScript = null;
-					Open(path: path);
+				//else if (result == MessageBoxResult.No)
+				//{
+				//	string path = CurrentScript.ScriptPath;
+				//	CurrentScript = null;
+				//	Open(path: path);
 
-					ScriptReloadedEvent?.Invoke(this, EventArgs.Empty);
-				}
+				//	ScriptReloadedEvent?.Invoke(this, EventArgs.Empty);
+				//}
 			}
 
 			return false;
