@@ -630,6 +630,9 @@ namespace ScriptRunner.Services
 		{
 			_userDecision.Set();
 			_stopScriptStep.StopStep();
+
+			if(_subScript != null) 
+				_subScript.Abort();
 		}
 
 		public void Abort()
