@@ -107,7 +107,7 @@ namespace ScriptHandler.Models
 						System.Threading.Thread.Sleep(1);
 					}
 
-					leftVal = sum / AverageOfNRead;
+					ValueLeft = leftVal = sum / AverageOfNRead;
 					leftParamName = paramLeft.Name;
 
 					units = paramLeft.Units;
