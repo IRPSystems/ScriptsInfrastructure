@@ -298,12 +298,12 @@ namespace ScriptHandler.ViewModels
 
 		#region New script/test
 
-		private void ProjectAddNewTest()
+		public void ProjectAddNewTest()
 		{
 			ProjectAddNewScript(true);
 		}
 
-		private void ProjectAddNewScript()
+		public void ProjectAddNewScript()
 		{
 			ProjectAddNewScript(false);
 		}
