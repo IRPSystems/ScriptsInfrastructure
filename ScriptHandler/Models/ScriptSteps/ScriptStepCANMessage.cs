@@ -226,6 +226,11 @@ namespace ScriptHandler.Models
 						lock (_lockPayloadObj)
 							(Communicator as MCU_Communicator).CanService.Send(_payloadBytes, NodeId, isExtendedId);
 
+						if(IsOneTime)
+						{
+							End(true);
+							return;
+						}
 
 						if (IsStopByInterations)
 						{
@@ -245,6 +250,8 @@ namespace ScriptHandler.Models
 								return;
 							}
 						}
+
+
 
 						while ((DateTime.Now - startTime) < waitTime)
 						{
@@ -303,14 +310,27 @@ namespace ScriptHandler.Models
 			
 		}
 
+		public bool IsRunning()
+		{
+			if(_cancellationTokenSource == null)
+				return false;
 
+			if(_cancellationToken.IsCancellationRequested)
+				return false;
+
+			return true;
+
+		}
 
 		private void End(bool isPassed)
 		{
 			//_sendIntervalTimer.Stop();
 
-			if(_cancellationTokenSource != null)
+			if (_cancellationTokenSource != null)
+			{
 				_cancellationTokenSource.Cancel();
+				_cancellationTokenSource = null;
+			}
 
 			IsPass = isPassed;
 			ContinuousEndedEvent?.Invoke(this);
