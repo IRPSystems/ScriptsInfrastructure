@@ -76,8 +76,10 @@ namespace ScriptHandler.Converter
 				return Brushes.White;
 			if (value is ScriptNodeCompareBit || value is ScriptStepCompareBit)
 				return Brushes.White;
+            if (value is ScriptNodeGetRegisterValues || value is ScriptStepGetRegisterValues)
+                return Brushes.White;
 
-			return Brushes.White;
+            return Brushes.White;
 
 		}
 
