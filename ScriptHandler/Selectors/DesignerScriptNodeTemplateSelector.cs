@@ -61,8 +61,10 @@ namespace ScriptHandler.Selectors
 				return element.FindResource("Design_CompareBitTemplate") as DataTemplate;
 			if (item is ScriptNodeStopContinuous)
 				return element.FindResource("Design_StopContinuousTemplate") as DataTemplate;
+            if (item is ScriptNodeGetRegisterValues)
+                return element.FindResource("Design_GetRegisterValuesTemplate") as DataTemplate;
 
-			return null;
+            return null;
 		}
 	}
 }
