@@ -74,8 +74,10 @@ namespace ScriptHandler.Services
 				return new ScriptStepEOLPrint();
 			else if (node.GetType().Name == "ScriptNodeCompareBit")
 				return new ScriptStepCompareBit();
+            else if (node.GetType().Name == "ScriptNodeGetRegisterValues")
+                return new ScriptStepGetRegisterValues();
 
-			return null;
+            return null;
 
 		}
 	}

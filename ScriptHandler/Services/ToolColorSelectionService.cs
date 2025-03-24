@@ -69,8 +69,10 @@ namespace ScriptHandler.Services
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#D67FFF");
 			if (item is ScriptNodeCompareBit || item is ScriptStepCompareBit)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#BBA3FF");
+            if (item is ScriptNodeGetRegisterValues || item is ScriptStepGetRegisterValues)
+                return (SolidColorBrush)new BrushConverter().ConvertFrom("#5F9EA0");
 
-			return Brushes.Transparent;
+            return Brushes.Transparent;
 		}
 	}
 }
