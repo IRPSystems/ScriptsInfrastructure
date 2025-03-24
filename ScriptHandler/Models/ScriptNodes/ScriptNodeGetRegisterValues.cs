@@ -25,7 +25,7 @@ namespace ScriptHandler.Models.ScriptNodes
 				string desc = "Get Register Values ";
 				if (Parameter != null)
 					desc += $"\"{Parameter.Name}\" ";
-				desc += "to Value - ID:" + ID;
+				desc += " - ID:" + ID;
 				return desc;
 			}
 		}
