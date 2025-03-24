@@ -16,6 +16,7 @@ using Syncfusion.Windows.Tools.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows;
@@ -123,8 +124,9 @@ namespace ScriptHandler.Models
 
 		public override void Execute()
 		{
-			try
-			{
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            try
+            {
 
 				_eState = eState.Init;
 				IsPass = false;
@@ -264,6 +266,12 @@ namespace ScriptHandler.Models
 			{
 				LoggerService.Error(this, "Failed to compare with tolerance", "Error", ex);
 			}
+            finally
+            {
+                //finished derived class execute method
+                stopwatch.Stop();
+                ExecutionTime = stopwatch.Elapsed;
+            }
         }
 
 

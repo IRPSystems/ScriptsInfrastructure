@@ -320,7 +320,8 @@ namespace ScriptRunner.Services
 
 								if (projectsList[_projectIndex].TestsList[_testIndex].IsDoRun == false)
 								{
-									projectsList[_projectIndex].TestsList[_testIndex].IsPass = true;
+                                    projectsList[_projectIndex].TestsList[_testIndex].isExecuted = false;
+                                    projectsList[_projectIndex].TestsList[_testIndex].IsPass = true;
 									SetIsPassForNotRunTest(
 										projectsList[_projectIndex].TestsList[_testIndex].ScriptItemsList);
 									_testIndex++;
@@ -334,7 +335,9 @@ namespace ScriptRunner.Services
 								testData.State = SciptStateEnum.None;
 								ClearProjectScriptsState(testData.ScriptItemsList);
 
-								RunScript.Run(
+								projectsList[_projectIndex].TestsList[_testIndex].isExecuted = true;
+
+                                RunScript.Run(
 									logParametersList,
 									testData,
 									projectsList[_projectIndex].RecordingPath,
@@ -425,7 +428,7 @@ namespace ScriptRunner.Services
 				if (_errorMessage != "User Abort")
 					_errorMessage = RunScript.ErrorMessage;
 				ErrorMessageEvent?.Invoke(_errorMessage);
-				End(stopMode, AbortScript);
+				End(ScriptStopModeEnum.Aborted, AbortScript);
 				return;
 			}
 

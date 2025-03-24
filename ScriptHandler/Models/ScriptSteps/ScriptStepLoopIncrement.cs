@@ -44,79 +44,90 @@ namespace ScriptHandler.Models
 
         public override void Execute()
         {
-            _isStoped = false;
-            IsPass = true;
-			IsExecuted = true;
-			int counter = LoopsAmount;
-            double value;
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
-            _stepsCounter = 1;
-
-            _setParameter.Communicator = Communicator;
-            _setParameter.Parameter = Parameter;
-
-            _delayparameter.Interval= Interval;
-            _delayparameter.IntervalUnite= IntervalUnite;
-
-            ErrorMessage = ""; 
-            
-            if (ExtraData != null)
-				ExtraData.SetToParameter(Parameter);
-
-
-			value = Convert.ToDouble(SetFirstValue);
-            _setParameter.Value = value;
-            _setParameter.Execute();
-            EOLStepSummerysList.AddRange(_setParameter.EOLStepSummerysList);
-            if (!_setParameter.IsPass)
+            try
             {
-                ErrorMessage += _setParameter.ErrorMessage;
-                IsPass = false;
-            }
+                _isStoped = false;
+                IsPass = true;
+                IsExecuted = true;
+                int counter = LoopsAmount;
+                double value;
+
+                _stepsCounter = 1;
+
+                _setParameter.Communicator = Communicator;
+                _setParameter.Parameter = Parameter;
+
+                _delayparameter.Interval = Interval;
+                _delayparameter.IntervalUnite = IntervalUnite;
+
+                ErrorMessage = "";
+
+                if (ExtraData != null)
+                    ExtraData.SetToParameter(Parameter);
 
 
-            //EOLStepSummeryData eolStepSummeryData;
-            //bool isOK = SendAndReceive(out eolStepSummeryData);
-            ////EOLStepSummerysList.Add(eolStepSummeryData);
-            //if (!isOK)
-            //{
-            //    LoggerService.Inforamtion(this, "Failed SendAndReceive");
-            //    IsPass = false;
-            //    return;
-            //}
-
-            if (_isStoped)
-                return;
-
-            while (counter > 0)
-            {
-                value += IncrementValue;
+                value = Convert.ToDouble(SetFirstValue);
                 _setParameter.Value = value;
                 _setParameter.Execute();
-                _delayparameter.Execute();
-                counter--;
+                EOLStepSummerysList.AddRange(_setParameter.EOLStepSummerysList);
+                if (!_setParameter.IsPass)
+                {
+                    ErrorMessage += _setParameter.ErrorMessage;
+                    IsPass = false;
+                }
+
+
+                //EOLStepSummeryData eolStepSummeryData;
+                //bool isOK = SendAndReceive(out eolStepSummeryData);
+                ////EOLStepSummerysList.Add(eolStepSummeryData);
+                //if (!isOK)
+                //{
+                //    LoggerService.Inforamtion(this, "Failed SendAndReceive");
+                //    IsPass = false;
+                //    return;
+                //}
+
+                if (_isStoped)
+                    return;
+
+                while (counter > 0)
+                {
+                    value += IncrementValue;
+                    _setParameter.Value = value;
+                    _setParameter.Execute();
+                    _delayparameter.Execute();
+                    counter--;
+                }
+
+
+
+                _stepsCounter++;
+
+                EOLStepSummerysList.AddRange(_setParameter.EOLStepSummerysList);
+                if (!_setParameter.IsPass)
+                {
+                    ErrorMessage += _setParameter.ErrorMessage;
+                    IsPass = false;
+                }
+
+                //_waitForGet.Reset();
+                //Communicator.SetParamValue(Parameter, value, GetValueCallback);
+
+                //bool isNotTimeOut = _waitForGet.WaitOne(2000);
+                //_waitForGet.Reset();
+                //if(!isNotTimeOut)
+                //	IsPass = false;
+
+                AddToEOLSummary();
             }
-
-
-
-            _stepsCounter++;
-
-            EOLStepSummerysList.AddRange(_setParameter.EOLStepSummerysList);
-            if (!_setParameter.IsPass)
+            finally
             {
-                ErrorMessage += _setParameter.ErrorMessage;
-                IsPass = false;
+                //finished derived class execute method
+                stopwatch.Stop();
+                ExecutionTime = stopwatch.Elapsed;
             }
-
-            //_waitForGet.Reset();
-            //Communicator.SetParamValue(Parameter, value, GetValueCallback);
-
-            //bool isNotTimeOut = _waitForGet.WaitOne(2000);
-            //_waitForGet.Reset();
-            //if(!isNotTimeOut)
-            //	IsPass = false;
-
-            AddToEOLSummary();
         }
 
         private void GetValueCallback(DeviceParameterData param, CommunicatorResultEnum result, string resultDescription)

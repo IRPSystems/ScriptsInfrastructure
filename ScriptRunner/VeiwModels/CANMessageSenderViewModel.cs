@@ -233,9 +233,24 @@ namespace ScriptRunner.ViewModels
 			bool isCANMessageExist = IsCANMessageExist(canMessage.NodeId);
 			if (isCANMessageExist)
 			{
-				return;
+				CANMessageForSenderData reRunMsg = GetCANMessageNeedsReRun(canMessage.NodeId);
+				if (reRunMsg == null)
+					return;
+
+				reRunMsg.State = CANMessageForSenderStateEnum.Sending;
+				reRunMsg.Message.Execute();
+
 			}
 
+			else
+			{
+				CreateNewMessage(canMessage);
+			}
+
+		}
+
+		private void CreateNewMessage(ScriptStepCANMessage canMessage)
+		{ 
 			CANMessageForSenderData data = new CANMessageForSenderData()
 			{
 				Message = canMessage,
@@ -323,6 +338,23 @@ namespace ScriptRunner.ViewModels
 			}
 
 			return false;
+		}
+
+		private CANMessageForSenderData GetCANMessageNeedsReRun(uint id)
+		{
+			foreach (CANMessageForSenderData data in CANMessagesList)
+			{
+				if (data.Message == null)
+					continue;
+
+				if (data.Message.NodeId == id)
+				{ 
+					if(data.Message.IsRunning() == false)
+						return data;
+				}
+			}
+
+			return null;
 		}
 
 		public void SendUpdateMessage(ScriptStepCANMessageUpdate updateMessage)

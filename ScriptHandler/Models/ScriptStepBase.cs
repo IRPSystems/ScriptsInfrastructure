@@ -28,7 +28,9 @@ namespace ScriptHandler.Models
 
 		public string UserTitle { get; set; }
 
-		public string Name { get; set; }
+        public TimeSpan ExecutionTime { get;  set; }
+
+        public string Name { get; set; }
 		public virtual string Description { get; set; }
 		public virtual string OperatorErrorDescription { get; set; }
 
@@ -125,8 +127,9 @@ namespace ScriptHandler.Models
 		public virtual void Execute()
 		{
 
-		}
+        }
 
+			
 		protected virtual void Stop()
 		{
 

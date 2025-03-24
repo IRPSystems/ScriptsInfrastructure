@@ -28,8 +28,8 @@ namespace ScriptHandler.Models
         public bool IsDoRun { get; set; }
 		[JsonIgnore]
 		public bool IsSelected { get; set; }
-
-		[JsonIgnore]
+		public bool isExecuted { get; set; }
+        [JsonIgnore]
 		public Brush Background { get; set; }
         [JsonIgnore]
 		public Brush Foreground { get; set; }
@@ -53,6 +53,7 @@ namespace ScriptHandler.Models
 				Foreground = Application.Current.MainWindow.Foreground;
             State = SciptStateEnum.None;
 
+            isExecuted = false;
             IsSelected = false;
             IsDoRun = true;
 		}

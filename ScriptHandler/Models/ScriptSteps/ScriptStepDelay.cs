@@ -59,29 +59,40 @@ namespace ScriptHandler.Models
 
 		public override void Execute()
 		{
-			_cancellationTokenSource = new CancellationTokenSource();
-			_cancellationToken = _cancellationTokenSource.Token;
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            try
+            {
+                _cancellationTokenSource = new CancellationTokenSource();
+                _cancellationToken = _cancellationTokenSource.Token;
 
-			_pauseTime = new TimeSpan();
-			_startTimeout = DateTime.Now;
-			IsExecuted = true;
+                _pauseTime = new TimeSpan();
+                _startTimeout = DateTime.Now;
+                IsExecuted = true;
 
-			switch (IntervalUnite)
-			{
-				case TimeUnitsEnum.ms: TsTimeout = new TimeSpan(0, 0, 0, 0, Interval); break;
-				case TimeUnitsEnum.sec: TsTimeout = new TimeSpan(0, 0, 0, Interval, 0); break;
-				case TimeUnitsEnum.min: TsTimeout = new TimeSpan(0, 0, Interval, 0, 0); break;
-				case TimeUnitsEnum.hour: TsTimeout = new TimeSpan(0, Interval, 0, 0, 0); break;
-			}
+                switch (IntervalUnite)
+                {
+                    case TimeUnitsEnum.ms: TsTimeout = new TimeSpan(0, 0, 0, 0, Interval); break;
+                    case TimeUnitsEnum.sec: TsTimeout = new TimeSpan(0, 0, 0, Interval, 0); break;
+                    case TimeUnitsEnum.min: TsTimeout = new TimeSpan(0, 0, Interval, 0, 0); break;
+                    case TimeUnitsEnum.hour: TsTimeout = new TimeSpan(0, Interval, 0, 0, 0); break;
+                }
 
-			var myTask = Task.Factory
-					.StartNew(() => Execute_Do(), _cancellationTokenSource.Token);
+                var myTask = Task.Factory
+                        .StartNew(() => Execute_Do(), _cancellationTokenSource.Token);
 
 
-			myTask.Wait();
+                myTask.Wait();
 
-			LoggerService.Debug(this, "Delay ended");
-			IsPass = true;
+                LoggerService.Debug(this, "Delay ended");
+                IsPass = true;
+            }
+            finally
+            {
+                //finished derived class execute method
+                stopwatch.Stop();
+                ExecutionTime = stopwatch.Elapsed;
+            }
+
 		}
 
 		private void Execute_Do()

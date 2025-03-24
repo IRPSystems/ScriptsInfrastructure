@@ -14,6 +14,7 @@ using DeviceCommunicators.NI_6002;
 using Services.Services;
 using Entities.Enums;
 using System.Reflection.Metadata;
+using System.Diagnostics;
 
 namespace ScriptHandler.Models.ScriptSteps
 {
@@ -47,6 +48,11 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		private ScriptStepGetParamValue _getValue;
         private ScriptStepSetParameter _setValue;
+
+        public double AvgMcuRead => avgMcuRead;
+        public double AvgRefSensorRead => avgRefSensorRead;
+        public double PrevGain => prevGain;
+        public double NewGain => newGain;
 
         private double avgMcuRead;
 		private double avgRefSensorRead;
@@ -90,131 +96,142 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		public override void Execute()
 		{
-            _eState = eState.Init;
-            _isStopped = false;
-			IsExecuted = true;
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
-            _getValue = new ScriptStepGetParamValue();
-            _setValue = new ScriptStepSetParameter();
-
-            _getValue.EOLReportsSelectionData = EOLReportsSelectionData;
-			_setValue.EOLReportsSelectionData = EOLReportsSelectionData;
-
-
-			if (RefSensorParam is ZimmerPowerMeter_ParamData powerMeter)
-                powerMeter.Channel = RefSensorChannel;
-
-            if (RefSensorParam is NI6002_ParamData niParamData)
+            try
             {
-                niParamData.Io_port = RefSensorPorts;
-                niParamData.shunt_resistor = NIDAQShuntResistor;
-                LoggerService.Error(this, "Execute: Daq Port" + niParamData.Io_port.ToString());
+				_eState = eState.Init;
+				_isStopped = false;
+				IsExecuted = true;
+
+				_getValue = new ScriptStepGetParamValue();
+				_setValue = new ScriptStepSetParameter();
+
+				_getValue.EOLReportsSelectionData = EOLReportsSelectionData;
+				_setValue.EOLReportsSelectionData = EOLReportsSelectionData;
+
+
+				if (RefSensorParam is ZimmerPowerMeter_ParamData powerMeter)
+					powerMeter.Channel = RefSensorChannel;
+
+				if (RefSensorParam is NI6002_ParamData niParamData)
+				{
+					niParamData.Io_port = RefSensorPorts;
+					niParamData.shunt_resistor = NIDAQShuntResistor;
+					LoggerService.Error(this, "Execute: Daq Port" + niParamData.Io_port.ToString());
+				}
+
+				string description = Description;
+				if (!string.IsNullOrEmpty(UserTitle))
+					description = UserTitle;
+
+				EOLStepSummeryData eolStepSummeryData = null;
+				while (_eState != eState.EndSession && _eState != eState.StopOrFail)
+				{
+
+					switch (_eState)
+					{
+						case eState.Init:
+							_stepsCounter = 1;
+							_eState = eState.ReadGain;
+							break;
+
+						case eState.ReadGain:
+
+							_getValue.Parameter = GainParam;
+							_getValue.Communicator = MCU_Communicator;
+							_getValue.SendAndReceive(out eolStepSummeryData, description);
+							EOLStepSummerysList.Add(eolStepSummeryData);
+							if (!_getValue.IsPass)
+							{
+								ErrorMessage = "Calibration Error \r\n"
+									  + _getValue.ErrorMessage;
+								return;
+							}
+
+							if (GainParam.Value != null)
+							{
+								prevGain = Convert.ToDouble(GainParam.Value);
+							}
+
+							_stepsCounter++;
+							_eState = eState.ReadSensorsPreCalib;
+							break;
+
+						case eState.ReadSensorsPreCalib:
+
+							_stepsCounter++;
+
+							if (!GetReadsMcuAndRefSensor())
+							{
+								IsPass = false;
+								_eState = eState.StopOrFail;
+								break;
+							}
+							LoggerService.Error(this, "ReadSensorsPreCalib: avgRefSensorRead:" + avgRefSensorRead.ToString());
+							_eState = eState.CalculateNewGain;
+							break;
+
+						case eState.CalculateNewGain:
+
+							_stepsCounter++;
+
+							newGain = (prevGain * avgRefSensorRead) / avgMcuRead;
+
+							if (newGain > GainMaxLimit || newGain < GainMinLimit)
+							{
+								IsPass = false;
+								ErrorMessage = "Calculated gain has exceeded maximum limit\r\n" +
+												"Max gain limit: " + GainMaxLimit + "\r\n" +
+												"Min gain limit: " + GainMinLimit + "\r\n" +
+												"Calculated gain: " + newGain + "\r\n" +
+												"Avg MCU Read: " + avgMcuRead + "\r\n" +
+												"Avg Ref Read: " + avgRefSensorRead;
+								_eState = eState.StopOrFail;
+								break;
+							}
+							_eState = eState.SetNewGain;
+							break;
+
+						case eState.SetNewGain:
+
+							_stepsCounter++;
+							_setValue.Parameter = GainParam;
+							_setValue.Communicator = MCU_Communicator;
+							_setValue.Value = newGain;
+							if (!string.IsNullOrEmpty(UserTitle))
+								_setValue.Description = UserTitle;
+							_setValue.Execute();
+							EOLStepSummerysList.AddRange(_setValue.EOLStepSummerysList);
+
+							if (!_setValue.IsPass)
+							{
+								ErrorMessage = "Unable to set: " + GainParam.Name;
+								_eState = eState.StopOrFail;
+								break;
+							}
+							IsPass = true;
+							_eState = eState.EndSession;
+							break;
+
+						case eState.StopOrFail:
+
+							IsPass = false;
+							break;
+					}
+					Thread.Sleep(1);
+				}
+
+				AddToEOLSummary();
+			}
+            finally
+            {
+                //finished derived class execute method
+                stopwatch.Stop();
+                ExecutionTime = stopwatch.Elapsed;
             }
 
-			string description = Description;
-			if (!string.IsNullOrEmpty(UserTitle))
-				description = UserTitle;
-
-			EOLStepSummeryData eolStepSummeryData = null;
-			while (_eState != eState.EndSession && _eState != eState.StopOrFail)
-            {
-				
-				switch (_eState)
-                {
-                    case eState.Init:
-                        _stepsCounter = 1;
-                        _eState = eState.ReadGain;
-                        break;
-
-                    case eState.ReadGain:
-						
-						_getValue.Parameter = GainParam;
-                        _getValue.Communicator = MCU_Communicator;
-                        _getValue.SendAndReceive(out eolStepSummeryData, description);
-						EOLStepSummerysList.Add(eolStepSummeryData);
-						if (!_getValue.IsPass)
-                        {
-                            ErrorMessage = "Calibration Error \r\n"
-                                  + _getValue.ErrorMessage;
-                            return;
-                        }
-
-                        if (GainParam.Value != null)
-                        {
-                            prevGain = Convert.ToDouble(GainParam.Value);
-                        }
-
-                        _stepsCounter++;
-                        _eState = eState.ReadSensorsPreCalib;
-                        break;
-
-                    case eState.ReadSensorsPreCalib:
-
-                        _stepsCounter++;
-
-						if (!GetReadsMcuAndRefSensor())
-						{
-							IsPass = false;
-							_eState = eState.StopOrFail;
-							break;
-						}
-						LoggerService.Error(this, "ReadSensorsPreCalib: avgRefSensorRead:" + avgRefSensorRead.ToString());
-                        _eState = eState.CalculateNewGain;
-                        break;
-
-                    case eState.CalculateNewGain:
-
-						_stepsCounter++;
-
-						newGain = (prevGain * avgRefSensorRead) / avgMcuRead;
-
-						if (newGain > GainMaxLimit || newGain < GainMinLimit)
-						{
-							IsPass = false;
-							ErrorMessage = "Calculated gain has exceeded maximum limit\r\n" +
-											"Max gain limit: " + GainMaxLimit + "\r\n" +
-											"Min gain limit: " + GainMinLimit + "\r\n" +
-											"Calculated gain: " + newGain + "\r\n" +
-											"Avg MCU Read: " + avgMcuRead + "\r\n" +
-											"Avg Ref Read: " + avgRefSensorRead;
-							_eState = eState.StopOrFail;
-							break;
-						}
-						_eState = eState.SetNewGain;
-                        break;
-
-                    case eState.SetNewGain:
-
-                        _stepsCounter++;
-                        _setValue.Parameter = GainParam;
-                        _setValue.Communicator = MCU_Communicator;
-                        _setValue.Value = newGain;
-						if(!string.IsNullOrEmpty(UserTitle))
-							_setValue.Description = UserTitle;
-                        _setValue.Execute();
-						EOLStepSummerysList.AddRange(_setValue.EOLStepSummerysList);
-
-						if (!_setValue.IsPass)
-						{
-							ErrorMessage = "Unable to set: " + GainParam.Name;
-							_eState = eState.StopOrFail;
-							break;
-						}
-                        IsPass = true;
-                        _eState = eState.EndSession;
-                        break;
-
-                    case eState.StopOrFail:
-
-                        IsPass = false;
-                        break;
-                }
-				Thread.Sleep(1);
-            }
-
-            AddToEOLSummary();
-
-			return;
+            return;
         }
 
 		/// <summary>

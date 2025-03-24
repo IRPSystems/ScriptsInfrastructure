@@ -128,7 +128,6 @@ namespace ScriptRunner.Services
 				RunTime,
 				MainScriptLogger,
 				soScript,
-				null,
 				StopScriptStep,
 				_devicesContainer,
 				_canMessageSender);
@@ -158,11 +157,12 @@ namespace ScriptRunner.Services
 				step.StepState = SciptStateEnum.None;
 
 
-			ParamRecording.StartRecording(currentScript.Name, recordingPath, logParametersList);
+			
 
 
 			if (!isAbort)
 			{
+				ParamRecording.StartRecording(currentScript.Name, recordingPath, logParametersList);
 				ErrorMessage = string.Empty;
 				System.Threading.Thread.Sleep(1000);
 			}
@@ -198,7 +198,6 @@ namespace ScriptRunner.Services
 				RunTime,
 				MainScriptLogger,
 				currentScript,
-				null,
 				StopScriptStep,
 				_devicesContainer,
 				_canMessageSender);
@@ -394,6 +393,7 @@ namespace ScriptRunner.Services
 				else if (item is ScriptStepSubScript subScript)
 				{
 					InitiateSweepItem(subScript.Script);
+					subScript.IsExecuted = true;
 				}
 			}
 		}
@@ -415,7 +415,6 @@ namespace ScriptRunner.Services
 				sweepItemForRun.SubScriptRunner = new RunSingleScriptService(
 					RunTime,
 					MainScriptLogger,
-					sweepItem.SubScript as GeneratedScriptData,
 					null,
 					StopScriptStep,
 					_devicesContainer,

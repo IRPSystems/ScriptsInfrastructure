@@ -42,147 +42,159 @@ namespace ScriptHandler.Models
 
 		public override void Execute()
 		{
-			IsPass = false; 
-			IsExecuted = true;
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
-			if (!IsUseAverage)
-				AverageOfNRead = 1;
-
-			double leftVal = 0;
-			string leftParamName = "";
-			_stepsCounter = 1;
-
-
-			string units = "";
-            if (ValueLeft is DeviceParameterData paramLeft)
+			try
 			{
-				int intValue = 0;
+				IsPass = false;
+				IsExecuted = true;
 
-                double sum = 0;
-				for (int i = 0; i < AverageOfNRead; i++)
+				if (!IsUseAverage)
+					AverageOfNRead = 1;
+
+				double leftVal = 0;
+				string leftParamName = "";
+				_stepsCounter = 1;
+
+
+				string units = "";
+				if (ValueLeft is DeviceParameterData paramLeft)
 				{
-					object val = GetCompareParaValue(paramLeft);
+					int intValue = 0;
 
-					if (val == null || IsPass == false)
+					double sum = 0;
+					for (int i = 0; i < AverageOfNRead; i++)
 					{
-						return;
-					}
+						object val = GetCompareParaValue(paramLeft);
 
-					if (val is string strval && strval.StartsWith("0x"))
-					{
-                        string hexSubstring = strval.Substring(2);
-                        bool isSuccess = int.TryParse(hexSubstring, System.Globalization.NumberStyles.HexNumber, null, out intValue);
-						val = intValue;
-						if (!isSuccess) 
+						if (val == null || IsPass == false)
+						{
+							return;
+						}
+
+						if (val is string strval && strval.StartsWith("0x"))
+						{
+							string hexSubstring = strval.Substring(2);
+							bool isSuccess = int.TryParse(hexSubstring, System.Globalization.NumberStyles.HexNumber, null, out intValue);
+							val = intValue;
+							if (!isSuccess)
 							{ return; }
 
-						val = intValue;
-					}
-					if(val is string)
-					{
-						if(paramLeft is MCU_ParamData mCU_ParamData)
+							val = intValue;
+						}
+						if (val is string)
 						{
-                            foreach (DropDownParamData dropDown in mCU_ParamData.DropDown)
-                            {
-								if(dropDown.Name == (string)val)
+							if (paramLeft is MCU_ParamData mCU_ParamData)
+							{
+								foreach (DropDownParamData dropDown in mCU_ParamData.DropDown)
 								{
-									sum = Convert.ToDouble(dropDown.Value);
-									break;
+									if (dropDown.Name == (string)val)
+									{
+										sum = Convert.ToDouble(dropDown.Value);
+										break;
+									}
 								}
-                            }
-                        }
+							}
+						}
+						else
+						{
+							sum += Convert.ToDouble(val);
+						}
+
+
+
+
+						System.Threading.Thread.Sleep(1);
 					}
-					else
-					{
-                        sum += Convert.ToDouble(val);
-                    }
-                   
 
-					
+					leftVal = sum / AverageOfNRead;
+					leftParamName = paramLeft.Name;
 
-                    System.Threading.Thread.Sleep(1);
+					units = paramLeft.Units;
 				}
 
-				leftVal = sum / AverageOfNRead;
-				leftParamName = paramLeft.Name;
+				_stepsCounter++;
+				double? rightVal = 0;
+				string rightParamName = "";
+				string compareReference = "Fixed Value";
+				if (ValueRight is DeviceParameterData paramRight)
+				{
+					compareReference = paramRight.DeviceType.ToString();
 
-				units = paramLeft.Units;
-			}
+					object val = GetCompareParaValue(paramRight);
+					if (val == null || IsPass == false)
+						return;
 
-            _stepsCounter++;
-			double? rightVal = 0;
-			string rightParamName = "";
-			string compareReference = "Fixed Value";
-			if (ValueRight is DeviceParameterData paramRight)
-			{
-                compareReference = paramRight.DeviceType.ToString();
-
-                object val = GetCompareParaValue(paramRight);
-				if (val == null || IsPass == false)
+					rightVal = Convert.ToDouble(val);
+					rightParamName = paramRight.Name;
+				}
+				else
+					rightVal = ValueRight as double?;
+				if (rightVal == null)
+				{
 					return;
+				}
 
-				rightVal = Convert.ToDouble(val);
-				rightParamName = paramRight.Name;
+
+				ErrorMessage = leftParamName + " = " + leftVal + "; ";
+				if (!string.IsNullOrEmpty(rightParamName))
+				{
+					ErrorMessage += rightParamName + " = " + rightVal + "; ";
+				}
+				else
+					ErrorMessage += "The value = " + rightVal + "; ";
+
+				_stepsCounter++;
+
+
+
+				Compare(leftVal, (double)rightVal);
+
+				_stepsCounter++;
+
+				string stepDescription = Description;
+				if (!string.IsNullOrEmpty(UserTitle))
+					stepDescription = UserTitle;
+
+
+				EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
+					"",
+					stepDescription,
+					this);
+
+				eolStepSummeryData.TestValue = leftVal;
+				eolStepSummeryData.ComparisonValue = rightVal;
+				eolStepSummeryData.Reference = compareReference;
+				eolStepSummeryData.Method = Comparation.ToString();
+				eolStepSummeryData.IsPass = IsPass;
+				eolStepSummeryData.ErrorDescription = ErrorMessage;
+				eolStepSummeryData.Units = units;
+
+				EOLStepSummerysList.Add(eolStepSummeryData);
+
+
+				#region Log comparation
+				string str = leftParamName + " = " + leftVal + "; ";
+				if (!string.IsNullOrEmpty(rightParamName))
+				{
+					str += rightParamName + " = " + rightVal + "; ";
+				}
+				else
+					str += "The value = " + rightVal + "; ";
+
+				str += "\r\n" + "IsPass = " + IsPass;
+
+				LoggerService.Inforamtion(this, str);
 			}
-			else
-				rightVal = ValueRight as double?;
-			if(rightVal == null)
+			finally 
 			{
-				return;
-			}
+                //finished derived class execute method
+                stopwatch.Stop();
+                ExecutionTime = stopwatch.Elapsed;
+            }
 
-
-            ErrorMessage = leftParamName + " = " + leftVal + "; ";
-			if(!string.IsNullOrEmpty(rightParamName))
-			{
-				ErrorMessage += rightParamName + " = " + rightVal + "; ";
-			}
-			else
-				ErrorMessage += "The value = " + rightVal + "; ";
-
-			_stepsCounter++;
-
-
-
-            Compare(leftVal, (double)rightVal);
-
-			_stepsCounter++;
-
-            string stepDescription = Description;
-            if (!string.IsNullOrEmpty(UserTitle))
-                stepDescription = UserTitle;
-            
-
-            EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData(
-				"",
-				stepDescription,
-				this);
-
-			eolStepSummeryData.TestValue = leftVal;
-			eolStepSummeryData.ComparisonValue = rightVal;
-			eolStepSummeryData.Reference = compareReference;
-            eolStepSummeryData.Method = Comparation.ToString();
-			eolStepSummeryData.IsPass = IsPass;
-			eolStepSummeryData.ErrorDescription = ErrorMessage;
-			eolStepSummeryData.Units = units;
-
-			EOLStepSummerysList.Add(eolStepSummeryData);
-
-            #region Log comparation
-            string str = leftParamName + " = " + leftVal + "; ";
-			if (!string.IsNullOrEmpty(rightParamName))
-			{
-				str += rightParamName + " = " + rightVal + "; ";
-			}
-			else
-				str += "The value = " + rightVal + "; ";
-
-			str += "\r\n" + "IsPass = " + IsPass;
-
-			LoggerService.Inforamtion(this, str);
-
-			#endregion Log comparation
-		}
+            #endregion Log comparation
+        }
 
 		private void Compare(
 			double leftVal,

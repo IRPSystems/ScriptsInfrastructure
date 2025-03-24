@@ -51,6 +51,7 @@ namespace ScriptHandler.ViewModels
 			CloseButtonClick += CloseButtonClickEvent;
 			CloseAllTabs += OnCloseTabsEventHandler;
 			CloseOtherTabs += OnCloseTabsEventHandler;
+			WindowClosing += DockingScriptViewModel_WindowClosing;
 
 			_vmToControl = new Dictionary<DesignScriptViewModel, ContentControl>();
 
@@ -176,6 +177,15 @@ namespace ScriptHandler.ViewModels
 			e.Cancel = CloseWindow(window);
 		}
 
+
+		private void DockingScriptViewModel_WindowClosing(object sender, WindowClosingEventArgs e)
+		{
+			if (!(e.TargetItem is ContentControl window))
+				return;
+
+			e.Cancel = CloseWindow(window);
+		}
+
 		private bool CloseWindow(ContentControl window)
 		{ 		
 						
@@ -283,6 +293,9 @@ namespace ScriptHandler.ViewModels
 
 			return false;
 		}
+
+
+
 
 		#endregion Methods
 	}
