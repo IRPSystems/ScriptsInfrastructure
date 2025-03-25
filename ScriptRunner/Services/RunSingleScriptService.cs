@@ -68,6 +68,8 @@ namespace ScriptRunner.Services
 
 		private StopScriptStepService _stopScriptStep;
 
+		private ManualResetEvent _cancelationRequestPending;
+
 		
 
 		private DevicesContainer _devicesContainer;
@@ -94,8 +96,9 @@ namespace ScriptRunner.Services
 			_canMessageSender = canMessageSender;
 			_lockCurrentStep = new object();
 			_userDecision = new ManualResetEvent(false);
+            _cancelationRequestPending = new ManualResetEvent(false);
 
-			if (Application.Current != null)
+            if (Application.Current != null)
 			{
 				Application.Current.Dispatcher.Invoke(() =>
 				{
@@ -139,9 +142,15 @@ namespace ScriptRunner.Services
 			}
 
 			SetCurrentStep(CurrentScript.ScriptItemsList[0] as ScriptStepBase);
-			
 
-			_cancellationTokenSource = new CancellationTokenSource();
+			//Check if a cancelation is requested for a script that is already running
+			if (_cancellationToken.IsCancellationRequested)
+			{
+				_cancelationRequestPending.WaitOne();
+			}
+            _cancelationRequestPending.Reset();
+
+            _cancellationTokenSource = new CancellationTokenSource();
 			_cancellationToken = _cancellationTokenSource.Token;
 
 			ExecutingScriptSteps();
@@ -321,7 +330,10 @@ namespace ScriptRunner.Services
 					}
 
 				}
-
+				if(_cancellationToken.IsCancellationRequested)
+				{
+                    _cancelationRequestPending.Set();
+                }
 			}, _cancellationToken);
 		}
 
