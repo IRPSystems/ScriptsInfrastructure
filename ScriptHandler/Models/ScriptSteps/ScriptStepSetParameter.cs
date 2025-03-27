@@ -92,6 +92,7 @@ namespace ScriptHandler.Models
 				if (Parameter == null)
 				{
 					ErrorMessage = "The parameter is unknown";
+					IsError = true;
 					return;
 				}
 
@@ -122,6 +123,7 @@ namespace ScriptHandler.Models
 					eolStepSummeryData.IsPass = false;
 					eolStepSummeryData.ErrorDescription = ErrorMessage;
 					EOLStepSummerysList.Add(eolStepSummeryData);
+					IsError = true;
 					return;
 				}
 
@@ -139,6 +141,7 @@ namespace ScriptHandler.Models
 					GetValue();
 					if (IsPass == false)
 					{
+						IsError = true;
 						AddToEOLSummary(Convert.ToDouble(Value));
 						return;
 					}
@@ -159,6 +162,7 @@ namespace ScriptHandler.Models
 				if (!isNotTimeout)
 				{
 					ErrorMessage += "Communication timeout.";
+					IsError = true;
 					IsPass = false;
 				}
 
