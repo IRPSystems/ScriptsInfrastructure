@@ -41,7 +41,7 @@ namespace ScriptHandler.Models
 		[JsonIgnore]
 		public IScriptItem FailNext { get; set; }
 
-
+		public bool? IsError;
 
 		public string PassNextDescription { get; set; }
 		public string FailNextDescription { get; set; }
