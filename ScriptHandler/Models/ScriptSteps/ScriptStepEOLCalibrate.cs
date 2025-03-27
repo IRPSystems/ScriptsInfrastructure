@@ -97,12 +97,13 @@ namespace ScriptHandler.Models.ScriptSteps
 		public override void Execute()
 		{
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-
+			
             try
             {
 				_eState = eState.Init;
 				_isStopped = false;
 				IsExecuted = true;
+				IsError = false;
 
 				_getValue = new ScriptStepGetParamValue();
 				_setValue = new ScriptStepSetParameter();
@@ -146,6 +147,7 @@ namespace ScriptHandler.Models.ScriptSteps
 							{
 								ErrorMessage = "Calibration Error \r\n"
 									  + _getValue.ErrorMessage;
+								IsError = true;
 								return;
 							}
 
@@ -165,6 +167,7 @@ namespace ScriptHandler.Models.ScriptSteps
 							if (!GetReadsMcuAndRefSensor())
 							{
 								IsPass = false;
+								IsError = true;
 								_eState = eState.StopOrFail;
 								break;
 							}
@@ -208,6 +211,8 @@ namespace ScriptHandler.Models.ScriptSteps
 							{
 								ErrorMessage = "Unable to set: " + GainParam.Name;
 								_eState = eState.StopOrFail;
+								IsError = true;
+								IsPass = false;
 								break;
 							}
 							IsPass = true;
