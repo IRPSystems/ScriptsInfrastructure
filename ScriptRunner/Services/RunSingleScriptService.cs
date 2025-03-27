@@ -146,7 +146,7 @@ namespace ScriptRunner.Services
 			//Check if a cancelation is requested for a script that is already running
 			if (_cancellationToken.IsCancellationRequested)
 			{
-				_cancelationRequestPending.WaitOne();
+				_cancelationRequestPending.WaitOne(5000);
 			}
             _cancelationRequestPending.Reset();
 
