@@ -182,6 +182,9 @@ namespace ScriptRunner.Services
 		private void IsScriptContainsSO(
 			GeneratedScriptData scriptData)
 		{
+			if (scriptData == null)
+				return;
+
 			foreach (IScriptItem item in scriptData.ScriptItemsList)
 			{
 				if (item is ISubScript subScript)

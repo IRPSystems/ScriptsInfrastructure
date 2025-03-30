@@ -188,25 +188,42 @@ namespace ScriptHandler.ViewModels
 					break;
 
 				case "Test":
-					scriptName = ExplorerViewModel.GetScriptName(
-						"New Test",
-						"Test name",
-						".tst",
-						"Create",
-						"",
-						false,
-						null);
-					if (scriptName == null)
-						return;
+					if (Explorer.Project != null)
+					{
+						Explorer.ProjectAddNewTest();
+					}
 
-					CurrentScript = new DesignScriptViewModel(_scriptUserData, DevicesContainer, true);
-					CurrentScript.New(true, scriptName);
-					DockingScript.OpenScript(CurrentScript);
-					//DockingScript.ScriptIsChangedEventHandler(CurrentScript, true);
+					else
+					{
+						scriptName = ExplorerViewModel.GetScriptName(
+							"New Test",
+							"Test name",
+							".tst",
+							"Create",
+							"",
+							false,
+							null);
+						if (scriptName == null)
+							return;
+
+
+
+						CurrentScript = new DesignScriptViewModel(_scriptUserData, DevicesContainer, true);
+						CurrentScript.New(true, scriptName);
+						DockingScript.OpenScript(CurrentScript);
+						//DockingScript.ScriptIsChangedEventHandler(CurrentScript, true);
+					}
 					break;
 
 				case "Script":
-					scriptName = ExplorerViewModel.GetScriptName(
+					if (Explorer.Project != null)
+					{
+						Explorer.ProjectAddNewScript();
+					}
+
+					else
+					{
+						scriptName = ExplorerViewModel.GetScriptName(
 						"New Script",
 						"Script name",
 						".scr",
@@ -214,13 +231,14 @@ namespace ScriptHandler.ViewModels
 						"",
 						false,
 						null);
-					if (scriptName == null)
-						return;
+						if (scriptName == null)
+							return;
 
-					CurrentScript = new DesignScriptViewModel(_scriptUserData, DevicesContainer, true);
-					CurrentScript.New(false, scriptName);
-					DockingScript.OpenScript(CurrentScript);
-					//DockingScript.ScriptIsChangedEventHandler(CurrentScript, true);
+						CurrentScript = new DesignScriptViewModel(_scriptUserData, DevicesContainer, true);
+						CurrentScript.New(false, scriptName);
+						DockingScript.OpenScript(CurrentScript);
+						//DockingScript.ScriptIsChangedEventHandler(CurrentScript, true);
+					}
 					break;
 			}
 		}
