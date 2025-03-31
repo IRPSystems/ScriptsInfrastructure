@@ -413,7 +413,7 @@ namespace ScriptRunner.Services
 				sweepItemForRun.SubScriptRunner = new RunSingleScriptService(
 					RunTime,
 					MainScriptLogger,
-					null,
+					sweepItem.SubScript as GeneratedScriptData,
 					StopScriptStep,
 					_devicesContainer,
 					_canMessageSender);
