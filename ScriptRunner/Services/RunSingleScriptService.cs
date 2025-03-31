@@ -594,16 +594,22 @@ namespace ScriptRunner.Services
 
 		private void SubScriptEndedEventHandler(bool isAborted)
 		{
-			_userDecision.Set();
-
-			if(_subScript != null && _subScript.CurrentScript.IsPass == false)
+			try
 			{
-				ScriptErrorMessage += _subScript.ScriptErrorMessage + "\r\n\r\n";
-			}
+				_userDecision.Set();
 
-			//_subScript = null;
-			//StepEnd();
-			OnPropertyChanged(nameof(CurrentStep));
+				if (_subScript != null && _subScript.CurrentScript.IsPass == false)
+				{
+					ScriptErrorMessage += _subScript.ScriptErrorMessage + "\r\n\r\n";
+				}
+
+				//_subScript = null;
+				//StepEnd();
+				OnPropertyChanged(nameof(CurrentStep));
+			}
+			catch 
+			{
+			}
 		}
 
 		#endregion Sub script
@@ -637,6 +643,9 @@ namespace ScriptRunner.Services
 		{
 			_userDecision.Set();
 			_stopScriptStep.StopStep();
+
+			if(_subScript != null) 
+				_subScript.Abort();
 		}
 
 		public void Abort()
