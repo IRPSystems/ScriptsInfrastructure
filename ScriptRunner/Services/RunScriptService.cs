@@ -200,7 +200,8 @@ namespace ScriptRunner.Services
 				currentScript,
 				StopScriptStep,
 				_devicesContainer,
-				_canMessageSender);
+				_canMessageSender,
+				stepEndedEvent: StepEndedEvent);
 			CurrentScript.ScriptEndedEvent += ScriptEndedEventHandler;
 			CurrentScript.StepEndedEvent += StepEndedEvent;
 			CurrentScript.CurrentStepChangedEvent += CurrentStepChangedEventHandler;

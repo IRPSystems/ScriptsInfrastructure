@@ -70,9 +70,9 @@ namespace ScriptRunner.Services
 
 		private ManualResetEvent _cancelationRequestPending;
 
-		
+		private Action<ScriptStepBase> _stepEndedEventGlobal;
 
-		private DevicesContainer _devicesContainer;
+        private DevicesContainer _devicesContainer;
 		private CANMessageSenderViewModel _canMessageSender;
 
 		#endregion Fields
@@ -86,7 +86,8 @@ namespace ScriptRunner.Services
 			GeneratedScriptData currentScript,
 			StopScriptStepService stopScriptStep,
 			DevicesContainer devicesContainer,
-			CANMessageSenderViewModel canMessageSender)
+			CANMessageSenderViewModel canMessageSender,
+			Action<ScriptStepBase> stepEndedEvent = null)
 		{
 			_runTime = runTime;
 			_mainScriptLogger = mainScriptLogger;
@@ -97,6 +98,7 @@ namespace ScriptRunner.Services
 			_lockCurrentStep = new object();
 			_userDecision = new ManualResetEvent(false);
             _cancelationRequestPending = new ManualResetEvent(false);
+            _stepEndedEventGlobal = stepEndedEvent;
 
             if (Application.Current != null)
 			{
@@ -360,8 +362,7 @@ namespace ScriptRunner.Services
 					sub.Dispose();
 					_subScript = null;
 				}
-
-				if(_currentStep.CommSendResLog != null)
+                if (_currentStep.CommSendResLog != null)
 				{
                     StepEndedEvent?.Invoke(_currentStep);
                 }
@@ -583,7 +584,8 @@ namespace ScriptRunner.Services
 					_devicesContainer,
 					_canMessageSender);
 			}
-			_subScript.ScriptEndedEvent += SubScriptEndedEventHandler;
+			_subScript.StepEndedEvent += _stepEndedEventGlobal;
+            _subScript.ScriptEndedEvent += SubScriptEndedEventHandler;
 			_subScript.CurrentStepChangedEvent += CurrentStepChangedEventHandler;
 			_subScript.AbortEvent += SubScript_AbortEvent;
             _subScript.StartSafetyOfficerEvent += SubScript_StartSafetyOfficerEvent;

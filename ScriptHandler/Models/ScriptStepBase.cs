@@ -164,7 +164,8 @@ namespace ScriptHandler.Models
 					CommSendResLog.ReceivedValue = commSendResLog.ReceivedValue;
 					CommSendResLog.CommErrorMsg = commSendResLog.CommErrorMsg;
 					CommSendResLog.NumberOfTries = commSendResLog.NumberOfTries;
-				}
+                    CommSendResLog.timeStamp = commSendResLog.timeStamp;
+                }
             }
 			catch (Exception ex)
 			{
