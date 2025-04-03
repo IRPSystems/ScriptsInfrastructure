@@ -78,6 +78,7 @@ namespace ScriptHandler.Services
 						continue;
 
 					subScript.Parent = project;
+					subScript.ParentScriptName = scriptData.Name;
 
 					if (string.IsNullOrEmpty(subScript.SelectedScriptName))
 						continue;
