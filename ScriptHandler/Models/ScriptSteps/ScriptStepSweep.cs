@@ -208,7 +208,7 @@ namespace ScriptHandler.Models
 							_cancellationToken.WaitHandle });
 
 					CurrentScript.ScriptEndedEvent -= SubScriptEndedEventHandler;
-					if (CurrentScript.CurrentScript.IsPass == false)
+					if (CurrentScript.CurrentScript != null && CurrentScript.CurrentScript.IsPass == false)
 					{
 						LoggerService.Inforamtion(this, "Faild sub-script for item: " + item.Parameter.Name);
 						ErrorMessage = "Sub script \"" + CurrentScript.CurrentScript.Name + "\" failed.\r\n\r\n" +

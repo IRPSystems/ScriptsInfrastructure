@@ -69,6 +69,7 @@ namespace ScriptHandler.Models
 
 						if (val == null || IsPass == false)
 						{
+							IsError = true;
 							return;
 						}
 
@@ -123,8 +124,10 @@ namespace ScriptHandler.Models
 
 					object val = GetCompareParaValue(paramRight);
 					if (val == null || IsPass == false)
+					{
+						IsError = null;
 						return;
-
+					}
 					rightVal = Convert.ToDouble(val);
 					rightParamName = paramRight.Name;
 				}
@@ -132,6 +135,7 @@ namespace ScriptHandler.Models
 					rightVal = ValueRight as double?;
 				if (rightVal == null)
 				{
+					IsError = true;
 					return;
 				}
 
@@ -259,7 +263,7 @@ namespace ScriptHandler.Models
 			{
 				IsPass = false;
                 PopulateSendResponseLog(UserTitle, this.GetType().Name, parameter.Name, parameter.DeviceType, parameter.CommSendResLog);
-                return 0;
+                return null;
 			}
 			LoggerService.Error(this, " value "+parameter.Value.ToString());
             PopulateSendResponseLog(UserTitle, this.GetType().Name, parameter.Name, parameter.DeviceType, parameter.CommSendResLog);

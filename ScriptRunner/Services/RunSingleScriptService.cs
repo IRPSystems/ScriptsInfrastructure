@@ -68,9 +68,11 @@ namespace ScriptRunner.Services
 
 		private StopScriptStepService _stopScriptStep;
 
-		
+		private ManualResetEvent _cancelationRequestPending;
 
-		private DevicesContainer _devicesContainer;
+		private Action<ScriptStepBase> _stepEndedEventGlobal;
+
+        private DevicesContainer _devicesContainer;
 		private CANMessageSenderViewModel _canMessageSender;
 
 		#endregion Fields
@@ -84,7 +86,8 @@ namespace ScriptRunner.Services
 			GeneratedScriptData currentScript,
 			StopScriptStepService stopScriptStep,
 			DevicesContainer devicesContainer,
-			CANMessageSenderViewModel canMessageSender)
+			CANMessageSenderViewModel canMessageSender,
+			Action<ScriptStepBase> stepEndedEvent = null)
 		{
 			_runTime = runTime;
 			_mainScriptLogger = mainScriptLogger;
@@ -94,8 +97,10 @@ namespace ScriptRunner.Services
 			_canMessageSender = canMessageSender;
 			_lockCurrentStep = new object();
 			_userDecision = new ManualResetEvent(false);
+            _cancelationRequestPending = new ManualResetEvent(false);
+            _stepEndedEventGlobal = stepEndedEvent;
 
-			if (Application.Current != null)
+            if (Application.Current != null)
 			{
 				Application.Current.Dispatcher.Invoke(() =>
 				{
@@ -139,9 +144,15 @@ namespace ScriptRunner.Services
 			}
 
 			SetCurrentStep(CurrentScript.ScriptItemsList[0] as ScriptStepBase);
-			
 
-			_cancellationTokenSource = new CancellationTokenSource();
+			//Check if a cancelation is requested for a script that is already running
+			if (_cancellationToken.IsCancellationRequested)
+			{
+				_cancelationRequestPending.WaitOne(5000);
+			}
+            _cancelationRequestPending.Reset();
+
+            _cancellationTokenSource = new CancellationTokenSource();
 			_cancellationToken = _cancellationTokenSource.Token;
 
 			ExecutingScriptSteps();
@@ -321,7 +332,10 @@ namespace ScriptRunner.Services
 					}
 
 				}
-
+				if(_cancellationToken.IsCancellationRequested)
+				{
+                    _cancelationRequestPending.Set();
+                }
 			}, _cancellationToken);
 		}
 
@@ -348,8 +362,7 @@ namespace ScriptRunner.Services
 					sub.Dispose();
 					_subScript = null;
 				}
-
-				if(_currentStep.CommSendResLog != null)
+                if (_currentStep.CommSendResLog != null)
 				{
                     StepEndedEvent?.Invoke(_currentStep);
                 }
@@ -571,7 +584,8 @@ namespace ScriptRunner.Services
 					_devicesContainer,
 					_canMessageSender);
 			}
-			_subScript.ScriptEndedEvent += SubScriptEndedEventHandler;
+			_subScript.StepEndedEvent += _stepEndedEventGlobal;
+            _subScript.ScriptEndedEvent += SubScriptEndedEventHandler;
 			_subScript.CurrentStepChangedEvent += CurrentStepChangedEventHandler;
 			_subScript.AbortEvent += SubScript_AbortEvent;
             _subScript.StartSafetyOfficerEvent += SubScript_StartSafetyOfficerEvent;
@@ -582,16 +596,22 @@ namespace ScriptRunner.Services
 
 		private void SubScriptEndedEventHandler(bool isAborted)
 		{
-			_userDecision.Set();
-
-			if(_subScript != null && _subScript.CurrentScript.IsPass == false)
+			try
 			{
-				ScriptErrorMessage += _subScript.ScriptErrorMessage + "\r\n\r\n";
-			}
+				_userDecision.Set();
 
-			//_subScript = null;
-			//StepEnd();
-			OnPropertyChanged(nameof(CurrentStep));
+				if (_subScript != null && _subScript.CurrentScript.IsPass == false)
+				{
+					ScriptErrorMessage += _subScript.ScriptErrorMessage + "\r\n\r\n";
+				}
+
+				//_subScript = null;
+				//StepEnd();
+				OnPropertyChanged(nameof(CurrentStep));
+			}
+			catch 
+			{
+			}
 		}
 
 		#endregion Sub script
@@ -625,6 +645,9 @@ namespace ScriptRunner.Services
 		{
 			_userDecision.Set();
 			_stopScriptStep.StopStep();
+
+			if(_subScript != null) 
+				_subScript.Abort();
 		}
 
 		public void Abort()

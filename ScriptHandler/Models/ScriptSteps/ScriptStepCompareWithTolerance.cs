@@ -69,7 +69,6 @@ namespace ScriptHandler.Models
         public double Tolerance { get; set; }
 
 		private double MeasuredTolerance;
-
 		public ComparationTypesEnum Comparation { get; set; }
 
 		public bool IsValueTolerance { get; set; }
@@ -115,6 +114,7 @@ namespace ScriptHandler.Models
 				});
 			}
 
+
 			_getParamValue = new ScriptStepGetParamValue();
 		}
 
@@ -125,6 +125,7 @@ namespace ScriptHandler.Models
 		public override void Execute()
 		{
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+			IsError = false;
             try
             {
 
@@ -175,6 +176,7 @@ namespace ScriptHandler.Models
                                 ErrorMessage = errorMessage + ErrorMessage;
                                 IsPass = false;
                                 _eState = eState.SaveData;
+								IsError = true;
 								break;
                             }
 							_eState = eState.ComparisonValue;
@@ -201,6 +203,7 @@ namespace ScriptHandler.Models
 
                                 ErrorMessage = errorMessage + ErrorMessage;
                                 IsPass = false;
+								IsError = true;
                                 _eState = eState.SaveData;
 								break;
                             }
@@ -554,15 +557,15 @@ namespace ScriptHandler.Models
 		{
 			base.GetRealParamAfterLoad(devicesContainer);
 
-			if (CompareValue is DeviceParameterData)
-			{
-				if (CompareValue is ICalculatedParamete)
-					return;
+			//if (CompareValue is DeviceParameterData)
+			//{
+			//	if (CompareValue is ICalculatedParamete)
+			//		return;
 
-				CompareValue = GetRealParam(
-					CompareValue as DeviceParameterData,
-					devicesContainer);
-			}
+			//	CompareValue = GetRealParam(
+			//		CompareValue as DeviceParameterData,
+			//		devicesContainer);
+			//}
 
 			DevicesContainer = devicesContainer;
 		}

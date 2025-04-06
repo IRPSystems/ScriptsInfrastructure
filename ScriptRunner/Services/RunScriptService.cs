@@ -200,7 +200,8 @@ namespace ScriptRunner.Services
 				currentScript,
 				StopScriptStep,
 				_devicesContainer,
-				_canMessageSender);
+				_canMessageSender,
+				stepEndedEvent: StepEndedEvent);
 			CurrentScript.ScriptEndedEvent += ScriptEndedEventHandler;
 			CurrentScript.StepEndedEvent += StepEndedEvent;
 			CurrentScript.CurrentStepChangedEvent += CurrentStepChangedEventHandler;
@@ -415,7 +416,7 @@ namespace ScriptRunner.Services
 				sweepItemForRun.SubScriptRunner = new RunSingleScriptService(
 					RunTime,
 					MainScriptLogger,
-					null,
+					sweepItem.SubScript as GeneratedScriptData,
 					StopScriptStep,
 					_devicesContainer,
 					_canMessageSender);

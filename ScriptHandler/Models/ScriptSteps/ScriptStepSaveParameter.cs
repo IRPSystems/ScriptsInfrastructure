@@ -13,6 +13,7 @@ using Services.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -54,50 +55,61 @@ namespace ScriptHandler.Models.ScriptSteps
 
         public override void Execute()
         {
-            ErrorMessage = "Failed to save the parameter.\r\n" +
-                    "\tParameter: " + Parameter.Name + "\r\n\r\n";
-			IsExecuted = true;
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
-			_waitGetCallback = new ManualResetEvent(false);
-
-            EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData();
-            eolStepSummeryData.Description = Description;
-
-            if (Communicator == null || Communicator.IsInitialized == false)
+            try
             {
-                ErrorMessage += "The communication is not initialized";
-                IsPass = false;
-                eolStepSummeryData.IsPass = false;
-                eolStepSummeryData.ErrorDescription = ErrorMessage;
-                EOLStepSummerysList.Add(eolStepSummeryData);
-                return;
-            }
+                ErrorMessage = "Failed to save the parameter.\r\n" +
+                        "\tParameter: " + Parameter.Name + "\r\n\r\n";
+                IsExecuted = true;
 
-            using (var md5 = MD5.Create())
+                _waitGetCallback = new ManualResetEvent(false);
+
+                EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData();
+                eolStepSummeryData.Description = Description;
+
+                if (Communicator == null || Communicator.IsInitialized == false)
+                {
+                    ErrorMessage += "The communication is not initialized";
+                    IsPass = false;
+                    eolStepSummeryData.IsPass = false;
+                    eolStepSummeryData.ErrorDescription = ErrorMessage;
+                    EOLStepSummerysList.Add(eolStepSummeryData);
+                    return;
+                }
+
+                using (var md5 = MD5.Create())
+                {
+                    Array.Copy(md5.ComputeHash(ASCIIEncoding.ASCII.GetBytes((Parameter as MCU_ParamData).Cmd)), 0, _id, 0, 3);
+                }
+
+                var hex_id = BitConverter.ToString(_id).Replace("-", "").ToLower();
+                double value = Convert.ToInt32(hex_id, 16);
+
+                _stepsCounter++;
+
+                Communicator.SetParamValue(_saveParameter, value, GetCallback);
+
+                bool isNotTimeout = _waitGetCallback.WaitOne(1000);
+                if (!isNotTimeout)
+                {
+                    PopulateSendResponseLog(UserTitle, this.GetType().Name, Parameter.Name, Parameter.DeviceType, Parameter.CommSendResLog);
+                    ErrorMessage += "Communication timeout.";
+                    IsPass = false;
+                }
+
+                _stepsCounter++;
+                if (IsPass)
+                    LoggerService.Inforamtion(this, "Saved parameter");
+
+                AddToEOLSummary();
+            }
+            finally
             {
-                Array.Copy(md5.ComputeHash(ASCIIEncoding.ASCII.GetBytes((Parameter as MCU_ParamData).Cmd)), 0, _id, 0, 3);
+                //finished derived class execute method
+                stopwatch.Stop();
+                ExecutionTime = stopwatch.Elapsed;
             }
-
-            var hex_id = BitConverter.ToString(_id).Replace("-", "").ToLower();
-            double value = Convert.ToInt32(hex_id, 16);
-
-            _stepsCounter++;
-
-            Communicator.SetParamValue(_saveParameter, value, GetCallback);
-
-            bool isNotTimeout = _waitGetCallback.WaitOne(1000);
-            if (!isNotTimeout)
-            {
-                PopulateSendResponseLog(UserTitle, this.GetType().Name, Parameter.Name, Parameter.DeviceType, Parameter.CommSendResLog);
-                ErrorMessage += "Communication timeout.";
-                IsPass = false;
-            }
-
-            _stepsCounter++;
-            if (IsPass)
-                LoggerService.Inforamtion(this, "Saved parameter");
-
-            AddToEOLSummary();
         }
 
         private void GetCallback(DeviceParameterData param, CommunicatorResultEnum result, string resultDescription)

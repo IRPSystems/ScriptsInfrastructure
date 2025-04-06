@@ -92,6 +92,7 @@
 
     </DataTemplate>
 
+
     <DataTemplate x:Key="Design_CompareTemplate">
 
         <Grid>

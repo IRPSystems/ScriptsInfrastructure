@@ -25,8 +25,8 @@ namespace ScriptHandler.Models
 {
 	public class ScriptStepGetRegisterValues : ScriptStepGetParamValue
 	{
-        public string FaultName { get; set; }
-		public int ComparedValue { get; set; }
+        public string FaultList { get; set; }
+        public int ComparedValue { get; set; }
 
         public TimeSpan ExecutionTime { get; set; }
 
@@ -82,16 +82,16 @@ namespace ScriptHandler.Models
                             if ((numericValue & faultBitMask) != 0)
                             {
                                 // Append the fault name with a newline
-                                sb.Append(dropdownItem.Name + "\r\n");
+                                sb.Append(dropdownItem.Name + " | ");
                             }
                         }
 
                         if (sb.Length == 0)
                         {
-                            Parameter.Value = "No Bits On";
+                            FaultList = "No Bits On";
                         }
 
-                        Parameter.Value = sb.ToString();
+                        FaultList = sb.ToString();
                     }
                 }
                 else
