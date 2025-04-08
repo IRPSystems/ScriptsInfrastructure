@@ -190,6 +190,10 @@ namespace ScriptHandler.Models.ScriptNodes
 				dVal += signal.Offset;
 				dVal /= signal.Factor;
 
+				if(signal.ValueType == DbcValueType.Unsigned)
+					dVal = Math.Abs(dVal);
+
+
 				message += (ulong)dVal << signal.StartBit;
 			}
 

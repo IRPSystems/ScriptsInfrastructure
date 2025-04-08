@@ -101,9 +101,8 @@ namespace ScriptHandler.Models
 		private ManualResetEvent _messageEnd;
 
 		private object _lockPayloadObj;
-		private int _counter;
 
-		private int _counterForCounterField;
+		private ulong _counterForCounterField;
 
 		private byte[] _srgCrc8_tab;
 		private const byte _CRC8_START_VALUE = 0xFF;
@@ -275,7 +274,9 @@ namespace ScriptHandler.Models
 					if (signal.Name != CounterFieldName)
 						continue;
 
-					var v = ((ulong)_counterForCounterField << signal.StartBit);
+					ZeroCrcCounterInPayload(signal);
+
+					var v = (_counterForCounterField << signal.StartBit);
 					Payload += v;
 
 					_payloadBytes = BitConverter.GetBytes(Payload);
@@ -296,10 +297,11 @@ namespace ScriptHandler.Models
 					if (signal.Name != CRCFieldName)
 						continue;
 
+					ZeroCrcCounterInPayload(signal);
 
 					for (int i = 0; i < signal.Length; i++)
 					{
-						Payload += (ulong)(crc << signal.StartBit);
+						Payload += ((ulong)crc << signal.StartBit);
 					}
 
 					_payloadBytes = BitConverter.GetBytes(Payload);
@@ -308,6 +310,17 @@ namespace ScriptHandler.Models
 			}
 
 			
+		}
+
+		private void ZeroCrcCounterInPayload(Signal signal)
+		{
+			ulong zero = ulong.MaxValue;
+			for (int i = 0; i < signal.Length; i++)
+			{
+				zero &= (~((ulong)1 << (signal.StartBit + i)));
+			}
+
+			Payload &= zero;
 		}
 
 		public bool IsRunning()
