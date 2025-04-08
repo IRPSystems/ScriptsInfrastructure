@@ -255,7 +255,7 @@ namespace ScriptRunner.ViewModels
 			{
 				Message = canMessage,
 				State = CANMessageForSenderStateEnum.Sending,
-				IsUseCRCCounter = false,
+				IsUseCRCCounter = canMessage.IsAddCRCCounter,
 			};
 			CANMessagesList.Add(data);
 
@@ -274,7 +274,7 @@ namespace ScriptRunner.ViewModels
 				canMessage.Communicator = LocalCommDevice.DeviceCommunicator;
 			}
 
-			canMessage.IsAddCRCCounter = data.IsUseCRCCounter;
+			//canMessage.IsAddCRCCounter = data.IsUseCRCCounter;
 			canMessage.Execute();
 		}
 
