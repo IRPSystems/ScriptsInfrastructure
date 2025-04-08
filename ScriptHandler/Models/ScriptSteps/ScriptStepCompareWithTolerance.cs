@@ -247,7 +247,7 @@ namespace ScriptHandler.Models
 							"",
 							stepDescription,
 							this);
-
+							IsError = _getParamValue.IsError;
                             eolStepSummeryData.MeasuredTolerance = MeasuredTolerance;
                             eolStepSummeryData.TestValue = paramValue_Left;
                             eolStepSummeryData.ComparisonValue = paramValue_Right;

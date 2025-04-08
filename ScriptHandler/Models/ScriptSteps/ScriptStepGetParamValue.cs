@@ -205,23 +205,27 @@ namespace ScriptHandler.Models
 				case CommunicatorResultEnum.NoResponse:
 					ErrorMessage +=
 						"No response was received from the device.";
+					IsError = true;
 					break;
 
 				case CommunicatorResultEnum.ValueNotSet:
 					ErrorMessage +=
 						"Failed to set the value.";
-					break;
+                    IsError = true;
+                    break;
 
 				case CommunicatorResultEnum.Error:
 					ErrorMessage +=
 						"The device returned an error:\r\n" +
 						resultDescription;
-					break;
+                    IsError = true;
+                    break;
 
 				case CommunicatorResultEnum.InvalidUniqueId:
 					ErrorMessage +=
 						"Invalud Unique ID was received from the Dyno.";
-					break;
+                    IsError = true;
+                    break;
 			}
 
 			IsPass = _isReceived = (result == CommunicatorResultEnum.OK);
