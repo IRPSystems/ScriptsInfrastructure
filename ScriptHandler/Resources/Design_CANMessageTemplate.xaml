@@ -476,7 +476,15 @@
                               IsChecked="{Binding IsCRCAvailable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <TextBlock Grid.Column="2" Text="Field name" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="4" Text="{Binding CRCFieldName, UpdateSourceTrigger=PropertyChanged}"/>
+                    <ComboBox Grid.Column="4" 
+                              ItemsSource="{Binding Message.Signals}"
+                              SelectedItem="{Binding CRCField}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
 
                 </Grid>
 
@@ -494,7 +502,15 @@
                               IsChecked="{Binding IsCounterAvailable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <TextBlock Grid.Column="2" Text="Field name" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="4" Text="{Binding CounterFieldName, UpdateSourceTrigger=PropertyChanged}"/>
+                    <ComboBox Grid.Column="4" 
+                              ItemsSource="{Binding Message.Signals}"
+                              SelectedItem="{Binding CounterField}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
 
                 </Grid>
             </Grid>
