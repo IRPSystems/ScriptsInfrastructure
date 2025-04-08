@@ -231,7 +231,8 @@ namespace ScriptHandler.Models.ScriptSteps
 			}
             finally
             {
-                //finished derived class execute method
+				//finished derived class execute method
+				IsError = (_getValue.IsError ?? false) || (_setValue.IsError ?? false);
                 stopwatch.Stop();
                 ExecutionTime = stopwatch.Elapsed;
             }
