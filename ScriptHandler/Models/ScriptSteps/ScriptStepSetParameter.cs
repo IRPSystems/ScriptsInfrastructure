@@ -35,6 +35,7 @@ namespace ScriptHandler.Models
 		[JsonIgnore]
 		public DeviceCommunicator Communicator { get; set; }
 
+		[JsonIgnore]
 		public ExtraDataForParameter ExtraData { get; set; }
 
 		private DeviceParameterData _valueParameter;

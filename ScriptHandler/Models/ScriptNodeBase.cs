@@ -121,6 +121,7 @@ namespace ScriptHandler.Models
 			}
 		}
 
+		[JsonIgnore]
 		public EOLReportsSelectionData EOLReportsSelectionData { get; set; }
 
 		#endregion Properties and Fields

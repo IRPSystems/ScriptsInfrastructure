@@ -6,6 +6,7 @@ using DeviceCommunicators.SwitchRelay32;
 using DeviceHandler.Models;
 using Entities.Enums;
 using Entities.Models;
+using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
 using System;
 using System.Collections.ObjectModel;
@@ -91,6 +92,7 @@ namespace ScriptHandler.Models.ScriptNodes
 		public BitwiseNumberDisplayData SwitchRelayValue { get; set; }
 		public int SwitchRelayChannel { get; set; }
 
+		[JsonIgnore]
 		public ExtraDataForParameter ExtraData { get; set; }
 
 		private DeviceParameterData _valueParameter;

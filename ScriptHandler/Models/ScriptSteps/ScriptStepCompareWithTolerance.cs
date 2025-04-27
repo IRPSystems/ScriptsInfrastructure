@@ -88,7 +88,9 @@ namespace ScriptHandler.Models
 		public double CompareValueFactor { get; set; }
 
 
+		[JsonIgnore]
 		public ExtraDataForParameter Parameter_ExtraData { get; set; }
+		[JsonIgnore]
 		public ExtraDataForParameter CompareValue_ExtraData { get; set; }
 
 		[JsonIgnore]

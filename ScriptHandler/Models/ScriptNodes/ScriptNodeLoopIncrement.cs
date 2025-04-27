@@ -1,6 +1,7 @@
 ﻿using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Entities.Models;
+using Newtonsoft.Json;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using System.Collections.ObjectModel;
@@ -27,6 +28,7 @@ namespace ScriptHandler.Models.ScriptNodes
         public int Interval { get; set; }
         public TimeUnitsEnum IntervalUnite { get; set; }
 
+		[JsonIgnore]
 		public ExtraDataForParameter ExtraData { get; set; }
 
 

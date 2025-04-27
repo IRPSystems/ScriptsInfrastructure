@@ -861,7 +861,7 @@ namespace ScriptHandler.ViewModels
 
 			try
 			{
-
+				if(CurrentScript.Name == "Active Discharge") { }
 				bool isValid = _scriptValidation.Validate(CurrentScript);
 				if (!isValid)
 					return;
