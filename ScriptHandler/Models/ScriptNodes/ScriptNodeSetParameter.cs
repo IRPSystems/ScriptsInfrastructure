@@ -92,7 +92,6 @@ namespace ScriptHandler.Models.ScriptNodes
 		public BitwiseNumberDisplayData SwitchRelayValue { get; set; }
 		public int SwitchRelayChannel { get; set; }
 
-		[JsonIgnore]
 		public ExtraDataForParameter ExtraData { get; set; }
 
 		private DeviceParameterData _valueParameter;

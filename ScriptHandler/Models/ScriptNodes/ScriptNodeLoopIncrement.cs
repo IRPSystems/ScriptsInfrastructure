@@ -28,7 +28,6 @@ namespace ScriptHandler.Models.ScriptNodes
         public int Interval { get; set; }
         public TimeUnitsEnum IntervalUnite { get; set; }
 
-		[JsonIgnore]
 		public ExtraDataForParameter ExtraData { get; set; }
 
 

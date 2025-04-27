@@ -29,7 +29,6 @@ namespace ScriptHandler.Models
 
         public TimeUnitsEnum IntervalUnite;
 
-		[JsonIgnore]
 		public ExtraDataForParameter ExtraData { get; set; }
 
 

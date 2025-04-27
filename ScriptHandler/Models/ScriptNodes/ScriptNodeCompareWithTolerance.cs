@@ -103,9 +103,7 @@ namespace ScriptHandler.Models.ScriptNodes
 		public bool IsUseCompareValueFactor { get; set; }
 		public double CompareValueFactor { get; set; }
 
-		[JsonIgnore]
 		public ExtraDataForParameter Parameter_ExtraData { get; set; }
-		[JsonIgnore]
 		public ExtraDataForParameter CompareValue_ExtraData { get; set; }
 
 		public override string Description
