@@ -88,7 +88,7 @@
                 <TextBox Grid.Column="2" Grid.Row="4" Text="{Binding NI6002_NumofCounts}" />
                 
                 <TextBlock Grid.Column="0" Grid.Row="6" Text="Expected RPM" VerticalAlignment="Center" />
-                <TextBox Grid.Column="2" Grid.Row="6" Text="{Binding NI6002_ExpectedRPM}" />
+                <TextBox Grid.Column="2" Grid.Row="6" Text="{Binding Ni6002_ExpectedRPM}" />
             </Grid>
 
             <Grid Grid.Row="2" Name="grdParamPortNITherm" 
