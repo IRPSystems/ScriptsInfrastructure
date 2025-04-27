@@ -74,6 +74,25 @@ namespace ScriptHandler.Models.ScriptNodes
 
 
 		public BitwiseNumberDisplayData Payload { get; set; }
+		public int PayloadLength 
+		{
+			get => _payloadLength;
+			set
+			{
+				int prevpayloadLength = _payloadLength;
+				_payloadLength = value;
+				if (_payloadLength > 8)
+				{
+					_payloadLength = prevpayloadLength;
+					return;
+				}
+
+
+
+				if (Payload != null) 
+					Payload.MaxLength = value;
+			}
+		}
 
 		public Message Message { get; set; }
 
@@ -235,7 +254,8 @@ namespace ScriptHandler.Models.ScriptNodes
 
 		#region Fields
 
-		
+		private int _payloadLength;
+
 		#endregion Fields
 
 

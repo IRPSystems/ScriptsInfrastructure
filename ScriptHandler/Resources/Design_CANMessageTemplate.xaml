@@ -251,22 +251,28 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-
-
-
-                <!--<Grid Grid.Row="0" Name="grdPaload" >
+                <Grid Name="spHex" >
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="2" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="40"/>                        
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0" Text="0x" VerticalAlignment="Center" FontSize="14"/>
-                    <TextBox Grid.Column="2" Text="{Binding Payload.NumericValue, Converter={StaticResource HexUintConverter}}" />
-                </Grid>-->
 
-                <ContentControl Grid.Row="0" Name="spHex" 
-                                Content="{Binding Payload}" ContentTemplate="{StaticResource HexValueTemplate}"/>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="27"/>
+                    </Grid.RowDefinitions>
+
+                    <ContentControl Grid.Column="0" Grid.RowSpan="2"
+                                    Content="{Binding Payload}" 
+                                    ContentTemplate="{StaticResource HexValueTemplate}"/>
+
+                    <TextBlock Grid.Column="2" Grid.Row="1" Text="Payload length" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="4" Grid.Row="1" Text="{Binding PayloadLength}" />
+                </Grid>
 
                 <ContentControl Grid.Row="2" Name="spBinary" 
                                 Content="{Binding Payload}" ContentTemplate="{StaticResource BinaryTemplate}"/>
