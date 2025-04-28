@@ -451,11 +451,10 @@
 
             <CheckBox Grid.Row="0" Grid.Column="2"
                       Name="cb"
-                      Content="Use CRC and counter" 
+                      Content="Use CRC and/or counter" 
                       IsChecked="{Binding IsUseCRCandCounter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <Grid Grid.Row="2" Grid.ColumnSpan="3"
-                  Visibility="{Binding ElementName=cb, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid Grid.Row="2" Grid.ColumnSpan="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="5"/>
