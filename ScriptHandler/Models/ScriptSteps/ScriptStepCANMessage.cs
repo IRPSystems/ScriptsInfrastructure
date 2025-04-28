@@ -64,6 +64,7 @@ namespace ScriptHandler.Models
 
 
 		public ulong Payload { get; set; }
+		public int PayloadLength { get; set; }
 
 		[JsonIgnore]
 		public ulong NumOfMessages { get; set; }
@@ -223,7 +224,13 @@ namespace ScriptHandler.Models
 						}
 
 						lock (_lockPayloadObj)
-							(Communicator as MCU_Communicator).CanService.Send(_payloadBytes, NodeId, isExtendedId);
+						{
+							(Communicator as MCU_Communicator).CanService.Send(
+								_payloadBytes,
+								NodeId,
+								isExtendedId,
+								(byte)PayloadLength);
+						}
 
 						if(IsOneTime)
 						{
@@ -365,11 +372,12 @@ namespace ScriptHandler.Models
 			_messageEnd.Set();
 		}
 
-		public void UpdatePayload(ulong payload)
+		public void UpdatePayload(ulong payload, int payloadLendth)
 		{
 			lock(_lockPayloadObj)
 				_payloadBytes = BitConverter.GetBytes(payload);
 			Payload = BitConverter.ToUInt64(_payloadBytes, 0);
+			PayloadLength = payloadLendth;
 
 			if(_cancellationToken.IsCancellationRequested)
 			{
@@ -443,6 +451,7 @@ namespace ScriptHandler.Models
 			IsFreeStyle = (sourceNode as ScriptNodeCANMessage).IsFreeStyle;
 			DBCFilePath = (sourceNode as ScriptNodeCANMessage).DBCFilePath;
 			Payload = (sourceNode as ScriptNodeCANMessage).Payload.NumericValue;
+			PayloadLength = (sourceNode as ScriptNodeCANMessage).PayloadLength;
 			IDInProject = (sourceNode as ScriptNodeCANMessage).IDInProject;
 			Message = (sourceNode as ScriptNodeCANMessage).Message;
 

@@ -199,7 +199,7 @@
                                     IsReadOnly="True"/>
 
                 <DataGridTextColumn Header="Payload" 
-                                    Binding="{Binding Message.Payload, Converter={StaticResource NumberToBytesConverter}}" 
+                                    Binding="{Binding Message, Converter={StaticResource NumberToBytesConverter}}" 
                                     Width="150" 
                                     IsReadOnly="True"/>
 
