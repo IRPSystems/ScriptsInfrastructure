@@ -269,6 +269,7 @@ namespace ScriptHandler.Models.ScriptNodes
 
 			Payload = new BitwiseNumberDisplayData(is64Bit: true);
 			Payload.PropertyChanged += Payload_PropertyChangedEventHandler;
+			PayloadLength = 8;
 
 			IsHex = true;
 			IsOneTime = true;
@@ -277,6 +278,7 @@ namespace ScriptHandler.Models.ScriptNodes
 
 			IntervalUnite = TimeUnitsEnum.ms;
 			RepeateLengthTimeUnite = TimeUnitsEnum.sec;
+
 
 
 		}

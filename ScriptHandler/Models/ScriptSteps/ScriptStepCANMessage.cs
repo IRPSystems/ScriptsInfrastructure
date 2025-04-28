@@ -224,7 +224,13 @@ namespace ScriptHandler.Models
 						}
 
 						lock (_lockPayloadObj)
-							(Communicator as MCU_Communicator).CanService.Send(_payloadBytes, NodeId, isExtendedId);
+						{
+							(Communicator as MCU_Communicator).CanService.Send(
+								_payloadBytes,
+								NodeId,
+								isExtendedId,
+								(byte)PayloadLength);
+						}
 
 						if(IsOneTime)
 						{
