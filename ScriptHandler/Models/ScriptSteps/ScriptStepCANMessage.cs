@@ -64,6 +64,7 @@ namespace ScriptHandler.Models
 
 
 		public ulong Payload { get; set; }
+		public int PayloadLength { get; set; }
 
 		[JsonIgnore]
 		public ulong NumOfMessages { get; set; }
@@ -443,6 +444,7 @@ namespace ScriptHandler.Models
 			IsFreeStyle = (sourceNode as ScriptNodeCANMessage).IsFreeStyle;
 			DBCFilePath = (sourceNode as ScriptNodeCANMessage).DBCFilePath;
 			Payload = (sourceNode as ScriptNodeCANMessage).Payload.NumericValue;
+			PayloadLength = (sourceNode as ScriptNodeCANMessage).PayloadLength;
 			IDInProject = (sourceNode as ScriptNodeCANMessage).IDInProject;
 			Message = (sourceNode as ScriptNodeCANMessage).Message;
 
