@@ -71,8 +71,7 @@ namespace ScriptHandler.Models
 
 		public int IDInProject { get; set; }
 
-		[JsonIgnore]
-		public bool IsAddCRCCounter { get; set; }
+		public bool IsUseCRCandCounter { get; set; }
 
 		public Message Message { get; set; }
 
@@ -218,7 +217,7 @@ namespace ScriptHandler.Models
 						else if (numericTypes == NumericTypes.Integer || numericTypes == NumericTypes.Long)
 							isExtendedId = true;
 
-						if (IsAddCRCCounter)
+						if (IsUseCRCandCounter)
 						{
 							AddCrcAndCounter();
 						}
@@ -455,7 +454,7 @@ namespace ScriptHandler.Models
 			IDInProject = (sourceNode as ScriptNodeCANMessage).IDInProject;
 			Message = (sourceNode as ScriptNodeCANMessage).Message;
 
-
+			IsUseCRCandCounter = (sourceNode as ScriptNodeCANMessage).IsUseCRCandCounter;
 			IsCRCAvailable = (sourceNode as ScriptNodeCANMessage).IsCRCAvailable;
 			CRCFieldName = (sourceNode as ScriptNodeCANMessage).CRCFieldName;
 			IsCounterAvailable = (sourceNode as ScriptNodeCANMessage).IsCounterAvailable;
