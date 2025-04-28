@@ -445,7 +445,6 @@ namespace ScriptHandler.Models
 			Iterations = (sourceNode as ScriptNodeCANMessage).Iterations;
 			RepeateLengthTime = (sourceNode as ScriptNodeCANMessage).RepeateLengthTime;
 			RepeateLengthTimeUnite = (sourceNode as ScriptNodeCANMessage).RepeateLengthTimeUnite;
-			RepeateLengthIterations = (sourceNode as ScriptNodeCANMessage).RepeateLengthIterations;
 			IsDBCFile = (sourceNode as ScriptNodeCANMessage).IsDBCFile;
 			IsFreeStyle = (sourceNode as ScriptNodeCANMessage).IsFreeStyle;
 			DBCFilePath = (sourceNode as ScriptNodeCANMessage).DBCFilePath;

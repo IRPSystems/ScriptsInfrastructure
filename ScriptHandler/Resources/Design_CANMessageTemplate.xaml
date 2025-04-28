@@ -41,7 +41,9 @@
             </Grid>
 
             <TextBlock Name="tbIterations" Grid.Row="0" Grid.Column="0" Text="Iterations" VerticalAlignment="Center"/>
-            <TextBox Name="tbxIterations" Grid.Row="0" Grid.Column="2" Text="{Binding RepeateLengthIterations}"/>
+            <TextBox Name="tbxIterations" 
+                     Grid.Row="0" Grid.Column="2" 
+                     Text="{Binding Iterations}"/>
 
         </Grid>
 
