@@ -366,11 +366,12 @@ namespace ScriptHandler.Models
 			_messageEnd.Set();
 		}
 
-		public void UpdatePayload(ulong payload)
+		public void UpdatePayload(ulong payload, int payloadLendth)
 		{
 			lock(_lockPayloadObj)
 				_payloadBytes = BitConverter.GetBytes(payload);
 			Payload = BitConverter.ToUInt64(_payloadBytes, 0);
+			PayloadLength = payloadLendth;
 
 			if(_cancellationToken.IsCancellationRequested)
 			{
