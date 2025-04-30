@@ -194,7 +194,7 @@ namespace ScriptHandler.Models.ScriptNodes
 			{
 				_counterField = value;
 
-				if (_isSettingCounterFieldName == false)
+				if (_isSettingCounterFieldName)
 					return;
 
 				_isSettingCounterField = true;
@@ -399,10 +399,13 @@ namespace ScriptHandler.Models.ScriptNodes
 
 		#region Commands
 
+		[JsonIgnore]
 		public RelayCommand DBCFilePathOpenCommand { get; private set; }
+		[JsonIgnore]
 		public RelayCommand DBCFileLoadCommand { get; private set; }
 
 
+		[JsonIgnore]
 		public RelayCommand DeleteReplacedCanMessageCommand { get; private set; }
 
 		#endregion Commands
