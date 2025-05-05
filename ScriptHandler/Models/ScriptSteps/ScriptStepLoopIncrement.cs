@@ -75,8 +75,10 @@ namespace ScriptHandler.Models
                 EOLStepSummerysList.AddRange(_setParameter.EOLStepSummerysList);
                 if (!_setParameter.IsPass)
                 {
+                    IsError = true;
                     ErrorMessage += _setParameter.ErrorMessage;
                     IsPass = false;
+                    return;
                 }
 
 
@@ -98,6 +100,13 @@ namespace ScriptHandler.Models
                     value += IncrementValue;
                     _setParameter.Value = value;
                     _setParameter.Execute();
+                    if(!_setParameter.IsPass)
+                    {
+                        IsError = true;
+                        ErrorMessage += _setParameter.ErrorMessage;
+                        IsPass = false;
+                        return;
+                    }
                     _delayparameter.Execute();
                     counter--;
                 }
@@ -107,11 +116,6 @@ namespace ScriptHandler.Models
                 _stepsCounter++;
 
                 EOLStepSummerysList.AddRange(_setParameter.EOLStepSummerysList);
-                if (!_setParameter.IsPass)
-                {
-                    ErrorMessage += _setParameter.ErrorMessage;
-                    IsPass = false;
-                }
 
                 //_waitForGet.Reset();
                 //Communicator.SetParamValue(Parameter, value, GetValueCallback);
