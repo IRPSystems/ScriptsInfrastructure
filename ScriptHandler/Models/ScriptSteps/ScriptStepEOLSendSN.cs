@@ -91,6 +91,7 @@ namespace ScriptHandler.Models.ScriptSteps
                         this);
                     eolStepSummeryData.IsPass = IsPass;
                     eolStepSummeryData.ErrorDescription = ErrorMessage;
+                    IsError = true;
                     EOLStepSummerysList.Add(eolStepSummeryData);
                     return;
                 }
@@ -131,6 +132,7 @@ namespace ScriptHandler.Models.ScriptSteps
                             this);
                     eolStepSummeryData.IsPass = IsPass;
                     eolStepSummeryData.ErrorDescription = ErrorMessage;
+                    IsError = true;
                     EOLStepSummerysList.Add(eolStepSummeryData);
                     return;
                 }
@@ -148,6 +150,7 @@ namespace ScriptHandler.Models.ScriptSteps
                 if (!_saveValue.IsPass)
                 {
                     IsPass = false;
+                    IsError = true;
                     ErrorMessage = "Unable to save SN: " + _saveValue.ErrorMessage;
                     return;
                 }

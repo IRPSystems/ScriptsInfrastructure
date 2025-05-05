@@ -55,6 +55,7 @@ namespace ScriptHandler.Models
                 bool isOK = SendAndReceive(Parameter, out eolStepSummeryData, description);
                 if (!isOK)
                 {
+                    IsError = true;
                     PopulateSendResponseLog(UserTitle, this.GetType().Name, Parameter.Name, Parameter.DeviceType, Parameter.CommSendResLog);
                     return;
                 }
@@ -87,6 +88,7 @@ namespace ScriptHandler.Models
                     bool res = int.TryParse(Parameter.Value.ToString(), out value);
                     if (res == false)
                     {
+                        IsError = true;
                         IsPass = false;
                         ErrorMessage += "Recived value is not an integer value";
                         return;
@@ -99,7 +101,6 @@ namespace ScriptHandler.Models
                 if (bit != ComparedValue)
                 {
                     IsPass = false;
-
                     //string bitName = BitIndex.ToString();
                     //if (Parameter is IParamWithDropDown dropDown)
                         //bitName = $"\"{dropDown.DropDown[BitIndex].Name}\"";

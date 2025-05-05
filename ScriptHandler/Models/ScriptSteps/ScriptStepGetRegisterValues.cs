@@ -57,6 +57,7 @@ namespace ScriptHandler.Models
                 bool isOK = SendAndReceive(Parameter, out eolStepSummeryData, description);
                 if (!isOK)
                 {
+                    IsError = true;
                     PopulateSendResponseLog(UserTitle, this.GetType().Name, Parameter.Name, Parameter.DeviceType, Parameter.CommSendResLog);
                     return;
                 }
@@ -96,6 +97,7 @@ namespace ScriptHandler.Models
                 }
                 else
                 {
+                    IsError = true;
                     ErrorMessage = "Failed to parse the value";
                     return;
                 }

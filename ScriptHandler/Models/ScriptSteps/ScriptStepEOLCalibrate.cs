@@ -148,6 +148,7 @@ namespace ScriptHandler.Models.ScriptSteps
 								ErrorMessage = "Calibration Error \r\n"
 									  + _getValue.ErrorMessage;
 								IsError = true;
+								IsPass = false;
 								return;
 							}
 
