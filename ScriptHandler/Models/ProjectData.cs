@@ -41,7 +41,7 @@ namespace ScriptHandler.Models
 		[JsonIgnore]
 		public string ProjectPath { get; set; }
 
-		public bool IsChanged { get; set; }
+		public bool IsChangesExist { get; set; }
 
         #endregion Properties
 

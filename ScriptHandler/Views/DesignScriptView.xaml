@@ -403,7 +403,7 @@
 
             <controls:HeaderView Grid.Column="1" 
                                  Title="{Binding CurrentScript.Name}" 
-                                 HeaderBackground="{Binding IsChanged, Converter={StaticResource IsChangedToBackgroundConverter}}"
+                                 HeaderBackground="{Binding IsChangesExist, Converter={StaticResource IsChangedToBackgroundConverter}}"
                                  FontSize="24" 
                                  Margin="0,5"/>
 

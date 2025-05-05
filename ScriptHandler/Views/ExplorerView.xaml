@@ -102,7 +102,7 @@
 
 
         <Border Grid.Row="0"
-                    Background="{Binding Project.IsChanged, Converter={StaticResource IsChangedToBackgroundConverter}}"                     
+                    Background="{Binding Project.IsChangesExist, Converter={StaticResource IsChangedToBackgroundConverter}}"                     
                     Margin="0,1">
             
             <Grid>

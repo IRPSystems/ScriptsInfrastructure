@@ -334,7 +334,7 @@ namespace ScriptHandler.ViewModels
 
 			foreach (DesignScriptViewModel vm in DockingScript.DesignScriptsList)
 			{
-				vm.IsChanged = false;
+				vm.IsChangesExist = false;
 			}
 
 			Mouse.OverrideCursor = null;
@@ -356,7 +356,7 @@ namespace ScriptHandler.ViewModels
 				}
 
 				vm.Save();
-				vm.IsChanged = false;
+				vm.IsChangesExist = false;
 
 				LoggerService.Inforamtion(this, "Finished saving \"" + vm.CurrentScript.Name + "\"");
 			}
@@ -417,7 +417,7 @@ namespace ScriptHandler.ViewModels
 				
 
 				foreach(DesignScriptViewModel vm in Explorer.Project.ScriptsList)
-					vm.IsChanged = false;
+					vm.IsChangesExist = false;
 
 
 				if (invalidScriptData.ErrorsList.Count > 0)

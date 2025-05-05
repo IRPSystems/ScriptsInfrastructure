@@ -49,7 +49,7 @@ namespace ScriptHandler.ViewModels
 		public ScriptData CurrentScript { get; set; }
 
 		private bool _isChanged;
-		public bool IsChanged 
+		public bool IsChangesExist 
 		{
 			get => _isChanged;
 			set
@@ -59,7 +59,7 @@ namespace ScriptHandler.ViewModels
 
 				//ScriptIsChangedEvent?.Invoke(this, value);
 				_isChanged = value;
-				OnPropertyChanged(nameof(IsChanged));
+				OnPropertyChanged(nameof(IsChangesExist));
 			}
 		}
 
@@ -159,7 +159,7 @@ namespace ScriptHandler.ViewModels
 			LoggerService.Inforamtion(this, "Finished init of Design");
 
 			_isIgnoreChanges = false;
-			IsChanged = false;
+			IsChangesExist = false;
 
 		}
 
@@ -170,7 +170,7 @@ namespace ScriptHandler.ViewModels
 		private void Loaded()
 		{
 			if(!_isNew)
-				IsChanged = false;
+				IsChangesExist = false;
 
 			_isNew = false;
 		}
@@ -363,7 +363,7 @@ namespace ScriptHandler.ViewModels
 
 				}
 
-				IsChanged = true;
+				IsChangesExist = true;
 
 			}
 			catch(Exception ex) 
@@ -609,7 +609,7 @@ namespace ScriptHandler.ViewModels
 
 				MoveNode(ScriptNodeList[index - 1] as ScriptNodeBase);
 
-				IsChanged = true;
+				IsChangesExist = true;
 			}
 			catch (Exception ex)
 			{
@@ -638,7 +638,7 @@ namespace ScriptHandler.ViewModels
 
 				MoveNode(droppedOn);
 
-				IsChanged = true;
+				IsChangesExist = true;
 			}
 			catch(Exception ex) 
 			{
@@ -673,7 +673,7 @@ namespace ScriptHandler.ViewModels
 			LoggerService.Inforamtion(this, "New script created: " + CurrentScript.Name);
 			_isIgnoreChanges = false;
 
-			IsChanged = true;
+			IsChangesExist = true;
 		}
 
 		
@@ -820,7 +820,7 @@ namespace ScriptHandler.ViewModels
 				GetScriptDiagram();
 
 				_isIgnoreChanges = false;
-				IsChanged = false;
+				IsChangesExist = false;
 
 			}
 			catch(Exception ex) 
@@ -923,7 +923,7 @@ namespace ScriptHandler.ViewModels
 
 				ScriptIsSavedEvent?.Invoke(this, null);
 				_isIgnoreChanges = false;
-				IsChanged = false;
+				IsChangesExist = false;
 			}
 			catch (Exception ex)
 			{
@@ -1180,7 +1180,7 @@ namespace ScriptHandler.ViewModels
 
 			}
 
-			IsChanged = true;
+			IsChangesExist = true;
 		}
 
 		private void DeleteNextPass(ScriptNodeBase scriptNodeBase)
@@ -1189,7 +1189,7 @@ namespace ScriptHandler.ViewModels
 				scriptNodeBase.PassNext = null;
 
 			ScriptDiagram.DeletePassFialFromNode(scriptNodeBase, true);
-			IsChanged = true;
+			IsChangesExist = true;
 		}
 
 		private void DeleteNextFail(ScriptNodeBase scriptNodeBase)
@@ -1198,7 +1198,7 @@ namespace ScriptHandler.ViewModels
 				scriptNodeBase.FailNext = null;
 
 			ScriptDiagram.DeletePassFialFromNode(scriptNodeBase, false);
-			IsChanged = true;
+			IsChangesExist = true;
 		}
 
 		private void CopyScriptNode()
@@ -1225,7 +1225,7 @@ namespace ScriptHandler.ViewModels
 				GetScriptDiagram();
 
 			//LoggerService.Inforamtion(this, "Changed property: " + propertyName);
-			IsChanged = true;
+			IsChangesExist = true;
 		}
 
 		private void ListScript_PreviewKeyUp(KeyEventArgs e)
@@ -1238,7 +1238,7 @@ namespace ScriptHandler.ViewModels
 
 		public bool SaveIfNeeded()
 		{
-			if (IsChanged)
+			if (IsChangesExist)
 			{
 				MessageBoxResult result = MessageBox.Show(
 					"Changes you made to the script " + CurrentScript.Name + " are not saved.\r\nDo you wish to save?",
@@ -1360,7 +1360,7 @@ namespace ScriptHandler.ViewModels
 
 				ScriptDiagram.SetOffsetY(true);
 
-				IsChanged = true;
+				IsChangesExist = true;
 			}
 			catch (Exception ex)
 			{

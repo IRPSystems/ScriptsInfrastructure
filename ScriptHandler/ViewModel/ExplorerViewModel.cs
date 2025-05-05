@@ -94,7 +94,7 @@ namespace ScriptHandler.ViewModels
 			if (Project == null)
 				return false;
 
-			if (Project.IsChanged == false)
+			if (Project.IsChangesExist == false)
 				return false;
 
 			
@@ -173,7 +173,7 @@ namespace ScriptHandler.ViewModels
 
 			SaveProject();
 
-			Project.IsChanged = false;
+			Project.IsChangesExist = false;
 		}
 
 		public void OpenProject()
@@ -251,7 +251,7 @@ namespace ScriptHandler.ViewModels
 			}
 
 
-			Project.IsChanged = false;
+			Project.IsChangesExist = false;
 		}
 
 		
@@ -286,7 +286,7 @@ namespace ScriptHandler.ViewModels
 				var sz = JsonConvert.SerializeObject(Project, settings);
 				File.WriteAllText(Project.ProjectPath, sz);
 
-				Project.IsChanged = false;
+				Project.IsChangesExist = false;
 			}
 			catch(Exception ex) 
 			{
@@ -358,7 +358,7 @@ namespace ScriptHandler.ViewModels
 			vm.CurrentScript.ScriptPath = Path.Combine(Path.GetDirectoryName(Project.ProjectPath), vm.CurrentScript.Name + extension);
 			AddScriptPath(vm.CurrentScript, Project.ScriptsPathsList);
 			vm.Save(isTest);
-			Project.IsChanged = true;
+			Project.IsChangesExist = true;
 
 		}
 
@@ -448,7 +448,7 @@ namespace ScriptHandler.ViewModels
 			Project.ScriptsList.Add(vm);
 			vm.CurrentScript.ScriptPath = Path.Combine(Path.GetDirectoryName(Project.ProjectPath), vm.CurrentScript.Name + extension);
 			AddScriptPath(vm.CurrentScript, Project.ScriptsPathsList);
-			Project.IsChanged = true;
+			Project.IsChangesExist = true;
 
 		}
 
@@ -546,7 +546,7 @@ namespace ScriptHandler.ViewModels
 
 			PostLoadAllScripts();
 			SaveProject();
-			Project.IsChanged = false;
+			Project.IsChangesExist = false;
 
 			_isInDelete = false;
 		}
@@ -775,7 +775,7 @@ namespace ScriptHandler.ViewModels
 			if (!(listView.SelectedItem is DesignScriptViewModel vm))
 				return;
 
-			vm.IsChanged = false;
+			vm.IsChangesExist = false;
 
 			DesignScriptViewModel sameVM = null;
 			foreach (DesignScriptViewModel dockVm in DockingScript.DesignScriptsList)
@@ -795,7 +795,7 @@ namespace ScriptHandler.ViewModels
 			vm.GetScriptDiagram();
 
 
-			vm.IsChanged = false;
+			vm.IsChangesExist = false;
 		}
 
 		#region Script path
@@ -1159,7 +1159,7 @@ namespace ScriptHandler.ViewModels
 					Project);
 			}
 
-			Project.IsChanged = true;
+			Project.IsChangesExist = true;
 		}
 
 

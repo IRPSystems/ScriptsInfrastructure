@@ -56,7 +56,7 @@ namespace ScriptHandler.Services
 					flashingHandler,
 					ref usedCommunicatorsList) as GeneratedTestData;
 
-                testVM.IsChanged = false;
+                testVM.IsChangesExist = false;
 				generatedProject.TestsList.Add(generatedScript);
 			}
 
