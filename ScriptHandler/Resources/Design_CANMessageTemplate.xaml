@@ -41,7 +41,9 @@
             </Grid>
 
             <TextBlock Name="tbIterations" Grid.Row="0" Grid.Column="0" Text="Iterations" VerticalAlignment="Center"/>
-            <TextBox Name="tbxIterations" Grid.Row="0" Grid.Column="2" Text="{Binding RepeateLengthIterations}"/>
+            <TextBox Name="tbxIterations" 
+                     Grid.Row="0" Grid.Column="2" 
+                     Text="{Binding Iterations}"/>
 
         </Grid>
 
@@ -251,22 +253,28 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-
-
-
-                <!--<Grid Grid.Row="0" Name="grdPaload" >
+                <Grid Name="spHex" >
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="2" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="40"/>                        
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0" Text="0x" VerticalAlignment="Center" FontSize="14"/>
-                    <TextBox Grid.Column="2" Text="{Binding Payload.NumericValue, Converter={StaticResource HexUintConverter}}" />
-                </Grid>-->
 
-                <ContentControl Grid.Row="0" Name="spHex" 
-                                Content="{Binding Payload}" ContentTemplate="{StaticResource HexValueTemplate}"/>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="27"/>
+                    </Grid.RowDefinitions>
+
+                    <ContentControl Grid.Column="0" Grid.RowSpan="2"
+                                    Content="{Binding Payload}" 
+                                    ContentTemplate="{StaticResource HexValueTemplate}"/>
+
+                    <TextBlock Grid.Column="2" Grid.Row="1" Text="Payload length" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="4" Grid.Row="1" Text="{Binding PayloadLength}" />
+                </Grid>
 
                 <ContentControl Grid.Row="2" Name="spBinary" 
                                 Content="{Binding Payload}" ContentTemplate="{StaticResource BinaryTemplate}"/>
@@ -445,11 +453,10 @@
 
             <CheckBox Grid.Row="0" Grid.Column="2"
                       Name="cb"
-                      Content="Use CRC and counter" 
+                      Content="Use CRC and/or counter" 
                       IsChecked="{Binding IsUseCRCandCounter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <Grid Grid.Row="2" Grid.ColumnSpan="3"
-                  Visibility="{Binding ElementName=cb, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid Grid.Row="2" Grid.ColumnSpan="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="5"/>

@@ -20,6 +20,7 @@ namespace ScriptHandler.Models
 		public uint CANID { get; set; }
 
 		public ulong Payload { get; set; }
+		public int PayloadLength { get; set; }
 
 		public int Interval { get; set; }
 		public TimeUnitsEnum IntervalUnite { get; set; }
@@ -47,7 +48,7 @@ namespace ScriptHandler.Models
 
 			
 			if(IsChangePayload)
-				StepToUpdate.UpdatePayload(Payload);
+				StepToUpdate.UpdatePayload(Payload, PayloadLength);
 
 			if (IsChangeInterval)
 				StepToUpdate.UpdateInterval(Interval, IntervalUnite);
@@ -64,6 +65,7 @@ namespace ScriptHandler.Models
 			DevicesContainer devicesContainer)
 		{
 			Payload = (sourceNode as ScriptNodeCANMessageUpdate).Payload.NumericValue;
+			PayloadLength = (sourceNode as ScriptNodeCANMessageUpdate).PayloadLength;
 
 			CANID = (sourceNode as ScriptNodeCANMessageUpdate).CANID;
 

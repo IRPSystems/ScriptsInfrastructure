@@ -64,14 +64,14 @@ namespace ScriptHandler.Models
 
 
 		public ulong Payload { get; set; }
+		public int PayloadLength { get; set; }
 
 		[JsonIgnore]
 		public ulong NumOfMessages { get; set; }
 
 		public int IDInProject { get; set; }
 
-		[JsonIgnore]
-		public bool IsAddCRCCounter { get; set; }
+		public bool IsUseCRCandCounter { get; set; }
 
 		public Message Message { get; set; }
 
@@ -217,13 +217,19 @@ namespace ScriptHandler.Models
 						else if (numericTypes == NumericTypes.Integer || numericTypes == NumericTypes.Long)
 							isExtendedId = true;
 
-						if (IsAddCRCCounter)
+						if (IsUseCRCandCounter)
 						{
 							AddCrcAndCounter();
 						}
 
 						lock (_lockPayloadObj)
-							(Communicator as MCU_Communicator).CanService.Send(_payloadBytes, NodeId, isExtendedId);
+						{
+							(Communicator as MCU_Communicator).CanService.Send(
+								_payloadBytes,
+								NodeId,
+								isExtendedId,
+								(byte)PayloadLength);
+						}
 
 						if(IsOneTime)
 						{
@@ -365,11 +371,12 @@ namespace ScriptHandler.Models
 			_messageEnd.Set();
 		}
 
-		public void UpdatePayload(ulong payload)
+		public void UpdatePayload(ulong payload, int payloadLendth)
 		{
 			lock(_lockPayloadObj)
 				_payloadBytes = BitConverter.GetBytes(payload);
 			Payload = BitConverter.ToUInt64(_payloadBytes, 0);
+			PayloadLength = payloadLendth;
 
 			if(_cancellationToken.IsCancellationRequested)
 			{
@@ -438,15 +445,15 @@ namespace ScriptHandler.Models
 			Iterations = (sourceNode as ScriptNodeCANMessage).Iterations;
 			RepeateLengthTime = (sourceNode as ScriptNodeCANMessage).RepeateLengthTime;
 			RepeateLengthTimeUnite = (sourceNode as ScriptNodeCANMessage).RepeateLengthTimeUnite;
-			RepeateLengthIterations = (sourceNode as ScriptNodeCANMessage).RepeateLengthIterations;
 			IsDBCFile = (sourceNode as ScriptNodeCANMessage).IsDBCFile;
 			IsFreeStyle = (sourceNode as ScriptNodeCANMessage).IsFreeStyle;
 			DBCFilePath = (sourceNode as ScriptNodeCANMessage).DBCFilePath;
 			Payload = (sourceNode as ScriptNodeCANMessage).Payload.NumericValue;
+			PayloadLength = (sourceNode as ScriptNodeCANMessage).PayloadLength;
 			IDInProject = (sourceNode as ScriptNodeCANMessage).IDInProject;
 			Message = (sourceNode as ScriptNodeCANMessage).Message;
 
-
+			IsUseCRCandCounter = (sourceNode as ScriptNodeCANMessage).IsUseCRCandCounter;
 			IsCRCAvailable = (sourceNode as ScriptNodeCANMessage).IsCRCAvailable;
 			CRCFieldName = (sourceNode as ScriptNodeCANMessage).CRCFieldName;
 			IsCounterAvailable = (sourceNode as ScriptNodeCANMessage).IsCounterAvailable;

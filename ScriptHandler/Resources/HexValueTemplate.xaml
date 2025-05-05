@@ -15,7 +15,10 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Text="{Binding Index}" HorizontalAlignment="Center" />
-            <TextBox Grid.Row="1" Text="{Binding Value, Converter={StaticResource HexUintConverter}}" TabIndex="{Binding Index}">
+            <TextBox Grid.Row="1" 
+                     Text="{Binding Value, Converter={StaticResource HexUintConverter}}" 
+                     TabIndex="{Binding Index}"
+                     IsReadOnly="{Binding IsReadOnly}">
                 
                 <i:Interaction.Triggers>
 
@@ -34,8 +37,18 @@
                     </i:EventTrigger>
 
                 </i:Interaction.Triggers>
-                
-                
+
+                <TextBox.Resources>
+                    <Style TargetType="TextBox" BasedOn="{StaticResource MahApps.Styles.TextBox}">
+                        <Style.Triggers>
+
+                            <DataTrigger Binding="{Binding IsReadOnly}" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Gray7}" />
+                            </DataTrigger>
+                            
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Resources>
                 
             </TextBox>
 

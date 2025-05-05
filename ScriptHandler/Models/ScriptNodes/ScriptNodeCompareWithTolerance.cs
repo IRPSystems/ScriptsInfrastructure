@@ -2,6 +2,7 @@
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Entities.Models;
+using Newtonsoft.Json;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using System.Collections.ObjectModel;
@@ -101,7 +102,6 @@ namespace ScriptHandler.Models.ScriptNodes
 
 		public bool IsUseCompareValueFactor { get; set; }
 		public double CompareValueFactor { get; set; }
-
 
 		public ExtraDataForParameter Parameter_ExtraData { get; set; }
 		public ExtraDataForParameter CompareValue_ExtraData { get; set; }

@@ -219,7 +219,9 @@ namespace ScriptRunner.Services
 					ClearProjectScriptsState(projScript.ScriptItemsList);
 				}
 			}
-			soScript.IsPass = null;
+
+			if(soScript != null) 
+				soScript.IsPass = null;
 
 			Run(_projectsList,
 				soScript,

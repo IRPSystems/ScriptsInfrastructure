@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 using System;
+using ScriptHandler.Models;
 
 namespace ScriptRunner.Converter
 {
@@ -10,12 +11,12 @@ namespace ScriptRunner.Converter
 
 		object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (!(value is ulong payload))
+			if (!(value is ScriptStepCANMessage message))
 				return value;
 
-			byte[] payloadBytes = BitConverter.GetBytes(payload);
+			byte[] payloadBytes = BitConverter.GetBytes(message.Payload);
 			string payloadStr = "";
-			for (int i = 0; i < payloadBytes.Length; i++)
+			for (int i = 0; i < message.PayloadLength; i++)
 			{
 				payloadStr += payloadBytes[i].ToString("X2") + " ";
 			}

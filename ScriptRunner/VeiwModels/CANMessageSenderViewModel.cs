@@ -38,7 +38,7 @@ namespace ScriptRunner.ViewModels
 				{
 					_isUseCRCCounter = value;
 					if (Message != null)
-						Message.IsAddCRCCounter = value;
+						Message.IsUseCRCandCounter = value;
 				}
 			}
 
@@ -255,7 +255,7 @@ namespace ScriptRunner.ViewModels
 			{
 				Message = canMessage,
 				State = CANMessageForSenderStateEnum.Sending,
-				IsUseCRCCounter = canMessage.IsAddCRCCounter,
+				IsUseCRCCounter = canMessage.IsUseCRCandCounter,
 			};
 			CANMessagesList.Add(data);
 

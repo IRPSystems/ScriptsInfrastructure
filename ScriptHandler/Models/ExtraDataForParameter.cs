@@ -7,6 +7,7 @@ using DeviceCommunicators.NI_6002;
 using DeviceCommunicators.NumatoGPIO;
 using DeviceCommunicators.ZimmerPowerMeter;
 using Entities.Models;
+using Newtonsoft.Json;
 using Syncfusion.Windows.Shared;
 using System;
 
@@ -16,6 +17,7 @@ namespace ScriptHandler.Models
 	{
 
 
+		[JsonIgnore]
 		public DeviceParameterData Parameter { get; set; }
 
         public int Ni6002_ExpectedRPM { get; set; }

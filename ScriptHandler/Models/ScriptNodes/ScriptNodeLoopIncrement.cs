@@ -1,6 +1,7 @@
 ﻿using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Entities.Models;
+using Newtonsoft.Json;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using System.Collections.ObjectModel;

@@ -74,6 +74,25 @@ namespace ScriptHandler.Models.ScriptNodes
 
 
 		public BitwiseNumberDisplayData Payload { get; set; }
+		public int PayloadLength 
+		{
+			get => _payloadLength;
+			set
+			{
+				int prevpayloadLength = _payloadLength;
+				_payloadLength = value;
+				if (_payloadLength > 8)
+				{
+					_payloadLength = prevpayloadLength;
+					return;
+				}
+
+
+
+				if (Payload != null) 
+					Payload.MaxLength = value;
+			}
+		}
 
 		public Message Message { get; set; }
 
@@ -175,7 +194,7 @@ namespace ScriptHandler.Models.ScriptNodes
 			{
 				_counterField = value;
 
-				if (_isSettingCounterFieldName == false)
+				if (_isSettingCounterFieldName)
 					return;
 
 				_isSettingCounterField = true;
@@ -235,7 +254,8 @@ namespace ScriptHandler.Models.ScriptNodes
 
 		#region Fields
 
-		
+		private int _payloadLength;
+
 		#endregion Fields
 
 
@@ -249,6 +269,7 @@ namespace ScriptHandler.Models.ScriptNodes
 
 			Payload = new BitwiseNumberDisplayData(is64Bit: true);
 			Payload.PropertyChanged += Payload_PropertyChangedEventHandler;
+			PayloadLength = 8;
 
 			IsHex = true;
 			IsOneTime = true;
@@ -257,6 +278,7 @@ namespace ScriptHandler.Models.ScriptNodes
 
 			IntervalUnite = TimeUnitsEnum.ms;
 			RepeateLengthTimeUnite = TimeUnitsEnum.sec;
+
 
 
 		}
@@ -377,10 +399,13 @@ namespace ScriptHandler.Models.ScriptNodes
 
 		#region Commands
 
+		[JsonIgnore]
 		public RelayCommand DBCFilePathOpenCommand { get; private set; }
+		[JsonIgnore]
 		public RelayCommand DBCFileLoadCommand { get; private set; }
 
 
+		[JsonIgnore]
 		public RelayCommand DeleteReplacedCanMessageCommand { get; private set; }
 
 		#endregion Commands

@@ -6,6 +6,7 @@ using DeviceCommunicators.SwitchRelay32;
 using DeviceHandler.Models;
 using Entities.Enums;
 using Entities.Models;
+using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
 using System;
 using System.Collections.ObjectModel;
