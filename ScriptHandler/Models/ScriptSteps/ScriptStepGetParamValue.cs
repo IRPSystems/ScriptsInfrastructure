@@ -1,16 +1,19 @@
 ﻿using DeviceCommunicators.Enums;
 using DeviceCommunicators.General;
+using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceCommunicators.NI_6002;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
-using DeviceHandler.Models.DeviceFullDataModels;
 using Entities.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
+using ScriptHandler.Services;
 using Services.Services;
 using System;
 using System.Collections.ObjectModel;
+using System.Data.Common;
+using System.Reflection.Metadata;
 using System.Threading;
 using System.Windows;
 
@@ -18,6 +21,7 @@ namespace ScriptHandler.Models
 {
 	public class ScriptStepGetParamValue : ScriptStepBase, IScriptStepWithCommunicator, IScriptStepWithParameter
 	{
+		#region Properties and Fileds
 
 		public DeviceParameterData Parameter { get; set; }
 		[JsonIgnore]
@@ -31,6 +35,10 @@ namespace ScriptHandler.Models
 
 		protected bool _isErrorOccured;
 
+		#endregion Properties and Fileds
+
+		#region Constructor
+
 		public ScriptStepGetParamValue()
 		{
 			try
@@ -42,6 +50,10 @@ namespace ScriptHandler.Models
 			}
 			catch { }
         }
+
+		#endregion Constructor
+
+		#region Methods
 
 		public bool SendAndReceive(
 			out EOLStepSummeryData eolStepSummery,
@@ -87,31 +99,22 @@ namespace ScriptHandler.Models
 				ErrorMessage = "Failed to get the parameter value.\r\n" +
 					"\tParameter: " + parameter + "\r\n\r\n";
 
-				if (parameter is ICalculatedParamete calculated)
+				bool? isOK = HandleCalculatedParam(
+					parameter,
+					eolStepSummery);
+				if (isOK != null)
+					return isOK == true;
+
+				WaitForDbcMessageService waitForDbcMessageService = new WaitForDbcMessageService();
+				isOK = waitForDbcMessageService.Run(parameter, Communicator as MCU_Communicator);
+				if (isOK != null)
 				{
-					calculated.DevicesList = DevicesContainer.DevicesFullDataList;
+					IsPass = isOK == true;
 
-					ErrorMessage = "Failed to get the calculated parameter value.\r\n" +
-						"\tParameter: " + parameter + "\r\n\r\n";
+					eolStepSummery.IsPass = IsPass;
+					eolStepSummery.ErrorDescription = ErrorMessage;
 
-					calculated.Calculate();
-					if (parameter.Value != null)
-					{
-
-						//if(parameter.IsAbsolute)
-						//	parameter.Value = Math.Abs((double)parameter.Value);
-						eolStepSummery.TestValue = (double)parameter.Value;
-						eolStepSummery.IsPass = true;
-						IsPass = true;
-						return true;
-					}
-					else
-					{
-						eolStepSummery.IsPass = false;
-						eolStepSummery.ErrorDescription = ErrorMessage;
-						IsPass = false;
-						return false;
-					}
+					return IsPass;
 				}
 
 
@@ -126,7 +129,7 @@ namespace ScriptHandler.Models
 				bool isNotTimeout = _waitForGet.WaitOne(timeOut);
 				_waitForGet.Reset();
 
-				if (!isNotTimeout)
+				if (!isNotTimeout) // Timeout occored
 				{
 					IsPass = false;
 					ErrorMessage += "Communication timeout.";
@@ -142,31 +145,9 @@ namespace ScriptHandler.Models
 
 				if (parameter.Value != null)
 				{
-					double? value = null;
-					if (parameter.Value is string str)
-					{
-						if(parameter is IParamWithDropDown dropDown &&
-							dropDown.DropDown != null && dropDown.DropDown.Count > 0)
-						{
-							DropDownParamData dd = dropDown.DropDown.Find((d) => d.Name == str);
-							if (dd != null)
-								str = dd.Value;
-						}
-
-						double d;
-						bool res = double.TryParse(str, out d);
-						if (res)
-							value = d;
-					}
-					else
-					{
-						double d;
-						bool res = double.TryParse(parameter.Value.ToString(), out d);
-						if (res)
-							value = d;
-					}
-					if (value != null) 
-						eolStepSummery.TestValue = value;
+					ExtractParameterValue(
+						parameter,
+						eolStepSummery);
 				}
 
 				eolStepSummery.IsPass = true;
@@ -183,6 +164,68 @@ namespace ScriptHandler.Models
 				return false;
 			}
         }
+
+		private void ExtractParameterValue(
+			DeviceParameterData parameter,
+			EOLStepSummeryData eolStepSummery)
+		{
+			double? value = null;
+			if (parameter.Value is string str)
+			{
+				if (parameter is IParamWithDropDown dropDown &&
+					dropDown.DropDown != null && dropDown.DropDown.Count > 0)
+				{
+					DropDownParamData dd = dropDown.DropDown.Find((d) => d.Name == str);
+					if (dd != null)
+						str = dd.Value;
+				}
+
+				double d;
+				bool res = double.TryParse(str, out d);
+				if (res)
+					value = d;
+			}
+			else
+			{
+				double d;
+				bool res = double.TryParse(parameter.Value.ToString(), out d);
+				if (res)
+					value = d;
+			}
+			if (value != null)
+				eolStepSummery.TestValue = value;
+		}
+
+		private bool? HandleCalculatedParam(
+			DeviceParameterData parameter,
+			EOLStepSummeryData eolStepSummery)
+		{
+			if (!(parameter is ICalculatedParamete calculated))
+				return null;
+
+			calculated.DevicesList = DevicesContainer.DevicesFullDataList;
+
+			ErrorMessage = "Failed to get the calculated parameter value.\r\n" +
+				"\tParameter: " + parameter + "\r\n\r\n";
+
+			calculated.Calculate();
+			if (parameter.Value != null)
+			{
+				eolStepSummery.TestValue = (double)parameter.Value;
+				eolStepSummery.IsPass = true;
+				IsPass = true;
+				return true;
+			}
+			else
+			{
+				eolStepSummery.IsPass = false;
+				eolStepSummery.ErrorDescription = ErrorMessage;
+				IsPass = false;
+				return false;
+			}
+		}
+
+		
 
 		private string GetOnlineDescription()
 		{
@@ -241,5 +284,7 @@ namespace ScriptHandler.Models
 		{
 
 		}
+
+		#endregion Methods
 	}
 }
