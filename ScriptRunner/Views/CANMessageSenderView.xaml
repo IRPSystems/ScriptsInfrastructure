@@ -22,9 +22,9 @@
 
                 <Grid>
                     <Ellipse Name="elps"
-                 Stroke="{DynamicResource MahApps.Brushes.Gray1}"
-                 Fill="{DynamicResource MahApps.Brushes.Gray7}" 
-                 Height="20" Width="20"/>
+                             Stroke="{DynamicResource MahApps.Brushes.Gray1}"
+                             Fill="{DynamicResource MahApps.Brushes.Gray7}" 
+                             Height="20" Width="20"/>
                 </Grid>
 
                 <DataTemplate.Triggers>
@@ -199,9 +199,17 @@
                                     IsReadOnly="True"/>
 
                 <DataGridTextColumn Header="Payload" 
-                                    Binding="{Binding Message, Converter={StaticResource NumberToBytesConverter}}" 
                                     Width="150" 
-                                    IsReadOnly="True"/>
+                                    IsReadOnly="True">
+
+                    <DataGridTextColumn.Binding>
+                        <MultiBinding Converter="{StaticResource NumberToBytesConverter}">
+                            <Binding Path="Message" />
+                            <Binding Path="Message.Payload"/>
+                        </MultiBinding>
+                    </DataGridTextColumn.Binding>
+
+                </DataGridTextColumn>
 
                 <DataGridTextColumn Header="" 
                                     Binding="{Binding Message.NumOfMessages}" 

@@ -6,13 +6,12 @@ using ScriptHandler.Models;
 
 namespace ScriptRunner.Converter
 {
-	public class NumberToBytesConverter : IValueConverter
+	public class NumberToBytesConverter : IMultiValueConverter
 	{
-
-		object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
-			if (!(value is ScriptStepCANMessage message))
-				return value;
+			if (!(values[0] is ScriptStepCANMessage message))
+				return null;
 
 			byte[] payloadBytes = BitConverter.GetBytes(message.Payload);
 			string payloadStr = "";
@@ -24,9 +23,9 @@ namespace ScriptRunner.Converter
 			return payloadStr;
 		}
 
-		object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
 		{
-			return string.Empty;
+			return null;
 		}
 	}
 }

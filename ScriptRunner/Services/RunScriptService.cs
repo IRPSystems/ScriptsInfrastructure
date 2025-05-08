@@ -15,6 +15,7 @@ using DeviceHandler.Models;
 using DeviceCommunicators.Models;
 using System.Windows.Input;
 using ScriptRunner.ViewModels;
+using System.Threading.Tasks;
 
 namespace ScriptRunner.Services
 {
@@ -283,8 +284,11 @@ namespace ScriptRunner.Services
 			if(CurrentScript.CurrentScript != null)
 				MainScriptLogger.Save(_testName);
 
-			MainScriptLogger.Stop();
-
+			Task.Run(() =>
+			{
+				MainScriptLogger.Stop();
+			});
+			
 			LoggerService.Inforamtion(this, "---- End running a script");
 			ScriptEndedEvent?.Invoke(stopMode);
 		}
