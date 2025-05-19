@@ -25,13 +25,38 @@ namespace ScriptHandler.Models
 {
 	public class ScriptStepCompare: ScriptStepGetParamValue, IScriptStepCompare
 	{
-		public object ValueLeft { get; set; }
-		public object ValueRight { get; set; }
+		private DeviceParameterData _valueLeft;
+		public DeviceParameterData ValueLeft
+		{
+			get => _valueLeft;
+			set
+			{
+				_valueLeft = value;
+				if (Parameter_ExtraData != null)
+					Parameter_ExtraData.Parameter = value;
+				OnPropertyChanged(nameof(Parameter));
+			}
+		}
+		private object _valueRight;
+		public object ValueRight
+		{
+			get => _valueRight;
+			set
+			{
+				_valueRight = value;
+				if (_valueRight is DeviceParameterData && CompareValue_ExtraData != null)
+					CompareValue_ExtraData.Parameter = _valueRight as DeviceParameterData;
+				OnPropertyChanged(nameof(ValueRight));
+			}
+		}
 
 		public ComparationTypesEnum Comparation { get; set; }
 
 		public bool IsUseAverage { get; set; }
 		public int AverageOfNRead { get; set; }
+
+		public ExtraDataForParameter Parameter_ExtraData { get; set; }
+		public ExtraDataForParameter CompareValue_ExtraData { get; set; }
 
 		public ScriptStepCompare()
 		{
@@ -65,7 +90,7 @@ namespace ScriptHandler.Models
 					double sum = 0;
 					for (int i = 0; i < AverageOfNRead; i++)
 					{
-						object val = GetCompareParaValue(paramLeft);
+						object val = GetCompareParaValue(true, paramLeft);
 
 						if (val == null || IsPass == false)
 						{
@@ -122,7 +147,7 @@ namespace ScriptHandler.Models
 				{
 					compareReference = paramRight.DeviceType.ToString();
 
-					object val = GetCompareParaValue(paramRight);
+					object val = GetCompareParaValue(false, paramRight);
 					if (val == null || IsPass == false)
 					{
 						IsError = null;
@@ -236,6 +261,7 @@ namespace ScriptHandler.Models
 		}
 
 		private object GetCompareParaValue(
+			bool isParameter,
 			DeviceParameterData parameter)
 		{
 			Parameter = parameter;
@@ -245,6 +271,17 @@ namespace ScriptHandler.Models
 				DeviceFullData deviceFullData =
 					DevicesContainer.DevicesFullDataList.ToList().Find((d) => d.Device.DeviceType == parameter.DeviceType);
 				Communicator = deviceFullData.DeviceCommunicator;
+			}
+
+			if (isParameter)
+			{
+				Parameter_ExtraData.Parameter = parameter;
+				Parameter_ExtraData.SetToParameter(parameter);
+			}
+			else
+			{
+				CompareValue_ExtraData.Parameter = parameter;
+				CompareValue_ExtraData.SetToParameter(parameter);
 			}
 
 			string description = Description;
@@ -290,9 +327,14 @@ namespace ScriptHandler.Models
 			GenerateProjectService generateService,
 			DevicesContainer devicesContainer)
 		{
-			ValueLeft = (sourceNode as ScriptNodeCompare).ValueLeft;
-			ValueRight = (sourceNode as ScriptNodeCompare).ValueRight;
+			ValueLeft = (sourceNode as ScriptNodeCompare).Parameter;
+			ValueRight = (sourceNode as ScriptNodeCompare).CompareValue;
 			Comparation = (sourceNode as ScriptNodeCompare).Comparation;
+
+
+			Parameter_ExtraData = new ExtraDataForParameter((sourceNode as ScriptNodeCompare).Parameter_ExtraData);
+			CompareValue_ExtraData = new ExtraDataForParameter((sourceNode as ScriptNodeCompare).CompareValue_ExtraData);
+
 
 
 			IsUseAverage = (sourceNode as ScriptNodeCompare).IsUseAverage;

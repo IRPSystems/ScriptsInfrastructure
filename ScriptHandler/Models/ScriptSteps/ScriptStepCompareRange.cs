@@ -23,7 +23,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		public object Value { get; set; }
 
-		public object ValueLeft { get; set; }
+		public DeviceParameterData ValueLeft { get; set; }
 
 		public object ValueRight { get; set; }
 
@@ -394,7 +394,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			DevicesContainer devicesContainer)
 		{
 			Value = (sourceNode as ScriptNodeCompareRange).Value;
-			ValueLeft = (sourceNode as ScriptNodeCompareRange).ValueLeft;
+			ValueLeft = (sourceNode as ScriptNodeCompareRange).ValueLeft as DeviceParameterData;
 			ValueRight = (sourceNode as ScriptNodeCompareRange).ValueRight;
 			Comparation1 = (sourceNode as ScriptNodeCompareRange).Comparation1;
 			Comparation2 = (sourceNode as ScriptNodeCompareRange).Comparation2;

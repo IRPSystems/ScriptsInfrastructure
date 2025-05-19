@@ -18,21 +18,22 @@ namespace ScriptHandler.Models.ScriptNodes
 	{
 		#region Properties and Fields
 
-		private DeviceParameterData _valueLeft;
-		public DeviceParameterData ValueLeft 
+		private DeviceParameterData _parameter;
+		public DeviceParameterData Parameter 
 		{
-			get => _valueLeft;
+			get => _parameter;
 			set
 			{
-				_valueLeft = value;
-				OnPropertyChanged("ValueLeft");
+				_parameter = value;
+				Parameter_ExtraData.Parameter = value;
+				OnPropertyChanged(nameof(Parameter));
 			}
 		}
 
-		private object _valueRight;
-		public object ValueRight 
+		private object _compareValue;
+		public object CompareValue 
 		{
-			get => _valueRight;
+			get => _compareValue;
 			set
 			{
 				if(value is string str)
@@ -43,8 +44,12 @@ namespace ScriptHandler.Models.ScriptNodes
 						value = d;
 				}
 
-				_valueRight = value;
-				OnPropertyChanged("ValueRight");
+				_compareValue = value;
+				if (_compareValue is DeviceParameterData)
+					CompareValue_ExtraData.Parameter = _compareValue as DeviceParameterData;
+				else
+					CompareValue_ExtraData.Parameter = null;
+				OnPropertyChanged(nameof(CompareValue));
 			}
 
 		}
@@ -55,7 +60,7 @@ namespace ScriptHandler.Models.ScriptNodes
 			get => _valueDropDwonIndex;
 			set 
 			{
-				if (!(ValueLeft is IParamWithDropDown dropDown))
+				if (!(Parameter is IParamWithDropDown dropDown))
 					return;
 
 				_valueDropDwonIndex = value;
@@ -66,35 +71,35 @@ namespace ScriptHandler.Models.ScriptNodes
 				int iVal;
 				bool res = int.TryParse(dropDown.DropDown[_valueDropDwonIndex].Value, out iVal);
 				if (res)
-					ValueRight = iVal;
+					CompareValue = iVal;
 
 				OnPropertyChanged("ValueDropDwonIndex");
 				OnPropertyChanged("Description");
 			}
 		}
 
-		private int _valueDropDwonIndex_NumatoGPIOPort;
-		public int ValueDropDwonIndex_NumatoGPIOPort
-		{
-			get => _valueDropDwonIndex_NumatoGPIOPort;
-			set
-			{
-				if (!(ValueLeft is NumatoGPIO_ParamData numatoGPIOParamData))
-					return;
+		//private int _valueDropDwonIndex_NumatoGPIOPort;
+		//public int ValueDropDwonIndex_NumatoGPIOPort
+		//{
+		//	get => _valueDropDwonIndex_NumatoGPIOPort;
+		//	set
+		//	{
+		//		if (!(ValueLeft is NumatoGPIO_ParamData numatoGPIOParamData))
+		//			return;
 
-				_valueDropDwonIndex_NumatoGPIOPort = value;
+		//		_valueDropDwonIndex_NumatoGPIOPort = value;
 
-				if (_valueDropDwonIndex_NumatoGPIOPort < 0 || _valueDropDwonIndex_NumatoGPIOPort >= numatoGPIOParamData.DropDown.Count)
-					return;
+		//		if (_valueDropDwonIndex_NumatoGPIOPort < 0 || _valueDropDwonIndex_NumatoGPIOPort >= numatoGPIOParamData.DropDown.Count)
+		//			return;
 
-				int iVal;
-				bool res = int.TryParse(numatoGPIOParamData.DropDown[_valueDropDwonIndex_NumatoGPIOPort].Value, out iVal);
-				if (res)
-					numatoGPIOParamData.Io_port = iVal;
+		//		int iVal;
+		//		bool res = int.TryParse(numatoGPIOParamData.DropDown[_valueDropDwonIndex_NumatoGPIOPort].Value, out iVal);
+		//		if (res)
+		//			numatoGPIOParamData.Io_port = iVal;
 
-				OnPropertyChanged("ValueDropDwonIndex_NumatoGPIOPort");
-			}
-		}
+		//		OnPropertyChanged("ValueDropDwonIndex_NumatoGPIOPort");
+		//	}
+		//}
 
 		private ComparationTypesEnum _comparation;
 		public ComparationTypesEnum Comparation 
@@ -110,12 +115,15 @@ namespace ScriptHandler.Models.ScriptNodes
 		public bool IsUseAverage { get; set; }
 		public int AverageOfNRead { get; set; }
 
+		public ExtraDataForParameter Parameter_ExtraData { get; set; }
+		public ExtraDataForParameter CompareValue_ExtraData { get; set; }
+
 		public override string Description 
 		{
 			get
 			{
 				string stepDescription = "Compare ";
-				if (_valueLeft is DeviceParameterData deviceParameter)
+				if (_parameter is DeviceParameterData deviceParameter)
 				{
 					stepDescription += " " + deviceParameter;
 				}
@@ -123,10 +131,10 @@ namespace ScriptHandler.Models.ScriptNodes
 				stepDescription += " " + GetComperationDescription(Comparation);
 
 				stepDescription += " ";// + _valueRight;
-				if (_valueRight is DeviceParameterData param)
+				if (_compareValue is DeviceParameterData param)
 					stepDescription += param;
 				else
-					stepDescription += _valueRight;
+					stepDescription += _compareValue;
 
 				stepDescription += " - ID:" + ID;
 				return stepDescription;
@@ -144,6 +152,9 @@ namespace ScriptHandler.Models.ScriptNodes
 			Name = "Compare";
 			Comparation = ComparationTypesEnum.Equal;
 			_valueDropDwonIndex = -1;
+
+			Parameter_ExtraData = new ExtraDataForParameter();
+			CompareValue_ExtraData = new ExtraDataForParameter();
 		}
 
 		#endregion Constructor
@@ -168,24 +179,24 @@ namespace ScriptHandler.Models.ScriptNodes
 			DevicesContainer devicesContainer,
 			IScript currentScript)
 		{
-			if (ValueLeft is DeviceParameterData compareParamLeft)
+			if (Parameter is DeviceParameterData compareParamLeft)
 			{
 				DeviceParameterData data = GetParameter(
 					compareParamLeft.DeviceType,
 					compareParamLeft,
 					devicesContainer);
 				if (data != null)
-					ValueLeft = data;
+					Parameter = data;
 			}
 
-			if (ValueRight is DeviceParameterData compareParamRight)
+			if (CompareValue is DeviceParameterData compareParamRight)
 			{
 				DeviceParameterData data = GetParameter(
 					compareParamRight.DeviceType,
 					compareParamRight,
 					devicesContainer);
 				if (data != null)
-					ValueRight = data;
+					CompareValue = data;
 			}
 		}
 
@@ -193,13 +204,26 @@ namespace ScriptHandler.Models.ScriptNodes
 			DevicesContainer devicesContainer,
 			ObservableCollection<InvalidScriptItemData> errorsList)
 		{
-			if (ValueLeft == null)
+			if (Parameter == null)
 				return true;
 
-			if (ValueRight == null)
+			if (CompareValue == null)
 				return true;
 
 			return false;
+		}
+
+		public override object Clone()
+		{
+			ScriptNodeCompare compare = MemberwiseClone() as
+				ScriptNodeCompare;
+
+			compare.CompareValue_ExtraData = this.CompareValue_ExtraData.Clone()
+				as ExtraDataForParameter;
+			compare.Parameter_ExtraData = this.Parameter_ExtraData.Clone()
+				as ExtraDataForParameter;
+
+			return compare;
 		}
 
 		#endregion Methods

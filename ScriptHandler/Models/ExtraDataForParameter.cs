@@ -1,5 +1,6 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
+using DeviceCommunicators.DBC;
 using DeviceCommunicators.Enums;
 using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
@@ -83,6 +84,10 @@ namespace ScriptHandler.Models
 			}
 		}
 
+
+
+		public int DBCInterval { get; set; }
+
 		public ExtraDataForParameter() { }
 		public ExtraDataForParameter(ExtraDataForParameter source) 
 		{
@@ -95,7 +100,8 @@ namespace ScriptHandler.Models
             NIThermistorIndex = source.NIThermistorIndex;
 			NI6002_NumofCounts = source.NI6002_NumofCounts;
 			Ni6002_ExpectedRPM = source.Ni6002_ExpectedRPM;
-        }
+			DBCInterval = source.DBCInterval;
+		}
 
 		public void SetToParameter(DeviceParameterData parameter)
 		{
@@ -120,6 +126,10 @@ namespace ScriptHandler.Models
 			else if (parameter is ATE_ParamData ate)
 			{
 				ate.Value = AteCommand;
+			}
+			else if (parameter is DBC_ParamData dbc)
+			{
+				dbc.Interval = DBCInterval;
 			}
 		}
 

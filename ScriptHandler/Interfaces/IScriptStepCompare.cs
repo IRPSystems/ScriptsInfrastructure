@@ -1,9 +1,11 @@
 ﻿
+using DeviceCommunicators.Models;
+
 namespace ScriptHandler.Interfaces
 {
 	public interface IScriptStepCompare
 	{
-		public object ValueLeft { get; set; }
+		public DeviceParameterData ValueLeft { get; set; }
 
 		public object ValueRight { get; set; }
 	}

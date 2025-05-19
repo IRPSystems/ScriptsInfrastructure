@@ -2,10 +2,16 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local_converter="clr-namespace:ScriptHandler.Converter">
 
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/EnumsDictionary.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
     <local_converter:NIPortVisibilityConverter x:Key="NIPortVisibilityConverter" />
     <local_converter:ChannelVisibilityZimmerConverter x:Key="ChannelVisibilityZimmerConverter" />
     <local_converter:NumatoGPIOVisibilityConverter x:Key="NumatoGPIOVisibilityConverter" />
     <local_converter:ATECommandVisibilityConverter x:Key="CompareWithToleranceValueATEGet" />
+    <local_converter:DBCVisibilityConverter x:Key="DBCVisibilityConverter" />
 
     <DataTemplate x:Key="ExtraDataTemplate">
         <Grid Margin="0,5,0,0">
@@ -181,6 +187,20 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
+
+            </Grid>
+
+           <Grid Grid.Row="2" Name="grdDBC"
+                  Visibility="{Binding Parameter, Converter={StaticResource DBCVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="70" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0" Text="{Binding Interval, UpdateSourceTrigger=PropertyChanged}"/>
+                <ComboBox Grid.Column="2" ItemsSource="{Binding Source={StaticResource timeUnits}}"
+                          SelectedItem="{Binding IntervalUnite}"/>
 
             </Grid>
 

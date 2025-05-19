@@ -3,13 +3,13 @@
                     xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/ExtraDataTemplate.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/CompareParamsWithExtraTemplate.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     
 
 
-    <DataTemplate x:Key="Design_CompareWithToleranceTemplate_Parameter">
+    <!--<DataTemplate x:Key="Design_CompareWithToleranceTemplate_Parameter">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="27"/>
@@ -182,7 +182,7 @@
             </DataTrigger>
 
         </DataTemplate.Triggers>
-    </DataTemplate>
+    </DataTemplate>-->
 
     <DataTemplate x:Key="Design_CompareWithToleranceTemplate">
         <Grid>
@@ -235,13 +235,13 @@
 
                 <ContentControl Grid.Column="0" 
                                 Content="{Binding}"
-                                ContentTemplate="{StaticResource Design_CompareWithToleranceTemplate_Parameter}" />
+                                ContentTemplate="{StaticResource Design_CompareTemplate_Parameter}" />
 
                 <TextBlock Grid.Column="2" Text="=" VerticalAlignment="Top" Margin="0,2,0,0"/>
 
                 <ContentControl Grid.Column="4" 
                                 Content="{Binding}"
-                                ContentTemplate="{StaticResource Design_CompareWithToleranceTemplate_CompareValue}" />
+                                ContentTemplate="{StaticResource Design_CompareTemplate_CompareValue}" />
 
                 <TextBlock Grid.Column="6" Text="±" VerticalAlignment="Top" Margin="0,2,0,0"/>
 
@@ -261,9 +261,6 @@
 
             </Grid>
         </Grid>
-
-        
-
     </DataTemplate>
 
 </ResourceDictionary>
