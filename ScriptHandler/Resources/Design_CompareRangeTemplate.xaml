@@ -6,12 +6,12 @@
 
 
     <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/CompareParamsWithExtraTemplate.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/EnumsDictionary.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 
     <converter:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
-    <local_converter:NumatoGPIOVisibilityConverter x:Key="NumatoGPIOVisibilityConverter" />
 
 
     <DataTemplate x:Key="Design_CompareRange_Between2Values_Template">
