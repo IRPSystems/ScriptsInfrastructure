@@ -9,6 +9,7 @@ using DeviceCommunicators.NumatoGPIO;
 using DeviceCommunicators.ZimmerPowerMeter;
 using Entities.Models;
 using Newtonsoft.Json;
+using ScriptHandler.Enums;
 using Syncfusion.Windows.Shared;
 using System;
 
@@ -87,10 +88,17 @@ namespace ScriptHandler.Models
 
 
 		public int DBCInterval { get; set; }
+		public TimeUnitsEnum DBCIntervalUnite { get; set; }
 
-		public ExtraDataForParameter() { }
+		public ExtraDataForParameter()
+		{
+			DBCIntervalUnite = TimeUnitsEnum.ms;
+		}
+
 		public ExtraDataForParameter(ExtraDataForParameter source) 
 		{
+			DBCIntervalUnite = TimeUnitsEnum.ms;
+
 			Ni6002_IOPort = source.Ni6002_IOPort;
 			Ni6002_Line = source.Ni6002_Line;
 			NIDAQShuntResistor = source.NIDAQShuntResistor;
@@ -101,6 +109,7 @@ namespace ScriptHandler.Models
 			NI6002_NumofCounts = source.NI6002_NumofCounts;
 			Ni6002_ExpectedRPM = source.Ni6002_ExpectedRPM;
 			DBCInterval = source.DBCInterval;
+			DBCIntervalUnite = source.DBCIntervalUnite;
 		}
 
 		public void SetToParameter(DeviceParameterData parameter)
@@ -130,6 +139,7 @@ namespace ScriptHandler.Models
 			else if (parameter is DBC_ParamData dbc)
 			{
 				dbc.Interval = DBCInterval;
+				dbc.IntervalUnite = DBCIntervalUnite.ToString();
 			}
 		}
 

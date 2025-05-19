@@ -3,6 +3,7 @@ using Communication.Services;
 using DeviceCommunicators.DBC;
 using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
+using ScriptHandler.Enums;
 using System;
 using System.Threading;
 
@@ -56,10 +57,19 @@ namespace ScriptHandler.Services
 
 			canService.CanMessageReceivedEvent += CanService_CanMessageReceivedEvent;
 
+			TimeSpan interval = new TimeSpan(0);
+			switch (_DBCParamData.IntervalUnite)
+			{
+				case "ms": interval = new TimeSpan(0, 0, 0, 0, _DBCParamData.Interval); break;
+				case "sec": interval = new TimeSpan(0, 0, 0, _DBCParamData.Interval, 0); break;
+				case "min": interval = new TimeSpan(0, 0, _DBCParamData.Interval, 0, 0); break;
+				case "hour": interval = new TimeSpan(0, _DBCParamData.Interval, 0, 0, 0); break;
+			}
+
 			int waitResult =
 					WaitHandle.WaitAny(
 						new WaitHandle[] { _cancellationToken.WaitHandle, _waitForMessage },
-						paramData.Interval);
+						(int)interval.TotalMilliseconds);
 
 			canService.CanMessageReceivedEvent -= CanService_CanMessageReceivedEvent;
 			_cancellationTokenSource.Cancel();

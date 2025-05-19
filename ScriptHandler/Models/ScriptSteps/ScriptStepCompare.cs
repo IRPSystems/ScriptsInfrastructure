@@ -1,4 +1,5 @@
 ﻿
+using DeviceCommunicators.DBC;
 using DeviceCommunicators.General;
 using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
@@ -268,9 +269,18 @@ namespace ScriptHandler.Models
 
 			if (parameter != null)
 			{
-				DeviceFullData deviceFullData =
-					DevicesContainer.DevicesFullDataList.ToList().Find((d) => d.Device.DeviceType == parameter.DeviceType);
-				Communicator = deviceFullData.DeviceCommunicator;
+				if (parameter is DBC_ParamData)
+				{
+					DeviceFullData deviceFullData =
+						DevicesContainer.TypeToDevicesFullData[DeviceTypesEnum.MCU];
+					Communicator = deviceFullData.DeviceCommunicator;
+				}
+				else
+				{
+					DeviceFullData deviceFullData =
+						DevicesContainer.DevicesFullDataList.ToList().Find((d) => d.Device.DeviceType == parameter.DeviceType);
+					Communicator = deviceFullData.DeviceCommunicator;
+				}
 			}
 
 			if (isParameter)
@@ -346,7 +356,8 @@ namespace ScriptHandler.Models
 		{
 			if (ValueLeft is DeviceParameterData)
 			{
-				if (ValueLeft is ICalculatedParamete)
+				if (ValueLeft is ICalculatedParamete ||
+					ValueLeft is DBC_ParamData)
 					return;
 
 				ValueLeft = GetRealParam(
@@ -356,7 +367,8 @@ namespace ScriptHandler.Models
 
 			if (ValueRight is DeviceParameterData)
 			{
-				if (ValueRight is ICalculatedParamete)
+				if (ValueRight is ICalculatedParamete ||
+					ValueLeft is DBC_ParamData)
 					return;
 
 				ValueRight = GetRealParam(

@@ -198,9 +198,9 @@
                     <ColumnDefinition Width="70" />
                 </Grid.ColumnDefinitions>
 
-                <TextBox Grid.Column="0" Text="{Binding Interval, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Grid.Column="0" Text="{Binding DBCInterval, UpdateSourceTrigger=PropertyChanged}"/>
                 <ComboBox Grid.Column="2" ItemsSource="{Binding Source={StaticResource timeUnits}}"
-                          SelectedItem="{Binding IntervalUnite}"/>
+                          SelectedItem="{Binding DBCIntervalUnite}"/>
 
             </Grid>
 
