@@ -215,7 +215,10 @@ namespace ScriptRunner.Services
 
 								case ScriptInternalStateEnum.Execute:
 									if (_currentStep == null)
+									{
+										_state = ScriptInternalStateEnum.EndScript;
 										continue;
+									}
 
 									LoggerService.Debug(this, "Execute - " + _currentStep.Description + " - " + _currentStep.StepState);
 
@@ -294,7 +297,8 @@ namespace ScriptRunner.Services
 
 								case ScriptInternalStateEnum.EndStep:
 
-									LoggerService.Debug(this, "EndStep - " + _currentStep.Description + " - " + _currentStep.StepState);
+									if (_currentStep != null)
+										LoggerService.Debug(this, "EndStep - " + _currentStep.Description + " - " + _currentStep.StepState);
 
 									StepEnd();
 
@@ -636,7 +640,13 @@ namespace ScriptRunner.Services
 			_userDecision.Set();
 			_stopScriptStep.StopStep();
 
-			if(_subScript != null) 
+			_currentStep = null;
+
+			_state = ScriptInternalStateEnum.EndStep;
+			if (CurrentScript != null)
+				CurrentScript.IsPass = false;
+
+			if (_subScript != null) 
 				_subScript.Abort();
 		}
 
