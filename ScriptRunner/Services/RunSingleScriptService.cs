@@ -359,7 +359,10 @@ namespace ScriptRunner.Services
 						return;
 					}
 
-					
+					isFirstRunOfScript = true;
+
+
+
 					sub.Dispose();
 					_subScript = null;
 				}
@@ -556,11 +559,13 @@ namespace ScriptRunner.Services
 
 
 		#region Sub script
-
+		bool isFirstRunOfScript = true;
 		private void StartSubScript(ISubScript subScript)
 		{
 			if(subScript is ScriptStepSubScript subScriptStep)
-				subScriptStep.SetTimeoutSpen();
+				subScriptStep.SetTimeoutSpen(isFirstRunOfScript);
+
+			isFirstRunOfScript = false;
 
 			if (!(subScript.Script is GeneratedScriptData generatedScript))
 				return;

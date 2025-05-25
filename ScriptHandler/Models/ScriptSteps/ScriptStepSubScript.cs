@@ -95,7 +95,7 @@ namespace ScriptHandler.Models
 			_timerRunTime.Elapsed += RunTimeElapsedEventHandler;
 		}
 
-		public void SetTimeoutSpen()
+		public void SetTimeoutSpen(bool isFirstRunOfScript)
 		{
 			switch (TimeoutUnite)
 			{
@@ -104,6 +104,9 @@ namespace ScriptHandler.Models
 				case TimeUnitsEnum.min: TimeoutSpan = new TimeSpan(0, 0, Timeout, 0, 0); break;
 				case TimeUnitsEnum.hour: TimeoutSpan = new TimeSpan(0, Timeout, 0, 0, 0); break;
 			}
+
+			if(isFirstRunOfScript)
+				StartTime = DateTime.Now;
 
 			_timerRunTime.Start();
 		}
