@@ -1393,9 +1393,14 @@ namespace ScriptHandler.ViewModels
 			if (!(frameworkElement.DataContext is SweepItemData sweepItem))
 				return;
 
-			DeviceParameterData param = e.Data.GetData(ParametersViewModel.DragDropFormat) as DeviceParameterData;
+			var data = e.Data.GetData(ParametersViewModel.DragDropFormat);
+			DeviceParameterData param = null;
+			if (data is DeviceParameterData)
+				param = data as DeviceParameterData;
+			else if (data is System.Collections.IList list)
+				param = list[0] as DeviceParameterData;
 
-			if(frameworkElement.Name == "tbParam")
+			if (frameworkElement.Name == "tbParam")
 				sweepItem.Parameter = param;
 			else if (frameworkElement.Name == "tbParamStart")
 				sweepItem.StartValue = param;
