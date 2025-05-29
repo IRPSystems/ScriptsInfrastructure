@@ -35,6 +35,8 @@ namespace ScriptHandler.Models.ScriptSteps
 		public bool IsToolSource { get; set; }
         public bool MCU_Used { get; set; }
         public bool MCU2_Used { get; set; }
+		public string PsocPortName { get; set; }
+
         [JsonIgnore]
 		public FlashingHandler FlashingHandler { get; set; }
 		
@@ -85,7 +87,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			}
 			
 
-			IsPass = FlashingHandler.Flash(FilePath, MCU2_Used, Customer);
+			IsPass = FlashingHandler.Flash(FilePath, MCU2_Used, Customer, PsocPortName: PsocPortName);
 			ErrorMessage = FlashingHandler.ErrorMessage;
 
 			if (Application.Current != null)

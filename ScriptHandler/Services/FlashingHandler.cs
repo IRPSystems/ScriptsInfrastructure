@@ -120,11 +120,17 @@ namespace ScriptHandler.Services
             _flasherService.SetFlashingParamsUDS(customer, ref errorMsg);
         }
 
-		public bool Flash(
+        public List<string> GetPSOCDeviceList(out string errorMsg)
+        {
+            return _flasherService.GetPSOCDeviceList(out errorMsg);
+        }
+
+        public bool Flash(
             string filePath,
             bool mcuUsed = false,
             ECustomer customer = ECustomer.GENERIC,
-            string securityKey = ""           
+            string securityKey = "",
+            string PsocPortName = ""
             )
         {
 
@@ -237,7 +243,7 @@ namespace ScriptHandler.Services
 
                     case FlasherService.eFlashingTool.PSoC:
 
-                         _flasherService.SetFlashingParamsPSoC(false); // For TDM don't use chip protection
+                         _flasherService.SetFlashingParamsPSoC(false, PsocPortName); // For TDM don't use chip protection
 						flashStatus = _flasherService.Flash(ref errorMsg);
                         break;
 
