@@ -405,8 +405,8 @@ namespace ScriptRunner.Services
 			{
 				while (!_cancellationToken.IsCancellationRequested)
 				{
-					if (!_isFirstReceived)
-						continue;
+					//if (!_isFirstReceived)
+					//	continue;
 
 					try
 					{
