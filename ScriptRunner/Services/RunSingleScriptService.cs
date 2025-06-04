@@ -378,7 +378,10 @@ namespace ScriptRunner.Services
 							LogTypeEnum.Pass);
 					}
 
-					SetCurrentStep(_currentStep.PassNext as ScriptStepBase);
+					ScriptStepBase nextStep = null;
+					if(_currentStep != null) 
+						nextStep = _currentStep.PassNext as ScriptStepBase;
+					SetCurrentStep(nextStep);
 
 					CurrentScript.PassRunSteps++;
 				}
