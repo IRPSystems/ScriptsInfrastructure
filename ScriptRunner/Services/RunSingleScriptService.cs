@@ -379,7 +379,7 @@ namespace ScriptRunner.Services
 					}
 
 					ScriptStepBase nextStep = null;
-					if(_currentStep != null) 
+					if(_currentStep != null)
 						nextStep = _currentStep.PassNext as ScriptStepBase;
 					SetCurrentStep(nextStep);
 
@@ -410,7 +410,6 @@ namespace ScriptRunner.Services
 					if (this is RunSingleScriptService_SO so)
 					{
 						so.IsAborted = true;
-						ScriptErrorMessage += $"\r\nSafety Officer Abort";
 					}
 
 				}
