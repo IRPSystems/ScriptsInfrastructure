@@ -12,6 +12,7 @@
     <local_converter:NumatoGPIOVisibilityConverter x:Key="NumatoGPIOVisibilityConverter" />
     <local_converter:ATECommandVisibilityConverter x:Key="CompareWithToleranceValueATEGet" />
     <local_converter:DBCVisibilityConverter x:Key="DBCVisibilityConverter" />
+    <local_converter:RigolM300VisibilityConverter x:Key="RigolM300VisibilityConverter" />
 
     <DataTemplate x:Key="ExtraDataTemplate">
         <Grid Margin="0,5,0,0">
@@ -201,6 +202,28 @@
                 <TextBox Grid.Column="0" Text="{Binding DBCInterval, UpdateSourceTrigger=PropertyChanged}"/>
                 <ComboBox Grid.Column="2" ItemsSource="{Binding Source={StaticResource timeUnits}}"
                           SelectedItem="{Binding DBCIntervalUnite}"/>
+
+            </Grid>
+
+            <Grid Grid.Row="2" Name="grdParamRigol" 
+                  Visibility="{Binding Parameter, Converter={StaticResource RigolM300VisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="27" />
+                    <RowDefinition Height="5" />
+                    <RowDefinition Height="27" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="Slot" VerticalAlignment="Center" />
+                <TextBox Grid.Column="2" Grid.Row="0" Text="{Binding Rigol_Slot}" />
+
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="Channel" VerticalAlignment="Center" />
+                <TextBox Grid.Column="2" Grid.Row="2" Text="{Binding Rigol_Channel}" />
 
             </Grid>
 

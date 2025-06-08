@@ -6,6 +6,7 @@ using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceCommunicators.NI_6002;
 using DeviceCommunicators.NumatoGPIO;
+using DeviceCommunicators.RigolM300;
 using DeviceCommunicators.ZimmerPowerMeter;
 using Entities.Models;
 using Newtonsoft.Json;
@@ -21,7 +22,8 @@ namespace ScriptHandler.Models
 
 		[JsonIgnore]
 		public DeviceParameterData Parameter { get; set; }
-
+		public int Rigol_Channel { get; set; }
+        public int Rigol_Slot { get; set; }
         public int Ni6002_ExpectedRPM { get; set; }
         public int Ni6002_IOPort { get; set; }
 		public int Ni6002_Line { get; set; }
@@ -110,7 +112,9 @@ namespace ScriptHandler.Models
 			Ni6002_ExpectedRPM = source.Ni6002_ExpectedRPM;
 			DBCInterval = source.DBCInterval;
 			DBCIntervalUnite = source.DBCIntervalUnite;
-		}
+            Rigol_Channel = source.Rigol_Channel;
+            Rigol_Slot = source.Rigol_Slot;	
+        }
 
 		public void SetToParameter(DeviceParameterData parameter)
 		{
@@ -123,7 +127,7 @@ namespace ScriptHandler.Models
 				ni.numofcounts = NI6002_NumofCounts;
 				ni.ExpectedRPM = Ni6002_ExpectedRPM;
 
-            }
+			}
 			else if (parameter is NumatoGPIO_ParamData numato)
 			{
 				numato.Io_port = NumatoGPIOPort;
@@ -140,6 +144,11 @@ namespace ScriptHandler.Models
 			{
 				dbc.Interval = DBCInterval;
 				dbc.IntervalUnite = DBCIntervalUnite.ToString();
+			}
+			else if (parameter is RigolM300_ParamData rigol)
+			{
+				rigol.Channel = Rigol_Channel;
+				rigol.Slot = Rigol_Slot;
 			}
 		}
 
