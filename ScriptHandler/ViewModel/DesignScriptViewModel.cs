@@ -421,9 +421,9 @@ namespace ScriptHandler.ViewModels
 					}
 					else if (listViewItem.DataContext is ScriptNodeCompareRange compareRange)
 					{
-						if (tbName.EndsWith("Left"))
+						if (tbName.EndsWith("CompareValue"))
 							compareRange.CompareValue = param;
-						else if (tbName.EndsWith("Right"))
+						else if (tbName.EndsWith("RightValue"))
 							compareRange.ValueRight = param;
 						else
 							compareRange.Parameter = param;

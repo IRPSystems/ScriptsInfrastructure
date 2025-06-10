@@ -217,6 +217,10 @@ namespace ScriptHandler.Models.ScriptNodes
 
 			IsBetween2Values = true;
 			IsValueTolerance = true;
+
+			Parameter_ExtraData = new ExtraDataForParameter();
+			CompareValue_ExtraData = new ExtraDataForParameter();
+			RightValue_ExtraData = new ExtraDataForParameter();
 		}
 
 		#endregion Constructor
