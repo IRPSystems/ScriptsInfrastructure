@@ -17,25 +17,38 @@ namespace ScriptHandler.Models.ScriptNodes
 
 
 
-		private object _value;
-		public object Value 
+		private DeviceParameterData _parameter;
+		public DeviceParameterData Parameter
 		{
-			get => _value;
+			get => _parameter;
 			set
 			{
-				_value = value;
-				OnPropertyChanged("Value");
+				_parameter = value;
+				Parameter_ExtraData.Parameter = value;
+				OnPropertyChanged(nameof(Parameter));
 			}
 		}
 
-		private object _valueLeft;
-		public object ValueLeft
+		private object _compareValue;
+		public object CompareValue
 		{
-			get => _valueLeft;
+			get => _compareValue;
 			set
 			{
-				_valueLeft = value;
-				OnPropertyChanged("ValueLeft");
+				if (value is string str)
+				{
+					double d;
+					bool res = double.TryParse(str, out d);
+					if (res)
+						value = d;
+				}
+
+				_compareValue = value;
+				if (_compareValue is DeviceParameterData)
+					CompareValue_ExtraData.Parameter = _compareValue as DeviceParameterData;
+				else
+					CompareValue_ExtraData.Parameter = null;
+				OnPropertyChanged(nameof(CompareValue));
 			}
 
 		}
@@ -46,7 +59,7 @@ namespace ScriptHandler.Models.ScriptNodes
 			get => _valueLeftDropDwonIndex;
 			set
 			{
-				if (!(Value is IParamWithDropDown dropDown))
+				if (!(Parameter is IParamWithDropDown dropDown))
 					return;
 
 				_valueLeftDropDwonIndex = value;
@@ -60,7 +73,7 @@ namespace ScriptHandler.Models.ScriptNodes
 				int iVal;
 				bool res = int.TryParse(dropDown.DropDown[_valueLeftDropDwonIndex].Value, out iVal);
 				if (res)
-					ValueLeft = iVal;
+					CompareValue = iVal;
 
 				OnPropertyChanged("ValueLeftDropDwonIndex");
 				OnPropertyChanged("Description");
@@ -74,6 +87,19 @@ namespace ScriptHandler.Models.ScriptNodes
 			set
 			{
 				_valueRight = value;
+				if (value is string str)
+				{
+					double d;
+					bool res = double.TryParse(str, out d);
+					if (res)
+						value = d;
+				}
+
+				_valueRight = value;
+				if (_valueRight is DeviceParameterData)
+					RightValue_ExtraData.Parameter = _valueRight as DeviceParameterData;
+				else
+					RightValue_ExtraData.Parameter = null;
 				OnPropertyChanged("ValueRight");
 			}
 
@@ -85,7 +111,7 @@ namespace ScriptHandler.Models.ScriptNodes
 			get => _valueRightDropDwonIndex;
 			set
 			{
-				if (!(Value is IParamWithDropDown dropDown))
+				if (!(Parameter is IParamWithDropDown dropDown))
 					return;
 
 				_valueRightDropDwonIndex = value;
@@ -103,29 +129,6 @@ namespace ScriptHandler.Models.ScriptNodes
 
 				OnPropertyChanged("ValueRightDropDwonIndex");
 				OnPropertyChanged("Description");
-			}
-		}
-
-		private int _valueDropDwonIndex_NumatoGPIOPort;
-		public int ValueDropDwonIndex_NumatoGPIOPort
-		{
-			get => _valueDropDwonIndex_NumatoGPIOPort;
-			set
-			{
-				if (!(ValueLeft is NumatoGPIO_ParamData numatoGPIOParamData))
-					return;
-
-				_valueDropDwonIndex_NumatoGPIOPort = value;
-
-				if (_valueDropDwonIndex_NumatoGPIOPort < 0 || _valueDropDwonIndex_NumatoGPIOPort >= numatoGPIOParamData.DropDown.Count)
-					return;
-
-				int iVal;
-				bool res = int.TryParse(numatoGPIOParamData.DropDown[_valueDropDwonIndex_NumatoGPIOPort].Value, out iVal);
-				if (res)
-					numatoGPIOParamData.Io_port = iVal;
-
-				OnPropertyChanged("ValueDropDwonIndex_NumatoGPIOPort");
 			}
 		}
 
@@ -164,6 +167,10 @@ namespace ScriptHandler.Models.ScriptNodes
 		public bool IsValueTolerance { get; set; }
 		public bool IsPercentageTolerance { get; set; }
 
+		public ExtraDataForParameter Parameter_ExtraData { get; set; }
+		public ExtraDataForParameter CompareValue_ExtraData { get; set; }
+		public ExtraDataForParameter RightValue_ExtraData { get; set; }
+
 		public override string Description 
 		{
 			get
@@ -174,9 +181,9 @@ namespace ScriptHandler.Models.ScriptNodes
 				{
 
 					stepDescription += 
-						GetValueDescription(_valueLeft) +
+						GetValueDescription(_compareValue) +
 						" " + ScriptNodeCompare.GetComperationDescription(Comparation1) +
-						" " + GetValueDescription(_value) +					
+						" " + GetValueDescription(_parameter) +					
 						" " + ScriptNodeCompare.GetComperationDescription(Comparation2) + 
 						" " + GetValueDescription(_valueRight);
 				}
@@ -184,8 +191,8 @@ namespace ScriptHandler.Models.ScriptNodes
 				{
 
 					stepDescription += 
-						" " + GetValueDescription(_value) + " = " +
-						GetValueDescription(_valueLeft) + " ± " +
+						" " + GetValueDescription(_parameter) + " = " +
+						GetValueDescription(_compareValue) + " ± " +
 						" " + GetValueDescription(_valueRight);
 				}
 
@@ -250,24 +257,24 @@ namespace ScriptHandler.Models.ScriptNodes
 			DevicesContainer devicesContainer,
 			IScript currentScript)
 		{
-			if(Value is DeviceParameterData compareRangeValue)
+			if(Parameter is DeviceParameterData compareRangeValue)
 			{
 				DeviceParameterData data = GetParameter(
 							compareRangeValue.DeviceType,
 							compareRangeValue,
 							devicesContainer);
 				if (data != null)
-					Value = data;
+					Parameter = data;
 			}
 
-			if (ValueLeft is DeviceParameterData compareParamLeft)
+			if (CompareValue is DeviceParameterData compareParamLeft)
 			{
 				DeviceParameterData data = GetParameter(
 					compareParamLeft.DeviceType,
 					compareParamLeft,
 					devicesContainer);
 				if (data != null)
-					ValueLeft = data;
+					CompareValue = data;
 			}
 
 			if (ValueRight is DeviceParameterData compareParamRight)
@@ -285,7 +292,13 @@ namespace ScriptHandler.Models.ScriptNodes
 			DevicesContainer devicesContainer,
 			ObservableCollection<InvalidScriptItemData> errorsList)
 		{
-			if (Value == null)
+			if (Parameter == null)
+				return true;
+
+			if (CompareValue == null)
+				return true;
+
+			if (ValueRight == null)
 				return true;
 
 			return false;

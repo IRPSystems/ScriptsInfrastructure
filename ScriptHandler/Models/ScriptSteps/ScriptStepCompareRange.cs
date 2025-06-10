@@ -1,4 +1,5 @@
 ﻿
+using DeviceCommunicators.DBC;
 using DeviceCommunicators.General;
 using DeviceCommunicators.Models;
 using DeviceHandler.Interfaces;
@@ -17,15 +18,50 @@ using System.Windows;
 
 namespace ScriptHandler.Models.ScriptSteps
 {
-	public class ScriptStepCompareRange : ScriptStepGetParamValue, IScriptStepCompare
+	public class ScriptStepCompareRange : ScriptStepGetParamValue
 	{
 		#region Properties
 
-		public object Value { get; set; }
 
-		public DeviceParameterData ValueLeft { get; set; }
+		private DeviceParameterData _value;
+		public DeviceParameterData Value
+		{
+			get => _value;
+			set
+			{
+				_value = value;
+				if (Parameter_ExtraData != null)
+					Parameter_ExtraData.Parameter = value;
+				OnPropertyChanged(nameof(Parameter));
+			}
+		}
 
-		public object ValueRight { get; set; }
+		private object _valueLeft;
+		public object ValueLeft
+		{
+			get => _valueLeft;
+			set
+			{
+				_valueLeft = value;
+				if (_valueLeft is DeviceParameterData && CompareValue_ExtraData != null)
+					CompareValue_ExtraData.Parameter = _valueLeft as DeviceParameterData;
+				OnPropertyChanged(nameof(ValueLeft));
+			}
+		}
+
+
+		private object _valueRight;
+		public object ValueRight
+		{
+			get => _valueRight;
+			set
+			{
+				_valueRight = value;
+				if (_valueRight is DeviceParameterData && RightValue_ExtraData != null)
+					RightValue_ExtraData.Parameter = _valueRight as DeviceParameterData;
+				OnPropertyChanged(nameof(ValueRight));
+			}
+		}
 
 		public ComparationTypesEnum Comparation1 { get; set; }
 
@@ -36,6 +72,12 @@ namespace ScriptHandler.Models.ScriptSteps
 
 		public bool IsValueTolerance { get; set; }
 		public bool IsPercentageTolerance { get; set; }
+
+
+
+		public ExtraDataForParameter Parameter_ExtraData { get; set; }
+		public ExtraDataForParameter CompareValue_ExtraData { get; set; }
+		public ExtraDataForParameter RightValue_ExtraData { get; set; }
 
 		#endregion Properties
 
@@ -69,7 +111,8 @@ namespace ScriptHandler.Models.ScriptSteps
 				out paramValue,
 				out paramName,
 				out units,
-				Value);
+				Value,
+				"parameter");
 			if (!res)
 			{
 				ErrorMessage = errorMessage + ErrorMessage;
@@ -89,7 +132,8 @@ namespace ScriptHandler.Models.ScriptSteps
 				out paramValue_Left,
 				out paramName_Left,
 				out units,
-				ValueLeft);
+				ValueLeft,
+				"comparevalue");
 			if (!res)
 			{
 				ErrorMessage = errorMessage + ErrorMessage;
@@ -108,7 +152,8 @@ namespace ScriptHandler.Models.ScriptSteps
 				out paramValue_Right,
 				out paramName_Right,
 				out units,
-				ValueRight);
+				ValueRight,
+				"rightvalue");
 			if (!res)
 			{
 				ErrorMessage = errorMessage + ErrorMessage;
@@ -239,7 +284,8 @@ namespace ScriptHandler.Models.ScriptSteps
 			out double paramValue,
 			out string paramName,
 			out string units,
-			object value)
+			object value,
+			string paramDesc)
 		{
 			paramValue = 0;
 			paramName = "";
@@ -248,7 +294,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			if (value is DeviceParameterData param)
 			{
 				units = param.Units;
-				object val = GetCompareParaValue(param);
+				object val = GetCompareParaValue(param, paramDesc);
 				if (val == null)
 					return false;
 
@@ -329,15 +375,41 @@ namespace ScriptHandler.Models.ScriptSteps
 		}
 
 		private object GetCompareParaValue(
-			DeviceParameterData parameter)
+			DeviceParameterData parameter,
+			string paramDesc)
 		{
 			//Parameter = parameter;
 
 			if (parameter != null)
 			{
-				DeviceFullData deviceFullData =
-					DevicesContainer.DevicesFullDataList.ToList().Find((d) => d.Device.DeviceType == parameter.DeviceType);
-				Communicator = deviceFullData.DeviceCommunicator;
+				if (parameter is DBC_ParamData)
+				{
+					DeviceFullData deviceFullData =
+						DevicesContainer.TypeToDevicesFullData[DeviceTypesEnum.MCU];
+					Communicator = deviceFullData.DeviceCommunicator;
+				}
+				else
+				{
+					DeviceFullData deviceFullData =
+						DevicesContainer.DevicesFullDataList.ToList().Find((d) => d.Device.DeviceType == parameter.DeviceType);
+					Communicator = deviceFullData.DeviceCommunicator;
+				}
+			}
+
+			if (paramDesc == "parameter")
+			{
+				Parameter_ExtraData.Parameter = parameter;
+				Parameter_ExtraData.SetToParameter(parameter);
+			}
+			else if (paramDesc == "comparevalue")
+			{
+				CompareValue_ExtraData.Parameter = parameter;
+				CompareValue_ExtraData.SetToParameter(parameter);
+			}
+			else if (paramDesc == "rightvalue")
+			{
+				RightValue_ExtraData.Parameter = parameter;
+				RightValue_ExtraData.SetToParameter(parameter);
 			}
 
 			string description = Description;
@@ -393,8 +465,8 @@ namespace ScriptHandler.Models.ScriptSteps
 			GenerateProjectService generateService,
 			DevicesContainer devicesContainer)
 		{
-			Value = (sourceNode as ScriptNodeCompareRange).Value;
-			ValueLeft = (sourceNode as ScriptNodeCompareRange).ValueLeft as DeviceParameterData;
+			Value = (sourceNode as ScriptNodeCompareRange).Parameter;
+			ValueLeft = (sourceNode as ScriptNodeCompareRange).CompareValue as DeviceParameterData;
 			ValueRight = (sourceNode as ScriptNodeCompareRange).ValueRight;
 			Comparation1 = (sourceNode as ScriptNodeCompareRange).Comparation1;
 			Comparation2 = (sourceNode as ScriptNodeCompareRange).Comparation2;
@@ -402,6 +474,13 @@ namespace ScriptHandler.Models.ScriptSteps
 			IsValueWithTolerance = (sourceNode as ScriptNodeCompareRange).IsValueWithTolerance;
 			IsValueTolerance = (sourceNode as ScriptNodeCompareRange).IsValueTolerance;
 			IsPercentageTolerance = (sourceNode as ScriptNodeCompareRange).IsPercentageTolerance;
+
+
+
+
+			Parameter_ExtraData = new ExtraDataForParameter((sourceNode as ScriptNodeCompareRange).Parameter_ExtraData);
+			CompareValue_ExtraData = new ExtraDataForParameter((sourceNode as ScriptNodeCompareRange).CompareValue_ExtraData);
+			RightValue_ExtraData = new ExtraDataForParameter((sourceNode as ScriptNodeCompareRange).RightValue_ExtraData);
 		}
 
 		public override void GetRealParamAfterLoad(
