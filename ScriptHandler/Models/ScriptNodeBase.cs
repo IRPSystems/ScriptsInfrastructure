@@ -123,6 +123,11 @@ namespace ScriptHandler.Models
 
 		public EOLReportsSelectionData EOLReportsSelectionData { get; set; }
 
+		public double OffsetX { get; set; }
+		public double OffsetY { get; set; }
+		public double Width { get; set; }
+		public double Height { get; set; }
+
 		#endregion Properties and Fields
 
 
@@ -131,6 +136,7 @@ namespace ScriptHandler.Models
 		public ScriptNodeBase()
 		{
 			EOLReportsSelectionData = new EOLReportsSelectionData();
+			IsExpanded = true;
 		}
 
 		#endregion Constructor
