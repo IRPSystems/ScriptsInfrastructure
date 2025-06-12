@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using DeviceHandler.Models;
 using FlashingToolLib.FlashingTools;
-using FlashingToolLib.FlashingTools.UDS;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Syncfusion.UI.Xaml.Diagram;

@@ -20,7 +20,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="27"/>
                 <RowDefinition />
-                <RowDefinition Height="27"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -36,28 +36,15 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Left value" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="2" Grid.Column="0" Text="{Binding ValueLeft}" 
-                     VerticalAlignment="Center"
-                     AllowDrop="True"
-                     Name="tbParamLeft">
-
-                <i:Interaction.Triggers>
-
-                    <i:EventTrigger EventName="PreviewDragOver">
-                        <i:InvokeCommandAction Command="{Binding Path=DataContext.TextBox_PreviewDragOverCommand, 
-                                                                 Mode=OneWay, 
-                                                                 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" 
-                                               PassEventArgsToCommand="True"/>
-                    </i:EventTrigger>
-
-                </i:Interaction.Triggers>
-
-            </TextBox>
-
+            <ContentControl Grid.Row="2" Grid.Column="0" 
+                            Content="{Binding}"
+                            ContentTemplate="{StaticResource Design_CompareTemplate_CompareValue}" />
 
             <ComboBox Grid.Row="2" Grid.Column="2" 
                       ItemsSource="{Binding Source={StaticResource comparationTypes}}"
-                      SelectedItem="{Binding Comparation1}">
+                      SelectedItem="{Binding Comparation1}"
+                      VerticalAlignment="Top"
+                      Height="27">
 
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
@@ -67,17 +54,15 @@
             </ComboBox>
 
             <TextBlock Grid.Row="0" Grid.Column="4" Text="Parameter" VerticalAlignment="Center"/>
-            <Border Grid.Row="2" Grid.Column="4" 
-                    BorderBrush="{DynamicResource MahApps.Brushes.Gray6}" BorderThickness="1"
-                    AllowDrop="True">
-                <TextBlock Text="{Binding Value}" 
-                           VerticalAlignment="Center"
-                           Name="tbParam"/>
-            </Border>
+            <ContentControl Grid.Row="2" Grid.Column="4" 
+                            Content="{Binding}"
+                            ContentTemplate="{StaticResource Design_CompareTemplate_Parameter}" />
 
             <ComboBox Grid.Row="2" Grid.Column="6" 
                       ItemsSource="{Binding Source={StaticResource comparationTypes}}"
-                      SelectedItem="{Binding Comparation2}">
+                      SelectedItem="{Binding Comparation2}"
+                      VerticalAlignment="Top"
+                      Height="27">
 
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
@@ -88,23 +73,9 @@
 
 
             <TextBlock Grid.Row="0" Grid.Column="8" Text="Right value" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="2" Grid.Column="8" Text="{Binding ValueRight}" 
-                     VerticalAlignment="Center"
-                     AllowDrop="True"
-                     Name="tbParamRight">
-
-                <i:Interaction.Triggers>
-
-                    <i:EventTrigger EventName="PreviewDragOver">
-                        <i:InvokeCommandAction Command="{Binding Path=DataContext.TextBox_PreviewDragOverCommand, 
-                                                                 Mode=OneWay, 
-                                                                 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" 
-                                               PassEventArgsToCommand="True"/>
-                    </i:EventTrigger>
-
-                </i:Interaction.Triggers>
-
-            </TextBox>
+            <ContentControl Grid.Row="2" Grid.Column="8" 
+                Content="{Binding}"
+                ContentTemplate="{StaticResource Design_CompareTemplate_RightValue}" />
 
         </Grid>
 
@@ -118,7 +89,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="27"/>
                 <RowDefinition Height="5"/>
-                <RowDefinition Height="27"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
@@ -156,49 +127,28 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <TextBox Grid.Column="0" Text="{Binding Value}" 
+                <ContentControl Grid.Column="0" 
+                                Content="{Binding}"
+                                ContentTemplate="{StaticResource Design_CompareTemplate_Parameter}" /> 
+                
+
+                <TextBlock Grid.Column="2" Text="=" VerticalAlignment="Stretch"/>
+
+                <ContentControl Grid.Column="4" 
+                                Content="{Binding}"
+                                ContentTemplate="{StaticResource Design_CompareTemplate_CompareValue}" />
+
+                <TextBlock Grid.Column="6" Text="±" VerticalAlignment="Stretch"/>
+
+                
+                <ContentControl Grid.Column="8" 
+                                Content="{Binding}"
+                                ContentTemplate="{StaticResource Design_CompareTemplate_RightValue}" />
+
+                
+                <!--<TextBox Grid.Column="8" Text="{Binding ValueRight}" 
                          VerticalAlignment="Center"
-                         AllowDrop="True"
-                         Name="tbParam">
-
-                    <i:Interaction.Triggers>
-
-                        <i:EventTrigger EventName="PreviewDragOver">
-                            <i:InvokeCommandAction Command="{Binding Path=DataContext.TextBox_PreviewDragOverCommand, 
-                                                                     Mode=OneWay, 
-                                                                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" 
-                                                   PassEventArgsToCommand="True"/>
-                        </i:EventTrigger>
-
-                    </i:Interaction.Triggers>
-
-                </TextBox>
-
-                <TextBlock Grid.Column="2" Text="=" VerticalAlignment="Center"/>
-
-                <TextBox Grid.Column="4" Text="{Binding ValueLeft}" 
-                         VerticalAlignment="Center"
-                         AllowDrop="True"
-                         Name="tbParamLeft">
-
-                    <i:Interaction.Triggers>
-
-                        <i:EventTrigger EventName="PreviewDragOver">
-                            <i:InvokeCommandAction Command="{Binding Path=DataContext.TextBox_PreviewDragOverCommand, 
-                                                                     Mode=OneWay, 
-                                                                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" 
-                                                   PassEventArgsToCommand="True"/>
-                        </i:EventTrigger>
-
-                    </i:Interaction.Triggers>
-
-                </TextBox>
-
-                <TextBlock Grid.Column="6" Text="±" VerticalAlignment="Center"/>
-
-                <TextBox Grid.Column="8" Text="{Binding ValueRight}" 
-                         VerticalAlignment="Center"
-                         Name="tbParamRight"/>
+                         Name="tbParamRight"/>-->
 
                 <TextBlock Grid.Column="10" 
                            Text="{Binding Value.Units}" 
@@ -256,7 +206,7 @@
 
             <ContentControl Grid.Row="2" Grid.Column="2" Name="cc" Content="{Binding}" />
 
-            <TextBlock Grid.Row="4" Grid.Column="0" Text="NumatoGPIO Port" VerticalAlignment="Center"
+            <!--<TextBlock Grid.Row="4" Grid.Column="0" Text="NumatoGPIO Port" VerticalAlignment="Center"
                        Visibility="{Binding Value, Converter={StaticResource NumatoGPIOVisibilityConverter}}" />
             <ComboBox Grid.Row="4" Grid.Column="2" 
                       Name="cb"
@@ -270,7 +220,7 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
 
-            </ComboBox>
+            </ComboBox>-->
 
 
         </Grid>

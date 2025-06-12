@@ -24,7 +24,7 @@ using System.Windows;
 
 namespace ScriptHandler.Models
 {
-	public class ScriptStepCompare: ScriptStepGetParamValue, IScriptStepCompare
+	public class ScriptStepCompare: ScriptStepGetParamValue
 	{
 		private DeviceParameterData _valueLeft;
 		public DeviceParameterData ValueLeft
@@ -38,6 +38,7 @@ namespace ScriptHandler.Models
 				OnPropertyChanged(nameof(Parameter));
 			}
 		}
+
 		private object _valueRight;
 		public object ValueRight
 		{

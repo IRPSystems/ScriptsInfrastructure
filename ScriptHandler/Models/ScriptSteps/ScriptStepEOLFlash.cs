@@ -5,7 +5,6 @@ using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Entities.Enums;
 using FlashingToolLib.FlashingTools;
-using FlashingToolLib.FlashingTools.UDS;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
