@@ -8,6 +8,7 @@ using DeviceCommunicators.NI_6002;
 using DeviceCommunicators.NumatoGPIO;
 using DeviceCommunicators.RigolM300;
 using DeviceCommunicators.ZimmerPowerMeter;
+using DeviceCommunicators.MX180TP;
 using Entities.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Enums;
@@ -24,6 +25,7 @@ namespace ScriptHandler.Models
 		public DeviceParameterData Parameter { get; set; }
 		public int Rigol_Channel { get; set; }
         public int Rigol_Slot { get; set; }
+		public int MX180TP_Channel { get; set; }
         public int Ni6002_ExpectedRPM { get; set; }
         public int Ni6002_IOPort { get; set; }
 		public int Ni6002_Line { get; set; }
@@ -113,7 +115,8 @@ namespace ScriptHandler.Models
 			DBCInterval = source.DBCInterval;
 			DBCIntervalUnite = source.DBCIntervalUnite;
             Rigol_Channel = source.Rigol_Channel;
-            Rigol_Slot = source.Rigol_Slot;	
+            Rigol_Slot = source.Rigol_Slot;
+            MX180TP_Channel = source.MX180TP_Channel;
         }
 
 		public void SetToParameter(DeviceParameterData parameter)
@@ -150,7 +153,11 @@ namespace ScriptHandler.Models
 				rigol.Channel = Rigol_Channel;
 				rigol.Slot = Rigol_Slot;
 			}
-		}
+            else if (parameter is MX180TP_ParamData mx)
+            {
+                mx.Channel = MX180TP_Channel;
+            }
+        }
 
 		public object Clone()
 		{
