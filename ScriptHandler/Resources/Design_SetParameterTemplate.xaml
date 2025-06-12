@@ -436,6 +436,24 @@
 
             </DataTrigger>
 
+            <DataTrigger Binding="{Binding Parameter, Converter={StaticResource TypeToNameConverter}}" Value="MX180TP_ParamData">
+
+                <Setter TargetName="ccRegular" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccExtras" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
+                <!--<Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>-->
+
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Parameter, Converter={StaticResource TypeToNameConverter}}" Value="RigolM300_ParamData">
+
+                <Setter TargetName="ccRegular" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="ccExtras" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="ccSwitchRelay" Property="Visibility" Value="Collapsed"/>
+                <!--<Setter TargetName="ccSaftyOfficer" Property="Visibility" Value="Collapsed"/>-->
+
+            </DataTrigger>
+
             <DataTrigger Binding="{Binding Parameter, Converter={StaticResource TypeToNameConverter}}" Value="Evva_ParamData">
 
                 <Setter TargetName="ccRegular" Property="Visibility" Value="Visible"/>
