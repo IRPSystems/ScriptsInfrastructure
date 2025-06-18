@@ -334,7 +334,7 @@ namespace ScriptRunner.Services
 									projectsList[_projectIndex].TestsList[_testIndex];
 								testData.State = SciptStateEnum.Running;
 
-								testData.State = SciptStateEnum.None;
+								//testData.State = SciptStateEnum.None;
 								ClearProjectScriptsState(testData.ScriptItemsList);
 
 								projectsList[_projectIndex].TestsList[_testIndex].isExecuted = true;
