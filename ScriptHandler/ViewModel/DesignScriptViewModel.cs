@@ -776,7 +776,7 @@ namespace ScriptHandler.ViewModels
 						_nodeIndex = node.ID;
 
 					node.IsExpanded = true;
-					node.NodePropertyChangeEvent += NodePropertyChangedHandler;
+					//node.NodePropertyChangeEvent += NodePropertyChangedHandler;
 
 
 
@@ -977,12 +977,12 @@ namespace ScriptHandler.ViewModels
 			foreach (ScriptNodeBase node in ScriptNodeList)
 				node.IsSelected = false;
 			new_scriptNodeBase.IsSelected = true;
-			new_scriptNodeBase.NodePropertyChangeEvent += NodePropertyChangedHandler;
+			//new_scriptNodeBase.NodePropertyChangeEvent += NodePropertyChangedHandler;
 
 			if(new_scriptNodeBase is ScriptNodeSubScript subScript)
 			{	
 				subScript.Parent = CurrentScript.Parent as ProjectData;
-				subScript.NodePropertyChangeEvent += SubScriptPropertyChangedEventHandler;
+				//subScript.NodePropertyChangeEvent += SubScriptPropertyChangedEventHandler;
 				subScript.ParentScriptName = CurrentScript.Name;
 
 				if (subScript.Script != null)

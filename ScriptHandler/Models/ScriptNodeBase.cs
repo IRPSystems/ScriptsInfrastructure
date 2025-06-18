@@ -196,7 +196,7 @@ namespace ScriptHandler.Models
 		#region Events
 
 		//public event PropertyChangedEventHandler PropertyChanged;
-		public event Action<ScriptNodeBase, string> NodePropertyChangeEvent;
+		//public event Action<ScriptNodeBase, string> NodePropertyChangeEvent;
 
 		#endregion Events
 

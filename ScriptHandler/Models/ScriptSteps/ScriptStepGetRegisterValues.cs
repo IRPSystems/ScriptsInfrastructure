@@ -27,8 +27,6 @@ namespace ScriptHandler.Models
         public string FaultList { get; set; }
         public int ComparedValue { get; set; }
 
-        public TimeSpan ExecutionTime { get; set; }
-
         public ScriptStepGetRegisterValues()
 		{
 			if (Application.Current != null)
