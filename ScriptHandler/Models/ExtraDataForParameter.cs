@@ -25,7 +25,8 @@ namespace ScriptHandler.Models
 		public DeviceParameterData Parameter { get; set; }
 		public int Rigol_Channel { get; set; }
         public int Rigol_Slot { get; set; }
-		public int MX180TP_Channel { get; set; }
+		public int Rigol_Range { get; set; } // This is not used in the current implementation, but can be added if needed
+        public int MX180TP_Channel { get; set; }
         public int Ni6002_ExpectedRPM { get; set; }
         public int Ni6002_IOPort { get; set; }
 		public int Ni6002_Line { get; set; }
@@ -116,7 +117,9 @@ namespace ScriptHandler.Models
 			DBCIntervalUnite = source.DBCIntervalUnite;
             Rigol_Channel = source.Rigol_Channel;
             Rigol_Slot = source.Rigol_Slot;
+			Rigol_Range = source.Rigol_Range; 
             MX180TP_Channel = source.MX180TP_Channel;
+			
         }
 
 		public void SetToParameter(DeviceParameterData parameter)
@@ -152,7 +155,8 @@ namespace ScriptHandler.Models
 			{
 				rigol.Channel = Rigol_Channel;
 				rigol.Slot = Rigol_Slot;
-			}
+				rigol.Range = Rigol_Range;
+            }
             else if (parameter is MX180TP_ParamData mx)
             {
                 mx.Channel = MX180TP_Channel;

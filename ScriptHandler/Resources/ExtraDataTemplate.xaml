@@ -218,6 +218,8 @@
                     <RowDefinition Height="27" />
                     <RowDefinition Height="5" />
                     <RowDefinition Height="27" />
+                    <RowDefinition Height="5" />
+                    <RowDefinition Height="27" />
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Column="0" Grid.Row="0" Text="Slot" VerticalAlignment="Center" />
@@ -225,6 +227,9 @@
 
                 <TextBlock Grid.Column="0" Grid.Row="2" Text="Channel" VerticalAlignment="Center" />
                 <TextBox Grid.Column="2" Grid.Row="2" Text="{Binding Rigol_Channel}" />
+
+                <TextBlock Grid.Column="0" Grid.Row="4" Text="Range" VerticalAlignment="Center" />
+                <TextBox Grid.Column="2" Grid.Row="4" Text="{Binding Rigol_Range}" />
 
             </Grid>
 
