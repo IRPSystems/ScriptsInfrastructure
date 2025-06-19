@@ -62,7 +62,7 @@ namespace ScriptHandler.Models
 			try
 			{
 				eolStepSummery = null;
-
+				IsError = false;
 				if (parameter == null)
 				{
 					LoggerService.Error(this, "The parameter is not set");

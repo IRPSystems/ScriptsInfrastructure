@@ -125,7 +125,6 @@ namespace ScriptHandler.Models
 		public override void Execute()
 		{
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-			IsError = false;
             try
             {
 
@@ -136,6 +135,8 @@ namespace ScriptHandler.Models
 				string errorMessage = errorHeader + "Failed to get the compared parameter for compare with tolerance\r\n\r\n";
 				_getParamValue.EOLReportsSelectionData = EOLReportsSelectionData;
                 OperatorErrorDescription = string.Empty;
+                IsError = false;
+
 
                 double paramValue_Left = 0;
                 string paramName_Left = "";

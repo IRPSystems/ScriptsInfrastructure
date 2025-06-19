@@ -387,8 +387,8 @@ namespace ScriptRunner.Services
 							data,
 							LogTypeEnum.Pass);
 					}
-
-					SetCurrentStep(_currentStep.PassNext as ScriptStepBase);
+					if(_currentStep != null)
+						SetCurrentStep(_currentStep.PassNext as ScriptStepBase);
 
 					CurrentScript.PassRunSteps++;
 				}
@@ -655,7 +655,7 @@ namespace ScriptRunner.Services
 			_currentStep = null;
 
 			_state = ScriptInternalStateEnum.EndStep;
-			if(CurrentScript != null) 
+			if(CurrentScript != null && !(this is RunSingleScriptService_SO))
 				CurrentScript.IsPass = false;
 
 			if (_subScript != null) 
