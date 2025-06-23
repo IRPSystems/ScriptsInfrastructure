@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.DirectoryServices.ActiveDirectory;
+using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Windows;
@@ -43,8 +44,10 @@ namespace ScriptHandler.Models
 
                 IsPass = false;
                 ErrorMessage = Description;
+                IsError = false;
 
                 IsExecuted = true;
+                FaultList = string.Empty;
 
                 string description = Description;
                 if (string.IsNullOrEmpty(UserTitle) == false)
@@ -94,9 +97,7 @@ namespace ScriptHandler.Models
                 }
                 else
                 {
-                    IsError = true;
-                    ErrorMessage = "Failed to parse the value";
-                    return;
+                    FaultList = Parameter.Value.ToString();
                 }
 
                 eolStepSummeryData = new EOLStepSummeryData(

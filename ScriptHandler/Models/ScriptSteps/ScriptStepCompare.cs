@@ -284,12 +284,12 @@ namespace ScriptHandler.Models
 				}
 			}
 
-			if (isParameter)
+			if (isParameter && Parameter_ExtraData != null)
 			{
 				Parameter_ExtraData.Parameter = parameter;
 				Parameter_ExtraData.SetToParameter(parameter);
 			}
-			else
+			else if (CompareValue_ExtraData != null)
 			{
 				CompareValue_ExtraData.Parameter = parameter;
 				CompareValue_ExtraData.SetToParameter(parameter);
