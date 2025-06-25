@@ -96,6 +96,7 @@ namespace ScriptHandler.Models.ScriptSteps
                     PopulateSendResponseLog(UserTitle, this.GetType().Name, Parameter.Name, Parameter.DeviceType, Parameter.CommSendResLog);
                     ErrorMessage += "Communication timeout.";
                     IsPass = false;
+                    IsError = true;
                 }
 
                 _stepsCounter++;

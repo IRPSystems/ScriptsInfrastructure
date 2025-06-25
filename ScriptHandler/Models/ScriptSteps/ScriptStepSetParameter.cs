@@ -89,6 +89,7 @@ namespace ScriptHandler.Models
 			try
 			{
 				IsExecuted = true;
+				IsError = false;
 				if (Parameter == null)
 				{
 					ErrorMessage = "The parameter is unknown";
