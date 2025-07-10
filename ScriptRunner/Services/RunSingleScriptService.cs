@@ -126,7 +126,8 @@ namespace ScriptRunner.Services
 				CurrentScript.ScriptItemsList.Count == 0)
 			{
 				CurrentScript.IsPass = true;
-				ScriptEndedEvent?.Invoke(false);
+				//ScriptEndedEvent?.Invoke(false);
+				ScriptEnd();
 				return;
 			}
 
@@ -187,7 +188,16 @@ namespace ScriptRunner.Services
 									_currentStep.StepState = SciptStateEnum.Running;
 
 									if (_currentStep is ISubScript subScript)
-									{
+									{									
+
+										if (subScript.Script.ScriptItemsList == null ||
+											subScript.Script.ScriptItemsList.Count == 0)
+										{
+											subScript.Script.IsPass = true;
+											_state = ScriptInternalStateEnum.EndStep;
+											break;
+										}
+
 										StartSubScript(subScript);
 									}
 									else if (_currentStep is ScriptStepCANMessage canMessage)
