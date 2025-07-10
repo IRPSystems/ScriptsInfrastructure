@@ -266,13 +266,13 @@ namespace ScriptHandler.Services
 
 				DateTime start = DateTime.Now;
 
-				while ((DateTime.Now - start).TotalMilliseconds < 10000)
-				{
-					if (mcuDevice.CheckCommunication.Status == CommunicationStateEnum.Connected)
-						break;
-				}
+                //while ((DateTime.Now - start).TotalMilliseconds < 10000)
+                //{
+                //    if (mcuDevice.CheckCommunication.Status == CommunicationStateEnum.Connected)
+                //        break;
+                //}
 
-				return flashStatus;
+                return flashStatus;
             }
             catch (Exception ex)
             {
