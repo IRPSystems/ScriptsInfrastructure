@@ -55,7 +55,7 @@ namespace ScriptHandler.Models.ScriptNodes
 		}
 
 		private int _valueDropDwonIndex;
-		public int ValueDropDwonIndex
+		public int CompareValueDropDwonIndex
 		{
 			get => _valueDropDwonIndex;
 			set 
