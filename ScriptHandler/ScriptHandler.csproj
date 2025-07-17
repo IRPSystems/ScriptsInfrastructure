@@ -38,4 +38,10 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Page Update="Resources\SymbolTemplates.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
 </Project>
