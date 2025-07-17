@@ -436,45 +436,54 @@ namespace ScriptHandler.Models.ScriptSteps
 		{
 			List<string> values = base.GetReportValues();
 
+			try
+			{
+				EOLStepSummeryData stepSummeryData =
+					EOLStepSummerysList.Find((e) =>
+						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(GainParam.Name));
 
-			EOLStepSummeryData stepSummeryData =
-				EOLStepSummerysList.Find((e) =>
-					!string.IsNullOrEmpty(e.Description) && e.Description.Contains(GainParam.Name));
-
-			if (stepSummeryData != null)
-				values.Add(stepSummeryData.TestValue.ToString());
-			else
-				values.Add("");
-
-
-			stepSummeryData =
-				EOLStepSummerysList.Find((e) =>
-					!string.IsNullOrEmpty(e.Description) && e.Description.Contains(McuParam.Name));
-
-			if (stepSummeryData != null)
-				values.Add(stepSummeryData.TestValue.ToString());
-			else
-				values.Add("");
+				if (stepSummeryData != null)
+					values.Add(stepSummeryData.TestValue.ToString());
+				else
+					values.Add("");
 
 
-			stepSummeryData =
-				EOLStepSummerysList.Find((e) =>
-					!string.IsNullOrEmpty(e.Description) && e.Description.Contains(RefSensorParam.Name));
+				stepSummeryData =
+					EOLStepSummerysList.Find((e) =>
+						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(McuParam.Name));
 
-			if (stepSummeryData != null)
-				values.Add(stepSummeryData.TestValue.ToString());
-			else
-				values.Add("");
+				if (stepSummeryData != null)
+					values.Add(stepSummeryData.TestValue.ToString());
+				else
+					values.Add("");
 
-         stepSummeryData =
-			EOLStepSummerysList.Find((e) =>
-				e.Step is ScriptStepSetParameter);
 
-            if (stepSummeryData != null)
-                values.Add(stepSummeryData.TestValue.ToString());
-            else
-                values.Add("");
-            return values;
+				stepSummeryData =
+					EOLStepSummerysList.Find((e) =>
+						!string.IsNullOrEmpty(e.Description) && e.Description.Contains(RefSensorParam.Name));
+
+				if (stepSummeryData != null)
+					values.Add(stepSummeryData.TestValue.ToString());
+				else
+					values.Add("");
+
+				stepSummeryData =
+				   EOLStepSummerysList.Find((e) =>
+					   e.Step is ScriptStepSetParameter);
+
+				if (stepSummeryData != null)
+					values.Add(stepSummeryData.TestValue.ToString());
+				else
+					values.Add("");
+				return values;
+			}
+			catch (Exception ex)
+			{
+				LoggerService.Error(this, $"{ex}");
+				return null;
+			}
+
+
 		}
 
 		#endregion Methods
