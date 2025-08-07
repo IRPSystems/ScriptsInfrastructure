@@ -99,13 +99,27 @@ namespace ScriptHandler.Models
                 int bitshift = 0;
                 if (Parameter is MCU_ParamData mcuparam)
                 {
-                    if (ComparedValue == 0)
+                    int dropdownvalue = 0;
+
+                    if (int.TryParse(mcuparam.DropDown[BitIndex].Value, out dropdownvalue))
+                    {
+                        // dropdownvalue is now a valid int
+                    }
+                    else
+                    {
+                        ErrorMessage += $" Failed to parse DropDown value at index {BitIndex}.";
+                        IsPass = false;
+                        IsError = true;
+                        return;
+                    }
+
+                    if (dropdownvalue == 0)
                     {
                         bitshift = 0;
                     }
-                    else if (ComparedValue > 0 && (ComparedValue & (ComparedValue - 1)) == 0)
+                    else if (dropdownvalue > 0 && (dropdownvalue & (dropdownvalue - 1)) == 0)
                     {
-                        bitshift = (int)Math.Log2(ComparedValue);
+                        bitshift = (int)Math.Log2(dropdownvalue);
                     }
                     else
                     {
