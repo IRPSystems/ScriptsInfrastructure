@@ -1,4 +1,4 @@
-﻿
+
 using DeviceCommunicators.General;
 using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Reflection.Metadata;
 using System.Windows;
+using System.Linq;
 
 namespace ScriptHandler.Models
 {
@@ -95,8 +96,17 @@ namespace ScriptHandler.Models
                     }
                 }
 
+                int bitshift = BitIndex;
+                if (Parameter is MCU_ParamData parammcu)
+                {
+                    if (parammcu.DropDown != null && parammcu.DropDown.Any(d => d.Value == "0"))
+                    {
+                        bitshift = BitIndex - 1;
+                    }
+                }
+
                 if (bit == null)
-                     bit = (uint)((value >> (BitIndex - 1)) & 1);
+                     bit = (uint)((value >> (bitshift)) & 1);
 
                 if (bit != ComparedValue)
                 {
