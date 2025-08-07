@@ -96,12 +96,23 @@ namespace ScriptHandler.Models
                     }
                 }
 
-                int bitshift = BitIndex;
-                if (Parameter is MCU_ParamData parammcu)
+                int bitshift = 0;
+                if (Parameter is MCU_ParamData mcuparam)
                 {
-                    if (parammcu.DropDown != null && parammcu.DropDown.Any(d => d.Value == "0"))
+                    if (ComparedValue == 0)
                     {
-                        bitshift = BitIndex - 1;
+                        bitshift = 0;
+                    }
+                    else if (ComparedValue > 0 && (ComparedValue & (ComparedValue - 1)) == 0)
+                    {
+                        bitshift = (int)Math.Log2(ComparedValue);
+                    }
+                    else
+                    {
+                        ErrorMessage += " ComparedValue must be a power of 2 or 0";
+                        IsPass = false;
+                        IsError = true;
+                        return;
                     }
                 }
 
