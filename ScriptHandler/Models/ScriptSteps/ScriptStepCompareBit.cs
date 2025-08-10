@@ -1,4 +1,4 @@
-﻿
+
 using DeviceCommunicators.General;
 using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Reflection.Metadata;
 using System.Windows;
+using System.Linq;
 
 namespace ScriptHandler.Models
 {
@@ -95,8 +96,42 @@ namespace ScriptHandler.Models
                     }
                 }
 
+                int bitshift = 0;
+                if (Parameter is MCU_ParamData mcuparam)
+                {
+                    int dropdownvalue = 0;
+
+                    if (int.TryParse(mcuparam.DropDown[BitIndex].Value, out dropdownvalue))
+                    {
+                        // dropdownvalue is now a valid int
+                    }
+                    else
+                    {
+                        ErrorMessage += $" Failed to parse DropDown value at index {BitIndex}.";
+                        IsPass = false;
+                        IsError = true;
+                        return;
+                    }
+
+                    if (dropdownvalue == 0)
+                    {
+                        bitshift = 0;
+                    }
+                    else if (dropdownvalue > 0 && (dropdownvalue & (dropdownvalue - 1)) == 0)
+                    {
+                        bitshift = (int)Math.Log2(dropdownvalue);
+                    }
+                    else
+                    {
+                        ErrorMessage += " ComparedValue must be a power of 2 or 0";
+                        IsPass = false;
+                        IsError = true;
+                        return;
+                    }
+                }
+
                 if (bit == null)
-                     bit = (uint)((value >> (BitIndex - 1)) & 1);
+                     bit = (uint)((value >> (bitshift)) & 1);
 
                 if (bit != ComparedValue)
                 {

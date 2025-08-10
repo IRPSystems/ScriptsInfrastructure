@@ -7,12 +7,6 @@
                     xmlns:converter="clr-namespace:ScriptHandler.Converter">
 
     <converter:EOLFlashExtraDataVisibilityConverter x:Key="EOLFlashExtraDataVisibilityConverter" />
-    <ObjectDataProvider x:Key="eCustomer" MethodName="GetValues"
-                    ObjectType="{x:Type system:Enum}">
-        <ObjectDataProvider.MethodParameters>
-            <x:Type TypeName="flashing_tool:eCustomer"/>
-        </ObjectDataProvider.MethodParameters>
-    </ObjectDataProvider>
 
     <DataTemplate x:Key="Design_EOLFlashTemplate">
 
@@ -135,12 +129,6 @@
                         <ColumnDefinition Width="120" />
                     </Grid.ColumnDefinitions>
 
-                    <ComboBox Name="Cmb_UdsSeq" 
-                              ItemsSource="{Binding Source={StaticResource eCustomer}}"
-                              Grid.Column="0" 
-                              SelectedItem="{Binding Customer, Mode=TwoWay}">
-
-                    </ComboBox>
                 </Grid>
             </Grid>
 

@@ -159,8 +159,8 @@ namespace ScriptHandler.Models
 					rightParamName = paramRight.Name;
 				}
 				else
-					rightVal = ValueRight as double?;
-				if (rightVal == null)
+                    rightVal = Convert.ToDouble(ValueRight);
+                if (rightVal == null)
 				{
 					IsError = true;
 					return;
