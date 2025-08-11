@@ -347,6 +347,9 @@ namespace ScriptHandler.ViewModels
 
 		private NodeViewModel GetItemNode(IScriptItem item)
 		{
+			if(NodesList == null)
+				return null;
+
 			NodeViewModel node = NodesList.ToList().Find((n) => n.Content == item);
 			return node;
 		}
