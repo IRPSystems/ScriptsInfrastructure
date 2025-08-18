@@ -9,9 +9,11 @@ using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
 using DeviceHandler.Services;
 using Entities.Models;
+using ScriptHandler.Models;
 using ScriptRunner.ViewModels;
 using Services.Services;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
@@ -31,6 +33,18 @@ namespace ScriptRunner.Services
 
 		public int RecordingRate { get; set; }
 		public string RecordDirectory { get; set; }
+
+		public RunSingleScriptService CurrentScript
+		{
+			set
+			{
+				if (value == null)
+					return;
+
+				value.CurrentStepChangedEvent += CurrentScript_CurrentStepChangedEvent;
+
+			}
+		}
 
 		#endregion Properties
 
@@ -71,6 +85,8 @@ namespace ScriptRunner.Services
 #endif
 
 		private object _lockObj;
+
+		private ScriptStepBase _currentStep;
 
 		#endregion Fields
 
@@ -130,6 +146,10 @@ namespace ScriptRunner.Services
 			_csvWriter.Dispose();
 		}
 
+		private void CurrentScript_CurrentStepChangedEvent(ScriptStepBase newStep)
+		{
+			_currentStep = newStep;
+		}
 
 		public void StartRecording(
 			string scriptName,
@@ -193,6 +213,7 @@ namespace ScriptRunner.Services
 
 
 				_csvWriter.WriteField("Time [sec]");
+				_csvWriter.WriteField("Script Step");
 				foreach (DeviceParameterData data in logParametersList)
 				{
 					string header = string.Empty;
@@ -427,6 +448,18 @@ namespace ScriptRunner.Services
 
 							_csvWriter.WriteField(_secCounter);
 							_prevTime = now;
+
+							string stepName = null;
+							if (_currentStep != null)
+							{
+								stepName = _currentStep.Description;
+								if (string.IsNullOrEmpty(_currentStep.UserTitle) == false)
+									stepName = _currentStep.UserTitle;
+							}
+							else
+								stepName = "Pre-step";
+
+							_csvWriter.WriteField(stepName);
 
 							foreach (DeviceParameterData paramData in LogParametersList)
 							{

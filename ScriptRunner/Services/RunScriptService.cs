@@ -210,6 +210,8 @@ namespace ScriptRunner.Services
 			CurrentScript.StartSafetyOfficerEvent += CurrentScript_StartSafetyOfficerEvent;
 			CurrentScript.StopSafetyOfficerEvent += CurrentScript_StopSafetyOfficerEvent;
 
+			ParamRecording.CurrentScript = CurrentScript;
+
 
 			InitiateSweepItem(CurrentScript.CurrentScript);
 
