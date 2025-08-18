@@ -1,4 +1,4 @@
-﻿
+
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -10,6 +10,7 @@ namespace ScriptHandler.Models
         public bool IsSaveToPdfExecTable { get; set; }
         public bool IsSaveToPdfDynTable { get; set; }
         public bool IsSaveToCustomerVer { get; set; }
+        public bool IsSaveToWats { get; set; }
 
         public EOLReportsSelectionData() 
         {
@@ -17,7 +18,8 @@ namespace ScriptHandler.Models
 			IsSaveToPdfExecTable = true;
 			IsSaveToPdfDynTable = true;
             IsSaveToCustomerVer = false;
+            IsSaveToWats = true;
 
         }
-	}
+    }
 }
