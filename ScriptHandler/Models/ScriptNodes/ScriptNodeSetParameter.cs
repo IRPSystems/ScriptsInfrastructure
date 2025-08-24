@@ -132,13 +132,13 @@ namespace ScriptHandler.Models.ScriptNodes
 			{
 				string stepDescription = "Set ";
 
-				if(_parameter is Evva_ParamData)
+				if(_parameter is Evva_ParamData evva)
 				{
 					double d = Convert.ToDouble(_value);
 					if (d == 1)
-						stepDescription = "Start Safty Officer" + " - ID:" + ID;
+						stepDescription = $"Start {evva.Command} - ID:{ID}";
 					else
-						stepDescription = "Stop Safty Officer" + " - ID:" + ID;
+						stepDescription = $"Stop {evva.Command} - ID:{ID}";
 
 					return stepDescription;
 				}
