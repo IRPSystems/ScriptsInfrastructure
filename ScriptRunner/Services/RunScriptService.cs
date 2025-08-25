@@ -16,6 +16,7 @@ using DeviceCommunicators.Models;
 using System.Windows.Input;
 using ScriptRunner.ViewModels;
 using System.Threading.Tasks;
+using DeviceHandler.Models.DeviceFullDataModels;
 
 namespace ScriptRunner.Services
 {
@@ -210,6 +211,9 @@ namespace ScriptRunner.Services
 			CurrentScript.StartSafetyOfficerEvent += CurrentScript_StartSafetyOfficerEvent;
 			CurrentScript.StopSafetyOfficerEvent += CurrentScript_StopSafetyOfficerEvent;
 
+			CurrentScript.StartMonitoringEvent += CurrentScript_StartMonitoringEvent;
+			CurrentScript.StopMonitoringEvent += CurrentScript_StopMonitoringEvent;
+
 			ParamRecording.CurrentScript = CurrentScript;
 
 
@@ -229,8 +233,6 @@ namespace ScriptRunner.Services
 			}
 
 		}
-
-		
 
 		private int GetNumberOfScriptSteps(IScript script)
 		{
@@ -363,6 +365,26 @@ namespace ScriptRunner.Services
 		{
 			IsSoRunning = false;
 			_soScript.StopScript();
+		}
+
+		private void CurrentScript_StopMonitoringEvent()
+		{
+			ParamRecording.Pause(true);
+
+			foreach (DeviceFullData deviceFullData in _devicesContainer.DevicesFullDataList)
+			{
+				deviceFullData.ParametersRepository.Pause(true);
+			}
+		}
+
+		private void CurrentScript_StartMonitoringEvent()
+		{
+			ParamRecording.Pause(false);
+
+			foreach (DeviceFullData deviceFullData in _devicesContainer.DevicesFullDataList)
+			{
+				deviceFullData.ParametersRepository.Pause(false);
+			}
 		}
 
 		private void _soScript_AbortEvent(string obj)

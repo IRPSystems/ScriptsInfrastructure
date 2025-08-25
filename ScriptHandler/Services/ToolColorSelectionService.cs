@@ -18,6 +18,8 @@ namespace ScriptHandler.Services
                 return (SolidColorBrush)new BrushConverter().ConvertFrom("#CA45FF");
             if (item is ScriptStepStartStopSaftyOfficer)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#8E66FF");
+			if (item is ScriptStepStartStopRecording)
+				return (SolidColorBrush)new BrushConverter().ConvertFrom("#8E66FF");
 			if (item is ScriptNodeSetSaveParameter || item is ScriptStepSetSaveParameter)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#FF6A00");
 			if (item is ScriptNodeDelay || item is ScriptStepDelay)

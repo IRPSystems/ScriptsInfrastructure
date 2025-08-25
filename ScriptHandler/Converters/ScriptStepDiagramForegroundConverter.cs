@@ -22,6 +22,8 @@ namespace ScriptHandler.Converter
                 return Brushes.White;
             if (value is ScriptStepStartStopSaftyOfficer)
 				return Brushes.White;
+			if (value is ScriptStepStartStopRecording)
+				return Brushes.White;
 			if (value is ScriptNodeSetSaveParameter || value is ScriptStepSetSaveParameter)
 				return Brushes.White;
 			if (value is ScriptNodeScopeSave || value is ScriptStepScopeSave)

@@ -88,6 +88,8 @@ namespace ScriptRunner.Services
 
 		private ScriptStepBase _currentStep;
 
+		private bool _isPaused;
+
 		#endregion Fields
 
 		#region Constructor
@@ -117,6 +119,7 @@ namespace ScriptRunner.Services
 			_timer.Elapsed += _timer_Elapsed;
 #endif
 
+			_isPaused = false;
 
 		}
 
@@ -275,6 +278,7 @@ namespace ScriptRunner.Services
 #endif // _USE_TIMER
 
 				IsRecording = true;
+				_isPaused = false;
 			}
 			catch (Exception ex)
 			{
@@ -328,6 +332,10 @@ namespace ScriptRunner.Services
 			IsRecording = false;
 		}
 
+		public void Pause(bool isPause)
+		{
+			_isPaused = isPause;
+		}
 
 		private void ParamReceived(DeviceParameterData param, CommunicatorResultEnum result, string errDescription)
 		{
@@ -428,6 +436,12 @@ namespace ScriptRunner.Services
 				{
 					if (!_isFirstReceived)
 						continue;
+
+					if(_isPaused)
+					{
+						Thread.Sleep(1);
+						continue;
+					}
 
 					try
 					{

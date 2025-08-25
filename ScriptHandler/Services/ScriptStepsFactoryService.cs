@@ -20,14 +20,22 @@ namespace ScriptHandler.Services
 				return new ScriptStepSweep();
 			else if (node.GetType().Name == "ScriptNodeSetParameter")
 			{
-				if(node is ScriptNodeSetParameter setParameter &&
-					setParameter.Parameter is Evva_ParamData)
+				if (node is ScriptNodeSetParameter setParameter &&
+					setParameter.Parameter is Evva_ParamData evva)
 				{
-					var step = new ScriptStepStartStopSaftyOfficer()
+					if (evva.Command == "Safety Officer")
 					{
-						SafetyOfficerErrorLevel = setParameter.SafetyOfficerErrorLevel
-					};
-					return step;
+						var step = new ScriptStepStartStopSaftyOfficer()
+						{
+							SafetyOfficerErrorLevel = setParameter.SafetyOfficerErrorLevel
+						};
+						return step;
+					}
+					else if (evva.Command == "Recording/Monitoring")
+					{
+						var step = new ScriptStepStartStopRecording();
+						return step;
+					}
 				}
 				else
 					return new ScriptStepSetParameter();

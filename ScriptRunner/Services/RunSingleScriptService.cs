@@ -256,6 +256,15 @@ namespace ScriptRunner.Services
 
 											_currentStep.IsPass = true;
 										}
+										else if (_currentStep is ScriptStepStartStopRecording startStopRecording)
+										{
+											if (startStopRecording.IsStart)
+												StartMonitoring();
+											else
+												StopMonitoring();
+
+											_currentStep.IsPass = true;
+										}
 										else
 											_currentStep.Execute();
 
@@ -640,6 +649,16 @@ namespace ScriptRunner.Services
 			StopSafetyOfficerEvent?.Invoke();
 		}
 
+		private void StartMonitoring()
+		{
+			StartMonitoringEvent?.Invoke();
+		}
+
+		private void StopMonitoring()
+		{
+			StopMonitoringEvent?.Invoke();
+		}
+
 		private void CurrentStepChangedEventHandler(ScriptStepBase step)
 		{
 			OnPropertyChanged(nameof(CurrentStep));
@@ -748,6 +767,8 @@ namespace ScriptRunner.Services
         public event Action<string> AbortEvent;
 		public event Action StartSafetyOfficerEvent;
 		public event Action StopSafetyOfficerEvent;
+		public event Action StartMonitoringEvent;
+		public event Action StopMonitoringEvent;
 
 		#endregion Events
 	}
