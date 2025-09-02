@@ -244,7 +244,7 @@
 
                                                 <ComboBox Grid.Column="2" 
                                                       ItemsSource="{Binding DataContext.CurrentScript.ScriptItemsList,
-                                                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"
+                                                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
                                                       SelectedItem="{Binding FailNext, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 
                                                     <ComboBox.ItemTemplate>
