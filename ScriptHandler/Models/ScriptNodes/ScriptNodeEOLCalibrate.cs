@@ -42,7 +42,7 @@ namespace ScriptHandler.Models.ScriptNodes
 
 		public ScriptNodeEOLCalibrate() 
 		{
-			Name = "EOL Clibrate";
+			Name = "EOL Calibrate";
 		}
 
 		#endregion Constructor
