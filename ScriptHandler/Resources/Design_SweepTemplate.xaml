@@ -41,7 +41,7 @@
                     <i:EventTrigger EventName="PreviewDrop">
                         <i:InvokeCommandAction Command="{Binding Path=DataContext.SweepItemsList_PreviewDropCommand, 
                                                          Mode=OneWay, 
-                                                         RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" 
+                                                         RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" 
                                        PassEventArgsToCommand="True"/>
                     </i:EventTrigger>
 

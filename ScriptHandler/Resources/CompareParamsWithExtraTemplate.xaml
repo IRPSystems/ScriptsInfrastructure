@@ -101,7 +101,7 @@
                     <i:EventTrigger EventName="PreviewDragOver">
                         <i:InvokeCommandAction Command="{Binding Path=DataContext.TextBox_PreviewDragOverCommand, 
                                                                  Mode=OneWay, 
-                                                                 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" 
+                                                                 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" 
                                                PassEventArgsToCommand="True"/>
                     </i:EventTrigger>
 
