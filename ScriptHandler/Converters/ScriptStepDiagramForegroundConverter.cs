@@ -29,7 +29,7 @@ namespace ScriptHandler.Converter
 			if (value is ScriptNodeScopeSave || value is ScriptStepScopeSave)
 				return Brushes.Black;
 			if (value is ScriptNodeDelay || value is ScriptStepDelay)
-				return Brushes.Black;
+				return Brushes.White;
 			if (value is ScriptNodeDynamicControl || value is ScriptStepDynamicControl)
 				return Brushes.Black;
 			if (value is ScriptNodeCANMessage || value is ScriptStepCANMessage)
@@ -48,7 +48,7 @@ namespace ScriptHandler.Converter
 			if (value is ScriptNodeStopContinuous || value is ScriptStepStopContinuous)
 				return Brushes.Black;
 			if (value is ScriptNodeCANMessageStop || value is ScriptStepCANMessageStop)
-				return Brushes.Black;
+				return Brushes.White;
 
 			if (value is ScriptNodeCANMessageUpdate || value is ScriptStepCANMessageUpdate)
 				return Brushes.White;
@@ -63,19 +63,19 @@ namespace ScriptHandler.Converter
 					return Brushes.Black;
 			}
 			if (value is ScriptNodeIncrementValue || value is ScriptStepIncrementValue)
-				return Brushes.White;
+				return Brushes.Black;
             if (value is ScriptNodeLoopIncrement || value is ScriptStepLoopIncrement)
                 return Brushes.White;
             if (value is ScriptNodeConverge || value is ScriptStepConverge)
 				return Brushes.White;
 			if (value is ScriptNodeEOLFlash || value is ScriptStepEOLFlash)
-				return Brushes.Black;
-			if (value is ScriptNodeEOLCalibrate || value is ScriptStepEOLCalibrate)
-				return Brushes.Black;
-			if (value is ScriptNodeEOLSendSN || value is ScriptStepEOLSendSN)
-				return Brushes.Black;
-			if (value is ScriptNodeEOLPrint || value is ScriptStepEOLPrint)
 				return Brushes.White;
+			if (value is ScriptNodeEOLCalibrate || value is ScriptStepEOLCalibrate)
+				return Brushes.White;
+			if (value is ScriptNodeEOLSendSN || value is ScriptStepEOLSendSN)
+				return Brushes.White;
+			if (value is ScriptNodeEOLPrint || value is ScriptStepEOLPrint)
+				return Brushes.Black;
 			if (value is ScriptNodeCompareBit || value is ScriptStepCompareBit)
 				return Brushes.White;
             if (value is ScriptNodeGetRegisterValues || value is ScriptStepGetRegisterValues)
