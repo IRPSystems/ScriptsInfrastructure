@@ -262,7 +262,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="500"/>
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Select sub-script" VerticalAlignment="Center"/>
@@ -360,7 +360,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="500"/>
             </Grid.ColumnDefinitions>
 
 
@@ -401,7 +401,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="450"/>
                 <ColumnDefinition Width="5"/>
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
@@ -788,7 +788,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="500"/>
             </Grid.ColumnDefinitions>
 
 
