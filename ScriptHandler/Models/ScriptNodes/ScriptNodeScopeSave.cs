@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace ScriptHandler.Models.ScriptNodes
 {
-	public class ScriptNodeScopeSave : ScriptNodeBase, IScriptNodeWithParam
+	public class ScriptNodeScopeSave : ScriptNodeBase, IScriptStepWithParameter
 	{
 		public DeviceParameterData Parameter { get; set; }
 
