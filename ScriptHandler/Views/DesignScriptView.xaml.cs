@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Controls.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace ScriptHandler.Views
 	/// <summary>
 	/// Interaction logic for DesignScriptView.xaml
 	/// </summary>
-	public partial class DesignScriptView : UserControl
+	public partial class DesignScriptView : UserControl, IDocumentV
 	{
 		public DesignScriptView()
 		{

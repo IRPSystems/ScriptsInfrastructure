@@ -204,7 +204,7 @@ namespace ScriptHandler.ViewModels
 
 		public void OpenProject(string projectPath)
 		{
-			DockingScript.CloseAllScripts();
+			DockingScript.DesignDocingViewModel_CloseAllTabs(null, null);
 
 			string jsonString = File.ReadAllText(projectPath);
 
@@ -526,7 +526,7 @@ namespace ScriptHandler.ViewModels
 			DesignScriptViewModel vm = Project.ScriptsList.ToList().Find((t) => t.CurrentScript.Name == script.CurrentScript.Name);
 			Project.ScriptsList.Remove(vm);
 
-			DockingScript.CloseScript(vm.CurrentScript);
+			DockingScript.CloseWindow(vm);
 
 			string relativePath = script.CurrentScript.ScriptPath;
 			if (!script.CurrentScript.ScriptPath.StartsWith("..\\") &&
@@ -704,7 +704,7 @@ namespace ScriptHandler.ViewModels
 
 			_isInRename = true;
 
-			DockingScript.CloseScript(vm.CurrentScript);
+			DockingScript.CloseWindow(vm);
 
 			string title = string.Empty;
 			string subTitle = string.Empty;
@@ -789,9 +789,11 @@ namespace ScriptHandler.ViewModels
 			}
 
 			if(sameVM != null) 
-				DockingScript.CloseDesignScript(sameVM);
+				DockingScript.CloseWindow(sameVM);
 
-			DockingScript.OpenScript(vm);
+			DesignScriptView designScriptView = new DesignScriptView()
+			{ DataContext = vm };
+			DockingScript.AddDocument(vm, designScriptView);
 			vm.GetScriptDiagram();
 
 

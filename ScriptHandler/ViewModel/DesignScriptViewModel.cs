@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Controls.Interfaces;
 using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
@@ -27,7 +28,7 @@ using System.Windows.Media;
 
 namespace ScriptHandler.ViewModels
 {
-	public class DesignScriptViewModel: ObservableObject
+	public class DesignScriptViewModel: ObservableObject, IDocumentVM
 	{
 		#region Properties
 
@@ -67,10 +68,10 @@ namespace ScriptHandler.ViewModels
 		public bool IsScriptEnabled { get; set; }
 
 		
-
+		public string Name { get; set; }
 		
 
-#endregion Properties
+		#endregion Properties
 
 		#region Fields
 
@@ -166,6 +167,11 @@ namespace ScriptHandler.ViewModels
 		#endregion Constructor
 
 		#region Methods
+
+		public bool Dispose()
+		{
+			return false;
+		}
 
 		private void Loaded()
 		{
@@ -652,6 +658,8 @@ namespace ScriptHandler.ViewModels
 
 		public void New(bool isTest, string name)
 		{
+			Name = name;
+
 			_isIgnoreChanges = true;
 
 			if (isTest)
@@ -745,6 +753,8 @@ namespace ScriptHandler.ViewModels
 					_isIgnoreChanges = false;
 					return;
 				}
+
+				Name = CurrentScript.Name;
 
 				foreach (ScriptNodeBase scriptNode in CurrentScript.ScriptItemsList)
 				{

@@ -18,6 +18,7 @@ using System.Collections.ObjectModel;
 using ScriptHandler.Views;
 using ScriptHandler.ViewModel;
 using System.Windows;
+using ScriptHandler.DesignDiagram.ViewModels;
 
 namespace ScriptHandler.ViewModels
 {
@@ -40,9 +41,10 @@ namespace ScriptHandler.ViewModels
 
 		public DevicesContainer DevicesContainer { get; set; }
 		public DockingScriptViewModel DockingScript { get; set; }
-		public DesignToolsViewModel DesignTools { get; set; }
+		public StencilViewModel DesignTools { get; set; }
 		public ParametersViewModel DesignParameters { get; set; }
 		public ExplorerViewModel Explorer { get; set; }
+		public NodePropertiesViewModel NodeProperties { get; set; }
 
 
 		public List<DesignItemType> DesignItemTypesList { get; set; }
@@ -103,10 +105,10 @@ namespace ScriptHandler.ViewModels
 
 
 			_designDragDropData = new DragDropData();
-			DesignTools = new DesignToolsViewModel(_designDragDropData, toolsNamespaceToSearch);
+			DesignTools = new StencilViewModel();
 			DesignParameters = new ParametersViewModel(_designDragDropData, devicesContainer, false, false);
+			NodeProperties = new NodePropertiesViewModel();
 
-			DesignTools.AddNodeEvent += AddNodeEventHandler;
 
 			Explorer = new ExplorerViewModel(scriptUserData, devicesContainer);
 
@@ -115,7 +117,8 @@ namespace ScriptHandler.ViewModels
 				DockingScript = new DockingScriptViewModel(
 					DesignTools,
 					DesignParameters,
-					Explorer);
+					Explorer,
+					NodeProperties);
 				Explorer.DockingScript = DockingScript;
 			}
 			
@@ -210,7 +213,10 @@ namespace ScriptHandler.ViewModels
 
 						CurrentScript = new DesignScriptViewModel(_scriptUserData, DevicesContainer, true);
 						CurrentScript.New(true, scriptName);
-						DockingScript.OpenScript(CurrentScript);
+
+						DesignScriptView designScriptView = new DesignScriptView()
+						{ DataContext = CurrentScript };
+						DockingScript.AddDocument(CurrentScript, designScriptView);
 						//DockingScript.ScriptIsChangedEventHandler(CurrentScript, true);
 					}
 					break;
@@ -236,7 +242,10 @@ namespace ScriptHandler.ViewModels
 
 						CurrentScript = new DesignScriptViewModel(_scriptUserData, DevicesContainer, true);
 						CurrentScript.New(false, scriptName);
-						DockingScript.OpenScript(CurrentScript);
+
+						DesignScriptView designScriptView = new DesignScriptView()
+						{ DataContext = CurrentScript };
+						DockingScript.AddDocument(CurrentScript, designScriptView);
 						//DockingScript.ScriptIsChangedEventHandler(CurrentScript, true);
 					}
 					break;
@@ -263,7 +272,9 @@ namespace ScriptHandler.ViewModels
 
 						CurrentScript = vm;
 
-						DockingScript.OpenScript(CurrentScript);
+						DesignScriptView designScriptView = new DesignScriptView()
+						{ DataContext = CurrentScript };
+						DockingScript.AddDocument(CurrentScript, designScriptView);
 						_designDragDropData.IsIgnor = false;
 						break;
 				}
@@ -287,7 +298,9 @@ namespace ScriptHandler.ViewModels
 					{
 						CurrentScript = projVm;
 
-						DockingScript.OpenScript(CurrentScript);
+						DesignScriptView designScriptView = new DesignScriptView()
+						{ DataContext = CurrentScript };
+						DockingScript.AddDocument(CurrentScript, designScriptView);
 						_designDragDropData.IsIgnor = false;
 						return false;
 					}
@@ -300,7 +313,9 @@ namespace ScriptHandler.ViewModels
 				{
 					CurrentScript = projVm;
 
-					DockingScript.OpenScript(CurrentScript);
+					DesignScriptView designScriptView = new DesignScriptView()
+					{ DataContext = CurrentScript };
+					DockingScript.AddDocument(CurrentScript, designScriptView);
 					_designDragDropData.IsIgnor = false;
 					return false;
 				}
