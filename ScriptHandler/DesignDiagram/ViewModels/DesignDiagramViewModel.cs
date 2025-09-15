@@ -547,7 +547,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 				string toolName = tool.Name;
 				InitNodeBySymbol(null, toolName, tool);
 
-				if(toolName.ToLower().Contains("sub script"))
+				if(tool is ScriptNodeSubScript)
 				{
 					AddSubString(tool, _toolOffsetX);
 				}
