@@ -1,6 +1,7 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
+using ScriptHandler.DesignDiagram.ViewModels;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.ViewModels;
 using System;
@@ -17,16 +18,16 @@ namespace ScriptHandler.Models
         public string Name { get; set; }
         [JsonIgnore]
 		[Obsolete]
-		public ObservableCollection<DesignScriptViewModel> TestsList { get; set; }
+		public ObservableCollection<DesignDiagramViewModel> TestsList { get; set; }
 
 		[JsonIgnore]
-		public ObservableCollection<DesignScriptViewModel> ScriptsList { get; set; }
+		public ObservableCollection<DesignDiagramViewModel> ScriptsList { get; set; }
 		[JsonIgnore]
 		public IEnumerable<ScriptData> ScriptsOnlyList 
 		{
 			get => ScriptsList
-				.ToList().Where((vm) => !(vm.CurrentScript is TestData))
-				.Select((vm) => vm.CurrentScript);
+				.ToList().Where((vm) => !(vm.DesignDiagram is TestData))
+				.Select((vm) => vm.DesignDiagram);
 		}
 
 		[Obsolete]
@@ -50,7 +51,7 @@ namespace ScriptHandler.Models
         public ProjectData()
         {
 			CanMessagesList = new ObservableCollection<ScriptNodeCANMessage>();
-			ScriptsList = new ObservableCollection<DesignScriptViewModel>();
+			ScriptsList = new ObservableCollection<DesignDiagramViewModel>();
 			ScriptsPathsList = new List<string>();
 
 			ScriptsList.CollectionChanged += (sender, args) => { OnPropertyChanged(nameof(ScriptsOnlyList)); };

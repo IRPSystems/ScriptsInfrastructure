@@ -5,6 +5,8 @@ using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using ScriptHandler.DesignDiagram.ViewModels;
+using ScriptHandler.DesignDiagram.Views;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models;
 using ScriptHandler.Models.ScriptNodes;
@@ -39,6 +41,8 @@ namespace ScriptHandler.ViewModels
 		private DevicesContainer _devicesContainer;
 		public DockingScriptViewModel DockingScript;
 
+		private NodePropertiesViewModel _nodeProperties { get; set; }
+
 		private const string _invalidFileChars = "\", <, >, |, :, *, ?, \\, /";
 
 		private bool _isMouseDown;
@@ -57,10 +61,12 @@ namespace ScriptHandler.ViewModels
 
 		public ExplorerViewModel(
 			ScriptUserData scriptUserData,
-			DevicesContainer devicesContainer) 
+			DevicesContainer devicesContainer,
+			NodePropertiesViewModel nodeProperties) 
 		{
 			_scriptUserData = scriptUserData;
 			_devicesContainer = devicesContainer;
+			_nodeProperties = nodeProperties;
 
 			_isInRename = false;
 			_isInDelete = false;
@@ -73,9 +79,9 @@ namespace ScriptHandler.ViewModels
 
 			DeleteScriptWithKeyCommand = new RelayCommand<IList>(DeleteScriptWithKey);
 
-			DeleteScriptCommand = new RelayCommand<DesignScriptViewModel>(DeleteScript);
-			CopyScriptCommand = new RelayCommand<DesignScriptViewModel>(CopyScript);
-			RenameScriptCommand = new RelayCommand<DesignScriptViewModel>(RenameScript);
+			DeleteScriptCommand = new RelayCommand<DesignDiagramViewModel>(DeleteScript);
+			CopyScriptCommand = new RelayCommand<DesignDiagramViewModel>(CopyScript);
+			RenameScriptCommand = new RelayCommand<DesignDiagramViewModel>(RenameScript);
 
 			SelectRecordingFileCommand = new RelayCommand(SelectRecordingFile);
 
@@ -118,10 +124,6 @@ namespace ScriptHandler.ViewModels
 
 			return false;
 		}
-
-
-
-
 
 
 		#region Project
@@ -223,14 +225,17 @@ namespace ScriptHandler.ViewModels
 
 				fixer.Fix(absPath);
 
-				DesignScriptViewModel vm = new DesignScriptViewModel(_scriptUserData, _devicesContainer, true);
+				DesignDiagramViewModel vm = new DesignDiagramViewModel(
+					_scriptUserData, 
+					_devicesContainer, 
+					_nodeProperties);
 				
 				vm.Open(path: absPath);
-				if (vm.CurrentScript == null)
+				if (vm.DesignDiagram == null)
 				{
 					string fileName = Path.GetFileName(path);
 					fileName = fileName.Replace(Path.GetExtension(path), string.Empty);
-					vm.CurrentScript = new ScriptData()
+					vm.DesignDiagram = new ScriptData()
 					{
 						Name = fileName + " - Unloaded",
 						ScriptPath = path
@@ -245,7 +250,7 @@ namespace ScriptHandler.ViewModels
 
 			PostLoadAllScripts();
 
-			foreach (DesignScriptViewModel vm in Project.ScriptsList)
+			foreach (DesignDiagramViewModel vm in Project.ScriptsList)
 			{
 				vm.ScriptReloadedEvent += ScriptReloadedEventHandler;
 			}
@@ -265,16 +270,16 @@ namespace ScriptHandler.ViewModels
 			{
 				_isSaveProject = true;
 				LoggerService.Inforamtion(this, "SaveProject start");
-				foreach (DesignScriptViewModel script in Project.ScriptsList)
+				foreach (DesignDiagramViewModel script in Project.ScriptsList)
 				{
 					try
 					{
-						LoggerService.Inforamtion(this, "Save \"" + script.CurrentScript.Name + "\"");
-						script.Save(script.CurrentScript is TestData);
+						LoggerService.Inforamtion(this, "Save \"" + script.DesignDiagram.Name + "\"");
+						script.Save(script.DesignDiagram is TestData);
 					}
 					catch (Exception ex)
 					{
-						LoggerService.Error(this, "Failed to save script \"" + script.CurrentScript.Name + "\"", ex);
+						LoggerService.Error(this, "Failed to save script \"" + script.DesignDiagram.Name + "\"", ex);
 					}
 				}
 
@@ -331,7 +336,7 @@ namespace ScriptHandler.ViewModels
 			if (string.IsNullOrEmpty(scriptName))
 				return;
 
-			DesignScriptViewModel sd = Project.ScriptsList.ToList().Find((s) => s.CurrentScript.Name.ToLower() == scriptName.ToLower());
+			DesignDiagramViewModel sd = Project.ScriptsList.ToList().Find((s) => s.DesignDiagram.Name.ToLower() == scriptName.ToLower());
 			if(sd != null)
 			{
 				{
@@ -343,20 +348,23 @@ namespace ScriptHandler.ViewModels
 				}
 			}
 
-			DesignScriptViewModel vm = new DesignScriptViewModel(_scriptUserData, _devicesContainer, true);
+			DesignDiagramViewModel vm = new DesignDiagramViewModel(
+				_scriptUserData, 
+				_devicesContainer, 
+				_nodeProperties);
 			vm.New(isTest, scriptName);
-			if (vm.CurrentScript == null)
+			if (vm.DesignDiagram == null)
 				return;
 
 			vm.ScriptReloadedEvent += ScriptReloadedEventHandler;
-			vm.CurrentScript.Parent = Project;
+			vm.DesignDiagram.Parent = Project;
 
 			Project.ScriptsList.Add(vm);
 
 			
 
-			vm.CurrentScript.ScriptPath = Path.Combine(Path.GetDirectoryName(Project.ProjectPath), vm.CurrentScript.Name + extension);
-			AddScriptPath(vm.CurrentScript, Project.ScriptsPathsList);
+			vm.DesignDiagram.ScriptPath = Path.Combine(Path.GetDirectoryName(Project.ProjectPath), vm.DesignDiagram.Name + extension);
+			AddScriptPath(vm.DesignDiagram, Project.ScriptsPathsList);
 			vm.Save(isTest);
 			Project.IsChangesExist = true;
 
@@ -398,12 +406,12 @@ namespace ScriptHandler.ViewModels
 
 			string scriptName = Path.GetFileName(path);
 			scriptName = scriptName.Replace(Path.GetExtension(path), string.Empty);
-			foreach (DesignScriptViewModel scriptData in Project.ScriptsList)
+			foreach (DesignDiagramViewModel scriptData in Project.ScriptsList)
 			{
 				if (scriptData == null)
 					continue;
 
-				if (scriptData.CurrentScript.Name == scriptName)
+				if (scriptData.DesignDiagram.Name == scriptName)
 				{
 					MessageBox.Show(
 						"The name " + scriptName + " already exist in the project.\r\nCannot add the file",
@@ -433,21 +441,24 @@ namespace ScriptHandler.ViewModels
 
 			path = newPath;
 
-			DesignScriptViewModel vm = new DesignScriptViewModel(_scriptUserData, _devicesContainer, false);
+			DesignDiagramViewModel vm = new DesignDiagramViewModel(
+				_scriptUserData, 
+				_devicesContainer, 
+				_nodeProperties);
 			vm.Open(path: path);
-			if (vm.CurrentScript == null)
+			if (vm.DesignDiagram == null)
 				return;
 
 			vm.ScriptReloadedEvent += ScriptReloadedEventHandler;
 			PostLoadAllScripts();
 
 			string extension = ".scr";
-			if(vm.CurrentScript is TestData)
+			if(vm.DesignDiagram is TestData)
 				extension = ".tst";
 
 			Project.ScriptsList.Add(vm);
-			vm.CurrentScript.ScriptPath = Path.Combine(Path.GetDirectoryName(Project.ProjectPath), vm.CurrentScript.Name + extension);
-			AddScriptPath(vm.CurrentScript, Project.ScriptsPathsList);
+			vm.DesignDiagram.ScriptPath = Path.Combine(Path.GetDirectoryName(Project.ProjectPath), vm.DesignDiagram.Name + extension);
+			AddScriptPath(vm.DesignDiagram, Project.ScriptsPathsList);
 			Project.IsChangesExist = true;
 
 		}
@@ -479,28 +490,28 @@ namespace ScriptHandler.ViewModels
 
 		private void DeleteScriptWithKey(IList list)
 		{
-			List<DesignScriptViewModel> scriptList = new List<DesignScriptViewModel>();
+			List<DesignDiagramViewModel> scriptList = new List<DesignDiagramViewModel>();
 			foreach (var item in list)
 			{
-				if (!(item is DesignScriptViewModel script))
+				if (!(item is DesignDiagramViewModel script))
 					continue;
 				scriptList.Add(script);
 			}
 
 			bool isFirst = true;
-			foreach (DesignScriptViewModel script in scriptList)
+			foreach (DesignDiagramViewModel script in scriptList)
 			{
 				DeleteScript(script, isFirst);
 				isFirst = false;
 			}
 		}
 
-		private void DeleteScript(DesignScriptViewModel script)
+		private void DeleteScript(DesignDiagramViewModel script)
 		{
 			DeleteScript(script, true);
 		}
 
-		private void DeleteScript(DesignScriptViewModel script, bool isShowWarning)
+		private void DeleteScript(DesignDiagramViewModel script, bool isShowWarning)
 		{
 			if (script == null)
 			{
@@ -508,7 +519,7 @@ namespace ScriptHandler.ViewModels
 			}
 
 			string tmp = "script";
-			if (script.CurrentScript is TestData)
+			if (script.DesignDiagram is TestData)
 				tmp = "test";
 
 			if (isShowWarning)
@@ -523,23 +534,23 @@ namespace ScriptHandler.ViewModels
 
 			_isInDelete = true;
 
-			DesignScriptViewModel vm = Project.ScriptsList.ToList().Find((t) => t.CurrentScript.Name == script.CurrentScript.Name);
+			DesignDiagramViewModel vm = Project.ScriptsList.ToList().Find((t) => t.DesignDiagram.Name == script.DesignDiagram.Name);
 			Project.ScriptsList.Remove(vm);
 
 			DockingScript.CloseWindow(vm);
 
-			string relativePath = script.CurrentScript.ScriptPath;
-			if (!script.CurrentScript.ScriptPath.StartsWith("..\\") &&
-				File.Exists(script.CurrentScript.ScriptPath))
+			string relativePath = script.DesignDiagram.ScriptPath;
+			if (!script.DesignDiagram.ScriptPath.StartsWith("..\\") &&
+				File.Exists(script.DesignDiagram.ScriptPath))
 			{
-				relativePath = Path.GetRelativePath(Project.ProjectPath, script.CurrentScript.ScriptPath);
+				relativePath = Path.GetRelativePath(Project.ProjectPath, script.DesignDiagram.ScriptPath);
 			}
 
 			Project.ScriptsPathsList.Remove(relativePath);
 			
-			File.Delete(script.CurrentScript.ScriptPath);
+			File.Delete(script.DesignDiagram.ScriptPath);
 
-			foreach (DesignScriptViewModel scriptVm in Project.ScriptsList)
+			foreach (DesignDiagramViewModel scriptVm in Project.ScriptsList)
 			{
 				DeleteScriptForSubScript(scriptVm, script);
 			}
@@ -552,16 +563,16 @@ namespace ScriptHandler.ViewModels
 		}
 
 		private void DeleteScriptForSubScript(
-			DesignScriptViewModel scriptVM,
-			DesignScriptViewModel deletedScript)
+			DesignDiagramViewModel scriptVM,
+			DesignDiagramViewModel deletedScript)
 		{
 			bool isSubScriptChanged = false;
-			foreach(ScriptNodeBase node in scriptVM.CurrentScript.ScriptItemsList)
+			foreach(ScriptNodeBase node in scriptVM.DesignDiagram.ScriptItemsList)
 			{
 				if(node is ScriptNodeSubScript subScript)
 				{
 
-					if (subScript.Script == null || subScript.Script.Name != deletedScript.CurrentScript.Name)
+					if (subScript.Script == null || subScript.Script.Name != deletedScript.DesignDiagram.Name)
 						continue;
 
 					subScript.Script = null;
@@ -569,16 +580,11 @@ namespace ScriptHandler.ViewModels
 					isSubScriptChanged = true;
 				}
 			}
-
-			if(isSubScriptChanged)
-			{
-				scriptVM.DeletedSubScript();
-			}
 		}
 
-		private void CopyScript(DesignScriptViewModel script)
+		private void CopyScript(DesignDiagramViewModel script)
 		{
-			if (script.CurrentScript.Name.EndsWith(" - Unloaded"))
+			if (script.DesignDiagram.Name.EndsWith(" - Unloaded"))
 			{
 				MessageBox.Show("Unloaded", "Open Script");
 				return;
@@ -588,7 +594,7 @@ namespace ScriptHandler.ViewModels
 			string subTitle = string.Empty;
 			string extension = string.Empty;
 
-			if (script.CurrentScript is TestData)
+			if (script.DesignDiagram is TestData)
 			{
 				extension = ".tst";
 				title = "Copy Test";
@@ -601,11 +607,11 @@ namespace ScriptHandler.ViewModels
 				subTitle = "Script name";
 			}
 
-			string copiedScriptName = GetScriptName(title, subTitle, extension, "Copy", script.CurrentScript.Name, true, Project.ProjectPath);
+			string copiedScriptName = GetScriptName(title, subTitle, extension, "Copy", script.DesignDiagram.Name, true, Project.ProjectPath);
 			if (copiedScriptName == null)
 				return;
 
-			if (copiedScriptName == script.CurrentScript.Name)
+			if (copiedScriptName == script.DesignDiagram.Name)
 				return;
 
 
@@ -649,9 +655,9 @@ namespace ScriptHandler.ViewModels
 			}
 
 			CopyScript(
-				script.CurrentScript,
-				script.CurrentScript.ScriptPath,
-				script.CurrentScript.Name,
+				script.DesignDiagram,
+				script.DesignDiagram.ScriptPath,
+				script.DesignDiagram.Name,
 				copiedScriptName);
 
 			PostLoadAllScripts();
@@ -688,9 +694,9 @@ namespace ScriptHandler.ViewModels
 		}
 
 		
-		private void RenameScript(DesignScriptViewModel vm) 
+		private void RenameScript(DesignDiagramViewModel vm) 
 		{
-			if (vm.CurrentScript.Name.EndsWith(" - Unloaded"))
+			if (vm.DesignDiagram.Name.EndsWith(" - Unloaded"))
 			{
 				MessageBox.Show("Unloaded", "Open Script");
 				return;
@@ -710,7 +716,7 @@ namespace ScriptHandler.ViewModels
 			string subTitle = string.Empty;
 			string extension = string.Empty;
 
-			if (vm.CurrentScript is TestData)
+			if (vm.DesignDiagram is TestData)
 			{
 				extension = ".tst";
 				title = "Change Test Name";
@@ -723,33 +729,33 @@ namespace ScriptHandler.ViewModels
 				subTitle = "New script name";
 			}
 
-			string oldName = vm.CurrentScript.Name;
+			string oldName = vm.DesignDiagram.Name;
 
 			string scriptName = GetScriptName(
 				title,
 				subTitle,
 				extension,
 				"Change",
-				vm.CurrentScript.Name,
+				vm.DesignDiagram.Name,
 				true,
 				Project.ProjectPath);
 			if (scriptName == null)
 				return;
 
-			string orignalPath = vm.CurrentScript.ScriptPath;
+			string orignalPath = vm.DesignDiagram.ScriptPath;
 
 			CopyScript(
-				vm.CurrentScript,
-				vm.CurrentScript.ScriptPath,
-				vm.CurrentScript.Name,
+				vm.DesignDiagram,
+				vm.DesignDiagram.ScriptPath,
+				vm.DesignDiagram.Name,
 				scriptName);
 
 			
 
-			foreach(DesignScriptViewModel scriptData in Project.ScriptsList)
+			foreach(DesignDiagramViewModel scriptData in Project.ScriptsList)
 			{
 				HandleRenamedSubScriptInScript(
-					scriptData.CurrentScript,
+					scriptData.DesignDiagram,
 					oldName,
 					scriptName);
 			}
@@ -758,10 +764,7 @@ namespace ScriptHandler.ViewModels
 			File.Delete(orignalPath);
 
 			PostLoadAllScripts();
-			foreach (DesignScriptViewModel scriptVm in Project.ScriptsList)
-			{
-				scriptVm.RefreshDiagram();
-			}
+			
 
 			_isInRename = false;
 		}
@@ -772,16 +775,16 @@ namespace ScriptHandler.ViewModels
 			if(!(e.Source is ListView listView)) 
 				return;
 
-			if (!(listView.SelectedItem is DesignScriptViewModel vm))
+			if (!(listView.SelectedItem is DesignDiagramViewModel vm))
 				return;
 
-			vm.IsChangesExist = false;
+			vm.IsChanged = false;
 
-			DesignScriptViewModel sameVM = null;
-			foreach (DesignScriptViewModel dockVm in DockingScript.DesignScriptsList)
+			DesignDiagramViewModel sameVM = null;
+			foreach (DesignDiagramViewModel dockVm in DockingScript.DesignScriptsList)
 			{
 				if(dockVm != vm &&
-					dockVm.CurrentScript.ScriptPath == vm.CurrentScript.ScriptPath)
+					dockVm.DesignDiagram.ScriptPath == vm.DesignDiagram.ScriptPath)
 				{
 					sameVM = dockVm;
 					break;
@@ -791,13 +794,12 @@ namespace ScriptHandler.ViewModels
 			if(sameVM != null) 
 				DockingScript.CloseWindow(sameVM);
 
-			DesignScriptView designScriptView = new DesignScriptView()
+			DesignDiagramView designScriptView = new DesignDiagramView()
 			{ DataContext = vm };
 			DockingScript.AddDocument(vm, designScriptView);
-			vm.GetScriptDiagram();
 
 
-			vm.IsChangesExist = false;
+			vm.IsChanged = false;
 		}
 
 		#region Script path
@@ -849,9 +851,9 @@ namespace ScriptHandler.ViewModels
 
 
 
-				foreach (DesignScriptViewModel vm in Project.ScriptsList)
+				foreach (DesignDiagramViewModel vm in Project.ScriptsList)
 				{
-					if (!(vm.CurrentScript is ScriptData testSubScriptData))
+					if (!(vm.DesignDiagram is ScriptData testSubScriptData))
 						continue;
 
 					if (testSubScriptData.Name == newName)
@@ -937,10 +939,7 @@ namespace ScriptHandler.ViewModels
 				return;
 
 			PostLoadAllScripts();
-			foreach (DesignScriptViewModel vm in Project.ScriptsList)
-			{
-				vm.RefreshDiagram();
-			}
+			
 		}
 
 		private void PostLoadAllScripts()
@@ -1015,7 +1014,7 @@ namespace ScriptHandler.ViewModels
 					return;
 
 
-				if (!(listViewItem.DataContext is DesignScriptViewModel vm))
+				if (!(listViewItem.DataContext is DesignDiagramViewModel vm))
 					return;
 				
 				DataObject dragData = new DataObject(formate, vm);
@@ -1068,8 +1067,8 @@ namespace ScriptHandler.ViewModels
 
 				if (e.Data.GetDataPresent("ProjectFile"))
 				{
-					DesignScriptViewModel dropped;
-					DesignScriptViewModel droppedOn;
+					DesignDiagramViewModel dropped;
+					DesignDiagramViewModel droppedOn;
 					GetDroppedAndDroppedOn(
 						e,
 						out dropped,
@@ -1094,12 +1093,12 @@ namespace ScriptHandler.ViewModels
 
 		private void GetDroppedAndDroppedOn(
 			DragEventArgs e,
-			out DesignScriptViewModel dropped,
-			out DesignScriptViewModel droppedOn)
+			out DesignDiagramViewModel dropped,
+			out DesignDiagramViewModel droppedOn)
 		{
 			droppedOn = null;
 
-			DesignScriptViewModel vm = e.Data.GetData("ProjectFile") as DesignScriptViewModel;
+			DesignDiagramViewModel vm = e.Data.GetData("ProjectFile") as DesignDiagramViewModel;
 			dropped = vm;
 
 
@@ -1108,7 +1107,7 @@ namespace ScriptHandler.ViewModels
 			if (listViewItem == null)
 				return;
 
-			droppedOn = listViewItem.DataContext as DesignScriptViewModel;
+			droppedOn = listViewItem.DataContext as DesignDiagramViewModel;
 		}
 
 		private void ListScript_DragEnter(DragEventArgs e)
@@ -1123,8 +1122,8 @@ namespace ScriptHandler.ViewModels
 
 
 		private void MoveFile(
-			DesignScriptViewModel dropped,
-			DesignScriptViewModel droppedOn)
+			DesignDiagramViewModel dropped,
+			DesignDiagramViewModel droppedOn)
 		{
 			int droppedIndex = Project.ScriptsList.IndexOf(dropped);
 			if (droppedIndex < 0 || droppedIndex > Project.ScriptsList.Count)
@@ -1135,7 +1134,7 @@ namespace ScriptHandler.ViewModels
 				return;
 
 
-			DesignScriptViewModel tmp = dropped;
+			DesignDiagramViewModel tmp = dropped;
 
 			Project.ScriptsList.RemoveAt(droppedIndex);
 
@@ -1154,10 +1153,10 @@ namespace ScriptHandler.ViewModels
 			else
 				Project.ScriptsPathsList.Add(droppedPath);
 
-			foreach(DesignScriptViewModel script in Project.ScriptsList) 
+			foreach(DesignDiagramViewModel script in Project.ScriptsList) 
 			{
 				_postLoad.HandleSubScriptInScript(
-					script.CurrentScript,
+					script.DesignDiagram,
 					Project);
 			}
 
@@ -1196,9 +1195,9 @@ namespace ScriptHandler.ViewModels
 
 		private void SetAllReports()
 		{
-			foreach (DesignScriptViewModel script in Project.ScriptsList)
+			foreach (DesignDiagramViewModel script in Project.ScriptsList)
 			{
-				SetAllReportsForScript(script.CurrentScript.ScriptItemsList);
+				SetAllReportsForScript(script.DesignDiagram.ScriptItemsList);
 			}
 		}
 
@@ -1237,9 +1236,9 @@ namespace ScriptHandler.ViewModels
 
 		public RelayCommand<IList> DeleteScriptWithKeyCommand { get; private set; }
 
-		public RelayCommand<DesignScriptViewModel> DeleteScriptCommand { get; private set; }
-		public RelayCommand<DesignScriptViewModel> CopyScriptCommand { get; private set; }
-		public RelayCommand<DesignScriptViewModel> RenameScriptCommand { get; private set; }
+		public RelayCommand<DesignDiagramViewModel> DeleteScriptCommand { get; private set; }
+		public RelayCommand<DesignDiagramViewModel> CopyScriptCommand { get; private set; }
+		public RelayCommand<DesignDiagramViewModel> RenameScriptCommand { get; private set; }
 
 
 		private RelayCommand<MouseButtonEventArgs> _MouseDoubleClickCommand;

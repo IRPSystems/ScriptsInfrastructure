@@ -2,6 +2,7 @@
 using ControlzEx.Theming;
 using DeviceHandler.Models;
 using DeviceHandler.Models.DeviceFullDataModels;
+using ScriptHandler.DesignDiagram.ViewModels;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models;
 using ScriptHandler.Models.ScriptNodes;
@@ -20,22 +21,22 @@ namespace ScriptHandler.Services
 			DevicesContainer devicesContainer) 
 		{
 			project.CanMessagesList.Clear();
-			foreach (DesignScriptViewModel vm in project.ScriptsList)
+			foreach (DesignDiagramViewModel vm in project.ScriptsList)
 			{
-				vm.CurrentScript.Parent = project;
-				SetEvvaDeviceToSaftyOfficer(vm.CurrentScript);
-				HandleSubScriptInScript(vm.CurrentScript, project);
-				HandleSweepSubScriptInScript(vm.CurrentScript, project);
+				vm.DesignDiagram.Parent = project;
+				SetEvvaDeviceToSaftyOfficer(vm.DesignDiagram);
+				HandleSubScriptInScript(vm.DesignDiagram, project);
+				HandleSweepSubScriptInScript(vm.DesignDiagram, project);
 
 				HandleDynamicControlInScript(
-					vm.CurrentScript,
+					vm.DesignDiagram,
 					devicesContainer);
 
-				if (!vm.IsScriptIsSavedEvent)
-				{
-					vm.ScriptIsSavedEvent += scriptSavedEventHandler;
-					vm.IsScriptIsSavedEvent = true;
-				}
+				//if (!vm.IsScriptIsSavedEvent)
+				//{
+				//	vm.ScriptIsSavedEvent += scriptSavedEventHandler;
+				//	vm.IsScriptIsSavedEvent = true;
+				//}
 
 			
 			}
@@ -85,9 +86,9 @@ namespace ScriptHandler.Services
 
 
 
-					foreach (DesignScriptViewModel vm in project.ScriptsList)
+					foreach (DesignDiagramViewModel vm in project.ScriptsList)
 					{
-						if (!(vm.CurrentScript is ScriptData testSubScriptData))
+						if (!(vm.DesignDiagram is ScriptData testSubScriptData))
 							continue;
 
 						if (testSubScriptData.Name == subScript.SelectedScriptName)

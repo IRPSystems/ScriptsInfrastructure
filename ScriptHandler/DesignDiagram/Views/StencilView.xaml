@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="ScriptHandler.DesignDiagram.Views.StencilView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:stencil="clr-namespace:Syncfusion.UI.Xaml.Diagram.Stencil;assembly=Syncfusion.SfDiagram.WPF"
+             xmlns:local="clr-namespace:ScriptHandler.DesignDiagram.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="350">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            
+
+            <Style TargetType="stencil:Symbol">
+                <Setter Property="Width" Value="400" />
+                <Setter Property="Height" Value="35" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
+                <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+            </Style>
+
+            <Style TargetType="stencil:SymbolGroup">
+                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
+            </Style>
+
+            
+
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    
+    <Grid>
+
+        <stencil:Stencil SymbolSource="{Binding SymbolSource}" 
+                         ShowSearchTextBox="False"
+                         ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+    </Grid>
+</UserControl>

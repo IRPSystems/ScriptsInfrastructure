@@ -22,13 +22,13 @@ namespace ScriptHandler.ViewModels
 	{
 		#region Properties
 
-		public ObservableCollection<DesignScriptViewModel> DesignScriptsList { get; set; }
+		public ObservableCollection<DesignDiagramViewModel> DesignScriptsList { get; set; }
 
 		#endregion Properties
 
 		#region Fields
 
-		private Dictionary<DesignScriptViewModel, ContentControl> _vmToControl;
+		private Dictionary<DesignDiagramViewModel, ContentControl> _vmToControl;
 
 		private ContentControl _designTools;
 		private ContentControl _explorer;
@@ -47,7 +47,7 @@ namespace ScriptHandler.ViewModels
 			base("DesignDiagram", "Evva")
 		{
 
-			DesignScriptsList = new ObservableCollection<DesignScriptViewModel>();
+			DesignScriptsList = new ObservableCollection<DesignDiagramViewModel>();
 			//DockStateChanged += DockStateChangedEventHandler;
 			IsSelectedDocument += DocumentSelectedChangedHandler;
 			//CloseButtonClick += CloseButtonClickEvent;
@@ -55,7 +55,7 @@ namespace ScriptHandler.ViewModels
 			//CloseOtherTabs += OnCloseTabsEventHandler;
 			//WindowClosing += DockingScriptViewModel_WindowClosing;
 
-			_vmToControl = new Dictionary<DesignScriptViewModel, ContentControl>();
+			_vmToControl = new Dictionary<DesignDiagramViewModel, ContentControl>();
 
 			InitSubWindows(
 				designTools,
@@ -125,18 +125,18 @@ namespace ScriptHandler.ViewModels
 				if (!(e.TargetElement is ContentControl contentControl))
 					return;
 
-				if (!(contentControl.Content is DesignScriptView designScriptView))
+				if (!(contentControl.Content is DesignDiagramView designScriptView))
 					return;
 
-				if (!(designScriptView.DataContext is DesignScriptViewModel designScriptViewModel))
+				if (!(designScriptView.DataContext is DesignDiagramViewModel DesignDiagramViewModel))
 					return;
 
-				WeakReferenceMessenger.Default.Send(new SCRIPT_SELECTION_CHANGED() { DesignScriptVM = designScriptViewModel });
+				WeakReferenceMessenger.Default.Send(new SCRIPT_SELECTION_CHANGED() { DesignScriptVM = DesignDiagramViewModel });
 			}
 		}
 
 
-		//public void OpenScript(DesignScriptViewModel scriptVM)
+		//public void OpenScript(DesignDiagramViewModel scriptVM)
 		//{
 		//	LoggerService.Inforamtion(this, "Open script");
 		//	if (scriptVM.CurrentScript == null)
@@ -196,7 +196,7 @@ namespace ScriptHandler.ViewModels
 		//	if (!(window.Content is DesignScriptView scriptV))
 		//		return false;
 
-		//	if (!(scriptV.DataContext is DesignScriptViewModel scriptVM))
+		//	if (!(scriptV.DataContext is DesignDiagramViewModel scriptVM))
 		//		return false;
 
 		//	bool isCancel = scriptVM.SaveIfNeeded();
@@ -222,7 +222,7 @@ namespace ScriptHandler.ViewModels
 		//		if(!(tabItem.Header is string header))
 		//			continue;
 
-		//		DesignScriptViewModel scriptVM = DesignScriptsList.ToList().Find((s) => s.CurrentScript.Name == header);
+		//		DesignDiagramViewModel scriptVM = DesignScriptsList.ToList().Find((s) => s.CurrentScript.Name == header);
 		//		if (scriptVM == null)
 		//			continue;
 
@@ -244,7 +244,7 @@ namespace ScriptHandler.ViewModels
 		//		if (!(control.Content is DesignScriptView view))
 		//			continue;
 
-		//		if (!(view.DataContext is DesignScriptViewModel viewModel))
+		//		if (!(view.DataContext is DesignDiagramViewModel viewModel))
 		//			continue;
 
 		//		if (viewModel.CurrentScript == script)
@@ -258,7 +258,7 @@ namespace ScriptHandler.ViewModels
 		//}
 
 		//public void CloseDesignScript(
-		//	DesignScriptViewModel viewModel,
+		//	DesignDiagramViewModel viewModel,
 		//	bool isRemoveFromDesignScriptsList = true)
 		//{
 		//	if (_vmToControl.ContainsKey(viewModel) == false)
@@ -275,7 +275,7 @@ namespace ScriptHandler.ViewModels
 
 		//public void CloseAllScripts()
 		//{
-		//	foreach (DesignScriptViewModel viewModel in DesignScriptsList)
+		//	foreach (DesignDiagramViewModel viewModel in DesignScriptsList)
 		//		CloseDesignScript(viewModel, false);
 
 		//	DesignScriptsList.Clear();
@@ -285,13 +285,13 @@ namespace ScriptHandler.ViewModels
 		{
 			foreach(ContentControl control in Children) 
 			{
-				if (!(control.Content is DesignScriptView view))
+				if (!(control.Content is DesignDiagramView view))
 					continue;
 
-				if(!(view.DataContext is DesignScriptViewModel viewModel))
+				if(!(view.DataContext is DesignDiagramViewModel viewModel))
 					continue;
 
-				if(viewModel.CurrentScript == script)
+				if(viewModel.DesignDiagram == script)
 					return true;
 			}
 

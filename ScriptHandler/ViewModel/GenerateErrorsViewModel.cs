@@ -6,6 +6,7 @@ using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using DeviceHandler.ViewModel;
 using Entities.Models;
+using ScriptHandler.DesignDiagram.ViewModels;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models;
 using ScriptHandler.ViewModels;
@@ -149,9 +150,9 @@ namespace ScriptHandler.ViewModel
 
 			MCU_ParamData mcuParamDontExist = paramDontExist.Parameter as MCU_ParamData;
 
-			foreach (DesignScriptViewModel script in Project.ScriptsList)
+			foreach (DesignDiagramViewModel script in Project.ScriptsList)
 			{
-				foreach(ScriptNodeBase node in script.CurrentScript.ScriptItemsList)
+				foreach(ScriptNodeBase node in script.DesignDiagram.ScriptItemsList)
 				{
 					if(node is IScriptStepWithParameter withParam)
 					{

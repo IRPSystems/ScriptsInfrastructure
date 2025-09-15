@@ -7,6 +7,7 @@ using DeviceHandler.Models.DeviceFullDataModels;
 using Entities.Enums;
 using Entities.Models;
 using Newtonsoft.Json;
+using ScriptHandler.DesignDiagram.ViewModels;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models;
 using ScriptHandler.Models.ScriptNodes;
@@ -40,9 +41,9 @@ namespace ScriptHandler.Services
 
             IsTestValidService isTestValidService = new IsTestValidService();
 			
-			foreach (DesignScriptViewModel testVM in projectData.ScriptsList)
+			foreach (DesignDiagramViewModel testVM in projectData.ScriptsList)
             {
-                if (!(testVM.CurrentScript is TestData testData))
+                if (!(testVM.DesignDiagram is TestData testData))
                     continue;
 
                 
@@ -50,13 +51,13 @@ namespace ScriptHandler.Services
                 isTestValidService.IsValid(testData, invalidScriptData, devicesContainer);
 
 				GeneratedTestData generatedScript = GenerateScript(
-                    testVM.CurrentScript.ScriptPath,
-                    testVM.CurrentScript,
+                    testVM.DesignDiagram.ScriptPath,
+                    testVM.DesignDiagram,
                     devicesContainer,
 					flashingHandler,
 					ref usedCommunicatorsList) as GeneratedTestData;
 
-                testVM.IsChangesExist = false;
+                testVM.IsChanged = false;
 				generatedProject.TestsList.Add(generatedScript);
 			}
 

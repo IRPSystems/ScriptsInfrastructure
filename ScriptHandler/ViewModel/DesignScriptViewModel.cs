@@ -685,7 +685,7 @@ namespace ScriptHandler.ViewModels
 		}
 
 		
-		public void Open(ScriptData script = null, string path = null, bool allowTests = true)
+		public void Open(string path = null)
 		{
 			//if (CurrentScript != null)
 			//{
@@ -700,8 +700,8 @@ namespace ScriptHandler.ViewModels
 
 				_isIgnoreChanges = true;
 
-				if (script == null)
-				{
+				//if (script == null)
+				//{
 
 					if (path == null)
 					{
@@ -743,9 +743,9 @@ namespace ScriptHandler.ViewModels
 					CurrentScript = JsonConvert.DeserializeObject(jsonString, settings) as ScriptData;
 
 					CurrentScript.ScriptPath = path;
-				}
-				else
-					CurrentScript = script;
+				//}
+				//else
+				//	CurrentScript = script;
 
 				if (CurrentScript == null)
 				{

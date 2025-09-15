@@ -79,11 +79,11 @@
                     </Grid.ContextMenu>
 
                     <ContentControl Grid.Column="0" 
-                                        Content="{Binding CurrentScript}"
+                                        Content="{Binding DesignDiagram}"
                                         ContentTemplateSelector="{StaticResource ExplorerItemTemplateSelector}" />
 
                     <TextBlock Grid.Column="2"
-                               Text="{Binding CurrentScript.Name}" 
+                               Text="{Binding DesignDiagram.Name}" 
                                VerticalAlignment="Center"/>
                 </Grid>
             </DataTemplate>

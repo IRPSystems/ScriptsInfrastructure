@@ -19,6 +19,7 @@ using ScriptHandler.Views;
 using ScriptHandler.ViewModel;
 using System.Windows;
 using ScriptHandler.DesignDiagram.ViewModels;
+using ScriptHandler.DesignDiagram.Views;
 
 namespace ScriptHandler.ViewModels
 {
@@ -66,7 +67,7 @@ namespace ScriptHandler.ViewModels
 
 
 
-		public DesignScriptViewModel CurrentScript;
+		public DesignDiagramViewModel CurrentScript;
 
 		private ScriptUserData _scriptUserData;
 
@@ -106,11 +107,18 @@ namespace ScriptHandler.ViewModels
 
 			_designDragDropData = new DragDropData();
 			DesignTools = new StencilViewModel();
-			DesignParameters = new ParametersViewModel(_designDragDropData, devicesContainer, false, false);
+			DesignParameters = new ParametersViewModel(
+				_designDragDropData, 
+				devicesContainer, 
+				false,
+				false);
 			NodeProperties = new NodePropertiesViewModel();
 
 
-			Explorer = new ExplorerViewModel(scriptUserData, devicesContainer);
+			Explorer = new ExplorerViewModel(
+				scriptUserData, 
+				devicesContainer, 
+				NodeProperties);
 
 			if (Application.Current != null)
 			{
@@ -161,18 +169,18 @@ namespace ScriptHandler.ViewModels
 				App.ChangeDarkLight(isLightTheme);
 		}
 
-		public void RefreshDiagram()
-		{
-			if (DockingScript == null)
-				return;
+		//public void RefreshDiagram()
+		//{
+		//	if (DockingScript == null)
+		//		return;
 
-			foreach (DesignScriptViewModel vm in DockingScript.DesignScriptsList)
-				vm.RefreshDiagram();
-		}
+		//	foreach (DesignDiagramViewModel vm in DockingScript.DesignScriptsList)
+		//		vm.RefreshDiagram();
+		//}
 
 		private void HandleSCRIPT_SELECTION_CHANGED(object sender, SCRIPT_SELECTION_CHANGED e)
 		{
-			CurrentScript = e.DesignScriptVM as DesignScriptViewModel;
+			CurrentScript = e.DesignScriptVM as DesignDiagramViewModel;
 		}
 
 		
@@ -211,12 +219,15 @@ namespace ScriptHandler.ViewModels
 
 
 
-						CurrentScript = new DesignScriptViewModel(_scriptUserData, DevicesContainer, true);
+						CurrentScript = new DesignDiagramViewModel(
+							_scriptUserData, 
+							DevicesContainer, 
+							NodeProperties);
 						CurrentScript.New(true, scriptName);
 
-						DesignScriptView designScriptView = new DesignScriptView()
+						DesignDiagramView designDiagramView = new DesignDiagramView()
 						{ DataContext = CurrentScript };
-						DockingScript.AddDocument(CurrentScript, designScriptView);
+						DockingScript.AddDocument(CurrentScript, designDiagramView);
 						//DockingScript.ScriptIsChangedEventHandler(CurrentScript, true);
 					}
 					break;
@@ -240,12 +251,15 @@ namespace ScriptHandler.ViewModels
 						if (scriptName == null)
 							return;
 
-						CurrentScript = new DesignScriptViewModel(_scriptUserData, DevicesContainer, true);
+						CurrentScript = new DesignDiagramViewModel(
+							_scriptUserData, 
+							DevicesContainer, 
+							NodeProperties);
 						CurrentScript.New(false, scriptName);
 
-						DesignScriptView designScriptView = new DesignScriptView()
+						DesignDiagramView DesignDiagramView = new DesignDiagramView()
 						{ DataContext = CurrentScript };
-						DockingScript.AddDocument(CurrentScript, designScriptView);
+						DockingScript.AddDocument(CurrentScript, DesignDiagramView);
 						//DockingScript.ScriptIsChangedEventHandler(CurrentScript, true);
 					}
 					break;
@@ -264,7 +278,10 @@ namespace ScriptHandler.ViewModels
 
 					case "Test, Script":
 						_designDragDropData.IsIgnor = true;
-						DesignScriptViewModel vm = new DesignScriptViewModel(_scriptUserData, DevicesContainer, false);
+						DesignDiagramViewModel vm = new DesignDiagramViewModel(
+							_scriptUserData, 
+							DevicesContainer,
+							NodeProperties);
 						vm.Open();
 						bool isScriptShouldBeOpened = IsScriptShouldBeOpened(vm);
 						if (isScriptShouldBeOpened == false)
@@ -272,9 +289,9 @@ namespace ScriptHandler.ViewModels
 
 						CurrentScript = vm;
 
-						DesignScriptView designScriptView = new DesignScriptView()
+						DesignDiagramView DesignDiagramView = new DesignDiagramView()
 						{ DataContext = CurrentScript };
-						DockingScript.AddDocument(CurrentScript, designScriptView);
+						DockingScript.AddDocument(CurrentScript, DesignDiagramView);
 						_designDragDropData.IsIgnor = false;
 						break;
 				}
@@ -285,37 +302,37 @@ namespace ScriptHandler.ViewModels
 			}
 		}
 
-		private bool IsScriptShouldBeOpened(DesignScriptViewModel vm)
+		private bool IsScriptShouldBeOpened(DesignDiagramViewModel vm)
 		{
-			if(vm == null || vm.CurrentScript == null) 
+			if(vm == null || vm.DesignDiagram == null) 
 				return true;
 
 			if (Explorer.Project != null)
 			{
-				foreach (DesignScriptViewModel projVm in Explorer.Project.ScriptsList)
+				foreach (DesignDiagramViewModel projVm in Explorer.Project.ScriptsList)
 				{
-					if (projVm.CurrentScript.ScriptPath == vm.CurrentScript.ScriptPath)
+					if (projVm.DesignDiagram.ScriptPath == vm.DesignDiagram.ScriptPath)
 					{
 						CurrentScript = projVm;
 
-						DesignScriptView designScriptView = new DesignScriptView()
+						DesignDiagramView DesignDiagramView = new DesignDiagramView()
 						{ DataContext = CurrentScript };
-						DockingScript.AddDocument(CurrentScript, designScriptView);
+						DockingScript.AddDocument(CurrentScript, DesignDiagramView);
 						_designDragDropData.IsIgnor = false;
 						return false;
 					}
 				}
 			}
 
-			foreach (DesignScriptViewModel projVm in DockingScript.DesignScriptsList)
+			foreach (DesignDiagramViewModel projVm in DockingScript.DesignScriptsList)
 			{
-				if (projVm.CurrentScript.ScriptPath == vm.CurrentScript.ScriptPath)
+				if (projVm.DesignDiagram.ScriptPath == vm.DesignDiagram.ScriptPath)
 				{
 					CurrentScript = projVm;
 
-					DesignScriptView designScriptView = new DesignScriptView()
+					DesignDiagramView DesignDiagramView = new DesignDiagramView()
 					{ DataContext = CurrentScript };
-					DockingScript.AddDocument(CurrentScript, designScriptView);
+					DockingScript.AddDocument(CurrentScript, DesignDiagramView);
 					_designDragDropData.IsIgnor = false;
 					return false;
 				}
@@ -330,7 +347,7 @@ namespace ScriptHandler.ViewModels
 			Mouse.OverrideCursor = Cursors.Wait;
 
 			if (CurrentScript != null)
-				CurrentScript.Save(CurrentScript.CurrentScript is TestData);
+				CurrentScript.Save(CurrentScript.DesignDiagram is TestData);
 
 			Mouse.OverrideCursor = null;
 		}
@@ -342,42 +359,42 @@ namespace ScriptHandler.ViewModels
 			LoggerService.Inforamtion(this, "SaveAll start");
 
 			Explorer.SaveProject();
-			foreach (DesignScriptViewModel vm in DockingScript.DesignScriptsList)
+			foreach (DesignDiagramViewModel vm in DockingScript.DesignScriptsList)
 			{
 				SaveSingleScript(vm);
 			}
 
-			foreach (DesignScriptViewModel vm in DockingScript.DesignScriptsList)
+			foreach (DesignDiagramViewModel vm in DockingScript.DesignScriptsList)
 			{
-				vm.IsChangesExist = false;
+				vm.IsChanged = false;
 			}
 
 			Mouse.OverrideCursor = null;
 		}
 
-		private void SaveSingleScript(DesignScriptViewModel vm)
+		private void SaveSingleScript(DesignDiagramViewModel vm)
 		{
 			try
 			{
-				LoggerService.Inforamtion(this, "Save \"" + vm.CurrentScript.Name + "\"");
+				LoggerService.Inforamtion(this, "Save \"" + vm.DesignDiagram.Name + "\"");
 				if (Explorer.Project != null && Explorer.Project.ScriptsList.Contains(vm))
 				{
 					if (Explorer.Project != null)
 						LoggerService.Inforamtion(this, "Project is NULL");
 					else
-						LoggerService.Inforamtion(this, "Script \"" + vm.CurrentScript.Name + "\" was not found in the project");
+						LoggerService.Inforamtion(this, "Script \"" + vm.DesignDiagram.Name + "\" was not found in the project");
 
 					return;
 				}
 
 				vm.Save();
-				vm.IsChangesExist = false;
+				vm.IsChanged = false;
 
-				LoggerService.Inforamtion(this, "Finished saving \"" + vm.CurrentScript.Name + "\"");
+				LoggerService.Inforamtion(this, "Finished saving \"" + vm.DesignDiagram.Name + "\"");
 			}
 			catch (Exception ex)
 			{
-				LoggerService.Error(this, "Failed to save script \"" + vm.CurrentScript.Name + "\"", ex);
+				LoggerService.Error(this, "Failed to save script \"" + vm.DesignDiagram.Name + "\"", ex);
 			}
 		}
 
@@ -386,7 +403,7 @@ namespace ScriptHandler.ViewModels
 
 		public bool SaveIfNeeded()
 		{
-			foreach (DesignScriptViewModel vm in DockingScript.DesignScriptsList)
+			foreach (DesignDiagramViewModel vm in DockingScript.DesignScriptsList)
 			{
 				bool isCancel = vm.SaveIfNeeded();
 				if (isCancel)
@@ -431,8 +448,8 @@ namespace ScriptHandler.ViewModels
 
 				
 
-				foreach(DesignScriptViewModel vm in Explorer.Project.ScriptsList)
-					vm.IsChangesExist = false;
+				foreach(DesignDiagramViewModel vm in Explorer.Project.ScriptsList)
+					vm.IsChanged = false;
 
 
 				if (invalidScriptData.ErrorsList.Count > 0)
@@ -459,12 +476,6 @@ namespace ScriptHandler.ViewModels
 				GenerateToolTip = ex.ToString();
 			}
 
-		}
-
-		private void AddNodeEventHandler(ScriptNodeBase scriptNode)
-		{
-			if(CurrentScript != null)
-				CurrentScript.AddNode(scriptNode, null);
 		}
 
 		private void WhatchErrors()

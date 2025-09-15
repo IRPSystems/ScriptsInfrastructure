@@ -1,0 +1,262 @@
+﻿<UserControl x:Class="ScriptHandler.DesignDiagram.Views.NodePropertiesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"  
+             xmlns:selectors="clr-namespace:ScriptHandler.Selectors"
+             xmlns:converters="clr-namespace:ScriptHandler.Converter"
+             xmlns:local="clr-namespace:ScriptHandler.DesignDiagram.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/DesignerScriptNodeTemplate.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Controls;component/Resources/ButtonWithIcon.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+
+            <selectors:DesignerScriptNodeTemplateSelector x:Key="DesignerScriptNodeTemplateSelector" />
+            <converters:IsChangedToBackgroundConverter x:Key="IsChangedToBackgroundConverter"/>
+            <converters:NodeColorSelectorConverter x:Key="NodeColorSelectorConverter"/>
+
+            
+
+
+            <DataTemplate x:Key="ScriptNodeTemplate">
+
+                <Border BorderBrush="Black" BorderThickness="1" Background="Transparent"
+                        Margin="5">
+                    <Border Name="brdr"
+                            BorderThickness="1"
+                            Background="Transparent">
+
+                        <Border.BorderBrush>
+                            <MultiBinding Converter="{StaticResource NodeColorSelectorConverter}">
+                                <Binding  />
+                                <Binding Path="Description"/>
+                            </MultiBinding>
+                        </Border.BorderBrush>
+
+                        <Grid Margin="5" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="5" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+
+
+                            <Grid Grid.Row="0" Grid.Column="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="5"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" Text="{Binding Description}"
+                                           FontWeight="DemiBold" 
+                                           HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+                                <Menu Grid.Column="2"
+                                      BorderBrush="{DynamicResource MahApps.Brushes.Gray1}"
+                                      BorderThickness="1"
+                                      Padding="0">
+                                    <MenuItem Header="Reports">
+                                        <MenuItem Header="Save To Report"
+                                                  IsCheckable="True" 
+                                                  IsChecked="{Binding EOLReportsSelectionData.IsSaveToReport, 
+                                                                      Mode=TwoWay, 
+                                                                      UpdateSourceTrigger=PropertyChanged}"/>
+
+                                        <MenuItem Header="Save To PDF Main Table"
+                                                  IsCheckable="True" 
+                                                  IsChecked="{Binding EOLReportsSelectionData.IsSaveToPdfExecTable, 
+                                                                      Mode=TwoWay, 
+                                                                      UpdateSourceTrigger=PropertyChanged}"/>
+
+                                        <MenuItem Header="Save To PDF Dynamic Table"
+                                                  IsCheckable="True" 
+                                                  IsChecked="{Binding EOLReportsSelectionData.IsSaveToPdfDynTable, 
+                                                                      Mode=TwoWay, 
+                                                                      UpdateSourceTrigger=PropertyChanged}"/>
+
+                                    </MenuItem>
+                                </Menu>
+                            </Grid>
+
+
+                            <Grid Grid.Row="2" Grid.Column="2" Background="Transparent" AllowDrop="False">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="27"/>
+                                    <RowDefinition Height="10"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="15"/>
+                                    <RowDefinition Height="27"/>
+                                    <RowDefinition Height="5"/>
+                                    <RowDefinition Height="27"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="5"/>
+                                    <ColumnDefinition Width="550"/>
+                                    <ColumnDefinition Width="5"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="User title" VerticalAlignment="Center"/>
+                                <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding UserTitle}" Name="tbUserTitle"/>
+
+                                <ContentControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4"
+                                                Content="{Binding}"
+                                                ContentTemplateSelector="{StaticResource DesignerScriptNodeTemplateSelector}"/>
+
+                                <!--<TextBlock Grid.Row="4" Grid.Column="0" Text="Pass next node" VerticalAlignment="Center"/>
+                                <Grid Grid.Row="4" Grid.Column="2" Width="500">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0"
+                                            BorderBrush="{DynamicResource MahApps.Brushes.Gray6}" BorderThickness="1"
+                                            AllowDrop="True">
+                                        <TextBlock Text="{Binding PassNext.Description}" 
+                                                   VerticalAlignment="Center"
+                                                   Name="tbPassNextNode"/>
+                                    </Border>
+
+                                    <ComboBox Grid.Column="2" 
+                                              ItemsSource="{Binding DataContext.CurrentScript.ScriptItemsList,
+                                                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                              SelectedItem="{Binding PassNext, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Grid.Column="0" Text="{Binding Description}" />
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+
+                                        <i:Interaction.Triggers>
+
+                                            <i:EventTrigger EventName="SelectionChanged">
+                                                <i:InvokeCommandAction Command="{Binding Path=DataContext.PassNext_SelectionChangedCommand, 
+                                                                                         Mode=OneWay, 
+                                                                                         RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" 
+                                                                       PassEventArgsToCommand="True"/>
+                                            </i:EventTrigger>
+
+                                        </i:Interaction.Triggers>
+
+                                    </ComboBox>
+
+                                    <Button Grid.Column="4"
+                                            Style="{StaticResource ButtonWithIconStyle}"
+                                            Width="20"
+                                            ToolTip="Delete next pass step"
+                                            Command="{Binding DataContext.DeleteNextPassCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}">
+                                        <iconPacks:PackIconMaterial Kind="TrashCan" Width="15" Height="15"/>
+                                    </Button>
+
+                                </Grid>-->
+
+                                <!--<TextBlock Grid.Row="6" Grid.Column="0" Text="Fail next node" VerticalAlignment="Center"/>
+                                <Grid Grid.Row="6" Grid.Column="2"
+                                      Width="500">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0"
+                                            BorderBrush="{DynamicResource MahApps.Brushes.Gray6}" BorderThickness="1"
+                                            AllowDrop="True">
+                                        <TextBlock Text="{Binding FailNext.Description}" 
+                                                   VerticalAlignment="Center"
+                                                   Name="tbFailNextNode"/>
+                                    </Border>
+
+                                    <ComboBox Grid.Column="2" 
+                                              ItemsSource="{Binding DataContext.CurrentScript.ScriptItemsList,
+                                                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                              SelectedItem="{Binding FailNext, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Grid.Column="0" Text="{Binding Description}" />
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+
+                                        <i:Interaction.Triggers>
+
+                                            <i:EventTrigger EventName="SelectionChanged">
+                                                <i:InvokeCommandAction Command="{Binding Path=DataContext.FailNext_SelectionChangedCommand, 
+                                                                                         Mode=OneWay, 
+                                                                                         RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" 
+                                                                       PassEventArgsToCommand="True"/>
+                                            </i:EventTrigger>
+
+                                        </i:Interaction.Triggers>
+
+                                    </ComboBox>
+
+                                    <Button Grid.Column="4"
+                                            Style="{StaticResource ButtonWithIconStyle}"
+                                            Width="20"
+                                            ToolTip="Delete next fail step"
+                                            Command="{Binding DataContext.DeleteNextFailCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}">
+                                        <iconPacks:PackIconMaterial Kind="TrashCan" Width="15" Height="15"/>
+                                    </Button>
+
+                                </Grid>-->
+
+                            </Grid>
+
+                        </Grid>
+                    </Border>
+                </Border>
+
+                <DataTemplate.Triggers>
+
+                    <Trigger SourceName="brdr" Property="DataContext" Value="{x:Null}">
+                        <Setter TargetName="brdr" Property="Visibility" Value="Collapsed" />
+                    </Trigger>
+                    
+                </DataTemplate.Triggers>
+
+            </DataTemplate>
+
+        </ResourceDictionary>
+
+    </UserControl.Resources>
+    
+    <Grid>
+        <ContentControl Content="{Binding Node}"
+                        ContentTemplate="{StaticResource ScriptNodeTemplate}">
+
+            <i:Interaction.Triggers>
+
+                <i:EventTrigger EventName="Drop">
+                    <i:InvokeCommandAction Command="{Binding Path=DataContext.ListScript_DropCommand, 
+                                     Mode=OneWay, 
+                                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContentControl}}" 
+                   PassEventArgsToCommand="True"/>
+                </i:EventTrigger>
+
+            </i:Interaction.Triggers>
+
+        </ContentControl>
+    </Grid>
+</UserControl>

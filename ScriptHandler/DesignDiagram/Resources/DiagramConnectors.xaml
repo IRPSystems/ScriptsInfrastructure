@@ -1,0 +1,40 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+
+    <Style TargetType="Path" x:Key="PassConnectorLineStyle">
+        <Setter Property="Stroke" Value="Green"/>
+        <Setter Property="StrokeThickness" Value="1"/>
+    </Style>
+
+    <Style TargetType="Path" x:Key="PassDecoratorFillStyle">
+        <Setter Property="Stroke" Value="Green"/>
+        <Setter Property="Fill" Value="Green"/>
+        <Setter Property="StrokeThickness" Value="1"/>
+        <Setter Property="Stretch" Value="Fill"/>
+        <Setter Property="StrokeLineJoin" Value="Round"/>
+        <Setter Property="StrokeStartLineCap" Value="Round"/>
+        <Setter Property="StrokeEndLineCap" Value="Round"/>
+        <Setter Property="StrokeDashCap" Value="Round"/>
+    </Style>
+
+
+
+    <Style TargetType="Path" x:Key="FailConnectorLineStyle">
+        <Setter Property="Stroke" Value="Red"/>
+        <Setter Property="StrokeThickness" Value="1"/>
+    </Style>
+
+    <Style TargetType="Path" x:Key="FailDecoratorFillStyle">
+        <Setter Property="Stroke" Value="Red"/>
+        <Setter Property="Fill" Value="Red"/>
+        <Setter Property="StrokeThickness" Value="1"/>
+        <Setter Property="Stretch" Value="Fill"/>
+        <Setter Property="StrokeLineJoin" Value="Round"/>
+        <Setter Property="StrokeStartLineCap" Value="Round"/>
+        <Setter Property="StrokeEndLineCap" Value="Round"/>
+        <Setter Property="StrokeDashCap" Value="Round"/>
+    </Style>
+
+</ResourceDictionary>
