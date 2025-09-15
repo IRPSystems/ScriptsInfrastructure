@@ -204,7 +204,7 @@ namespace ScriptHandler.ViewModels
 			OpenProject(openFileDialog.FileName);
 		}
 
-		public void OpenProject(string projectPath)
+		public async void OpenProject(string projectPath)
 		{
 			DockingScript.DesignDocingViewModel_CloseAllTabs(null, null);
 
@@ -253,6 +253,9 @@ namespace ScriptHandler.ViewModels
 			foreach (DesignDiagramViewModel vm in Project.ScriptsList)
 			{
 				vm.ScriptReloadedEvent += ScriptReloadedEventHandler;
+				await vm.DrawNodes();
+
+				vm.IsChanged = false;
 			}
 
 

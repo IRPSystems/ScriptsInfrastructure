@@ -20,7 +20,6 @@
 
 
             <selectors:DesignerScriptNodeTemplateSelector x:Key="DesignerScriptNodeTemplateSelector" />
-            <converters:IsChangedToBackgroundConverter x:Key="IsChangedToBackgroundConverter"/>
             <converters:NodeColorSelectorConverter x:Key="NodeColorSelectorConverter"/>
 
             

@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Controls.Interfaces;
-using ScriptHandler.DesignDiagram.Views;
 using DeviceHandler.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
@@ -11,12 +10,10 @@ using ScriptHandler.Models.ScriptNodes;
 using Services.Services;
 using Syncfusion.UI.Xaml.Diagram;
 using Syncfusion.UI.Xaml.Diagram.Stencil;
-using Syncfusion.Windows.Tools;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.IO.Packaging;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
@@ -126,7 +123,6 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			ChangeDarkLight();
 
 			OffsetY = 50;
-			AddHeaderNode();
 
 			SelectedItems = new SelectorViewModel();
 
@@ -304,6 +300,8 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			_idCounter = 1;
 
 
+			AddHeaderNode();
+
 			LoggerService.Inforamtion(this, "New script created: " + DesignDiagram.Name);
 			
 
@@ -394,7 +392,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 
 		#region Load from file
 
-		public async void Open(string path = null)
+		public void Open(string path = null)
 		{
 			Mouse.OverrideCursor = Cursors.Wait;
 
@@ -503,8 +501,8 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 
 
 
-				SetPassFailNextTool();
-				await InitNods();
+				//SetPassFailNextTool();
+				//await InitNods();
 			}
 			catch (Exception ex)
 			{
@@ -514,6 +512,13 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			IsChanged = false;
 
 			Mouse.OverrideCursor = null;
+		}
+
+		public async Task DrawNodes()
+		{
+			AddHeaderNode();
+			SetPassFailNextTool();
+			await InitNods();
 		}
 
 		private DeviceParameterData GetParameter(
@@ -1022,50 +1027,29 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			if (!(node.Content is ScriptNodeBase tool))
 				return;
 
-			if (e.PropertyName == "IsSelected")
-				return;
-
-			if (e.PropertyName == "OffsetX")
+			if(e.PropertyName == "OffsetX" ||
+				e.PropertyName == "OffsetY" ||
+				e.PropertyName == "UnitWidth" ||
+				e.PropertyName == "UnitHeight")
 			{
 				if (_isInPropertyChanged)
 					return;
 
 				_isInPropertyChanged = true;
-				node.OffsetX = (node.Content as ScriptNodeBase).OffsetX;
+				
+				switch(e.PropertyName)
+				{
+					case "OffsetX": node.OffsetX = (node.Content as ScriptNodeBase).OffsetX; break;
+					case "OffsetY": node.OffsetY = (node.Content as ScriptNodeBase).OffsetY; break;
+					case "UnitWidth": node.UnitWidth = (node.Content as ScriptNodeBase).Width; break;
+					case "UnitHeight": node.UnitHeight = (node.Content as ScriptNodeBase).Height; break;
+				}
+
 				_isInPropertyChanged = false;
+
+				IsChanged = true;
 			}
-
-			if (e.PropertyName == "OffsetY")
-			{
-				if (_isInPropertyChanged)
-					return;
-
-				_isInPropertyChanged = true;
-				node.OffsetY = (node.Content as ScriptNodeBase).OffsetY;
-				_isInPropertyChanged = false;
-			}
-
-			if (e.PropertyName == "UnitWidth")
-			{
-				if (_isInPropertyChanged)
-					return;
-
-				_isInPropertyChanged = true;
-				node.UnitWidth = (node.Content as ScriptNodeBase).Width;
-				_isInPropertyChanged = false;
-			}
-
-			if (e.PropertyName == "UnitHeight")
-			{
-				if (_isInPropertyChanged)
-					return;
-
-				_isInPropertyChanged = true;
-				node.UnitHeight = (node.Content as ScriptNodeBase).Height;
-				_isInPropertyChanged = false;
-			}
-
-			IsChanged = true;
+			
 		}
 
 		private void Tool_PropertyChanged(object sender, PropertyChangedEventArgs e)
