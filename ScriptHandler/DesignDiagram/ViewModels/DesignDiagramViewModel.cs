@@ -405,6 +405,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 
 			try
 			{
+
 				if (path == null)
 				{
 					OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -428,6 +429,18 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 					//IsLoadingScript = true;
 
 					path = openFileDialog.FileName;
+				}
+				else if (File.Exists(path) == false)
+				{
+					LoggerService.Error(this, $"Failed to find the script \"{path}\"", "Error");
+
+					string name = Path.GetFileName(path);
+					string extension = Path.GetExtension(path);
+					Name = name.Replace(extension, string.Empty);
+
+					Mouse.OverrideCursor = null;
+
+					return;
 				}
 
 

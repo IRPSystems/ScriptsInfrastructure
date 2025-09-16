@@ -223,7 +223,7 @@ namespace ScriptHandler.ViewModels
 			{
 				string absPath = GetAbsPath(path);
 
-				fixer.Fix(absPath);
+				
 
 				DesignDiagramViewModel vm = new DesignDiagramViewModel(
 					_scriptUserData, 
