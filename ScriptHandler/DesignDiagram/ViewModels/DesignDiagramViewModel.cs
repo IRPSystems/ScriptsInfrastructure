@@ -539,6 +539,8 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			AddHeaderNode();
 			SetPassFailNextTool();
 			await InitNods();
+
+			IsChanged = false;
 		}
 
 		private DeviceParameterData GetParameter(

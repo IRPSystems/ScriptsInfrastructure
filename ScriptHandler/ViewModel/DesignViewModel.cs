@@ -266,7 +266,7 @@ namespace ScriptHandler.ViewModels
 			}
 		}
 
-		private void OpenDropDownMenuItem(string name)
+		private async void OpenDropDownMenuItem(string name)
 		{
 			try
 			{
@@ -293,6 +293,9 @@ namespace ScriptHandler.ViewModels
 						{ DataContext = CurrentScript };
 						DockingScript.AddDocument(CurrentScript, DesignDiagramView);
 						_designDragDropData.IsIgnor = false;
+
+						await vm.DrawNodes();
+
 						break;
 				}
 			}
