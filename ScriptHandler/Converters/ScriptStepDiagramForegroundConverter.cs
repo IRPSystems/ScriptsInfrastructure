@@ -17,27 +17,27 @@ namespace ScriptHandler.Converter
 		object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			if (value is ScriptNodeSetParameter || value is ScriptStepSetParameter)
-				return Brushes.White;
+				return Brushes.Black;
             if (value is ScriptNodeSaveParameter || value is ScriptStepSaveParameter)
-                return Brushes.White;
+                return Brushes.Black;
             if (value is ScriptStepStartStopSaftyOfficer)
-				return Brushes.White;
+				return Brushes.Black;
 			if (value is ScriptStepStartStopRecording)
-				return Brushes.White;
+				return Brushes.Black;
 			if (value is ScriptNodeSetSaveParameter || value is ScriptStepSetSaveParameter)
-				return Brushes.White;
+				return Brushes.Black;
 			if (value is ScriptNodeScopeSave || value is ScriptStepScopeSave)
 				return Brushes.Black;
 			if (value is ScriptNodeDelay || value is ScriptStepDelay)
-				return Brushes.White;
+				return Brushes.Black;
 			if (value is ScriptNodeDynamicControl || value is ScriptStepDynamicControl)
 				return Brushes.Black;
 			if (value is ScriptNodeCANMessage || value is ScriptStepCANMessage)
-				return Brushes.White;
+				return Brushes.Black;
 			if (value is ScriptNodeSweep || value is ScriptStepSweep)
-				return Brushes.White;
+				return Brushes.Black;
 			if (value is ScriptNodeCompareRange || value is ScriptStepCompareRange)
-				return Brushes.White;
+				return Brushes.Black;
 			if(value is ScriptNodeCompareWithTolerance || value is ScriptStepCompareWithTolerance)
 				return Brushes.Black;
 			if (value is ScriptNodeCompare || value is ScriptStepCompare)
@@ -48,10 +48,10 @@ namespace ScriptHandler.Converter
 			if (value is ScriptNodeStopContinuous || value is ScriptStepStopContinuous)
 				return Brushes.Black;
 			if (value is ScriptNodeCANMessageStop || value is ScriptStepCANMessageStop)
-				return Brushes.White;
+				return Brushes.Black;
 
 			if (value is ScriptNodeCANMessageUpdate || value is ScriptStepCANMessageUpdate)
-				return Brushes.White;
+				return Brushes.Black;
 
 			if (value is ScriptNodeNotification || value is ScriptStepNotification)
 				return Brushes.Black;
@@ -65,23 +65,23 @@ namespace ScriptHandler.Converter
 			if (value is ScriptNodeIncrementValue || value is ScriptStepIncrementValue)
 				return Brushes.Black;
             if (value is ScriptNodeLoopIncrement || value is ScriptStepLoopIncrement)
-                return Brushes.White;
+                return Brushes.Black;
             if (value is ScriptNodeConverge || value is ScriptStepConverge)
-				return Brushes.White;
+				return Brushes.Black;
 			if (value is ScriptNodeEOLFlash || value is ScriptStepEOLFlash)
-				return Brushes.White;
+				return Brushes.Black;
 			if (value is ScriptNodeEOLCalibrate || value is ScriptStepEOLCalibrate)
-				return Brushes.White;
+				return Brushes.Black;
 			if (value is ScriptNodeEOLSendSN || value is ScriptStepEOLSendSN)
-				return Brushes.White;
+				return Brushes.Black;
 			if (value is ScriptNodeEOLPrint || value is ScriptStepEOLPrint)
 				return Brushes.Black;
 			if (value is ScriptNodeCompareBit || value is ScriptStepCompareBit)
-				return Brushes.White;
+				return Brushes.Black;
             if (value is ScriptNodeGetRegisterValues || value is ScriptStepGetRegisterValues)
-                return Brushes.White;
+                return Brushes.Black;
 
-            return Brushes.White;
+            return Brushes.Black;
 
 		}
 
