@@ -619,7 +619,11 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 					xOffset);
 
 				if(isFirstSubScriptTool)
-					AddConnectorToSubString();
+				{
+					var subScriptNode = Nodes[Nodes.Count - 2];
+					var subScriptFirstNode = Nodes[Nodes.Count - 1];
+					AddConnectorToSubString(subScriptNode, subScriptFirstNode);
+				}
 				
 
 				isFirstSubScriptTool = false;
@@ -630,10 +634,11 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			}
 		}
 
-		private void AddConnectorToSubString()
+		private void AddConnectorToSubString(
+			NodeViewModel subScriptNode,
+			NodeViewModel subScriptFirstNode)
 		{
-			var subScriptNode = Nodes[Nodes.Count - 2];
-			var subScriptFirstNode = Nodes[Nodes.Count - 1];
+			
 
 			NodePortViewModel port = new NodePortViewModel()
 			{
@@ -1318,10 +1323,6 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 				return;
 
 			DropListOfObject(dragNodeList, nodeVMDropedOn);
-
-			ReAragneNodex();
-			SetAllPassNext();
-			InitNextArrows();
 		}
 
 		private List<NodeViewModel> GetListOfNodesToDrop(
@@ -1371,6 +1372,19 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 		{
 			int dropedOnIndex = Nodes.IndexOf(nodeVMDropedOn);
 
+			int firstDroppedIndex = Nodes.IndexOf(dragNodeList[0] as NodeViewModel);
+			bool isUp = firstDroppedIndex > dropedOnIndex;
+
+			if(dropedOnIndex >= 0)
+			{
+				GetNodeAndIndexForSubScript(
+					isUp,
+					ref dropedOnIndex,
+					ref nodeVMDropedOn);
+			}
+
+
+
 			List<NodeViewModel> tempList = GetListOfNodesToDrop(
 				dragNodeList);
 
@@ -1390,6 +1404,63 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 				if (dropedIndex > dropedOnIndex)
 					dropedOnIndex++;
 			}
+
+			ReAragneNodex();
+			SetAllPassNext();
+			InitNextArrows();
+		}
+
+		private void GetNodeAndIndexForSubScript(
+			bool isUp,
+			ref int dropedOnIndex,
+			ref NodeViewModel nodeVMDropedOn)
+		{
+			// The droped on node is part of sub-script
+			if (nodeVMDropedOn.OffsetX > _toolOffsetX)
+			{
+				// Since we're moving UP, we need to find the 
+				// node of the START of the sub-script
+				if (isUp)
+				{
+					for (int i = dropedOnIndex; i >= 0; i--)
+					{
+						if (Nodes[i].Content is ScriptNodeSubScript)
+						{
+							nodeVMDropedOn = Nodes[i];
+							dropedOnIndex = Nodes.IndexOf(nodeVMDropedOn);
+							break;
+						}
+					}
+				}
+				// Since we're moving DOWN, we need to find the 
+				// node of the END of the sub-script
+				else
+				{
+					for (int i = dropedOnIndex; i < Nodes.Count; i++)
+					{
+						if (nodeVMDropedOn.OffsetX == _toolOffsetX)
+						{
+							nodeVMDropedOn = Nodes[i];
+							dropedOnIndex = Nodes.IndexOf(nodeVMDropedOn);
+							break;
+						}
+					}
+				}
+
+				return;
+			}
+
+			if(nodeVMDropedOn.Content is ScriptNodeSubScript subScript)
+			{
+				// If we're going down, we need to find the
+				// last item of the sub-script
+				if (!isUp)
+				{
+					dropedOnIndex += subScript.Script.ScriptItemsList.Count;
+					nodeVMDropedOn = Nodes[dropedOnIndex];
+				}
+			}
+
 		}
 
 		private void DropSingleObject(
@@ -1423,6 +1494,19 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 
 				if (!(Nodes[i + 1].Content is ScriptNodeBase secondNode))
 					continue;
+
+				if(firstNode is ScriptNodeSubScript subScript)
+				{
+					AddConnectorToSubString(Nodes[i], Nodes[i + 1]);
+					int secondIndex = i + subScript.Script.ScriptItemsList.Count + 1;
+					if (secondIndex < Nodes.Count - 1)
+						secondNode = (Nodes[secondIndex].Content as ScriptNodeBase);
+				}
+				if (Nodes[i].OffsetX > _toolOffsetX &&
+					Nodes[i + 1].OffsetX == _toolOffsetX)
+				{
+					continue;
+				}
 
 				firstNode.PassNext = secondNode;
 			}
@@ -1490,60 +1574,68 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			{
 				LoggerService.Inforamtion(this, "Moving node UP");
 
-				List<NodeViewModel> objectsToMove = new List<NodeViewModel>();
+				ObservableCollection<object> objectsToMove = new ObservableCollection<object>();
 				foreach (var item in (SelectedItems.Nodes as ObservableCollection<object>))
 				{
 					if (item is NodeViewModel nodeViewModel)
-						objectsToMove.Add(nodeViewModel);
+					{
+						if (nodeViewModel.OffsetX > _toolOffsetX) // Don't allow draging nodes of sub scripts
+							continue;
+					}
+
+					objectsToMove.Add(item);
 				}
 
-				objectsToMove.Sort((a, b) => Nodes.IndexOf(a).CompareTo(Nodes.IndexOf(b)));
+				objectsToMove.ToList().Sort((a, b) => 
+					Nodes.IndexOf(a as NodeViewModel).CompareTo(Nodes.IndexOf(b as NodeViewModel)));
 
-				int dropedOnIndex = 0;
-				if (isUp)
+				NodeViewModel node = GetIndexToMoveTo(
+					objectsToMove,
+					isUp);
+
+				DropListOfObject(
+					objectsToMove,
+					node);
+
+				// Re-select the moved nodes
+				foreach (var item in objectsToMove)
 				{
-					dropedOnIndex = Nodes.IndexOf(objectsToMove[0]);
-					if (dropedOnIndex == 1)
-						return;
-
-					dropedOnIndex--;
+					if(item is NodeViewModel nodeViewModel)
+						nodeViewModel.IsSelected = true;
 				}
-				else
-				{
-					dropedOnIndex = Nodes.IndexOf(objectsToMove[objectsToMove.Count - 1]);
-					if (dropedOnIndex == (Nodes.Count - 1))
-						return;
-
-					dropedOnIndex++;
-				}
-
-
-
-				foreach (NodeViewModel node in objectsToMove)
-				{
-					int dropedIndex = Nodes.IndexOf(node);
-
-					DropSingleObject(
-						node,
-						dropedOnIndex);
-
-					if (dropedIndex > dropedOnIndex)
-						dropedOnIndex++;
-				}
-
-				foreach (NodeViewModel node in objectsToMove)
-					node.IsSelected = true;
-
-
-				ReAragneNodex();
-				SetAllPassNext();
-				InitNextArrows();
 
 			}
 			catch (Exception ex)
 			{
 				LoggerService.Error(this, "Failed to move node up", "Up/Down Error", ex);
 			}
+		}
+
+		private NodeViewModel GetIndexToMoveTo(
+			ObservableCollection<object> objectsToMove,
+			bool isUp)
+		{
+			int dropedOnIndex = 0;
+			if (isUp)
+			{
+				dropedOnIndex = Nodes.IndexOf(objectsToMove[0] as NodeViewModel);
+				if (dropedOnIndex == 1)
+					return null;
+
+				dropedOnIndex--;
+			}
+			else
+			{
+				dropedOnIndex = Nodes.IndexOf(objectsToMove[objectsToMove.Count - 1] as NodeViewModel);
+				if (dropedOnIndex == (Nodes.Count - 1))
+					return null;
+
+				dropedOnIndex++;
+			}
+
+			NodeViewModel node = Nodes[dropedOnIndex];
+
+			return node;
 		}
 
 		#endregion Up/Down
