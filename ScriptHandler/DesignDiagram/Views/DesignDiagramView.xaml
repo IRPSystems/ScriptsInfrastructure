@@ -49,13 +49,28 @@
             <StackPanel Grid.Row="0" Orientation="Horizontal">
 
                 <Button Style="{StaticResource ButtonWithIconStyle}"
-                    Width="25"
-                    Height="25"
-                    Margin="0,0,5,0"
-                    ToolTip="Save dashborad"
-                    Command="{Binding SaveDiagramCommand}"
-                    VerticalAlignment="Center">
-                    <iconPacks:Material Kind="ContentSave" />
+                         Width="25" Height="25"
+                        Margin="0,0,2,0"
+                        ToolTip="Move script node up"
+                        Command="{Binding MoveNodeUpCommand}">
+                    <iconPacks:PackIconMaterial Kind="ArrowUp" Width="20" Height="20"/>
+                </Button>
+
+                <Button Style="{StaticResource ButtonWithIconStyle}"
+                         Width="25" Height="25"
+                        Margin="0,0,2,0"
+                        ToolTip="Move script node down"
+                        Command="{Binding MoveNodeDownCommand}">
+                    <iconPacks:PackIconMaterial Kind="ArrowDown" Width="20" Height="20"/>
+                </Button>
+
+                <Button Style="{StaticResource ButtonWithIconStyle}"
+                        Width="25" Height="25"
+                        Margin="0,0,2,0"
+                        ToolTip="Export to Word document"
+                        Command="{Binding ExportScriptToPDFCommand}"
+                        CommandParameter="{Binding ElementName=diagram}">
+                    <iconPacks:PackIconMaterial Kind="FileExport" Width="20" Height="20"/>
                 </Button>
 
             </StackPanel>

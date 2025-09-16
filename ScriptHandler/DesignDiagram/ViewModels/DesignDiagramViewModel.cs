@@ -26,6 +26,7 @@ using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using Entities.Enums;
 using ScriptHandler.Services;
+using System.Collections;
 
 namespace ScriptHandler.DesignDiagram.ViewModels
 {
@@ -85,6 +86,8 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 
 		private ScriptValidationService _scriptValidation;
 
+		private ExportDiagramService _exportDiagram;
+
 		#endregion Fields
 
 		#region Constructor
@@ -109,12 +112,16 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			Connectors = new ConnectorCollection();
 
 			_scriptValidation = new ScriptValidationService();
+			_exportDiagram = new ExportDiagramService();
 
 			ItemAddedCommand = new RelayCommand<object>(ItemAdded);
 			ItemDeletedCommand = new RelayCommand<object>(ItemDeleted);
 			ItemSelectedCommand = new RelayCommand<object>(ItemSelected);
 			ConnectorSourceChangedCommand = new RelayCommand<object>(ConnectorSourceChanged);
 			ConnectorTargetChangedCommand = new RelayCommand<object>(ConnectorTargetChanged);
+			MoveNodeUpCommand = new RelayCommand(MoveNodeUp);
+			MoveNodeDownCommand = new RelayCommand(MoveNodeDown);
+			ExportScriptToPDFCommand = new RelayCommand<SfDiagram>(ExportScriptToPDF);
 
 			SaveDiagramCommand = new RelayCommand(Save);
 
@@ -1465,6 +1472,91 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			AddConnector_Fail(node, nextNode);
 		}
 
+		#region Up/Down
+
+		private void MoveNodeUp()
+		{
+			MoveNode(true);
+		}
+
+		private void MoveNodeDown()
+		{
+			MoveNode(false);
+		}
+
+		private void MoveNode(bool isUp)
+		{
+			try
+			{
+				LoggerService.Inforamtion(this, "Moving node UP");
+
+				List<NodeViewModel> objectsToMove = new List<NodeViewModel>();
+				foreach (var item in (SelectedItems.Nodes as ObservableCollection<object>))
+				{
+					if (item is NodeViewModel nodeViewModel)
+						objectsToMove.Add(nodeViewModel);
+				}
+
+				objectsToMove.Sort((a, b) => Nodes.IndexOf(a).CompareTo(Nodes.IndexOf(b)));
+
+				int dropedOnIndex = 0;
+				if (isUp)
+				{
+					dropedOnIndex = Nodes.IndexOf(objectsToMove[0]);
+					if (dropedOnIndex == 1)
+						return;
+
+					dropedOnIndex--;
+				}
+				else
+				{
+					dropedOnIndex = Nodes.IndexOf(objectsToMove[objectsToMove.Count - 1]);
+					if (dropedOnIndex == (Nodes.Count - 1))
+						return;
+
+					dropedOnIndex++;
+				}
+
+
+
+				foreach (NodeViewModel node in objectsToMove)
+				{
+					int dropedIndex = Nodes.IndexOf(node);
+
+					DropSingleObject(
+						node,
+						dropedOnIndex);
+
+					if (dropedIndex > dropedOnIndex)
+						dropedOnIndex++;
+				}
+
+				foreach (NodeViewModel node in objectsToMove)
+					node.IsSelected = true;
+
+
+				ReAragneNodex();
+				SetAllPassNext();
+				InitNextArrows();
+
+			}
+			catch (Exception ex)
+			{
+				LoggerService.Error(this, "Failed to move node up", "Up/Down Error", ex);
+			}
+		}
+
+		#endregion Up/Down
+
+
+		private void ExportScriptToPDF(SfDiagram sfDiagram)
+		{
+			if (DesignDiagram == null)
+				return;
+
+			_exportDiagram.Export(DesignDiagram.ScriptPath, Name, sfDiagram);
+		}
+
 		#endregion Methods
 
 		#region Commands
@@ -1474,6 +1566,10 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 		public RelayCommand<object> ItemSelectedCommand { get; private set; }
 		public RelayCommand<object> ConnectorSourceChangedCommand { get; private set; }
 		public RelayCommand<object> ConnectorTargetChangedCommand { get; private set; }
+
+		public RelayCommand MoveNodeUpCommand { get; private set; }
+		public RelayCommand MoveNodeDownCommand { get; private set; }
+		public RelayCommand<SfDiagram> ExportScriptToPDFCommand { get; private set; }
 
 
 		public RelayCommand SaveDiagramCommand { get; private set; }

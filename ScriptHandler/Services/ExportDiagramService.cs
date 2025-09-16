@@ -65,6 +65,7 @@ namespace ScriptHandler.Services
 				}
 			}
 
+			diagram.ExportSettings = new ExportSettings();
 			diagram.ExportSettings.ExportStream = new MemoryStream();
 			diagram.Export();
 
