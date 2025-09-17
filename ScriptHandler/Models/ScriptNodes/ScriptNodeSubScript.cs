@@ -1,6 +1,7 @@
 ﻿
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DeviceHandler.Models;
 using Newtonsoft.Json;
 using ScriptHandler.Enums;
@@ -92,6 +93,7 @@ namespace ScriptHandler.Models.ScriptNodes
 			get => _script;
 			set
 			{
+				_prevScript = _script;
 				if (value == null)
 				{
 					_script = value;
@@ -129,6 +131,8 @@ namespace ScriptHandler.Models.ScriptNodes
 			IsStopOnFail = true;
 			IsStopOnPass = false;
 			ContinueUntilType = SubScriptContinueUntilTypeEnum.Repeats;
+
+			Script_SelectionChangedCommand = new RelayCommand(Script_SelectionChanged);
 		}
 
 
@@ -150,6 +154,20 @@ namespace ScriptHandler.Models.ScriptNodes
 
 			return false;
 		}
+
+		private IScript _prevScript;
+		private void Script_SelectionChanged()
+		{
+			if (_prevScript == _script || _script == null)
+				return;
+
+			_prevScript = _script;
+			ScriptChangedEvent?.Invoke();
+		}
+
+		public RelayCommand Script_SelectionChangedCommand { get; private set; }
+
+		public event Action ScriptChangedEvent;
 
 	}
 }
