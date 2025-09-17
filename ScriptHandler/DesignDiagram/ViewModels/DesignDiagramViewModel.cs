@@ -1176,7 +1176,8 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			DesignDiagram.ScriptItemsList.Remove(node.Content as ScriptNodeBase);
 			
 
-			if(node.Content is ScriptNodeSubScript subScript)
+			if(node.Content is ScriptNodeSubScript subScript &&
+				subScript.Script != null && subScript.Script.ScriptItemsList != null)
 			{
 				foreach(ScriptNodeBase tool in subScript.Script.ScriptItemsList)
 				{
@@ -1364,6 +1365,9 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			List<NodeViewModel> tempList,
 			ScriptNodeSubScript subScript)
 		{
+			if(subScript.Script == null || subScript.Script.ScriptItemsList == null) 
+				return;
+
 			foreach (IScriptItem step in subScript.Script.ScriptItemsList)
 			{
 				NodeViewModel stepNode = Nodes.ToList().Find((n) => n.Content == step);
@@ -1485,15 +1489,19 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			NodeViewModel temp = dropedNode;
 			int dragedIndex = Nodes.IndexOf(dropedNode);
 			Nodes.RemoveAt(dragedIndex);
-
+			
 
 			if (dropedOnIndex < 0)
 			{
 				Nodes.Add(temp);
+				DesignDiagram.ScriptItemsList.Add(temp.Content as ScriptNodeBase);
 			}
 			else
 			{
 				Nodes.Insert(dropedOnIndex, dropedNode);
+				DesignDiagram.ScriptItemsList.Insert(
+					dropedOnIndex - 1, 
+					temp.Content as ScriptNodeBase);
 			}
 		}
 
@@ -1512,8 +1520,14 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 
 				if(firstNode is ScriptNodeSubScript subScript)
 				{
-					AddConnectorToSubString(Nodes[i], Nodes[i + 1]);
-					int secondIndex = i + subScript.Script.ScriptItemsList.Count + 1;
+					int secondIndex = i + 1;
+
+					if (subScript.Script != null && subScript.Script.ScriptItemsList != null)
+					{
+						AddConnectorToSubString(Nodes[i], Nodes[i + 1]);
+						secondIndex += subScript.Script.ScriptItemsList.Count;
+					}
+
 					if (secondIndex < Nodes.Count - 1)
 						secondNode = (Nodes[secondIndex].Content as ScriptNodeBase);
 				}
