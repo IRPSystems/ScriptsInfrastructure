@@ -579,7 +579,6 @@ namespace ScriptHandler.ViewModels
 
 					subScript.Script = null;
 					subScript.SelectedScriptName = null;
-					isSubScriptChanged = true;
 				}
 			}
 		}
