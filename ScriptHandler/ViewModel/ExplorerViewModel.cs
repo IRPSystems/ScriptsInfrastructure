@@ -204,7 +204,7 @@ namespace ScriptHandler.ViewModels
 			OpenProject(openFileDialog.FileName);
 		}
 
-		public async void OpenProject(string projectPath)
+		public void OpenProject(string projectPath)
 		{
 			DockingScript.DesignDocingViewModel_CloseAllTabs(null, null);
 
@@ -253,7 +253,7 @@ namespace ScriptHandler.ViewModels
 			foreach (DesignDiagramViewModel vm in Project.ScriptsList)
 			{
 				vm.ScriptReloadedEvent += ScriptReloadedEventHandler;
-				await vm.DrawNodes();
+				vm.DrawNodes();
 
 				vm.IsChanged = false;
 			}
@@ -569,7 +569,6 @@ namespace ScriptHandler.ViewModels
 			DesignDiagramViewModel scriptVM,
 			DesignDiagramViewModel deletedScript)
 		{
-			bool isSubScriptChanged = false;
 			foreach(ScriptNodeBase node in scriptVM.DesignDiagram.ScriptItemsList)
 			{
 				if(node is ScriptNodeSubScript subScript)

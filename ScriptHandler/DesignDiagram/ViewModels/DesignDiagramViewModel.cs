@@ -534,11 +534,11 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			Mouse.OverrideCursor = null;
 		}
 
-		public async Task DrawNodes()
+		public void DrawNodes()
 		{
 			AddHeaderNode();
 			SetPassFailNextTool();
-			await InitNods();
+			InitNods();
 
 			IsChanged = false;
 		}
@@ -562,7 +562,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			return data;
 		}
 
-		private async Task InitNods()
+		private void InitNods()
 		{
 			foreach (ScriptNodeBase tool in DesignDiagram.ScriptItemsList)
 			{
@@ -574,8 +574,8 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 					AddSubScript(tool, _toolOffsetX);
 				}
 
-				//System.Threading.Thread.Sleep(1);
-				await Task.Delay(1);
+				System.Threading.Thread.Sleep(1);
+				//await Task.Delay(1);
 			}
 
 			InitNextArrows();
@@ -793,11 +793,21 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			}
 
 			if((node.Content as ScriptNodeBase) != null)
+			{
 				(node.Content as ScriptNodeBase).PropertyChanged += Tool_PropertyChanged;
+
+				if(node.Content is ScriptNodeSubScript subScript)
+					subScript.ScriptChangedEvent += SubScript_ScriptChangedEvent;
+			}
 
 			SetScriptDataToNode(node.Content as ScriptNodeBase);
 
 			IsChanged = true;
+		}
+
+		private void SubScript_ScriptChangedEvent()
+		{
+			throw new NotImplementedException();
 		}
 
 		private void SetNextPassConnector(
@@ -1676,6 +1686,13 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 				return;
 
 			_exportDiagram.Export(DesignDiagram.ScriptPath, Name, sfDiagram);
+		}
+
+
+
+		private void SubScript_ScriptChangedEvent()
+		{
+			throw new NotImplementedException();
 		}
 
 		#endregion Methods

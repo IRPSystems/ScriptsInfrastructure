@@ -281,7 +281,18 @@
                         <TextBlock Text="{Binding Name}" />
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
-                
+
+                <i:Interaction.Triggers>
+
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding Path=DataContext.Script_SelectionChangedCommand, 
+                                             Mode=OneWay, 
+                                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ComboBox}}" 
+                           PassEventArgsToCommand="True"/>
+                    </i:EventTrigger>
+
+                </i:Interaction.Triggers>
+
             </ComboBox>
 
             <TextBlock Grid.Row="2" Grid.Column="0" Text="Stop mode" VerticalAlignment="Center"/>
