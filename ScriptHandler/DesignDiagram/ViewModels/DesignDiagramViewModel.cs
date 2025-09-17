@@ -571,7 +571,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 
 				if(tool is ScriptNodeSubScript)
 				{
-					AddSubString(tool, _toolOffsetX);
+					AddSubScript(tool, _toolOffsetX);
 				}
 
 				//System.Threading.Thread.Sleep(1);
@@ -608,7 +608,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			}
 		}
 
-		private void AddSubString(
+		private void AddSubScript(
 			ScriptNodeBase tool,
 			double xOffset)
 		{
@@ -644,7 +644,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 				isFirstSubScriptTool = false;
 
 				if (subTool is ScriptNodeSubScript subScript2)
-					AddSubString(subTool, xOffset);
+					AddSubScript(subTool, xOffset);
 
 			}
 		}
