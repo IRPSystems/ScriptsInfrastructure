@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using ScriptHandler.DesignDiagram.ViewModels;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
+using Syncfusion.DocIO.DLS;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -190,13 +191,38 @@ namespace ScriptHandler.Models.ScriptNodes
 			if (Script == null)
 				return DesignDiagramViewModel.ToolHeight;
 
-			double height = (DesignDiagram.Nodes.Count * DesignDiagramViewModel.BetweenTools) +
-					DesignDiagramViewModel.BetweenTools +
-					10;
+			double height = DesignDiagramViewModel.ToolHeight;
 
-			DesignDiagramHeight = height - DesignDiagramViewModel.BetweenTools;
+			DesignDiagramHeight = 0;
+			foreach (IScriptItem item in Script.ScriptItemsList)
+			{
+				if (item is ScriptNodeSubScript subScript)
+					DesignDiagramHeight += subScript.GetHeight();
+				else
+					DesignDiagramHeight += DesignDiagramViewModel.BetweenTools;
+			}
+
+			DesignDiagramHeight += 20;
+
+			height += DesignDiagramHeight;
 
 			return height;
+		}
+
+		public double GetWidth()
+		{
+			if (Script == null)
+				return DesignDiagramViewModel.ToolWidth;
+
+			double width = DesignDiagramViewModel.ToolWidth +
+				DesignDiagramViewModel.ToolWidth * 0.33;
+			foreach(IScriptItem item in Script.ScriptItemsList)
+			{
+				if(item is ScriptNodeSubScript subScript)
+					width += subScript.GetWidth() * 0.33;
+			}
+
+			return width + 50;
 		}
 
 		#endregion Methods

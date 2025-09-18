@@ -45,12 +45,7 @@ namespace ScriptHandler.Services
 			if (item is ScriptNodeScopeSave || item is ScriptStepScopeSave)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#A8AACF");
 			if (item is ISubScript subScript)
-			{
-				if (subScript.Script == null)
-					return Brushes.Red;
-				else
-					return (SolidColorBrush)new BrushConverter().ConvertFrom("#A8C6E2");
-			}
+				return (SolidColorBrush)new BrushConverter().ConvertFrom("#A8C6E2");
 			if (item is ScriptNodeIncrementValue || item is ScriptStepIncrementValue)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#A8D6DD");
             if (item is ScriptNodeLoopIncrement || item is ScriptStepLoopIncrement)

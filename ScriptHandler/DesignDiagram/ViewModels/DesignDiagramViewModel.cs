@@ -71,7 +71,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 		private bool _isInPropertyChanged;
 
 		public const double ToolHeight = 35;
-		private const double _toolWidth = 300;
+		public const double ToolWidth = 300;
 		public const double BetweenTools = 45;
 		private const double _toolOffsetX = 100;
 
@@ -172,7 +172,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 		{
 			if (_isSubScript)
 			{
-				OffsetY = 0;
+				OffsetY = 5;
 				return;
 			}
 
@@ -181,7 +181,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			node.ContentTemplate = 
 				Application.Current.FindResource("ScriptLogDiagramTemplate_Script") as DataTemplate;
 			node.UnitHeight = 50;
-			node.UnitWidth = _toolWidth;
+			node.UnitWidth = ToolWidth;
 
 			node.OffsetX = 50;
 			node.OffsetY = OffsetY;
@@ -699,7 +699,14 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			
 
 			SetNodeTemplateAndSize(node, toolName, xOffset);
-			SetPorts(node);
+
+			if (node.Content is ScriptNodeSubScript subScript)
+			{
+				subScript.ScriptChangedEvent += SubScript_ScriptChangedEvent;
+				SetPorts_SubScript(node);
+			}
+			else
+				SetPorts(node);
 			
 
 			node.PropertyChanged += Node_PropertyChanged;
@@ -715,8 +722,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 				(node.Content as ScriptNodeBase).PropertyChanged += Tool_PropertyChanged;
 			}
 
-			if (node.Content is ScriptNodeSubScript subScript)
-				subScript.ScriptChangedEvent += SubScript_ScriptChangedEvent; ;
+			
 
 			SetScriptDataToNode(node.Content as ScriptNodeBase);
 
@@ -821,6 +827,49 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			(node.Ports as PortCollection).Add(port);
 		}
 
+		private void SetPorts_SubScript(NodeViewModel node)
+		{
+			double y1 = 0.25;
+			double y2 = 0.75;
+
+			if(node.Content is ScriptNodeSubScript subScript &&
+				subScript.Script != null)
+			{
+				double height = subScript.GetHeight();
+				double scriptNode = 35 / height;
+				y1 = scriptNode * 0.25;
+				y2 = scriptNode * 0.75;
+			}
+
+			NodePortViewModel port = new NodePortViewModel()
+			{				 
+				NodeOffsetX = 0,
+				NodeOffsetY = y1,
+			};
+			(node.Ports as PortCollection).Add(port);
+
+			port = new NodePortViewModel()
+			{
+				NodeOffsetX = 0,
+				NodeOffsetY = y2,
+			};
+			(node.Ports as PortCollection).Add(port);
+
+			port = new NodePortViewModel()
+			{
+				NodeOffsetX = 1,
+				NodeOffsetY = y1,
+			};
+			(node.Ports as PortCollection).Add(port);
+
+			port = new NodePortViewModel()
+			{
+				NodeOffsetX = 1,
+				NodeOffsetY = y2,
+			};
+			(node.Ports as PortCollection).Add(port);
+		}
+
 		private void SetContent(
 			NodeViewModel node,
 			string toolName)
@@ -874,12 +923,12 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			if (node.Content is ScriptNodeSubScript)
 			{
 				node.UnitHeight += (node.Content as ScriptNodeSubScript).GetHeight();
-				node.UnitWidth = _toolWidth + 110;
+				node.UnitWidth = (node.Content as ScriptNodeSubScript).GetWidth();
 			}
 			else
 			{
 				node.UnitHeight = ToolHeight;
-				node.UnitWidth = _toolWidth;
+				node.UnitWidth = ToolWidth;
 			}
 
 			node.OffsetX = xOffset;
@@ -892,7 +941,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 				else
 					(node.Content as ScriptNodeBase).Height = ToolHeight;
 
-				(node.Content as ScriptNodeBase).Width = _toolWidth;
+				(node.Content as ScriptNodeBase).Width = ToolWidth;
 				(node.Content as ScriptNodeBase).OffsetX = xOffset;
 				(node.Content as ScriptNodeBase).OffsetY = OffsetY;
 			}
@@ -1439,8 +1488,22 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 				return;
 
 			nodeViewModel.UnitHeight = subScript.GetHeight();
+			nodeViewModel.UnitWidth = subScript.GetWidth();
+
+			if ((nodeViewModel.Ports as PortCollection).Count > 0)
+			{
+				try
+				{
+					(nodeViewModel.Ports as PortCollection).Clear(); 
+				}
+				catch { }
+			}
+
+			SetPorts_SubScript(nodeViewModel);
 
 			ReAragneNodes();
+			SetAllPassNext();
+			InitNextArrows();
 		}
 
 
