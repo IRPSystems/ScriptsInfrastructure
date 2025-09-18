@@ -136,6 +136,7 @@ namespace ScriptHandler.Models.ScriptNodes
 		[JsonIgnore]
 		public DesignDiagramViewModel DesignDiagram { get; set; }
 		public double DesignDiagramHeight { get; set; }
+		public double DesignDiagramWidth { get; set; }
 
 		#endregion Properties
 
@@ -206,7 +207,7 @@ namespace ScriptHandler.Models.ScriptNodes
 
 			height += DesignDiagramHeight;
 
-			return height;
+			return height + 10;
 		}
 
 		public double GetWidth()
@@ -214,15 +215,33 @@ namespace ScriptHandler.Models.ScriptNodes
 			if (Script == null)
 				return DesignDiagramViewModel.ToolWidth;
 
+
 			double width = DesignDiagramViewModel.ToolWidth +
 				DesignDiagramViewModel.ToolWidth * 0.33;
 			foreach(IScriptItem item in Script.ScriptItemsList)
 			{
 				if(item is ScriptNodeSubScript subScript)
-					width += subScript.GetWidth() * 0.33;
+					width += subScript.GetWidth() * 0.33 + 10;
 			}
 
+			width += 50;
+			DesignDiagramWidth = width;
+
 			return width + 50;
+		}
+
+		public void InitNextArrows()
+		{
+			DesignDiagram.InitNextArrows();
+
+			if(Script == null) 
+				return;
+
+			foreach (IScriptItem item in Script.ScriptItemsList)
+			{
+				if (item is ScriptNodeSubScript subScript)
+					subScript.InitNextArrows();
+			}
 		}
 
 		#endregion Methods

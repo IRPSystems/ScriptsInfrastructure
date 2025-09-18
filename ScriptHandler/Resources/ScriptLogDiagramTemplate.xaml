@@ -243,19 +243,23 @@
             </Border>
 
             <Line Grid.Row="1" Y1="1" Stretch="Fill" 
-                      Stroke="{DynamicResource MahApps.Brushes.Gray3}" 
-                      StrokeThickness="2"/>
+                  Stroke="{DynamicResource MahApps.Brushes.Gray3}" 
+                  StrokeThickness="2"
+                  HorizontalAlignment="Left"
+                  Margin="250,0,0,0"/>
 
             <syncfusion:SfDiagram Grid.Row="2"
                                   Name="diagram"
+                                  HorizontalAlignment="Left"
                                   DefaultConnectorType="Orthogonal"
                                   Nodes="{Binding DesignDiagram.Nodes}"
-                                  Connectors="{Binding DesignDiagram.Connectors}"                      
+                                  Connectors="{Binding DesignDiagram.Connectors}"    
+                                  PageSettings="{Binding DesignDiagram.PageSettings}"                 
                                   Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                                   IsEnabled="False"
                                   Height="{Binding DesignDiagramHeight}"
-                                  BorderBrush="{DynamicResource MahApps.Brushes.Gray8}"
-                                  BorderThickness="1" 
+                                  Width="{Binding DesignDiagramWidth}"
+                                  
                                   ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                                   ScrollViewer.VerticalScrollBarVisibility="Hidden"/>
 

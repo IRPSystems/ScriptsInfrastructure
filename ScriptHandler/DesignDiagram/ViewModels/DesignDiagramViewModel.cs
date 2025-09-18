@@ -701,12 +701,9 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			SetNodeTemplateAndSize(node, toolName, xOffset);
 
 			if (node.Content is ScriptNodeSubScript subScript)
-			{
 				subScript.ScriptChangedEvent += SubScript_ScriptChangedEvent;
-				SetPorts_SubScript(node);
-			}
-			else
-				SetPorts(node);
+			
+			SetPorts(node);
 			
 
 			node.PropertyChanged += Node_PropertyChanged;
@@ -798,41 +795,10 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 
 		private void SetPorts(NodeViewModel node)
 		{
-			NodePortViewModel port = new NodePortViewModel()
-			{
-				NodeOffsetX = 0,
-				NodeOffsetY = 0.25,
-			};
-			(node.Ports as PortCollection).Add(port);
-
-			port = new NodePortViewModel()
-			{
-				NodeOffsetX = 0,
-				NodeOffsetY = 0.75,
-			};
-			(node.Ports as PortCollection).Add(port);
-
-			port = new NodePortViewModel()
-			{
-				NodeOffsetX = 1,
-				NodeOffsetY = 0.25,
-			};
-			(node.Ports as PortCollection).Add(port);
-
-			port = new NodePortViewModel()
-			{
-				NodeOffsetX = 1,
-				NodeOffsetY = 0.75,
-			};
-			(node.Ports as PortCollection).Add(port);
-		}
-
-		private void SetPorts_SubScript(NodeViewModel node)
-		{
 			double y1 = 0.25;
 			double y2 = 0.75;
 
-			if(node.Content is ScriptNodeSubScript subScript &&
+			if (node.Content is ScriptNodeSubScript subScript &&
 				subScript.Script != null)
 			{
 				double height = subScript.GetHeight();
@@ -842,7 +808,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			}
 
 			NodePortViewModel port = new NodePortViewModel()
-			{				 
+			{
 				NodeOffsetX = 0,
 				NodeOffsetY = y1,
 			};
@@ -1278,7 +1244,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 					dropedOnIndex);
 
 				if (node.Content is ScriptNodeSubScript subScript && subScript.Script != null)
-					subScript.DesignDiagram.InitNextArrows();
+					subScript.InitNextArrows();
 
 				if (dropedIndex > dropedOnIndex)
 					dropedOnIndex++;
@@ -1329,7 +1295,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			}
 		}
 
-		private void InitNextArrows()
+		public void InitNextArrows()
 		{
 			List<ConnectorViewModel> list = new List<ConnectorViewModel>();
 			foreach(var connector in Connectors)
@@ -1488,7 +1454,6 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 				return;
 
 			nodeViewModel.UnitHeight = subScript.GetHeight();
-			nodeViewModel.UnitWidth = subScript.GetWidth();
 
 			if ((nodeViewModel.Ports as PortCollection).Count > 0)
 			{
@@ -1499,11 +1464,14 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 				catch { }
 			}
 
-			SetPorts_SubScript(nodeViewModel);
+			SetPorts(nodeViewModel);
 
 			ReAragneNodes();
 			SetAllPassNext();
 			InitNextArrows();
+
+
+			nodeViewModel.UnitWidth = subScript.GetWidth();
 		}
 
 
