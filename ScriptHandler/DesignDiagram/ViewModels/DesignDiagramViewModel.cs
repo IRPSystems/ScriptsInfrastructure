@@ -610,7 +610,8 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 
 		private void AddSubScript(
 			ScriptNodeBase tool,
-			double xOffset)
+			double xOffset,
+			int insertIndex = -1)
 		{
 			if (!(tool is ScriptNodeSubScript subScript))
 				return;
@@ -631,7 +632,8 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 					null, 
 					toolName, 
 					subTool,
-					xOffset);
+					xOffset,
+					insertIndex);
 
 				if(isFirstSubScriptTool)
 				{
@@ -645,6 +647,9 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 
 				if (subTool is ScriptNodeSubScript subScript2)
 					AddSubScript(subTool, xOffset);
+
+				if (insertIndex >= 0)
+					insertIndex++;
 
 			}
 		}
@@ -759,13 +764,17 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			NodeViewModel node,
 			string toolName,
 			ScriptNodeBase tool = null,
-			double xOffset = _toolOffsetX)
+			double xOffset = _toolOffsetX,
+			int insertIndex = -1)
 		{
 			if(node == null)
 			{
 				node = new NodeViewModel();
 				node.Content = tool;
-				Nodes.Add(node);
+				if(insertIndex < 0)
+					Nodes.Add(node);
+				else 
+					Nodes.Insert(insertIndex, node);
 
 				_idCounter++;
 			}
@@ -803,11 +812,6 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			SetScriptDataToNode(node.Content as ScriptNodeBase);
 
 			IsChanged = true;
-		}
-
-		private void SubScript_ScriptChangedEvent()
-		{
-			throw new NotImplementedException();
 		}
 
 		private void SetNextPassConnector(
@@ -912,85 +916,6 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			NodeViewModel node,
 			string toolName)
 		{
-			//switch (toolName)
-			//{
-			//	case "Compare":
-			//		node.Content = new ScriptNodeCompare();
-			//		break;
-			//	case "Delay":
-			//		node.Content = new ScriptNodeDelay();
-			//		break;
-			//	case "Dynamic Control":
-			//		node.Content = new ScriptNodeDynamicControl();
-			//		break;
-			//	case "Sweep":
-			//		node.Content = new ScriptNodeSweep();
-			//		break;
-			//	case "Set Parameter":
-			//		node.Content = new ScriptNodeSetParameter();
-			//		break;
-			//	case "Set and Save Parameter":
-			//		node.Content = new ScriptNodeSetSaveParameter();
-			//		break;
-			//	case "Save Parameter":
-			//		node.Content = new ScriptNodeSaveParameter();
-			//		break;
-			//	case "Notification":
-			//		node.Content = new ScriptNodeNotification();
-			//		break;
-			//	case "Sub Script":
-			//		node.Content = new ScriptNodeSubScript();
-			//		break;
-			//	case "Increment Value":
-			//		node.Content = new ScriptNodeIncrementValue();
-			//		break;
-			//	case "Loop Increment":
-			//		node.Content = new ScriptNodeLoopIncrement();
-			//		break;
-			//	case "Converge":
-			//		node.Content = new ScriptNodeConverge();
-			//		break;
-			//	case "Compare Range":
-			//		node.Content = new ScriptNodeCompareRange();
-			//		break;
-			//	case "Compare With Tolerance":
-			//		node.Content = new ScriptNodeCompareWithTolerance();
-			//		break;
-			//	case "CAN Message":
-			//		node.Content = new ScriptNodeCANMessage();
-			//		break;
-			//	case "CAN Message Update":
-			//		node.Content = new ScriptNodeCANMessageUpdate();
-			//		break;
-			//	case "CAN Message Stop":
-			//		node.Content = new ScriptNodeCANMessageStop();
-			//		break;
-			//	case "Stop Continuous":
-			//		node.Content = new ScriptNodeStopContinuous();
-			//		break;
-			//	case "EOL Flash":
-			//		node.Content = new ScriptNodeEOLFlash();
-			//		break;
-			//	case "EOL Calibrate":
-			//		node.Content = new ScriptNodeEOLCalibrate();
-			//		break;
-			//	case "EOL Send SN":
-			//		node.Content = new ScriptNodeEOLSendSN();
-			//		break;
-			//	case "Reset Parent Sweep":
-			//		node.Content = new ScriptNodeResetParentSweep();
-			//		break;
-			//	case "Scope Save":
-			//		node.Content = new ScriptNodeScopeSave();
-			//		break;
-			//	case "EOL Print":
-			//		node.Content = new ScriptNodeEOLPrint();
-			//		break;
-			//	case "Compare Bit":
-			//		node.Content = new ScriptNodeCompareBit();
-			//		break;
-			//}
-
 			var assemblyList = AppDomain.CurrentDomain.GetAssemblies();
 			Assembly assembly = assemblyList.
 				SingleOrDefault(assembly => assembly.GetName().Name == "ScriptHandler");
@@ -1689,10 +1614,38 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 		}
 
 
-
-		private void SubScript_ScriptChangedEvent()
+		private bool _isChangingScript;
+		private void SubScript_ScriptChangedEvent(
+			ScriptNodeSubScript subScript, 
+			IScript prevScript)
 		{
-			throw new NotImplementedException();
+			_isChangingScript = true;
+
+			// Remove the existing script
+			if (prevScript != null)
+			{
+				foreach (var item in prevScript.ScriptItemsList)
+				{
+					NodeViewModel node = Nodes.ToList().Find((n) => n.Content == item);
+					if (node == null)
+						continue;
+
+					Nodes.Remove(node);
+				}
+			}
+
+			NodeViewModel subScriptNode = Nodes.ToList().Find((n) => n.Content == subScript);
+			int subScriptIndex = Nodes.IndexOf(subScriptNode);
+			AddSubScript(
+				subScript,
+				_toolOffsetX,
+				subScriptIndex + 1);
+
+			ReAragneNodex();
+			SetAllPassNext();
+			InitNextArrows();
+
+			_isChangingScript = false;
 		}
 
 		#endregion Methods

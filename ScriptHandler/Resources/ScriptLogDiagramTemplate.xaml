@@ -12,17 +12,10 @@
     <converters:ScriptStepDiagramBorderBrushConverter x:Key="ScriptStepDiagramBorderBrushConverter" />
     <converters:ScriptStepDiagramBorderThicknessConverter x:Key="ScriptStepDiagramBorderThicknessConverter" />
     <converters:ScriptStepDiagramBackgroundConverter x:Key="ScriptStepDiagramBackgroundConverter" />
+    <converters:ScriptStepDiagramBackgroundMultiConverter x:Key="ScriptStepDiagramBackgroundMultiConverter" />
     <converters:ScriptStepDiagramForegroundConverter x:Key="ScriptStepDiagramForegroundConverter" />
     <converters:ScriptStepDiagramToolTipConverter x:Key="ScriptStepDiagramToolTipConverter" />
 
-
-    <!--<Style TargetType="syncfusion:Connector">
-        <Setter Property="Visibility" Value="{Binding Visibility}"/>
-    </Style>-->
-
-    <!--<Style TargetType="syncfusion:Node">
-        <Setter Property="Visibility" Value="{Binding Visibility}"/>
-    </Style>-->
 
 
     <DataTemplate x:Key="ScriptLogDiagramTemplate_Script">
@@ -146,8 +139,14 @@
 
 
         <Border Margin="1"
-                Background="{Binding Converter={StaticResource ScriptStepDiagramBackgroundConverter}}"
                 ToolTip="{Binding Converter={StaticResource ScriptStepDiagramToolTipConverter}}">
+
+            <Border.Background>
+                <MultiBinding Converter="{StaticResource ScriptStepDiagramBackgroundMultiConverter}">
+                    <Binding  />
+                    <Binding Path="Script"/>
+                </MultiBinding>
+            </Border.Background>
 
             <Border.BorderBrush>
 

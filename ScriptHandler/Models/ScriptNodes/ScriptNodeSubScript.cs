@@ -160,14 +160,16 @@ namespace ScriptHandler.Models.ScriptNodes
 		{
 			if (_prevScript == _script || _script == null)
 				return;
+						
+			ScriptChangedEvent?.Invoke(this, _prevScript);
 
 			_prevScript = _script;
-			ScriptChangedEvent?.Invoke();
 		}
+
 
 		public RelayCommand Script_SelectionChangedCommand { get; private set; }
 
-		public event Action ScriptChangedEvent;
+		public event Action<ScriptNodeSubScript, IScript> ScriptChangedEvent;
 
 	}
 }
