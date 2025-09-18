@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DeviceHandler.Models;
 using Newtonsoft.Json;
+using ScriptHandler.DesignDiagram.ViewModels;
 using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using System;
@@ -15,6 +16,8 @@ namespace ScriptHandler.Models.ScriptNodes
 {
 	public class ScriptNodeSubScript : ScriptNodeBase, ISubScript
 	{
+		#region Properties
+
 		public string ParentScriptName { get; set; }
 		
 
@@ -85,7 +88,6 @@ namespace ScriptHandler.Models.ScriptNodes
 		[JsonIgnore]
 		public ProjectData Parent { get; set; }
 
-		[JsonIgnore]
 		private IScript _script;
 		[JsonIgnore]
 		public IScript Script
@@ -116,12 +118,27 @@ namespace ScriptHandler.Models.ScriptNodes
 					obj.PropertyChanged += ScriptPropertyChangedEventHandler;
 				}
 
+				DesignDiagram = new DesignDiagramViewModel(null, null, null, isSubScript: true);
+				DesignDiagram.DesignDiagram = _script as ScriptData;
+				DesignDiagram.DrawNodes();
+				DesignDiagram.OffsetY = 0;
+				Height = GetHeight();
+
+
 				OnPropertyChanged(nameof(Script));
 				OnPropertyChanged(nameof(Description));
 			}
 		}
 
 		public string SelectedScriptName { get; set; }
+
+		[JsonIgnore]
+		public DesignDiagramViewModel DesignDiagram { get; set; }
+		public double DesignDiagramHeight { get; set; }
+
+		#endregion Properties
+
+		#region Constructor
 
 		public ScriptNodeSubScript()
 		{
@@ -135,7 +152,9 @@ namespace ScriptHandler.Models.ScriptNodes
 			Script_SelectionChangedCommand = new RelayCommand(Script_SelectionChanged);
 		}
 
+		#endregion Constructor
 
+		#region Methods
 
 		private void ScriptPropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
 		{
@@ -161,15 +180,38 @@ namespace ScriptHandler.Models.ScriptNodes
 			if (_prevScript == _script || _script == null)
 				return;
 						
-			ScriptChangedEvent?.Invoke(this, _prevScript);
+			ScriptChangedEvent?.Invoke(this);
 
 			_prevScript = _script;
 		}
 
+		public double GetHeight()
+		{
+			if (Script == null)
+				return DesignDiagramViewModel.ToolHeight;
+
+			double height = (DesignDiagram.Nodes.Count * DesignDiagramViewModel.BetweenTools) +
+					DesignDiagramViewModel.BetweenTools +
+					10;
+
+			DesignDiagramHeight = height - DesignDiagramViewModel.BetweenTools;
+
+			return height;
+		}
+
+		#endregion Methods
+
+		#region Commands
 
 		public RelayCommand Script_SelectionChangedCommand { get; private set; }
 
-		public event Action<ScriptNodeSubScript, IScript> ScriptChangedEvent;
+		#endregion Commands
+
+		#region Events
+
+		public event Action<ScriptNodeSubScript> ScriptChangedEvent;
+
+		#endregion Events
 
 	}
 }

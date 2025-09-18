@@ -12,10 +12,17 @@
     <converters:ScriptStepDiagramBorderBrushConverter x:Key="ScriptStepDiagramBorderBrushConverter" />
     <converters:ScriptStepDiagramBorderThicknessConverter x:Key="ScriptStepDiagramBorderThicknessConverter" />
     <converters:ScriptStepDiagramBackgroundConverter x:Key="ScriptStepDiagramBackgroundConverter" />
-    <converters:ScriptStepDiagramBackgroundMultiConverter x:Key="ScriptStepDiagramBackgroundMultiConverter" />
     <converters:ScriptStepDiagramForegroundConverter x:Key="ScriptStepDiagramForegroundConverter" />
     <converters:ScriptStepDiagramToolTipConverter x:Key="ScriptStepDiagramToolTipConverter" />
 
+
+    <!--<Style TargetType="syncfusion:Connector">
+        <Setter Property="Visibility" Value="{Binding Visibility}"/>
+    </Style>-->
+
+    <!--<Style TargetType="syncfusion:Node">
+        <Setter Property="Visibility" Value="{Binding Visibility}"/>
+    </Style>-->
 
 
     <DataTemplate x:Key="ScriptLogDiagramTemplate_Script">
@@ -138,99 +145,121 @@
     <DataTemplate x:Key="ScriptLogDiagramTemplate_Step_SubScript">
 
 
-        <Border Margin="1"
-                ToolTip="{Binding Converter={StaticResource ScriptStepDiagramToolTipConverter}}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35" />
+                <RowDefinition Height="20" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-            <Border.Background>
-                <MultiBinding Converter="{StaticResource ScriptStepDiagramBackgroundMultiConverter}">
-                    <Binding  />
-                    <Binding Path="Script"/>
-                </MultiBinding>
-            </Border.Background>
+            <Border Margin="1" Grid.Row="0"
+                        Width="300" 
+                        HorizontalAlignment="Left"
+                    Background="{Binding Converter={StaticResource ScriptStepDiagramBackgroundConverter}}"
+                    ToolTip="{Binding Converter={StaticResource ScriptStepDiagramToolTipConverter}}">
 
-            <Border.BorderBrush>
+                <Border.BorderBrush>
 
-                <MultiBinding Converter="{StaticResource ScriptStepDiagramBorderBrushConverter}">
-                    <Binding Path="StepState" />
-                    <Binding Path="IsPass"/>
-                </MultiBinding>
+                    <MultiBinding Converter="{StaticResource ScriptStepDiagramBorderBrushConverter}">
+                        <Binding Path="StepState" />
+                        <Binding Path="IsPass"/>
+                    </MultiBinding>
 
-            </Border.BorderBrush>
+                </Border.BorderBrush>
 
-            <Border.BorderThickness>
+                <Border.BorderThickness>
 
-                <MultiBinding Converter="{StaticResource ScriptStepDiagramBorderThicknessConverter}">
-                    <Binding Path="StepState" />
-                    <Binding Path="IsPass"/>
-                </MultiBinding>
+                    <MultiBinding Converter="{StaticResource ScriptStepDiagramBorderThicknessConverter}">
+                        <Binding Path="StepState" />
+                        <Binding Path="IsPass"/>
+                    </MultiBinding>
 
-            </Border.BorderThickness>
+                </Border.BorderThickness>
 
-            <Grid Margin="5,0,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0"/>
-                    <ColumnDefinition Width="0"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="0"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+                <Grid Margin="5,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0"/>
+                        <ColumnDefinition Width="0"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                <ToggleButton Grid.Column="0" 
-                              IsChecked="True"
-                              Name="tb"                              
-                              Width="15" Height="15"
-                              HorizontalAlignment="Left" VerticalAlignment="Center"
-                              Style="{StaticResource CollapseExpandToggelButtonStyle}">
+                    <ToggleButton Grid.Column="0" 
+                                  IsChecked="True"
+                                  Name="tb"                              
+                                  Width="15" Height="15"
+                                  HorizontalAlignment="Left" VerticalAlignment="Center"
+                                  Style="{StaticResource CollapseExpandToggelButtonStyle}">
 
-                    <i:Interaction.Triggers>
-                        
-                        <i:EventTrigger EventName="Checked">
-                            <i:InvokeCommandAction Command="{Binding Path=DataContext.SubScriptExpandCommand, 
+                        <i:Interaction.Triggers>
+
+                            <i:EventTrigger EventName="Checked">
+                                <i:InvokeCommandAction Command="{Binding Path=DataContext.SubScriptExpandCommand, 
+                                                                 Mode=OneWay, 
+                                                                 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=views:ScriptDiagramView}}" 
+                                                       PassEventArgsToCommand="False"
+                                                       CommandParameter="{Binding}"/>
+                            </i:EventTrigger>
+
+                            <i:EventTrigger EventName="Unchecked">
+                                <i:InvokeCommandAction Command="{Binding Path=DataContext.SubScriptCollapseCommand, 
                                                              Mode=OneWay, 
                                                              RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=views:ScriptDiagramView}}" 
                                                    PassEventArgsToCommand="False"
                                                    CommandParameter="{Binding}"/>
-                        </i:EventTrigger>
+                            </i:EventTrigger>
 
-                        <i:EventTrigger EventName="Unchecked">
-                            <i:InvokeCommandAction Command="{Binding Path=DataContext.SubScriptCollapseCommand, 
-                                                             Mode=OneWay, 
-                                                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=views:ScriptDiagramView}}" 
-                                                   PassEventArgsToCommand="False"
-                                                   CommandParameter="{Binding}"/>
-                        </i:EventTrigger>
-
-                    </i:Interaction.Triggers>
+                        </i:Interaction.Triggers>
 
 
-                </ToggleButton>
+                    </ToggleButton>
 
-                <TextBlock Grid.Column="2"
-                           Text="{Binding Description}"
-                           VerticalAlignment="Center"
-                           Foreground="{Binding Converter={StaticResource ScriptStepDiagramForegroundConverter}}"
-                           TextTrimming="WordEllipsis"
-                           ToolTip="{Binding Description}" />
+                    <TextBlock Grid.Column="2"
+                               Text="{Binding Description}"
+                               VerticalAlignment="Center"
+                               Foreground="{Binding Converter={StaticResource ScriptStepDiagramForegroundConverter}}"
+                               TextTrimming="WordEllipsis"
+                               ToolTip="{Binding Description}" />
 
-                <TextBlock Name="tbRunIndex"
-                           Grid.Column="4"
-                           Text="{Binding RunIndex}"
-                           VerticalAlignment="Center"
-                           Foreground="{Binding Converter={StaticResource ScriptStepDiagramForegroundConverter}}"
-                           Visibility="Visible"
-                           HorizontalAlignment="Left"/>
+                    <TextBlock Name="tbRunIndex"
+                               Grid.Column="4"
+                               Text="{Binding RunIndex}"
+                               VerticalAlignment="Center"
+                               Foreground="{Binding Converter={StaticResource ScriptStepDiagramForegroundConverter}}"
+                               Visibility="Visible"
+                               HorizontalAlignment="Left"/>
 
-                <TextBlock Name="tbTimeInSubScript"
-                           Grid.Column="4"
-                           Text="{Binding TimeInSubScript, StringFormat=hh\\:mm\\:ss\\.fff}"
-                           VerticalAlignment="Center"
-                           Foreground="{Binding Converter={StaticResource ScriptStepDiagramForegroundConverter}}"
-                           Visibility="Collapsed"
-                           HorizontalAlignment="Left"/>
+                    <TextBlock Name="tbTimeInSubScript"
+                               Grid.Column="4"
+                               Text="{Binding TimeInSubScript, StringFormat=hh\\:mm\\:ss\\.fff}"
+                               VerticalAlignment="Center"
+                               Foreground="{Binding Converter={StaticResource ScriptStepDiagramForegroundConverter}}"
+                               Visibility="Collapsed"
+                               HorizontalAlignment="Left"/>
 
-            </Grid>
+                </Grid>
 
-        </Border>
+            </Border>
+
+            <Line Grid.Row="1" Y1="1" Stretch="Fill" 
+                      Stroke="{DynamicResource MahApps.Brushes.Gray3}" 
+                      StrokeThickness="2"/>
+
+            <syncfusion:SfDiagram Grid.Row="2"
+                                  Name="diagram"
+                                  DefaultConnectorType="Orthogonal"
+                                  Nodes="{Binding DesignDiagram.Nodes}"
+                                  Connectors="{Binding DesignDiagram.Connectors}"                      
+                                  Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                                  IsEnabled="False"
+                                  Height="{Binding DesignDiagramHeight}"
+                                  BorderBrush="{DynamicResource MahApps.Brushes.Gray8}"
+                                  BorderThickness="1" 
+                                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                  ScrollViewer.VerticalScrollBarVisibility="Hidden"/>
+
+        </Grid>
 
         <DataTemplate.Triggers>
 

@@ -70,9 +70,9 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 
 		private bool _isInPropertyChanged;
 
-		private const double _toolHeight = 35;
+		public const double ToolHeight = 35;
 		private const double _toolWidth = 300;
-		private const double _betweenTools = 45;
+		public const double BetweenTools = 45;
 		private const double _toolOffsetX = 100;
 
 		private bool _isMouseDown;
@@ -88,6 +88,8 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 
 		private ExportDiagramService _exportDiagram;
 
+		private bool _isSubScript;
+
 		#endregion Fields
 
 		#region Constructor
@@ -96,10 +98,12 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			ScriptUserData scriptUserData,
 			DevicesContainer devicesContainer,
 			NodePropertiesViewModel nodeProperties, 
-			double offsetX = 100)
+			double offsetX = 100,
+			bool isSubScript = false)
 		{
 			_devicesContainer = devicesContainer;
 			_scriptUserData = scriptUserData;
+			_isSubScript = isSubScript;
 
 			_nodeProperties = nodeProperties;
 			OffsetX = offsetX;
@@ -132,7 +136,6 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			OffsetY = 50;
 
 			SelectedItems = new SelectorViewModel();
-
 		}
 
 		#endregion Constructor
@@ -167,6 +170,12 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 
 		private void AddHeaderNode()
 		{
+			if (_isSubScript)
+			{
+				OffsetY = 0;
+				return;
+			}
+
 			NodeViewModel node = new NodeViewModel();
 			node.Content = DesignDiagram;
 			node.ContentTemplate = 
@@ -323,8 +332,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			if (!(connectorChanged.Item is ConnectorViewModel connector))
 				return;
 
-			if (connector.ID is string str && 
-				(str.Contains("PassNext_") || str.Contains("SubScript_")))
+			if (connector.ID is string str && str.Contains("PassNext_"))
 			{
 				return;
 			}
@@ -334,12 +342,6 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 
 			if (!(connector.SourcePort is NodePortViewModel port))
 				return;
-
-			//if (port.NodeOffsetX != 1)
-			//{
-			//	Connectors.Remove(connector);
-			//	return;
-			//}
 
 			connector.ID = $"FailNext_{sourceNode.ID}";
 
@@ -426,7 +428,6 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 						System.IO.Path.GetDirectoryName(openFileDialog.FileName);
 
 
-					//IsLoadingScript = true;
 
 					path = openFileDialog.FileName;
 				}
@@ -485,7 +486,6 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 						_idCounter = node.ID;
 
 					node.IsExpanded = true;
-					//node.NodePropertyChangeEvent += NodePropertyChangedHandler;
 
 
 
@@ -518,11 +518,6 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 
 				_idCounter++;
 
-
-
-
-				//SetPassFailNextTool();
-				//await InitNods();
 			}
 			catch (Exception ex)
 			{
@@ -569,11 +564,6 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 				string toolName = tool.Name;
 				InitNodeBySymbol(null, toolName, tool);
 
-				if(tool is ScriptNodeSubScript)
-				{
-					AddSubScript(tool, _toolOffsetX);
-				}
-
 				System.Threading.Thread.Sleep(1);
 				//await Task.Delay(1);
 			}
@@ -606,87 +596,6 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 						tool.FailNext = tool1;
 				}
 			}
-		}
-
-		private void AddSubScript(
-			ScriptNodeBase tool,
-			double xOffset,
-			int insertIndex = -1)
-		{
-			if (!(tool is ScriptNodeSubScript subScript))
-				return;
-
-			if(subScript.Script == null || 
-				subScript.Script.ScriptItemsList == null ||
-				subScript.Script.ScriptItemsList.Count == 0)
-			{
-				return;
-			}
-
-			xOffset += 100;
-			bool isFirstSubScriptTool = true;
-			foreach (ScriptNodeBase subTool in subScript.Script.ScriptItemsList)
-			{
-				string toolName = subTool.Name;
-				InitNodeBySymbol(
-					null, 
-					toolName, 
-					subTool,
-					xOffset,
-					insertIndex);
-
-				if(isFirstSubScriptTool)
-				{
-					var subScriptNode = Nodes[Nodes.Count - 2];
-					var subScriptFirstNode = Nodes[Nodes.Count - 1];
-					AddConnectorToSubString(subScriptNode, subScriptFirstNode);
-				}
-				
-
-				isFirstSubScriptTool = false;
-
-				if (subTool is ScriptNodeSubScript subScript2)
-					AddSubScript(subTool, xOffset);
-
-				if (insertIndex >= 0)
-					insertIndex++;
-
-			}
-		}
-
-		private void AddConnectorToSubString(
-			NodeViewModel subScriptNode,
-			NodeViewModel subScriptFirstNode)
-		{
-			
-
-			NodePortViewModel port = new NodePortViewModel()
-			{
-				NodeOffsetX = 0.833,
-				NodeOffsetY = 1,
-			};
-			(subScriptNode.Ports as PortCollection).Add(port);
-
-			port = new NodePortViewModel()
-			{
-				NodeOffsetX = 0.5,
-				NodeOffsetY = 0,
-			};
-			(subScriptFirstNode.Ports as PortCollection).Add(port);
-
-			ConnectorViewModel simpleConnector = new ConnectorViewModel()
-			{
-				ID = $"SubScript_{subScriptNode.ID}",
-				SourceNode = subScriptNode,
-				SourcePort = (subScriptNode.Ports as PortCollection)
-					[(subScriptNode.Ports as PortCollection).Count - 1],
-
-				TargetNode = subScriptFirstNode,
-				TargetPort = (subScriptFirstNode.Ports as PortCollection)
-					[(subScriptFirstNode.Ports as PortCollection).Count - 1],
-			};
-
-			Connectors.Add(simpleConnector);
 		}
 
 		#endregion Load from file
@@ -804,10 +713,10 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			if((node.Content as ScriptNodeBase) != null)
 			{
 				(node.Content as ScriptNodeBase).PropertyChanged += Tool_PropertyChanged;
-
-				if(node.Content is ScriptNodeSubScript subScript)
-					subScript.ScriptChangedEvent += SubScript_ScriptChangedEvent;
 			}
+
+			if (node.Content is ScriptNodeSubScript subScript)
+				subScript.ScriptChangedEvent += SubScript_ScriptChangedEvent; ;
 
 			SetScriptDataToNode(node.Content as ScriptNodeBase);
 
@@ -962,21 +871,36 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 					Application.Current.FindResource("ScriptLogDiagramTemplate_Step") as DataTemplate;
 			}
 
+			if (node.Content is ScriptNodeSubScript)
+			{
+				node.UnitHeight += (node.Content as ScriptNodeSubScript).GetHeight();
+				node.UnitWidth = _toolWidth + 110;
+			}
+			else
+			{
+				node.UnitHeight = ToolHeight;
+				node.UnitWidth = _toolWidth;
+			}
 
-			node.UnitHeight = _toolHeight;
-			node.UnitWidth = _toolWidth;
 			node.OffsetX = xOffset;
 			node.OffsetY = OffsetY;
 
 			if (node.Content is ScriptNodeBase)
 			{
-				(node.Content as ScriptNodeBase).Height = _toolHeight;
+				if (node.Content is ScriptNodeSubScript)
+					(node.Content as ScriptNodeBase).Height += (node.Content as ScriptNodeSubScript).GetHeight();
+				else
+					(node.Content as ScriptNodeBase).Height = ToolHeight;
+
 				(node.Content as ScriptNodeBase).Width = _toolWidth;
 				(node.Content as ScriptNodeBase).OffsetX = xOffset;
 				(node.Content as ScriptNodeBase).OffsetY = OffsetY;
 			}
 
-			OffsetY += _betweenTools;
+			if (node.Content is ScriptNodeSubScript)
+				OffsetY += (node.Content as ScriptNodeSubScript).GetHeight() + 20;
+			else
+				OffsetY += BetweenTools;
 		}
 
 		#endregion Add item
@@ -1109,22 +1033,8 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			
 
 			DesignDiagram.ScriptItemsList.Remove(node.Content as ScriptNodeBase);
-			
 
-			if(node.Content is ScriptNodeSubScript subScript &&
-				subScript.Script != null && subScript.Script.ScriptItemsList != null)
-			{
-				foreach(ScriptNodeBase tool in subScript.Script.ScriptItemsList)
-				{
-					NodeViewModel subNode = Nodes.ToList().Find(n => n.Content == tool);
-					if(subNode == null) 
-						continue;
-
-					SubNodeDeletedEvent?.Invoke(subNode);
-				}
-			}
-
-			ReAragneNodex();
+			ReAragneNodes();
 
 			Mouse.OverrideCursor = null;
 		}
@@ -1144,10 +1054,10 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 				(node.Content as ScriptNodeBase).FailNext = null;
 		}
 
-		private void ReAragneNodex()
+		private void ReAragneNodes()
 		{
 
-			OffsetY = 50 + 35;
+			OffsetY = 50 + ToolHeight;
 
 			int idCounter = 1;
 			foreach (NodeViewModel nodeItem in Nodes)
@@ -1157,12 +1067,14 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 
 				scriptNodeBase.ID = idCounter++;
 
-				//scriptNodeBase.OffsetX = _toolOffsetX;
+				
 				scriptNodeBase.OffsetY = OffsetY;
-				//nodeItem.OffsetX = _toolOffsetX;
 				nodeItem.OffsetY = OffsetY;
 
-				OffsetY += _betweenTools;
+				if(scriptNodeBase is ScriptNodeSubScript subScript)
+					OffsetY += subScript.GetHeight() + 20;
+				else
+					OffsetY += BetweenTools;
 			}
 		}
 
@@ -1223,11 +1135,11 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 					ObservableCollection<object> objectsToMove = new ObservableCollection<object>();
 					foreach (var item in (SelectedItems.Nodes as ObservableCollection<object>))
 					{
-						if (item is NodeViewModel nodeViewModel)
-						{
-							if (nodeViewModel.OffsetX > _toolOffsetX) // Don't allow draging nodes of sub scripts
-								continue;
-						}
+						//if (item is NodeViewModel nodeViewModel)
+						//{
+						//	if (nodeViewModel.OffsetX > _toolOffsetX) // Don't allow draging nodes of sub scripts
+						//		continue;
+						//}
 
 						objectsToMove.Add(item);
 					}
@@ -1285,39 +1197,10 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 				if (item is NodeViewModel nvm)
 				{
 					tempList.Add(nvm);
-
-					if (nvm.Content is ScriptNodeSubScript subScript)
-					{
-						GetListOfNodesToDrop_SubScript(tempList, subScript);
-					}
 				}
 			}
 
 			return tempList;
-		}
-
-		private void GetListOfNodesToDrop_SubScript(
-			List<NodeViewModel> tempList,
-			ScriptNodeSubScript subScript)
-		{
-			if(subScript.Script == null || subScript.Script.ScriptItemsList == null) 
-				return;
-
-			foreach (IScriptItem step in subScript.Script.ScriptItemsList)
-			{
-				NodeViewModel stepNode = Nodes.ToList().Find((n) => n.Content == step);
-				if (stepNode != null)
-				{
-					tempList.Add(stepNode);
-
-					if(step is ScriptNodeSubScript subSubScript)
-					{
-						GetListOfNodesToDrop_SubScript(
-							tempList,
-							subSubScript);
-					}
-				}
-			}
 		}
 
 		private void DropListOfObject(
@@ -1328,16 +1211,6 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 
 			int firstDroppedIndex = Nodes.IndexOf(dragNodeList[0] as NodeViewModel);
 			bool isUp = firstDroppedIndex > dropedOnIndex;
-
-			if(dropedOnIndex >= 0)
-			{
-				GetNodeAndIndexForSubScript(
-					isUp,
-					ref dropedOnIndex,
-					ref nodeVMDropedOn);
-			}
-
-
 
 			List<NodeViewModel> tempList = GetListOfNodesToDrop(
 				dragNodeList);
@@ -1355,66 +1228,16 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 					node,
 					dropedOnIndex);
 
+				if (node.Content is ScriptNodeSubScript subScript && subScript.Script != null)
+					subScript.DesignDiagram.InitNextArrows();
+
 				if (dropedIndex > dropedOnIndex)
 					dropedOnIndex++;
 			}
 
-			ReAragneNodex();
+			ReAragneNodes();
 			SetAllPassNext();
 			InitNextArrows();
-		}
-
-		private void GetNodeAndIndexForSubScript(
-			bool isUp,
-			ref int dropedOnIndex,
-			ref NodeViewModel nodeVMDropedOn)
-		{
-			// The droped on node is part of sub-script
-			if (nodeVMDropedOn.OffsetX > _toolOffsetX)
-			{
-				// Since we're moving UP, we need to find the 
-				// node of the START of the sub-script
-				if (isUp)
-				{
-					for (int i = dropedOnIndex; i >= 0; i--)
-					{
-						if (Nodes[i].Content is ScriptNodeSubScript)
-						{
-							nodeVMDropedOn = Nodes[i];
-							dropedOnIndex = Nodes.IndexOf(nodeVMDropedOn);
-							break;
-						}
-					}
-				}
-				// Since we're moving DOWN, we need to find the 
-				// node of the END of the sub-script
-				else
-				{
-					for (int i = dropedOnIndex; i < Nodes.Count; i++)
-					{
-						if (nodeVMDropedOn.OffsetX == _toolOffsetX)
-						{
-							nodeVMDropedOn = Nodes[i];
-							dropedOnIndex = Nodes.IndexOf(nodeVMDropedOn);
-							break;
-						}
-					}
-				}
-
-				return;
-			}
-
-			if(nodeVMDropedOn.Content is ScriptNodeSubScript subScript)
-			{
-				// If we're going down, we need to find the
-				// last item of the sub-script
-				if (!isUp)
-				{
-					dropedOnIndex += subScript.Script.ScriptItemsList.Count;
-					nodeVMDropedOn = Nodes[dropedOnIndex];
-				}
-			}
-
 		}
 
 		private void DropSingleObject(
@@ -1453,31 +1276,25 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 				if (!(Nodes[i + 1].Content is ScriptNodeBase secondNode))
 					continue;
 
-				if(firstNode is ScriptNodeSubScript subScript)
-				{
-					int secondIndex = i + 1;
-
-					if (subScript.Script != null && subScript.Script.ScriptItemsList != null)
-					{
-						AddConnectorToSubString(Nodes[i], Nodes[i + 1]);
-						secondIndex += subScript.Script.ScriptItemsList.Count;
-					}
-
-					if (secondIndex < Nodes.Count - 1)
-						secondNode = (Nodes[secondIndex].Content as ScriptNodeBase);
-				}
-				if (Nodes[i].OffsetX > _toolOffsetX &&
-					Nodes[i + 1].OffsetX == _toolOffsetX)
-				{
-					continue;
-				}
-
 				firstNode.PassNext = secondNode;
 			}
 		}
 
 		private void InitNextArrows()
 		{
+			List<ConnectorViewModel> list = new List<ConnectorViewModel>();
+			foreach(var connector in Connectors)
+			{
+				if(connector.ID is string str &&
+					(str.StartsWith("FailNext_") || str.StartsWith("PassNext_")))
+				{
+					list.Add(connector);
+				}
+			}
+
+			foreach(var connector in list)
+				Connectors.Remove(connector);
+
 			foreach (var node in Nodes)
 			{
 				if (!(node.Content is ScriptNodeBase scriptNodeBase))
@@ -1541,11 +1358,11 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 				ObservableCollection<object> objectsToMove = new ObservableCollection<object>();
 				foreach (var item in (SelectedItems.Nodes as ObservableCollection<object>))
 				{
-					if (item is NodeViewModel nodeViewModel)
-					{
-						if (nodeViewModel.OffsetX > _toolOffsetX) // Don't allow draging nodes of sub scripts
-							continue;
-					}
+					//if (item is NodeViewModel nodeViewModel)
+					//{
+					//	if (nodeViewModel.OffsetX > _toolOffsetX) // Don't allow draging nodes of sub scripts
+					//		continue;
+					//}
 
 					objectsToMove.Add(item);
 				}
@@ -1614,39 +1431,18 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 		}
 
 
-		private bool _isChangingScript;
-		private void SubScript_ScriptChangedEvent(
-			ScriptNodeSubScript subScript, 
-			IScript prevScript)
+
+		private void SubScript_ScriptChangedEvent(ScriptNodeSubScript subScript)
 		{
-			_isChangingScript = true;
+			NodeViewModel nodeViewModel = Nodes.ToList().Find((n) => n.Content == subScript);
+			if (nodeViewModel == null)
+				return;
 
-			// Remove the existing script
-			if (prevScript != null)
-			{
-				foreach (var item in prevScript.ScriptItemsList)
-				{
-					NodeViewModel node = Nodes.ToList().Find((n) => n.Content == item);
-					if (node == null)
-						continue;
+			nodeViewModel.UnitHeight = subScript.GetHeight();
 
-					Nodes.Remove(node);
-				}
-			}
-
-			NodeViewModel subScriptNode = Nodes.ToList().Find((n) => n.Content == subScript);
-			int subScriptIndex = Nodes.IndexOf(subScriptNode);
-			AddSubScript(
-				subScript,
-				_toolOffsetX,
-				subScriptIndex + 1);
-
-			ReAragneNodex();
-			SetAllPassNext();
-			InitNextArrows();
-
-			_isChangingScript = false;
+			ReAragneNodes();
 		}
+
 
 		#endregion Methods
 
