@@ -221,13 +221,13 @@ namespace ScriptHandler.Models.ScriptNodes
 			foreach(IScriptItem item in Script.ScriptItemsList)
 			{
 				if(item is ScriptNodeSubScript subScript)
-					width += subScript.GetWidth() * 0.33 + 10;
+					width += subScript.GetWidth() * 0.33;
 			}
 
-			width += 50;
+			//width += 50;
 			DesignDiagramWidth = width;
 
-			return width + 50;
+			return width;
 		}
 
 		public void InitNextArrows()

@@ -73,7 +73,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 		public const double ToolHeight = 35;
 		public const double ToolWidth = 300;
 		public const double BetweenTools = 45;
-		private const double _toolOffsetX = 100;
+		private const double _toolOffsetX = 50;
 
 		private bool _isMouseDown;
 		private Point _startPoint;
@@ -98,7 +98,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			ScriptUserData scriptUserData,
 			DevicesContainer devicesContainer,
 			NodePropertiesViewModel nodeProperties, 
-			double offsetX = 100,
+			double offsetX = _toolOffsetX,
 			bool isSubScript = false)
 		{
 			_devicesContainer = devicesContainer;
@@ -172,7 +172,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 		{
 			if (_isSubScript)
 			{
-				OffsetY = 5;
+				OffsetY = 0;
 				return;
 			}
 
@@ -933,7 +933,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 				e.PropertyName == "UnitWidth" ||
 				e.PropertyName == "UnitHeight")
 			{
-				if (_isInPropertyChanged)
+				if (_isInPropertyChanged || _isScriptChangedEvent)
 					return;
 
 				_isInPropertyChanged = true;
@@ -1446,14 +1446,17 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 		}
 
 
-
+		private bool _isScriptChangedEvent;
 		private void SubScript_ScriptChangedEvent(ScriptNodeSubScript subScript)
 		{
 			NodeViewModel nodeViewModel = Nodes.ToList().Find((n) => n.Content == subScript);
 			if (nodeViewModel == null)
 				return;
 
+			_isScriptChangedEvent = true;
+
 			nodeViewModel.UnitHeight = subScript.GetHeight();
+			nodeViewModel.UnitWidth = subScript.GetWidth();
 
 			if ((nodeViewModel.Ports as PortCollection).Count > 0)
 			{
@@ -1470,8 +1473,8 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			SetAllPassNext();
 			InitNextArrows();
 
+			_isScriptChangedEvent = false;
 
-			nodeViewModel.UnitWidth = subScript.GetWidth();
 		}
 
 
