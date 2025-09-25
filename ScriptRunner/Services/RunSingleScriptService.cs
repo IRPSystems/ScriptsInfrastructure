@@ -1,4 +1,4 @@
-﻿
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Threading.Tasks;
 using System.Threading;
@@ -196,7 +196,8 @@ namespace ScriptRunner.Services
 
 									if (_currentStep is ISubScript subScript)
 									{
-										StartSubScript(subScript);
+										_currentStep.IsExecuted = true;
+                                        StartSubScript(subScript);
 									}
 									else if (_currentStep is ScriptStepCANMessage canMessage)
 									{
