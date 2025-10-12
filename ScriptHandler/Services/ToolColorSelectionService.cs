@@ -67,7 +67,9 @@ namespace ScriptHandler.Services
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#7FC9FF");
 			if (item is ScriptNodeEOLSendSN || item is ScriptStepEOLSendSN)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#6BFFED");
-			if (item is ScriptNodeEOLPrint || item is ScriptStepEOLPrint)
+            if (item is ScriptNodeEOLSetManufDate || item is ScriptStepEOLSetManufDate)
+                return (SolidColorBrush)new BrushConverter().ConvertFrom("#6BFFED");
+            if (item is ScriptNodeEOLPrint || item is ScriptStepEOLPrint)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#D67FFF");
 			if (item is ScriptNodeCompareBit || item is ScriptStepCompareBit)
 				return (SolidColorBrush)new BrushConverter().ConvertFrom("#BBA3FF");
