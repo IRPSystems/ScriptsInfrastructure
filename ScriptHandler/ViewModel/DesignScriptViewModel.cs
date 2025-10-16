@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DeviceCommunicators.CANBus;
 using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
@@ -756,8 +757,7 @@ namespace ScriptHandler.ViewModels
 							name = mcuParam.Cmd;
 
 						DeviceParameterData data = GetParameter(
-							withParam.Parameter.DeviceType,
-							name);
+							withParam.Parameter);
 						if (data != null)
 							withParam.Parameter = data;
 					}
@@ -831,20 +831,19 @@ namespace ScriptHandler.ViewModels
 		}
 
 		private DeviceParameterData GetParameter(
-			DeviceTypesEnum deviceType,
-			string paramName)
+			DeviceParameterData parameter)
 		{
-			if (_devicesContainer.TypeToDevicesFullData.ContainsKey(deviceType) == false)
-				return null;
-
-			DeviceData deviceData =
-				_devicesContainer.TypeToDevicesFullData[deviceType].Device;
+			DeviceData deviceData = _devicesContainer.GetDeviceData(parameter);
 
 			DeviceParameterData data = null;
-			if(deviceType == DeviceTypesEnum.MCU)
-				data = deviceData.ParemetersList.ToList().Find((p) => ((MCU_ParamData)p).Cmd == paramName);
+			if (deviceData.DeviceType == DeviceTypesEnum.MCU ||
+				deviceData.DeviceType == DeviceTypesEnum.MCU_2 ||
+				deviceData.DeviceType == DeviceTypesEnum.MCU_B2B)
+			{
+				data = deviceData.ParemetersList.ToList().Find((p) => ((MCU_ParamData)p).Cmd == ((MCU_ParamData)parameter).Cmd);
+			}
 			else
-				data = deviceData.ParemetersList.ToList().Find((p) => p.Name == paramName);
+				data = deviceData.ParemetersList.ToList().Find((p) => p.Name == parameter.Name);
 			
 			return data;
 		}

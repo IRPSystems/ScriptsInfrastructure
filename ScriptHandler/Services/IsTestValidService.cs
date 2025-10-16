@@ -1,9 +1,11 @@
 ﻿
+using DeviceCommunicators.CANBus;
 using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Entities.Enums;
 using Entities.Models;
+using LibUsbDotNet.DeviceNotify;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models;
 using Services.Services;
@@ -89,7 +91,11 @@ namespace ScriptHandler.Services
 			if (withParam.Parameter.Name == "Safety officer on/off")
 				return true;
 
-			if (devicesContainer.TypeToDevicesFullData.ContainsKey(withParam.Parameter.DeviceType) == false)
+
+			DeviceData device = devicesContainer.GetDeviceData(
+				withParam.Parameter);
+
+			if (device == null)
 			{
 				string err = "The device " + withParam.Parameter.DeviceType +
 					" of the parameter \"" + withParam.Parameter.Name + "\" doesn't exist in the setup";
@@ -103,11 +109,9 @@ namespace ScriptHandler.Services
 					DeviceType = withParam.Parameter.DeviceType,
 				};
 				errorsList.Add(invalidItem);
+
 				return false;
 			}
-
-
-			DeviceData device = devicesContainer.TypeToDevicesFullData[withParam.Parameter.DeviceType].Device;
 
 			DeviceParameterData deviceParam = null;
 			if (withParam.Parameter.Device != null && withParam.Parameter.Device.DeviceType == DeviceTypesEnum.MCU)
@@ -138,5 +142,7 @@ namespace ScriptHandler.Services
 
 			return true;
 		}
+
+		
 	}
 }

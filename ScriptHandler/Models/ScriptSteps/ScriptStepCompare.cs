@@ -270,18 +270,15 @@ namespace ScriptHandler.Models
 
 			if (parameter != null)
 			{
+				DeviceFullData deviceFullData =
+						DevicesContainer.GetDeviceFullData(parameter);
 				if (parameter is DBC_ParamData)
 				{
-					DeviceFullData deviceFullData =
+					deviceFullData =
 						DevicesContainer.TypeToDevicesFullData[DeviceTypesEnum.MCU];
-					Communicator = deviceFullData.DeviceCommunicator;
 				}
-				else
-				{
-					DeviceFullData deviceFullData =
-						DevicesContainer.DevicesFullDataList.ToList().Find((d) => d.Device.DeviceType == parameter.DeviceType);
-					Communicator = deviceFullData.DeviceCommunicator;
-				}
+
+				Communicator = deviceFullData.DeviceCommunicator;
 			}
 
 			if (isParameter && Parameter_ExtraData != null)

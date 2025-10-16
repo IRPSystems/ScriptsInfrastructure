@@ -31,17 +31,8 @@ namespace ScriptHandler.Models
 		[JsonIgnore]
 		public ObservableCollection<SweepItemForRunData> ForRunList { get; set; }
 
-		private ObservableCollection<DeviceFullData> _devicesList;
 		[JsonIgnore]
-		public ObservableCollection<DeviceFullData> DevicesList 
-		{
-			get => _devicesList;
-			set
-			{
-				_devicesList = value;
-				SetCommunicators();
-			}
-		}
+		public DevicesContainer DevicesContainer { get; set; }
 
 		[JsonIgnore]
 		public IScriptRunner CurrentScript { get; set; }
@@ -97,6 +88,8 @@ namespace ScriptHandler.Models
 			_cancellationTokenSource = new CancellationTokenSource();
 			_cancellationToken = _cancellationTokenSource.Token;
 
+			SetCommunicators();
+
 			System.Threading.Thread.Sleep(1000);
 
 			LoggerService.Inforamtion(this, "Start Execute");
@@ -116,7 +109,7 @@ namespace ScriptHandler.Models
 				if (_devicesContainer.TypeToDevicesFullData.ContainsKey(param.DeviceType))
 				{
 					DeviceFullData deviceFullData =
-						_devicesContainer.TypeToDevicesFullData[param.DeviceType];
+						_devicesContainer.GetDeviceFullData(param);
 					_getParameter.Parameter = param;
 					_getParameter.Communicator = deviceFullData.DeviceCommunicator;
 					EOLStepSummeryData stepSummeryData;
@@ -351,7 +344,7 @@ namespace ScriptHandler.Models
 
 		public void SetCommunicators()
 		{
-			if (DevicesList == null ||
+			if (DevicesContainer == null ||
 				ForRunList == null || ForRunList.Count == 0)
 			{
 				return;
@@ -363,7 +356,7 @@ namespace ScriptHandler.Models
 				if(data.Parameter == null) 
 					continue;
 
-				DeviceFullData deviceData = DevicesList.ToList().Find((d) => d.Device.DeviceType == data.Parameter.DeviceType);
+				DeviceFullData deviceData = DevicesContainer.GetDeviceFullData(data.Parameter);
 				if(deviceData == null)
 					continue;
 

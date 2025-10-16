@@ -202,70 +202,21 @@ namespace ScriptHandler.Services
 
 		}
 
-        private bool IsValidJson(
-            ScriptNodeBase scriptNode,
-            DevicesContainer devicesContainer,
-            ref string errorString)
-        {
-
-            if (!(scriptNode is IScriptStepWithParameter withParam))
-                return true;
-
-            if (withParam.Parameter == null)
-                return true;
-
-            if (withParam.Parameter.DeviceType == DeviceTypesEnum.EVVA)
-            {
-                if (errorString == string.Empty)
-                    errorString = null;
-                return true;
-            }
-
-            if (devicesContainer.TypeToDevicesFullData.ContainsKey(withParam.Parameter.DeviceType) == false)
-			{
-				string err = "The device " + withParam.Parameter.DeviceType +
-                    " of the parameter \"" + withParam.Parameter.Name + "\" doesn't exist in the setup";
-				LoggerService.Error(this, err);
-				errorString += err + "\r\n";
-				return false;
-			}
-
-			DeviceData device = devicesContainer.TypeToDevicesFullData[withParam.Parameter.DeviceType].Device;
-
-            DeviceParameterData deviceParam = null;
-            if (withParam.Parameter.Device.DeviceType == DeviceTypesEnum.MCU)
-            {
-                deviceParam = (device as MCU_DeviceData).MCU_FullList.ToList().Find((p) => ((MCU_ParamData)p).Cmd ==
-                    ((MCU_ParamData)withParam.Parameter).Cmd);
-            }
-            else
-                deviceParam = device.ParemetersList.ToList().Find((p) => p.Name == withParam.Parameter.Name);
-
-            if (deviceParam == null)
-            {
-                string err = "The parameter \"" + withParam.Parameter.Name + "\" dosn't exist in the current " + device.Name + " parameter file";
-                LoggerService.Error(this, err);
-                errorString += err + "\r\n";
-                return false;
-            }
-
-
-            return true;
-        }
-
         private void SetCommunicator(
             ScriptStepBase scriptStep,
             DevicesContainer devicesContainer,
             List<DeviceCommunicator> usedCommunicatorsList)
         {
             DeviceCommunicator communicator = null;
-            if (scriptStep is IScriptStepWithParameter withParameter)
+
+            
+            if (scriptStep is IScriptStepWithParameter withParameter &&
+				withParameter.Parameter != null)
             {
-                if (withParameter.Parameter != null && 
-                    devicesContainer.TypeToDevicesFullData.ContainsKey(withParameter.Parameter.DeviceType))
+				DeviceFullData deviceFullData = devicesContainer.GetDeviceFullData(
+                    withParameter.Parameter);
+				if (deviceFullData != null)
                 {
-                    DeviceFullData deviceFullData =
-                        devicesContainer.TypeToDevicesFullData[withParameter.Parameter.DeviceType];
                     communicator = deviceFullData.DeviceCommunicator;
                 }
             }

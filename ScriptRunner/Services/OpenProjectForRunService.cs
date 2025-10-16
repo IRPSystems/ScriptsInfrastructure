@@ -565,19 +565,17 @@ namespace ScriptRunner.Services
 				{
 					if (withParam.Parameter != null)
 					{
-						if (devicesContainer.TypeToDevicesFullData.ContainsKey(withParam.Parameter.DeviceType))
+						DeviceFullData device =
+							devicesContainer.GetDeviceFullData(withParam.Parameter);
+						if (device != null)
 						{
-							DeviceFullData device =
-								devicesContainer.TypeToDevicesFullData[withParam.Parameter.DeviceType];
-							if (device != null)
+							withParam.Parameter.Device = device.Device;
+							if (scriptStep is IScriptStepWithCommunicator withCommunicator)
 							{
-								withParam.Parameter.Device = device.Device;
-								if (scriptStep is IScriptStepWithCommunicator withCommunicator)
-								{
-									withCommunicator.Communicator = device.DeviceCommunicator;
-								}
+								withCommunicator.Communicator = device.DeviceCommunicator;
 							}
 						}
+
 					}
 				}
 				else if (scriptStep is IScriptStepWithCommunicator withCommunicator)
@@ -594,17 +592,15 @@ namespace ScriptRunner.Services
 				{
 					if (setParameter.ValueParameter != null)
 					{
-						if (devicesContainer.TypeToDevicesFullData.ContainsKey(setParameter.ValueParameter.DeviceType))
+						DeviceFullData device =
+							devicesContainer.GetDeviceFullData(setParameter.ValueParameter);
+						if (device != null)
 						{
-							DeviceFullData device =
-								devicesContainer.TypeToDevicesFullData[setParameter.ValueParameter.DeviceType];
-							if (device != null)
-							{
-								setParameter.ValueParameter.Device = device.Device;
-								setParameter.GetParamValue.Communicator = device.DeviceCommunicator;
-								
-							}
+							setParameter.ValueParameter.Device = device.Device;
+							setParameter.GetParamValue.Communicator = device.DeviceCommunicator;
+
 						}
+
 					}
 				}
 			}
@@ -630,7 +626,7 @@ namespace ScriptRunner.Services
 				}
 				if (step is ScriptStepSweep sweep)
 				{
-					sweep.DevicesList = devicesContainer.DevicesFullDataList;
+					sweep.DevicesContainer = devicesContainer;
 				}
 			}
 		}
