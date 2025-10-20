@@ -15,14 +15,36 @@
     <converters:ScriptStepDiagramForegroundConverter x:Key="ScriptStepDiagramForegroundConverter" />
     <converters:ScriptStepDiagramToolTipConverter x:Key="ScriptStepDiagramToolTipConverter" />
 
+    <Style TargetType="syncfusion:ScrollViewer">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="syncfusion:ScrollViewer">
+                    <Border >
+                        <Grid >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-    <!--<Style TargetType="syncfusion:Connector">
-        <Setter Property="Visibility" Value="{Binding Visibility}"/>
-    </Style>-->
+                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="PART_ContentPresenter">
+                                <ContentPresenter.Content>
+                                    <Canvas x:Name="PART_DiagramCanvas">
+                                    </Canvas>
+                                </ContentPresenter.Content>
+                            </ContentPresenter>
 
-    <!--<Style TargetType="syncfusion:Node">
-        <Setter Property="Visibility" Value="{Binding Visibility}"/>
-    </Style>-->
+                            <ScrollBar x:Name="VerticalScrollBar" Grid.Column="1" Orientation="Vertical" Visibility="Collapsed"/>
+                            <ScrollBar x:Name="HorizontalScrollBar" Orientation="Horizontal" Grid.Row="1" Visibility="Collapsed"/>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 
     <DataTemplate x:Key="ScriptLogDiagramTemplate_Script">
@@ -258,10 +280,7 @@
                                   Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                                   IsEnabled="False"
                                   Height="{Binding DesignDiagramHeight}"
-                                  Width="{Binding DesignDiagramWidth}"
-                                  
-                                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                  ScrollViewer.VerticalScrollBarVisibility="Hidden"/>
+                                  Width="{Binding DesignDiagramWidth}"/>
 
         </Grid>
 
