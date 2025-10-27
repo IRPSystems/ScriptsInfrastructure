@@ -556,17 +556,27 @@ namespace ScriptHandler.Models
 		public override void GetRealParamAfterLoad(
 			DevicesContainer devicesContainer)
 		{
-			base.GetRealParamAfterLoad(devicesContainer);
+			//base.GetRealParamAfterLoad(devicesContainer);
 
-			//if (CompareValue is DeviceParameterData)
-			//{
-			//	if (CompareValue is ICalculatedParamete)
-			//		return;
+			if (Parameter is DeviceParameterData)
+			{
+				if (Parameter is ICalculatedParamete)
+					return;
 
-			//	CompareValue = GetRealParam(
-			//		CompareValue as DeviceParameterData,
-			//		devicesContainer);
-			//}
+				Parameter = GetRealParam(
+					Parameter,
+					devicesContainer);
+			}
+
+			if (CompareValue is DeviceParameterData)
+			{
+				if (CompareValue is ICalculatedParamete)
+					return;
+
+				CompareValue = GetRealParam(
+					CompareValue as DeviceParameterData,
+					devicesContainer);
+			}
 
 			DevicesContainer = devicesContainer;
 		}
