@@ -418,11 +418,13 @@ namespace ScriptHandler.Models
 
 			if (parameter != null && DevicesContainer != null)
 			{
-				DeviceFullData deviceFullData =
-					DevicesContainer.DevicesFullDataList.ToList().Find((d) => d.Device.DeviceType == parameter.DeviceType);
 
-				
-				if (deviceFullData != null)
+				DeviceFullData deviceFullData =	DevicesContainer.GetDeviceFullData(parameter);
+                //DeviceFullData deviceFullData =
+                //	DevicesContainer.DevicesFullDataList.ToList().Find((d) => d.Device.DeviceType == parameter.DeviceType);
+
+
+                if (deviceFullData != null)
 					Communicator = deviceFullData.DeviceCommunicator;
 			}
 
