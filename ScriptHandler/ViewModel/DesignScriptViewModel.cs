@@ -836,7 +836,8 @@ namespace ScriptHandler.ViewModels
 			DeviceData deviceData = _devicesContainer.GetDeviceData(parameter);
 
 			DeviceParameterData data = null;
-			if (deviceData.DeviceType == DeviceTypesEnum.MCU ||
+			if ( deviceData != null &&
+				deviceData.DeviceType == DeviceTypesEnum.MCU ||
 				deviceData.DeviceType == DeviceTypesEnum.MCU_2 ||
 				deviceData.DeviceType == DeviceTypesEnum.MCU_B2B)
 			{
