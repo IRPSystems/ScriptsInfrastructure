@@ -418,11 +418,13 @@ namespace ScriptHandler.Models
 
 			if (parameter != null && DevicesContainer != null)
 			{
-				DeviceFullData deviceFullData =
-					DevicesContainer.DevicesFullDataList.ToList().Find((d) => d.Device.DeviceType == parameter.DeviceType);
 
-				
-				if (deviceFullData != null)
+				DeviceFullData deviceFullData =	DevicesContainer.GetDeviceFullData(parameter);
+                //DeviceFullData deviceFullData =
+                //	DevicesContainer.DevicesFullDataList.ToList().Find((d) => d.Device.DeviceType == parameter.DeviceType);
+
+
+                if (deviceFullData != null)
 					Communicator = deviceFullData.DeviceCommunicator;
 			}
 
@@ -556,17 +558,27 @@ namespace ScriptHandler.Models
 		public override void GetRealParamAfterLoad(
 			DevicesContainer devicesContainer)
 		{
-			base.GetRealParamAfterLoad(devicesContainer);
+			//base.GetRealParamAfterLoad(devicesContainer);
 
-			//if (CompareValue is DeviceParameterData)
-			//{
-			//	if (CompareValue is ICalculatedParamete)
-			//		return;
+			if (Parameter is DeviceParameterData)
+			{
+				if (Parameter is ICalculatedParamete)
+					return;
 
-			//	CompareValue = GetRealParam(
-			//		CompareValue as DeviceParameterData,
-			//		devicesContainer);
-			//}
+				Parameter = GetRealParam(
+					Parameter,
+					devicesContainer);
+			}
+
+			if (CompareValue is DeviceParameterData)
+			{
+				if (CompareValue is ICalculatedParamete)
+					return;
+
+				CompareValue = GetRealParam(
+					CompareValue as DeviceParameterData,
+					devicesContainer);
+			}
 
 			DevicesContainer = devicesContainer;
 		}

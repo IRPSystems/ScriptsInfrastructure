@@ -10,6 +10,7 @@ using DeviceCommunicators.SwitchRelay32;
 using DeviceCommunicators.ZimmerPowerMeter;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
+using DeviceHandler.Models.DeviceFullDataModels;
 using Entities.Enums;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
@@ -19,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Reflection.Metadata;
 using System.Threading;
 using System.Windows;
 
@@ -50,10 +52,10 @@ namespace ScriptHandler.Models
 
 		public ScriptStepGetParamValue GetParamValue {  get; set; }
 
-		
+        [JsonIgnore]
+        public DevicesContainer DevicesContainer { get; set; }
 
-
-		private AutoResetEvent _waitGetCallback;
+        private AutoResetEvent _waitGetCallback;
 		private bool _isStopped;
 
 
@@ -116,6 +118,9 @@ namespace ScriptHandler.Models
 				ErrorMessage = "Failed to set the value.\r\n" +
 						"\tParameter: \"" + Parameter.Name + "\"\r\n" +
 						"\tValue: " + Value + "\r\n\r\n";
+
+				DeviceFullData devicefulldata = DevicesContainer.GetDeviceFullData(Parameter);
+				Communicator = devicefulldata?.DeviceCommunicator;
 
 				if (Communicator == null || Communicator.IsInitialized == false)
 				{
@@ -377,7 +382,8 @@ namespace ScriptHandler.Models
 					devicesContainer);
 			}
 
-		}
+            DevicesContainer = devicesContainer;
+        }
 
         public override List<DeviceTypesEnum> GetUsedDevices()
         {

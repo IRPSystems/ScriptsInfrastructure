@@ -54,7 +54,7 @@ namespace ScriptHandler.Models
 				Cmd = "save_param",
 				Scale = 1,
 			};
-
+			
 			_id = new byte[3];
 
 			_totalNumOfSteps = 6;
@@ -71,7 +71,9 @@ namespace ScriptHandler.Models
 			if (Parameter == null)
 				return;
 
-			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData();
+
+
+            EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData();
 			eolStepSummeryData.Description = Description;
 
 			_waitGetCallback = new ManualResetEvent(false);
@@ -127,7 +129,15 @@ namespace ScriptHandler.Models
 			EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData();
 			eolStepSummeryData.Description = Description;
 
-			if (Communicator == null || Communicator.IsInitialized == false)
+            if (Parameter != null && Parameter.IsInCANBus && Parameter.Device != null)
+            {
+                _saveParameter.IsInCANBus = true;
+				_saveParameter.Device = Parameter.Device;
+                _saveParameter.NodeId = Parameter.Device.NodeId;
+				_saveParameter.DeviceType = Parameter.DeviceType;
+            }
+
+            if (Communicator == null || Communicator.IsInitialized == false)
 			{
 				ErrorMessage += "The communication is not initialized";
 				IsPass = false;
@@ -237,6 +247,7 @@ namespace ScriptHandler.Models
 			Parameter = GetRealParam(
 				Parameter,
 				devicesContainer);
+
 
 		}
 

@@ -9,6 +9,7 @@ using ScriptHandler.Services;
 using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -23,6 +24,9 @@ namespace ScriptHandler.Models.ScriptSteps
 
         public string SerialNumber { get; set; }
         public string UserSN { get; set; }
+
+        [JsonIgnore]
+        public DevicesContainer DevicesContainer { get; set; }
 
         private ScriptStepSetParameter _setValue;
         private ScriptStepGetParamValue _getValue;
@@ -74,6 +78,7 @@ namespace ScriptHandler.Models.ScriptSteps
                 _setValue.Parameter = SN_Param;
                 _setValue.Communicator = Communicator;
                 _setValue.Value = SerialNumber;
+                _setValue.DevicesContainer = DevicesContainer;
                 _setValue.Execute();
                 EOLStepSummerysList.AddRange(_setValue.EOLStepSummerysList);
 
@@ -179,7 +184,7 @@ namespace ScriptHandler.Models.ScriptSteps
             GenerateProjectService generateService,
             DevicesContainer devicesContainer)
         {
-
+            DevicesContainer = devicesContainer;
         }
 
         public override void GetRealParamAfterLoad(
