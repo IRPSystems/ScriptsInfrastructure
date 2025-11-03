@@ -390,6 +390,8 @@ namespace ScriptHandler.Models.ScriptSteps
 			RefSensorParam = GetRealParam(
 				RefSensorParam,
 				devicesContainer);
+
+			DevicesContainer = devicesContainer; 
 		}
 
         public override List<DeviceTypesEnum> GetUsedDevices()

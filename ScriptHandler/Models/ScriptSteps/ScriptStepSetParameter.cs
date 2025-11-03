@@ -119,8 +119,11 @@ namespace ScriptHandler.Models
 						"\tParameter: \"" + Parameter.Name + "\"\r\n" +
 						"\tValue: " + Value + "\r\n\r\n";
 
-				DeviceFullData devicefulldata = DevicesContainer.GetDeviceFullData(Parameter);
-				Communicator = devicefulldata?.DeviceCommunicator;
+				if (DevicesContainer != null)
+				{
+					DeviceFullData devicefulldata = DevicesContainer.GetDeviceFullData(Parameter);
+					Communicator = devicefulldata?.DeviceCommunicator;
+				}
 
 				if (Communicator == null || Communicator.IsInitialized == false)
 				{

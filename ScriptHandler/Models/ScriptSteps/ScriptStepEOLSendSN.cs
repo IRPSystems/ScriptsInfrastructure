@@ -3,6 +3,8 @@ using DeviceCommunicators.General;
 using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
 using DeviceHandler.Models;
+using DeviceHandler.Models.DeviceFullDataModels;
+using Entities.Enums;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
@@ -69,6 +71,12 @@ namespace ScriptHandler.Models.ScriptSteps
                 }
 
                 EOLStepSummeryData eolStepSummeryData;
+
+                if (DevicesContainer != null)
+                {
+                    DeviceFullData devicefulldata = DevicesContainer.GetDeviceFullData(SN_Param);
+                    Communicator = devicefulldata?.DeviceCommunicator;
+                }
 
                 SerialNumber = Regex.Replace(SerialNumber, "[A-Za-z ]", "");
                 SerialNumber = SerialNumber.Remove(0, 1);
@@ -196,10 +204,16 @@ namespace ScriptHandler.Models.ScriptSteps
                 Cmd = "serialnumber",
                 DeviceType = Entities.Enums.DeviceTypesEnum.MCU
             };
+            if(devicesContainer.TypeToDevicesFullData.ContainsKey(DeviceTypesEnum.CANBus))
+            {
+                SN_Param.IsInCANBus = true;
+            }
 
             SN_Param = GetRealParam(
                 SN_Param,
                 devicesContainer);
+
+            DevicesContainer = devicesContainer;
         }
 
         public override List<string> GetReportHeaders()

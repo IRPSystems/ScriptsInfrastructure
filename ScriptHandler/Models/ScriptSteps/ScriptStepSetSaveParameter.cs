@@ -133,7 +133,6 @@ namespace ScriptHandler.Models
             {
                 _saveParameter.IsInCANBus = true;
 				_saveParameter.Device = Parameter.Device;
-                _saveParameter.NodeId = Parameter.Device.NodeId;
 				_saveParameter.DeviceType = Parameter.DeviceType;
             }
 

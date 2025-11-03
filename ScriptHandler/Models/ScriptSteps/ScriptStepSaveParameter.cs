@@ -68,6 +68,12 @@ namespace ScriptHandler.Models.ScriptSteps
                 EOLStepSummeryData eolStepSummeryData = new EOLStepSummeryData();
                 eolStepSummeryData.Description = Description;
 
+                if (Parameter != null && Parameter.IsInCANBus && Parameter.Device != null)
+                {
+                    _saveParameter.IsInCANBus = true;
+                    _saveParameter.Device = Parameter.Device;
+                    _saveParameter.DeviceType = Parameter.DeviceType;
+                }
                 if (Communicator == null || Communicator.IsInitialized == false)
                 {
                     ErrorMessage += "The communication is not initialized";
