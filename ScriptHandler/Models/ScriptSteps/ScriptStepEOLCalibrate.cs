@@ -15,6 +15,7 @@ using Services.Services;
 using Entities.Enums;
 using System.Reflection.Metadata;
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 
 namespace ScriptHandler.Models.ScriptSteps
 {
@@ -39,7 +40,9 @@ namespace ScriptHandler.Models.ScriptSteps
 		public DeviceCommunicator MCU_Communicator { get; set; }
 		public DeviceCommunicator RefSensorCommunicator { get; set; }
 
-		public double GainMaxLimit {  get; set; }
+        [JsonIgnore]
+        public DevicesContainer DevicesContainer { get; set; }
+        public double GainMaxLimit {  get; set; }
 		public double GainMinLimit { get; set; }
 
 		#endregion Properties
@@ -202,7 +205,9 @@ namespace ScriptHandler.Models.ScriptSteps
 							_stepsCounter++;
 							_setValue.Parameter = GainParam;
 							_setValue.Communicator = MCU_Communicator;
+							_setValue.DevicesContainer = DevicesContainer;
 							_setValue.Value = newGain;
+							
 							if (!string.IsNullOrEmpty(UserTitle))
 								_setValue.Description = UserTitle;
 							_setValue.Execute();
@@ -352,6 +357,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			NIDAQShuntResistor = (sourceNode as ScriptNodeEOLCalibrate).NIDAQShuntResistor;
 			GainMaxLimit = (sourceNode as ScriptNodeEOLCalibrate).GainMax;
             GainMinLimit = (sourceNode as ScriptNodeEOLCalibrate).GainMin;
+			DevicesContainer = devicesContainer; 
 		}
 
 		public override bool IsNotSet(
