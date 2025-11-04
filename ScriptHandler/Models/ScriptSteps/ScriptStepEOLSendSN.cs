@@ -11,9 +11,9 @@ using ScriptHandler.Services;
 using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
-using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Newtonsoft.Json;
 
 namespace ScriptHandler.Models.ScriptSteps
 {

@@ -15,8 +15,7 @@ using Services.Services;
 using Entities.Enums;
 using System.Reflection.Metadata;
 using System.Diagnostics;
-using System.Text.Json.Serialization;
-
+using Newtonsoft.Json;
 namespace ScriptHandler.Models.ScriptSteps
 {
     public class ScriptStepEOLCalibrate : ScriptStepBase
