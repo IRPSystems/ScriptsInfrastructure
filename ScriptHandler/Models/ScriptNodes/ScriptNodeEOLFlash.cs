@@ -1,6 +1,7 @@
 ﻿
 using CommunityToolkit.Mvvm.Input;
 using DeviceHandler.Models;
+using Entities.Enums;
 using FlashingToolLib.FlashingTools;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -48,6 +49,7 @@ namespace ScriptHandler.Models.ScriptNodes
 		public bool IsToolSource { get; set; }
         public bool MCU_Used { get; set; }
         public bool MCU2_Used { get; set; }
+		public DeviceTypesEnum DeviceType { get; set; }
 
         [JsonIgnore]
 		public string FileExtension { get; set; }

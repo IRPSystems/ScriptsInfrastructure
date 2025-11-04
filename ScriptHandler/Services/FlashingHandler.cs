@@ -128,7 +128,7 @@ namespace ScriptHandler.Services
 
         public bool Flash(
             string filePath,
-            bool mcuUsed = false,
+            DeviceTypesEnum deviceType = DeviceTypesEnum.MCU,
             ECustomer customer = ECustomer.GENERIC,
             string securityKey = "",
             string PsocPortName = ""
@@ -158,7 +158,7 @@ namespace ScriptHandler.Services
                     return false;
                 }
 
-                DeviceFullData mcuDevice = _devicesContainer.TypeToDevicesFullData[mcuUsed ? DeviceTypesEnum.MCU_2 : DeviceTypesEnum.MCU ];
+                DeviceFullData mcuDevice = _devicesContainer.TypeToDevicesFullData[deviceType];
 				MCU_Communicator mcuCommunicator = mcuDevice.DeviceCommunicator as MCU_Communicator;
 				
 

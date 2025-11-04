@@ -837,9 +837,9 @@ namespace ScriptHandler.ViewModels
 
 			DeviceParameterData data = null;
 			if ( deviceData != null &&
-				deviceData.DeviceType == DeviceTypesEnum.MCU ||
+				(deviceData.DeviceType == DeviceTypesEnum.MCU ||
 				deviceData.DeviceType == DeviceTypesEnum.MCU_2 ||
-				deviceData.DeviceType == DeviceTypesEnum.MCU_B2B)
+				deviceData.DeviceType == DeviceTypesEnum.MCU_B2B))
 			{
 				data = deviceData.ParemetersList.ToList().Find((p) => ((MCU_ParamData)p).Cmd == ((MCU_ParamData)parameter).Cmd);
 			}

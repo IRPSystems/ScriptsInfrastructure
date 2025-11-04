@@ -4,8 +4,24 @@
                     xmlns:flashing_tool="clr-namespace:FlashingToolLib.FlashingTools.UDS;assembly=FlashingToolLib"
                     xmlns:controls_view="clr-namespace:Controls.Views;assembly=Controls"
                     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-                    xmlns:converter="clr-namespace:ScriptHandler.Converter">
+                    xmlns:converter="clr-namespace:ScriptHandler.Converter"
+                    xmlns:models="clr-namespace:Entities.Enums;assembly=Entities">
 
+
+    <ObjectDataProvider x:Key="DeviceTypeEnumValues"
+                    MethodName="GetValues"
+                    ObjectType="{x:Type system:Enum}">
+        <ObjectDataProvider.MethodParameters>
+            <x:Type TypeName="models:DeviceTypesEnum"/>
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+
+    <x:Array x:Key="AllowedDeviceTypes" Type="{x:Type models:DeviceTypesEnum}">
+        <x:Static Member="models:DeviceTypesEnum.MCU"/>
+        <x:Static Member="models:DeviceTypesEnum.MCU_2"/>
+        <x:Static Member="models:DeviceTypesEnum.MCU_B2B"/>
+    </x:Array>
+    
     <converter:EOLFlashExtraDataVisibilityConverter x:Key="EOLFlashExtraDataVisibilityConverter" />
 
     <DataTemplate x:Key="Design_EOLFlashTemplate">
@@ -47,22 +63,11 @@
             </Grid>
 
             <TextBlock Grid.Column="0" Grid.Row="2" Text="Device" VerticalAlignment="Center"/>
-            <Grid Grid.Column="2" Grid.Row="2" HorizontalAlignment="Left">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
 
-                <RadioButton Grid.Column="0" 
-                             Content="MCU"
-                             IsChecked="{Binding MCU_Used}" />
-
-                <RadioButton Grid.Column="2" 
-                             Content="MCU_2"
-                             IsChecked="{Binding MCU2_Used}" />
-
-            </Grid>
+            <ComboBox Grid.Column="2" Grid.Row="2" Width="180"
+                  ItemsSource="{StaticResource AllowedDeviceTypes}"
+                  SelectedItem="{Binding DeviceType, Mode=TwoWay}"
+                  HorizontalAlignment="Left"/>
 
             <Grid Grid.ColumnSpan="3" Grid.Row="4"
                   Visibility="{Binding IsEolSource, Converter={StaticResource BooleanToVisibilityConverter}}">

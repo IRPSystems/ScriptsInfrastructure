@@ -162,11 +162,11 @@ namespace ScriptHandler.Models
 			DeviceParameterData param,
 			DevicesContainer devicesContainer)
 		{
-			if (devicesContainer.TypeToDevicesFullData.ContainsKey(deviceType) == false)
-				return null;
+			//if (devicesContainer.TypeToDevicesFullData.ContainsKey(deviceType) == false )
+			//	return null;
 
 			DeviceData deviceData =
-				devicesContainer.TypeToDevicesFullData[deviceType].Device;
+				devicesContainer.GetDeviceData(param);
 
 			string name = param.Name;
 			if(param is MCU_ParamData mcuParam)

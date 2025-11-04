@@ -34,6 +34,7 @@ namespace ScriptHandler.Models.ScriptSteps
 		public bool IsToolSource { get; set; }
         public bool MCU_Used { get; set; }
         public bool MCU2_Used { get; set; }
+		public DeviceTypesEnum deviceType { get; set; }
 		public string PsocPortName { get; set; }
 
         [JsonIgnore]
@@ -86,7 +87,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			}
 			
 
-			IsPass = FlashingHandler.Flash(FilePath, MCU2_Used, Customer, PsocPortName: PsocPortName);
+			IsPass = FlashingHandler.Flash(FilePath, deviceType, Customer, PsocPortName: PsocPortName);
 			ErrorMessage = FlashingHandler.ErrorMessage;
 
 			if (Application.Current != null)
@@ -155,8 +156,7 @@ namespace ScriptHandler.Models.ScriptSteps
 			IsEolSource = (sourceNode as ScriptNodeEOLFlash).IsEolSource;
 			IsToolSource = (sourceNode as ScriptNodeEOLFlash).IsToolSource;
 
-			MCU2_Used = (sourceNode as ScriptNodeEOLFlash).MCU2_Used;
-			MCU_Used = (sourceNode as ScriptNodeEOLFlash).MCU_Used;
+			deviceType = (sourceNode as ScriptNodeEOLFlash).DeviceType;
 		}
 
 		public override bool IsNotSet(
