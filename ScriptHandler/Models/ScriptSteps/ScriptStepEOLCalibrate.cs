@@ -16,6 +16,7 @@ using Entities.Enums;
 using System.Reflection.Metadata;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using DeviceHandler.Models.DeviceFullDataModels;
 namespace ScriptHandler.Models.ScriptSteps
 {
     public class ScriptStepEOLCalibrate : ScriptStepBase
@@ -112,7 +113,7 @@ namespace ScriptHandler.Models.ScriptSteps
 
 				_getValue.EOLReportsSelectionData = EOLReportsSelectionData;
 				_setValue.EOLReportsSelectionData = EOLReportsSelectionData;
-
+				SetCommunicator();
 
 				if (RefSensorParam is ZimmerPowerMeter_ParamData powerMeter)
 					powerMeter.Channel = RefSensorChannel;
@@ -328,7 +329,22 @@ namespace ScriptHandler.Models.ScriptSteps
             avgRead = avgRead / numOfReads;
             return avgRead;
         }
-
+		private void SetCommunicator()
+		{
+			if(DevicesContainer != null)
+			{
+                if (McuParam != null && McuParam.IsInCANBus)
+				{
+					DeviceFullData devicefulldata = DevicesContainer.GetDeviceFullData(McuParam);
+					MCU_Communicator = devicefulldata?.DeviceCommunicator;
+                }
+				if (RefSensorParam != null && RefSensorParam.IsInCANBus)
+				{
+					DeviceFullData devicefulldata = DevicesContainer.GetDeviceFullData(RefSensorParam);
+					RefSensorCommunicator = devicefulldata?.DeviceCommunicator;
+                }
+            }
+		}
 
         protected override void Stop()
 		{

@@ -510,11 +510,6 @@ namespace ScriptRunner.Services
 						DeviceFullData deviceFullData = devicesContainer.TypeToDevicesFullData[DeviceTypesEnum.MCU];
 						calibrate.MCU_Communicator = deviceFullData.DeviceCommunicator;
 					}
-					else if(calibrate.McuParam.IsInCANBus && devicesContainer.TypeToDevicesFullData.ContainsKey(DeviceTypesEnum.CANBus))
-					{
-                        DeviceFullData deviceFullData = devicesContainer.TypeToDevicesFullData[DeviceTypesEnum.CANBus];
-                        calibrate.MCU_Communicator = deviceFullData.DeviceCommunicator;
-                    }
 
 
 					if (calibrate.RefSensorParam != null &&
@@ -524,12 +519,6 @@ namespace ScriptRunner.Services
 							calibrate.RefSensorParam.DeviceType];
 						calibrate.RefSensorCommunicator = deviceFullData.DeviceCommunicator;
 					}
-					else if(calibrate.RefSensorParam != null && calibrate.RefSensorParam.IsInCANBus && devicesContainer.TypeToDevicesFullData.ContainsKey(DeviceTypesEnum.CANBus))
-					{
-                        DeviceFullData deviceFullData = devicesContainer.TypeToDevicesFullData[
-								DeviceTypesEnum.CANBus];
-                        calibrate.RefSensorCommunicator = deviceFullData.DeviceCommunicator;
-                    }
                 }
 
 				if(scriptStep is ScriptStepEOLPrint print)
