@@ -6,6 +6,7 @@ using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using DeviceHandler.ViewModel;
 using Entities.Enums;
+using LibUsbDotNet.DeviceNotify;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
@@ -833,6 +834,9 @@ namespace ScriptHandler.ViewModels
 		private DeviceParameterData GetParameter(
 			DeviceParameterData parameter)
 		{
+			if (_devicesContainer.TypeToDevicesFullData.ContainsKey(parameter.DeviceType) == false && parameter.IsInCANBus == false )
+				return null;
+
 			DeviceData deviceData = _devicesContainer.GetDeviceData(parameter);
 
 			DeviceParameterData data = null;
