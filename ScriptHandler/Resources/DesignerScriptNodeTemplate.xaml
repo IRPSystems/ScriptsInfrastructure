@@ -859,4 +859,10 @@
 
     </DataTemplate>
 
+    <DataTemplate x:Key="Design_EOLSetManufDateTemplate">
+
+
+
+    </DataTemplate>
+
 </ResourceDictionary>

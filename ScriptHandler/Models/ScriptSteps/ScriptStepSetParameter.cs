@@ -1,4 +1,4 @@
-﻿
+
 using DeviceCommunicators.Enums;
 using DeviceCommunicators.EvvaDevice;
 using DeviceCommunicators.General;
@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
+using Services.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -182,6 +183,14 @@ namespace ScriptHandler.Models
 				AddToEOLSummary(Convert.ToDouble(Value));
 				_stepsCounter++;
 			}
+			catch (Exception ex)
+			{
+				LoggerService.Error(this, $"{ex.Message}");
+				ErrorMessage += $" {ex.Message}";				
+                IsError = true;
+                IsPass = false;
+				return;
+            }
 			finally
 			{
 				//finished derived class execute method

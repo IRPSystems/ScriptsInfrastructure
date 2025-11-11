@@ -221,6 +221,7 @@ namespace ScriptRunner.Services
 
 			_stepsCounter = 0;
 			_numOfSteps = GetNumberOfScriptSteps(CurrentScript.CurrentScript);
+
 			CurrentScript.Start();
 
 			if (Application.Current != null)
@@ -267,6 +268,7 @@ namespace ScriptRunner.Services
 			foreach (ScriptStepBase step in script.ScriptItemsList)
 			{
 				step.StepState = SciptStateEnum.None;
+				step.IsExecuted = false;
 			}
 		}
 
@@ -422,7 +424,6 @@ namespace ScriptRunner.Services
 				else if (item is ScriptStepSubScript subScript)
 				{
 					InitiateSweepItem(subScript.Script);
-					subScript.IsExecuted = true;
 				}
 			}
 		}

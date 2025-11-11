@@ -1,4 +1,4 @@
-﻿
+
 using ScriptHandler.Models;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -215,8 +215,9 @@ namespace ScriptRunner.Services
 				{
 					projScript.State = SciptStateEnum.None;
 					projScript.IsPass = null;
+					projScript.isExecuted = false;
 
-					ClearProjectScriptsState(projScript.ScriptItemsList);
+                    ClearProjectScriptsState(projScript.ScriptItemsList);
 				}
 			}
 
@@ -537,6 +538,7 @@ namespace ScriptRunner.Services
 				if (!(item is ScriptStepBase step))
 					continue;
                 step.StepState = SciptStateEnum.None;
+				step.IsExecuted = false;
 			}
 		}
 

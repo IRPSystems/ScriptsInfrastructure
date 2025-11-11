@@ -74,7 +74,9 @@ namespace ScriptHandler.Services
 				return new ScriptStepEOLCalibrate();
 			else if (node.GetType().Name == "ScriptNodeEOLSendSN")
 				return new ScriptStepEOLSendSN();
-			else if (node.GetType().Name == "ScriptNodeResetParentSweep")
+            else if (node.GetType().Name == "ScriptNodeEOLSetManufDate")
+                return new ScriptStepEOLSetManufDate();
+            else if (node.GetType().Name == "ScriptNodeResetParentSweep")
 				return new ScriptStepResetParentSweep();
 			else if (node.GetType().Name == "ScriptNodeScopeSave")
 				return new ScriptStepScopeSave();
