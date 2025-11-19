@@ -4,7 +4,11 @@
                     xmlns:converter="clr-namespace:Converters;assembly=Converters"
                     xmlns:local_converter="clr-namespace:ScriptHandler.Converter"
                     xmlns:converters="clr-namespace:Converters;assembly=Converters"
-                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
+                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib"
+                    xmlns:models="clr-namespace:Entities.Enums;assembly=Entities">
+
+
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/ScriptHandler;component/Resources/Design_CANMessageTemplate.xaml" />
@@ -27,10 +31,21 @@
     <local_converter:SubScriptsListConverter x:Key="SubScriptsListConverter"/>
     <local_converter:NumatoGPIOVisibilityConverter x:Key="NumatoGPIOVisibilityConverter" />
     <local_converter:NIPortVisibilityConverter x:Key="NIPortVisibilityConverter" />
-
-
-
     
+    <ObjectDataProvider x:Key="DeviceTypeEnumValues"
+                    MethodName="GetValues"
+                    ObjectType="{x:Type system:Enum}">
+        <ObjectDataProvider.MethodParameters>
+            <x:Type TypeName="models:DeviceTypesEnum"/>
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+
+    <x:Array x:Key="AllowedDeviceTypes" Type="{x:Type models:DeviceTypesEnum}">
+        <x:Static Member="models:DeviceTypesEnum.MCU"/>
+        <x:Static Member="models:DeviceTypesEnum.MCU_2"/>
+        <x:Static Member="models:DeviceTypesEnum.MCU_B2B"/>
+        <x:Static Member="models:DeviceTypesEnum.CANBus"/>
+    </x:Array>
 
     <DataTemplate x:Key="Design_DelayTemplate">
 
@@ -860,9 +875,24 @@
     </DataTemplate>
 
     <DataTemplate x:Key="Design_EOLSetManufDateTemplate">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Column="0" Grid.Row="2" Text="Device" VerticalAlignment="Center"/>
 
+            <ComboBox Grid.Column="2" Grid.Row="2" Width="180"
+                  ItemsSource="{StaticResource AllowedDeviceTypes}"
+                  SelectedItem="{Binding DeviceType, Mode=TwoWay}"
+                  HorizontalAlignment="Left"/>
 
+        </Grid>
     </DataTemplate>
 
 </ResourceDictionary>

@@ -1,13 +1,19 @@
 ﻿
+using DeviceCommunicators.CANBus;
 using DeviceCommunicators.General;
 using DeviceCommunicators.MCU;
 using DeviceCommunicators.Models;
+using DeviceCommunicators.SwitchRelay32;
 using DeviceHandler.Models;
+using DeviceHandler.Models.DeviceFullDataModels;
+using Entities.Enums;
+using LibUsbDotNet.DeviceNotify;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
 using ScriptHandler.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -20,6 +26,8 @@ namespace ScriptHandler.Models.ScriptSteps
 
         public DeviceParameterData Parameter { get; set; }
         public DeviceCommunicator Communicator { get; set; }
+        public DeviceTypesEnum DeviceType { get; set; }
+        public DevicesContainer DevicesContainer { get; set; }
 
         private ScriptStepGetParamValue _getValue;
         private ScriptStepSetParameter _setValue;
@@ -73,6 +81,14 @@ namespace ScriptHandler.Models.ScriptSteps
                 _setValue = new ScriptStepSetParameter();
                 _saveValue = new ScriptStepSetSaveParameter();
 
+
+                if (DevicesContainer != null)
+                {
+                    DeviceFullData devicefulldata = DevicesContainer.DevicesFullDataList.FirstOrDefault(d => d.Device.DeviceType == DeviceType);
+                    Communicator = devicefulldata?.DeviceCommunicator;
+                    Parameter.Device = ((devicefulldata as DeviceFullData_CANBus).Device as CANBus_DeviceData).DeviceDataList.FirstOrDefault(d => d.DeviceType == DeviceTypesEnum.MCU);
+                }
+
                 IsExecuted = true;
                 _stepsCounter = 1;
 
@@ -83,12 +99,12 @@ namespace ScriptHandler.Models.ScriptSteps
                 }
 
                 // Probe day: if already set (non-zero), exit early
-                Parameter = new MCU_ParamData()
-                {
-                    Name = "ManufDate",
-                    Cmd = "ecumanday",
-                    DeviceType = Entities.Enums.DeviceTypesEnum.MCU
-                };
+                //Parameter = new MCU_ParamData()
+                //{
+                //    Name = "ManufDate",
+                //    Cmd = "ecumanday",
+                //    DeviceType = DeviceType
+                //};
 
                 _getValue.Parameter = Parameter;
                 _getValue.Communicator = Communicator;
@@ -215,9 +231,24 @@ namespace ScriptHandler.Models.ScriptSteps
             GenerateProjectService generateService,
             DevicesContainer devicesContainer)
         {
-
+            DeviceType = (sourceNode as ScriptNodeEOLSetManufDate).DeviceType;
         }
+        public override void GetRealParamAfterLoad(
+            DevicesContainer devicesContainer)
+        {
+            Parameter = new MCU_ParamData()
+            {
+                Name = "ManufDate",
+                Cmd = "ecumanday",
+                DeviceType = DeviceTypesEnum.MCU
+            };
+            if (devicesContainer.TypeToDevicesFullData.ContainsKey(DeviceTypesEnum.CANBus))
+            {
+                Parameter.IsInCANBus = true;
+            }
 
+            DevicesContainer = devicesContainer;
+        }
         public override List<string> GetReportHeaders()
         {
             List<string> headers = base.GetReportHeaders();

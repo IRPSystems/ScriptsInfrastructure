@@ -1,8 +1,12 @@
 ﻿
+using Entities.Enums;
+
 namespace ScriptHandler.Models.ScriptNodes
 {
     internal class ScriptNodeEOLSetManufDate : ScriptNodeBase
     {
+        public DeviceTypesEnum DeviceType { get; set; }
+
         public override string Description
         {
             get
