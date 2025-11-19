@@ -38,7 +38,7 @@ namespace ScriptHandler.Models.ScriptNodes
 
 		public string RXId { get; set; }
 		public string TXId { get; set; }
-		public ECustomer Customer { get; set; }
+		public string Customer { get; set; }
 
 
 
@@ -83,7 +83,7 @@ namespace ScriptHandler.Models.ScriptNodes
 			FlashFilePathOpenCommand = new RelayCommand(FlashFilePathOpen);
 
 			FileExtension = "";
-            Customer = ECustomer.GENERIC;
+            Customer = "Generic";
 		}
 
 		private void FlashFilePathOpen()

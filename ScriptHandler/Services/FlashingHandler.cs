@@ -108,7 +108,7 @@ namespace ScriptHandler.Services
             return true;
         }
 
-        public void LoadUdsXML(ECustomer customer)
+        public void LoadUdsXML(string customer)
         {
             List<CCustomer> udsCustomerList;
             string errorMsg;
@@ -129,7 +129,7 @@ namespace ScriptHandler.Services
         public bool Flash(
             string filePath,
             DeviceTypesEnum deviceType = DeviceTypesEnum.MCU,
-            ECustomer customer = ECustomer.GENERIC,
+            string customer = "Generic",
             string securityKey = "",
             string PsocPortName = ""
             )

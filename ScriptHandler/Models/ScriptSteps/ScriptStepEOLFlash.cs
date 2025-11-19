@@ -26,7 +26,7 @@ namespace ScriptHandler.Models.ScriptSteps
 		public string FilePath { get; set; }
 		public string RXId { get; set; }
 		public string TXId { get; set; }
-		public ECustomer Customer { get; set; }
+		public string Customer { get; set; }
 
 		public int NumOfFlashFile { get; set; }
 

@@ -150,8 +150,12 @@ namespace ScriptHandler.Models.ScriptSteps
                     {
                         Name = kvp.Key,
                         Cmd = kvp.Key,
-                        DeviceType = Entities.Enums.DeviceTypesEnum.MCU
+                        DeviceType = Entities.Enums.DeviceTypesEnum.MCU,
+                        IsInCANBus = Parameter.IsInCANBus
                     };
+
+                    if (DevicesContainer != null)
+                        currentParam.Device = Parameter.Device;
 
                     // SET
                     _setValue.Parameter = currentParam;
