@@ -68,7 +68,7 @@ namespace ScriptRunner.Services
 		private int _receivedCounter;
 
 		private GetUUTDataForRecordingService _getUUTData;
-
+		private Entities.Enums.DeviceTypesEnum _recordingDeviceType;
 		private bool _isFirstLineInFile;
 
 		private string _scriptName;
@@ -100,18 +100,26 @@ namespace ScriptRunner.Services
 		{
 			_devicesContainer = devicesContainer;
 			_canMessageSender = canMessageSender;
-
 			_getUUTData = new GetUUTDataForRecordingService();
 
 			_lockObj = new object();
 
 			if(_devicesContainer.TypeToDevicesFullData.ContainsKey(Entities.Enums.DeviceTypesEnum.MCU))
 			{
-				DeviceFullData mcuData =
-					_devicesContainer.TypeToDevicesFullData[Entities.Enums.DeviceTypesEnum.MCU];
+				_recordingDeviceType = Entities.Enums.DeviceTypesEnum.MCU;
+                DeviceFullData mcuData =
+					_devicesContainer.TypeToDevicesFullData[_recordingDeviceType];
 				mcuData.DeviceCommunicator.ConnectionEvent += DeviceCommunicator_ConnectionEvent;
 				DeviceCommunicator_ConnectionEvent();
 			}
+			else if (_devicesContainer.TypeToDevicesFullData.ContainsKey(Entities.Enums.DeviceTypesEnum.CANBus))
+			{
+				_recordingDeviceType = Entities.Enums.DeviceTypesEnum.CANBus;
+                DeviceFullData_CANBus canBusData =
+					_devicesContainer.TypeToDevicesFullData[_recordingDeviceType] as DeviceFullData_CANBus;
+				canBusData.DeviceCommunicator.ConnectionEvent += DeviceCommunicator_ConnectionEvent;
+				DeviceCommunicator_ConnectionEvent();
+            }
 
 
 #if _USE_TIMER
@@ -119,7 +127,7 @@ namespace ScriptRunner.Services
 			_timer.Elapsed += _timer_Elapsed;
 #endif
 
-			_isPaused = false;
+				_isPaused = false;
 
 		}
 
@@ -189,7 +197,7 @@ namespace ScriptRunner.Services
 
 
 
-				_getUUTData.GetUUTData(_devicesContainer);
+				_getUUTData.GetUUTData(_devicesContainer,_recordingDeviceType);
 
 				_version = Assembly.GetEntryAssembly().GetName().Version.ToString();
 
@@ -243,14 +251,15 @@ namespace ScriptRunner.Services
 
 				foreach (DeviceParameterData data in logParametersList)
 				{
-					if (_devicesContainer.TypeToDevicesFullData.ContainsKey(data.DeviceType) == false)
+					if (_devicesContainer.TypeToDevicesFullData.ContainsKey(data.DeviceType) == false && !data.IsInCANBus)
 						continue;
+
 
 					DeviceFullData deviceFullData =
-						_devicesContainer.TypeToDevicesFullData[data.DeviceType];
+                        _devicesContainer.GetDeviceFullData(data);
 					if (deviceFullData == null)
 						continue;
-
+					data.Device = deviceFullData.Device;
 					if (data is DBC_ParamData dbcParam)
 					{
 						CANMessageForSenderData canMsgData = _canMessageSender.CANMessagesList.ToList().Find((d) =>
@@ -619,16 +628,18 @@ namespace ScriptRunner.Services
 
 		private void DeviceCommunicator_ConnectionEvent()
 		{
-			if (_devicesContainer.TypeToDevicesFullData.ContainsKey(Entities.Enums.DeviceTypesEnum.MCU) == false)
+			if (_devicesContainer.TypeToDevicesFullData.ContainsKey(_recordingDeviceType) == false )
 				return;
 
-			DeviceFullData mcuData =
-				_devicesContainer.TypeToDevicesFullData[Entities.Enums.DeviceTypesEnum.MCU];
+			DeviceFullData mcuData = null;
 
-			if (mcuData.DeviceCommunicator.IsInitialized == false)
+			mcuData = _devicesContainer.TypeToDevicesFullData[_recordingDeviceType];
+
+
+            if (mcuData.DeviceCommunicator.IsInitialized == false)
 				return;
 
-			_getUUTData.GetUUTData(_devicesContainer);
+			_getUUTData.GetUUTData(_devicesContainer,_recordingDeviceType);
 		}
 
 		#endregion Methods
