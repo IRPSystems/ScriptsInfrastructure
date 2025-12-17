@@ -5,6 +5,7 @@ using DeviceCommunicators.Models;
 using DeviceHandler.Models;
 using Entities.Enums;
 using Newtonsoft.Json;
+using ScriptHandler.Enums;
 using ScriptHandler.Interfaces;
 using System;
 using System.Collections.ObjectModel;
@@ -123,6 +124,14 @@ namespace ScriptHandler.Models
 
 		public EOLReportsSelectionData EOLReportsSelectionData { get; set; }
 
+		public double OffsetX { get; set; }
+		public double OffsetY { get; set; }
+		public double Width { get; set; }
+		public double Height { get; set; }
+
+		// Needed for XAML that is used for both ScriptNode and ScriptStep
+		public SciptStateEnum StepState { get; set; }
+
 		#endregion Properties and Fields
 
 
@@ -131,6 +140,7 @@ namespace ScriptHandler.Models
 		public ScriptNodeBase()
 		{
 			EOLReportsSelectionData = new EOLReportsSelectionData();
+			IsExpanded = true;
 		}
 
 		#endregion Constructor

@@ -16,13 +16,13 @@
     <converters:ScriptStepDiagramToolTipConverter x:Key="ScriptStepDiagramToolTipConverter" />
 
 
-    <Style TargetType="syncfusion:Connector">
+    <!--<Style TargetType="syncfusion:Connector">
         <Setter Property="Visibility" Value="{Binding Visibility}"/>
-    </Style>
+    </Style>-->
 
-    <Style TargetType="syncfusion:Node">
+    <!--<Style TargetType="syncfusion:Node">
         <Setter Property="Visibility" Value="{Binding Visibility}"/>
-    </Style>
+    </Style>-->
 
 
     <DataTemplate x:Key="ScriptLogDiagramTemplate_Script">

@@ -196,6 +196,9 @@ namespace ScriptHandler.Models
 
 		private void ElapsedEventHandler()
 		{
+			if (Communicator == null || Communicator.IsInitialized == false)
+				return;
+
 			DateTime startTime = DateTime.Now;
 			TimeSpan waitTime = _tsInterval;
 			Task.Run(() =>
