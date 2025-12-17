@@ -189,6 +189,9 @@ namespace ScriptRunner.Services
 			{
 				if (item is ISubScript subScript)
 				{
+					if (subScript.Script == null)
+						continue;
+
 					IsScriptContainsSO(
 						subScript.Script as GeneratedScriptData);
 
@@ -197,6 +200,7 @@ namespace ScriptRunner.Services
 						scriptData.IsContainsSO = true;
 						return;
 					}
+
 					continue;
 				}
 
