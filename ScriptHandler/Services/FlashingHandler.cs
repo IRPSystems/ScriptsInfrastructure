@@ -118,7 +118,7 @@ namespace ScriptHandler.Services
                 MessageBox.Show(errorMsg);
                 return;
             }
-            _flasherService.SetFlashingParamsUDS(customer, ref errorMsg);
+            _flasherService.SetFlashingParamsUDS(customer.ToString(), ref errorMsg);
         }
 
         public List<string> GetPSOCDeviceList(out string errorMsg)
@@ -195,7 +195,7 @@ namespace ScriptHandler.Services
                         uint id = mcuCommunicator.CanService.GetHwId();
 
                         _flasherService.SetFlashingParamsUDS(
-                            customer, ref errorMsg ,mcuCommunicator.CanService.GetHwId(),
+                            customer.ToString(), ref errorMsg ,mcuCommunicator.CanService.GetHwId(),
                             _udsLogPath);
                         flashStatus = _flasherService.Flash(ref errorMsg);
 
