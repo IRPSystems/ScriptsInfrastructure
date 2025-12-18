@@ -466,7 +466,12 @@ namespace ScriptHandler.Models.ScriptSteps
 			DevicesContainer devicesContainer)
 		{
 			Value = (sourceNode as ScriptNodeCompareRange).Parameter;
-			ValueLeft = (sourceNode as ScriptNodeCompareRange).CompareValue as DeviceParameterData;
+
+			if((sourceNode as ScriptNodeCompareRange).CompareValue is DeviceParameterData param)
+				ValueLeft = (sourceNode as ScriptNodeCompareRange).CompareValue as DeviceParameterData;
+			else
+				ValueLeft = (sourceNode as ScriptNodeCompareRange).CompareValue;
+
 			ValueRight = (sourceNode as ScriptNodeCompareRange).ValueRight;
 			Comparation1 = (sourceNode as ScriptNodeCompareRange).Comparation1;
 			Comparation2 = (sourceNode as ScriptNodeCompareRange).Comparation2;
