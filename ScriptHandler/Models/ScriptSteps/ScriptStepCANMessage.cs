@@ -1,4 +1,5 @@
 ﻿
+using BaseCommunicators;
 using DBCFileParser.Model;
 using DeviceCommunicators.Enums;
 using DeviceCommunicators.General;
@@ -227,7 +228,7 @@ namespace ScriptHandler.Models
 
 						lock (_lockPayloadObj)
 						{
-							(Communicator as MCU_Communicator).CanService.Send(
+							(Communicator.BaseCommunicator as MCU_BaseCommunicator).CanService.Send(
 								_payloadBytes,
 								NodeId,
 								isExtendedId,

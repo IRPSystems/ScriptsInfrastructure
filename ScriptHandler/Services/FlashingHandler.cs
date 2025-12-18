@@ -20,6 +20,7 @@ using static iso15765.CUdsClient;
 using iso15765;
 using System.Windows;
 using FlashingToolLib.FlashingTools.UDS;
+using BaseCommunicators;
 
 namespace ScriptHandler.Services
 {
@@ -160,7 +161,9 @@ namespace ScriptHandler.Services
 
                 DeviceFullData mcuDevice = _devicesContainer.TypeToDevicesFullData[mcuUsed ? DeviceTypesEnum.MCU_2 : DeviceTypesEnum.MCU ];
 				MCU_Communicator mcuCommunicator = mcuDevice.DeviceCommunicator as MCU_Communicator;
-				
+				MCU_BaseCommunicator mcuBaseCommunicator = 
+                    mcuDevice.DeviceCommunicator.BaseCommunicator as MCU_BaseCommunicator;
+
 
 				//Check if PCAN connection is required
 				if (_flasherService.flashingTool != FlasherService.eFlashingTool.PSoC)
@@ -192,10 +195,10 @@ namespace ScriptHandler.Services
 
                         System.Threading.Thread.Sleep(100);
 
-                        uint id = mcuCommunicator.CanService.GetHwId();
+                        uint id = mcuBaseCommunicator.CanService.GetHwId();
 
                         _flasherService.SetFlashingParamsUDS(
-                            customer.ToString(), ref errorMsg ,mcuCommunicator.CanService.GetHwId(),
+                            customer.ToString(), ref errorMsg , mcuBaseCommunicator.CanService.GetHwId(),
                             _udsLogPath);
                         flashStatus = _flasherService.Flash(ref errorMsg);
 
@@ -229,10 +232,10 @@ namespace ScriptHandler.Services
 
 						System.Threading.Thread.Sleep(500);
 
-						ushort hwId = mcuCommunicator.CanService.GetHwId();
+						ushort hwId = mcuBaseCommunicator.CanService.GetHwId();
 						_flasherService.SetFlashingParamsCyFlash(
 								CanPCanService.FormatPortName(hwId),
-								mcuCommunicator.CanService.Baudrate);
+								mcuBaseCommunicator.CanService.Baudrate);
 						flashStatus = _flasherService.Flash(ref errorMsg);
 
 						//Reopen can port
