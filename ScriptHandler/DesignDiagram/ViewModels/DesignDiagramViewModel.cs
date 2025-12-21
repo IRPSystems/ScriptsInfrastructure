@@ -875,7 +875,7 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			double xOffset)
 		{
 
-			if (toolName.ToLower().Contains("sub script"))
+			if (node.Content is ISubScript)
 			{
 				node.ContentTemplate =
 					Application.Current.FindResource("ScriptLogDiagramTemplate_Step_SubScript") as DataTemplate;
