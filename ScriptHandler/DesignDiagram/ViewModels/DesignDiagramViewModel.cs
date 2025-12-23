@@ -472,9 +472,12 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 							withParam.Parameter = data;
 					}
 
-					scriptNode.PostLoad(
-						_devicesContainer,
-						DesignDiagram);
+					if (scriptNode != null)
+					{
+						scriptNode.PostLoad(
+							_devicesContainer,
+							DesignDiagram);
+					}
 				}
 
 
