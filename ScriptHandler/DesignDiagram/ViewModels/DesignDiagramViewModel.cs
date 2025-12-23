@@ -1089,18 +1089,20 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			if (node == null) 
 				return;
 
-			if (connector.ID == null)
+			if (!(connector.ID is string strID))
 				return;
 
-			if((connector.ID as string).StartsWith("PassNext"))
+			if(strID.StartsWith("PassNext"))
 			{
 				(node.Content as ScriptNodeBase).PassNext = null;
 			}
-			else if ((connector.ID as string).StartsWith("FailNext") &&
-				!(connector.ID as string).EndsWith(" - Delete Node"))
+			else if (strID.StartsWith("FailNext") &&
+				!strID.EndsWith(" - Delete Node"))
 			{
 				(node.Content as ScriptNodeBase).FailNext = null;
 			}
+
+			connector.ID = strID.Replace(" - Delete Node", string.Empty);
 		}
 
 		private void ReAragneNodes()
