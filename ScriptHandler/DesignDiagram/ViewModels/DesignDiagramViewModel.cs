@@ -127,9 +127,12 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			MoveNodeDownCommand = new RelayCommand(MoveNodeDown);
 			ExportScriptToPDFCommand = new RelayCommand<SfDiagram>(ExportScriptToPDF);
 
+			CopyCommand = new RelayCommand(Copy);
+			PastCommand = new RelayCommand(Past);
 			SaveDiagramCommand = new RelayCommand(Save);
 
 			SetSnapAndGrid();
+			InitCommandManager();
 
 			ChangeDarkLight();
 
@@ -193,6 +196,29 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			Nodes.Add(node);
 		}
 
+		private void InitCommandManager()
+		{
+			CommandManager = new Syncfusion.UI.Xaml.Diagram.CommandManager();
+			CommandManager.Commands = new ObservableCollection<IGestureCommand>();
+
+			GestureCommand copyGesture = new GestureCommand()
+			{
+				// Define the command with custom command
+				Command = CopyCommand,
+				// Define gesture for custom Command
+				Gesture = new Gesture
+				{
+					KeyModifiers = ModifierKeys.Control,
+					KeyState = KeyStates.Down,
+					Key = Key.C
+				},
+				// Parameter for command - file name for save command
+				//Parameter = "diagram"
+			};
+
+			CommandManager.Commands.Add(copyGesture);
+		}
+
 		private void SetSnapAndGrid()
 		{
 			SnapSettings = new SnapSettings()
@@ -214,7 +240,6 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 
 			try
 			{
-				if (DesignDiagram.Name == "Active Discharge") { }
 				bool isValid = _scriptValidation.Validate(DesignDiagram);
 				if (!isValid)
 					return;
@@ -1478,6 +1503,81 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 
 			_isScriptChangedEvent = false;
 
+		}
+
+
+
+		private void Copy()
+		{
+			List<IScriptItem> copyList = new List<IScriptItem>();
+			foreach (var item in (SelectedItems.Nodes as ObservableCollection<object>))
+			{
+				if (item is NodeViewModel nodeViewModel)
+				{
+					copyList.Add(nodeViewModel.Content  as IScriptItem);
+				}
+			}
+
+			JsonSerializerSettings settings = new JsonSerializerSettings();
+			settings.Formatting = Formatting.Indented;
+			settings.TypeNameHandling = TypeNameHandling.All;
+			var sz = JsonConvert.SerializeObject(copyList, settings);
+
+			string format = "MyNode";
+			Clipboard.Clear();
+			Clipboard.SetData(format, sz);
+		}
+
+		private void Past()
+		{
+			if (Clipboard.ContainsData("MyNode") == false)
+				return;
+
+			try
+			{
+				string copyString = (string)Clipboard.GetData("MyNode");
+				JsonSerializerSettings settings = new JsonSerializerSettings();
+				settings.Formatting = Formatting.Indented;
+				settings.TypeNameHandling = TypeNameHandling.All;
+				List<IScriptItem> list =
+					JsonConvert.DeserializeObject(copyString, settings) as List<IScriptItem>;
+
+				ScriptNodeBase prev = null;
+				if (Nodes.Count > 0)
+				{
+					prev = Nodes[Nodes.Count - 1].Content as ScriptNodeBase;
+				}
+
+				foreach (IScriptItem item in list)
+				{
+					if (item is IScriptStepWithParameter withParam &&
+						withParam.Parameter != null)
+					{
+						if (withParam.Parameter.Device == null)
+						{
+							if (_devicesContainer.TypeToDevicesFullData.ContainsKey(withParam.Parameter.DeviceType))
+								withParam.Parameter.Device = _devicesContainer.TypeToDevicesFullData[withParam.Parameter.DeviceType].Device;
+						}
+					}
+
+					string toolName = ((ScriptNodeBase)item).Name;
+					InitNodeBySymbol(null, toolName, item as ScriptNodeBase);
+
+					if (prev != null && item.PassNext == null)
+						prev.PassNext = item;
+
+					DesignDiagram.ScriptItemsList.Add(item);
+
+					prev = item as ScriptNodeBase;
+
+				}
+
+				InitNextArrows();
+			}
+			catch (Exception ex)
+			{
+				LoggerService.Error(this, "Failed to pase tool", "Error in Paset", ex);
+			}
 		}
 
 

@@ -101,8 +101,18 @@
                               ConnectorSourceChangedCommand="{Binding ConnectorSourceChangedCommand}"
                               ConnectorTargetChangedCommand="{Binding ConnectorTargetChangedCommand}"
                               
-                              
                               Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+
+
+            <syncfusion:SfDiagram.InputBindings>
+
+                <KeyBinding Command="{Binding CopyCommand}" 
+                            Gesture="CTRL+C" />
+
+                <KeyBinding Command="{Binding PastCommand}" 
+                            Gesture="CTRL+V" />
+
+            </syncfusion:SfDiagram.InputBindings>
 
             <i:Interaction.Triggers>
 
