@@ -1,4 +1,5 @@
 ﻿
+using BaseCommunicators;
 using Communication.Services;
 using DeviceCommunicators.DBC;
 using DeviceCommunicators.MCU;
@@ -48,12 +49,13 @@ namespace ScriptHandler.Services
 			if (!(parameter is DBC_ParamData paramData))
 				return null;
 
-			if (!(communicator.CommService is CanService canService))
-				return false;
+			
 
 			_DBCParamData = paramData;
 			_waitForMessage = new AutoResetEvent(false);
 			_messageBuffer = null;
+
+			CanService canService = ((MCU_BaseCommunicator) communicator.BaseCommunicator).CanService;
 
 			canService.CanMessageReceivedEvent += CanService_CanMessageReceivedEvent;
 
