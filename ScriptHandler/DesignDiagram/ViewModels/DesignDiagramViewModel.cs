@@ -1082,7 +1082,8 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			Mouse.OverrideCursor = null;
 		}
 
-		private void DeleteConnector(ConnectorViewModel connector)
+		private void DeleteConnector(
+			ConnectorViewModel connector)
 		{
 			NodeViewModel node = connector.SourceNode as NodeViewModel;
 			if (node == null) 
@@ -1092,9 +1093,14 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 				return;
 
 			if((connector.ID as string).StartsWith("PassNext"))
+			{
 				(node.Content as ScriptNodeBase).PassNext = null;
-			else if ((connector.ID as string).StartsWith("FailNext"))
+			}
+			else if ((connector.ID as string).StartsWith("FailNext") &&
+				!(connector.ID as string).EndsWith(" - Delete Node"))
+			{
 				(node.Content as ScriptNodeBase).FailNext = null;
+			}
 		}
 
 		private void ReAragneNodes()
@@ -1288,6 +1294,18 @@ namespace ScriptHandler.DesignDiagram.ViewModels
 			int dropedOnIndex)
 		{
 			NodeViewModel temp = dropedNode;
+
+			foreach (var connector in Connectors)
+			{
+				if(connector.SourceNode == temp ||
+					connector.TargetNode == temp)
+				{
+					if (connector.ID is string strID)
+						connector.ID = strID + " - Delete Node";
+				}
+			}
+
+
 			int dragedIndex = Nodes.IndexOf(dropedNode);
 			Nodes.RemoveAt(dragedIndex);
 			
