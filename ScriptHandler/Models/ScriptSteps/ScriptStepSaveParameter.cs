@@ -5,6 +5,7 @@ using DeviceCommunicators.Models;
 using DeviceHandler.Interfaces;
 using DeviceHandler.Models;
 using Entities.Enums;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ScriptHandler.Interfaces;
 using ScriptHandler.Models.ScriptNodes;
@@ -26,6 +27,8 @@ namespace ScriptHandler.Models.ScriptSteps
     public class ScriptStepSaveParameter : ScriptStepBase, IScriptStepWithCommunicator, IScriptStepWithParameter
     {
         public DeviceParameterData Parameter { get; set; }
+
+        [JsonIgnore]
         public DeviceCommunicator Communicator { get; set; }
 
         private MCU_ParamData _saveParameter;
